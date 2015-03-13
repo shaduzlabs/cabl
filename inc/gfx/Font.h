@@ -50,7 +50,7 @@ public:
   
   virtual inline bool getPixelImpl( uint8_t* pFontData_, uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
   {
-    if( c_ < getFirstChar() || c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
+    if( c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
       return false;
     
     if( getBytesPerLine() == 1 )

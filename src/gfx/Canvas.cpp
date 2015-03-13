@@ -587,7 +587,7 @@ void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, tColor c
   
   uint8_t c = c_ - pFont_->getFirstChar();
   
-  if ( ( x_ >= m_width ) || ( y_ >= m_height ) || c > pFont_->getLastChar() || c < pFont_->getFirstChar() )
+  if ( ( x_ >= m_width ) || ( y_ >= m_height ) || c > pFont_->getLastChar() || c_ < pFont_->getFirstChar() )
     return;
   
   for ( uint8_t y=0; y < pFont_->getHeight(); y++ )

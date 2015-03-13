@@ -1,6 +1,6 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*----------------------------------------------------------------------------------------------------------------------
 
-                 %%%%%%%%%%%%%%%%%                
+                 %%%%%%%%%%%%%%%%%
                  %%%%%%%%%%%%%%%%%
                  %%%           %%%
                  %%%           %%%
@@ -12,14 +12,14 @@
 
   Copyright (C) 2014 Vincenzo Pacella
 
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
   License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
   version.
 
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License along with this program.  
+  You should have received a copy of the GNU General Public License along with this program.
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
@@ -43,13 +43,12 @@
 namespace
 {
 
-  static const uint16_t kMikroMK2_vendorId                  = 0x17CC;
-  static const uint16_t kMikroMK2_productId                 = 0x1200;
+static const uint16_t kMikroMK2_vendorId = 0x17CC;
+static const uint16_t kMikroMK2_productId = 0x1200;
 
-  static const uint8_t  kMikroMK2_endpointDisplay           = 0x08;
-  static const uint8_t  kMikroMK2_endpointLeds              = 0x01;
-  static const uint8_t  kMikroMK2_endpointInput             = 0x84;
-  
+static const uint8_t kMikroMK2_endpointDisplay = 0x08;
+static const uint8_t kMikroMK2_endpointLeds = 0x01;
+static const uint8_t kMikroMK2_endpointInput = 0x84;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -164,38 +163,38 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
 
 enum class DeviceMaschineMikroMK2::Button : uint8_t
 {
-  Restart = 8,
-  TransportLeft,
-  TransportRight,
-  Grid,
-  Play,
-  Rec,
-  Erase,
   Shift,
+  Erase,
+  Rec,
+  Play,
+  Grid,
+  TransportRight,
+  TransportLeft,
+  Restart,
 
-  Group,
-  Browse,
-  Sampling,
+  MainEncoder = 11,
   NoteRepeat,
-  MainEncoder,
+  Sampling,
+  Browse,
+  Group,
 
-  F1 = 24,
-  F2,
-  F3,
-  Control,
-  Nav,
-  BrowseLeft,
-  BrowseRight,
   Main,
+  BrowseRight,
+  BrowseLeft,
+  Nav,
+  Control,
+  F3,
+  F2,
+  F1,
 
-  Scene,
-  Pattern,
-  PadMode,
-  View,
-  Duplicate,
-  Select,
-  Solo,
   Mute,
+  Solo,
+  Select,
+  Duplicate,
+  View,
+  PadMode,
+  Pattern,
+  Scene,
 
   Pad13,
   Pad14,
@@ -219,29 +218,28 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
 //----------------------------------------------------------------------------------------------------------------------
 
 DeviceMaschineMikroMK2::DeviceMaschineMikroMK2()
-  : Device( Driver::tDriver::HIDAPI )
-  , m_display( new GDisplayMaschineMikro )
-  , m_isDirtyLeds( false )
+  : Device(Driver::tDriver::HIDAPI)
+  , m_display(new GDisplayMaschineMikro)
+  , m_isDirtyLeds(false)
 {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-  
+
 DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
 {
-
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-  
+
 bool DeviceMaschineMikroMK2::connect()
 {
-  if( !m_driver.connect( kMikroMK2_vendorId, kMikroMK2_productId ) )
+  if (!m_driver.connect(kMikroMK2_vendorId, kMikroMK2_productId))
   {
     return false;
   }
-  
+
   init();
   return true;
 }
@@ -250,71 +248,71 @@ bool DeviceMaschineMikroMK2::connect()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLed( Device::Button btn_, uint8_t val_)
+void DeviceMaschineMikroMK2::setLed(Device::Button btn_, uint8_t val_)
 {
-  Led led = getLed( btn_ );
-  
-  if( isRGBLed( led ) )
+  Led led = getLed(btn_);
+
+  if (isRGBLed(led))
   {
-    uint8_t currentR = m_leds[ static_cast<uint16_t>(led)     ];
-    uint8_t currentG = m_leds[ static_cast<uint16_t>(led) + 1 ];
-    uint8_t currentB = m_leds[ static_cast<uint16_t>(led) + 2 ];
-    
-    m_leds[ static_cast<uint16_t>(led)     ] = val_;
-    m_leds[ static_cast<uint16_t>(led) + 1 ] = val_;
-    m_leds[ static_cast<uint16_t>(led) + 2 ] = val_;
-    
-    m_isDirtyLeds = ( currentR != val_ || currentG != val_ || currentB != val_ );
+    uint8_t currentR = m_leds[static_cast<uint16_t>(led)];
+    uint8_t currentG = m_leds[static_cast<uint16_t>(led) + 1];
+    uint8_t currentB = m_leds[static_cast<uint16_t>(led) + 2];
+
+    m_leds[static_cast<uint16_t>(led)] = val_;
+    m_leds[static_cast<uint16_t>(led) + 1] = val_;
+    m_leds[static_cast<uint16_t>(led) + 2] = val_;
+
+    m_isDirtyLeds = (currentR != val_ || currentG != val_ || currentB != val_);
   }
-  else if( Led::Unknown != led )
+  else if (Led::Unknown != led)
   {
-    uint8_t currentVal = m_leds[ static_cast<uint16_t>(led)];
+    uint8_t currentVal = m_leds[static_cast<uint16_t>(led)];
     uint8_t newVal = val_;
-    
-    m_leds[ static_cast<uint16_t>(led)] = newVal;
-    m_isDirtyLeds = ( currentVal != newVal );
+
+    m_leds[static_cast<uint16_t>(led)] = newVal;
+    m_isDirtyLeds = (currentVal != newVal);
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLed( Device::Button btn_, uint8_t r_, uint8_t g_, uint8_t b_)
+void DeviceMaschineMikroMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint8_t b_)
 {
-  Led led = getLed( btn_ );
-  
-  if( isRGBLed( led ) )
-  {
-    uint8_t currentR = m_leds[ static_cast<uint16_t>(led)     ];
-    uint8_t currentG = m_leds[ static_cast<uint16_t>(led) + 1 ];
-    uint8_t currentB = m_leds[ static_cast<uint16_t>(led) + 2 ];
-    
-    m_leds[ static_cast<uint16_t>(led)     ] = r_;
-    m_leds[ static_cast<uint16_t>(led) + 1 ] = g_;
-    m_leds[ static_cast<uint16_t>(led) + 2 ] = b_;
+  Led led = getLed(btn_);
 
-    m_isDirtyLeds = ( currentR != r_ || currentG != g_ || currentB != b_ );
-  }
-  else if( Led::Unknown != led )
+  if (isRGBLed(led))
   {
-    uint8_t currentVal = m_leds[ static_cast<uint16_t>(led)];
+    uint8_t currentR = m_leds[static_cast<uint16_t>(led)];
+    uint8_t currentG = m_leds[static_cast<uint16_t>(led) + 1];
+    uint8_t currentB = m_leds[static_cast<uint16_t>(led) + 2];
+
+    m_leds[static_cast<uint16_t>(led)] = r_;
+    m_leds[static_cast<uint16_t>(led) + 1] = g_;
+    m_leds[static_cast<uint16_t>(led) + 2] = b_;
+
+    m_isDirtyLeds = (currentR != r_ || currentG != g_ || currentB != b_);
+  }
+  else if (Led::Unknown != led)
+  {
+    uint8_t currentVal = m_leds[static_cast<uint16_t>(led)];
 
     // Use "Maximum decomposition" -> take the channel with the highest value
-    uint8_t newVal = util::max<uint8_t>( r_, g_, b_ );
+    uint8_t newVal = util::max<uint8_t>(r_, g_, b_);
 
-    m_leds[ static_cast<uint16_t>(led)] = newVal;
-    m_isDirtyLeds = ( currentVal != newVal );
+    m_leds[static_cast<uint16_t>(led)] = newVal;
+    m_isDirtyLeds = (currentVal != newVal);
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMikroMK2::getDisplay( uint8_t displayIndex_ )
+GDisplay* DeviceMaschineMikroMK2::getDisplay(uint8_t displayIndex_)
 {
-  if( displayIndex_ > 0 )
+  if (displayIndex_ > 0)
   {
     return nullptr;
   }
-  
+
   return m_display.get();
 }
 
@@ -322,18 +320,26 @@ GDisplay* DeviceMaschineMikroMK2::getDisplay( uint8_t displayIndex_ )
 
 void DeviceMaschineMikroMK2::tick()
 {
+  static int state = 0;
   //\todo enable once display dirty flag is properly set
-  //    if( m_displays[i]->isDirty() )
+  if (state == 0 )//&& m_display->isDirty())
   {
     sendFrame();
   }
-  
-  if( m_isDirtyLeds )
+
+  else if (state == 1 )
   {
     sendLeds();
   }
+  else if (state == 2)
+  {
+    read();
+  }
 
-  read();
+  if (++state >= 3)
+  {
+    state = 0;
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -345,7 +351,9 @@ void DeviceMaschineMikroMK2::init()
   m_display.get()->white();
 
   // Leds
-  memset( m_leds, 0x00, kMikroMK2_ledsDataSize );
+  memset(m_leds, 0x00, kMikroMK2_ledsDataSize);
+  memset(m_buttons, 0x00, kMikroMK2_buttonsDataSize);
+  memset(m_buttonStates, 0x00, kMikroMK2_nButtons);
   m_isDirtyLeds = true;
 }
 
@@ -358,13 +366,15 @@ void DeviceMaschineMikroMK2::initDisplay() const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-  
+
 void DeviceMaschineMikroMK2::sendFrame() const
 {
   uint8_t yOffset = 0;
-  for(int chunk = 0; chunk <4; chunk++, yOffset+=2){
+  for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
+  {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    m_driver.write( Transfer( (const uint8_t[]){ 0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00 }, 9, ptr,  256 ), kMikroMK2_endpointDisplay );
+    m_driver.write(Transfer((const uint8_t[]){0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, 9, ptr, 256),
+                   kMikroMK2_endpointDisplay);
   }
 }
 
@@ -372,9 +382,9 @@ void DeviceMaschineMikroMK2::sendFrame() const
 
 void DeviceMaschineMikroMK2::sendLeds()
 {
-  if( m_isDirtyLeds )
+//  if (m_isDirtyLeds)
   {
-    m_driver.write( Transfer( (const uint8_t[]){ 0x80}, 1, &m_leds[0],  78 ), kMikroMK2_endpointLeds );
+    m_driver.write(Transfer((const uint8_t[]){0x80}, 1, &m_leds[0], 78), kMikroMK2_endpointLeds);
     m_isDirtyLeds = false;
   }
 }
@@ -384,134 +394,190 @@ void DeviceMaschineMikroMK2::sendLeds()
 void DeviceMaschineMikroMK2::read()
 {
   Transfer input;
-  if( m_driver.read( input, kMikroMK2_endpointInput ) )
+  for (uint8_t n = 0; n < 32; n++)
   {
-    if(input[0] == 0x01)
+    if (!m_driver.read(input, kMikroMK2_endpointInput))
     {
-      processButtons( input );
+      break;
     }
-    else if(input[0] == 0x20)
+    else if (input[0] == 0x01)
     {
-      processPads( input );
+      processButtons(input);
+      break;
     }
-/*
-    std::cout << std::setfill('0') << std::internal;
-    
-    for( int i = 0; i < input.getSize(); i++ )
+    else if (input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
     {
-      std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
+      processPads(input);
     }
+    /*
+        std::cout << std::setfill('0') << std::internal;
 
-    std::cout << std::endl << std::endl;*/
+        for( int i = 0; i < input.getSize(); i++ )
+        {
+          std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
+        }
+
+        std::cout << std::endl << std::endl;*/
   }
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processButtons( const Transfer& input_ )
+void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
 {
-/*
-  bool buttonState[kMikroMK2_nButtons ];
-  for(int i = 0; i < kMikroMK2_buttonsDataSize; i++ )
+  bool shiftPressed(isButtonPressed(input_, Button::Shift));
+  Device::Button changedButton(Device::Button::Unknown);
+  bool buttonPressed(false);
+
+  for (int i = 0; i < kMikroMK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
   {
-    for( int k = 0; k < 8; k++ )
+    for (int k = 0; k < 8; k++)
     {
-      uint8_t btn = (i * 8 ) + k ;
-      buttonState[ btn ] = isButtonPressed( static_cast<Button>( btn ) );
+      uint8_t btn = (i * 8) + k;
+      Button currentButton(static_cast<Button>(btn));
+      if (currentButton == Button::Shift)
+      {
+        continue;
+      }
+      buttonPressed = isButtonPressed(input_, currentButton);
+      if (buttonPressed != m_buttonStates[btn])
+      {
+        m_buttonStates[btn] = buttonPressed;
+        changedButton = getDeviceButton(currentButton);
+        if (changedButton != Device::Button::Unknown)
+        {
+          memcpy(&m_buttons[0], &input_[1], kMikroMK2_buttonsDataSize);
+          if (m_buttonChangeCallback != nullptr)
+          {
+            m_buttonChangeCallback(changedButton, buttonPressed, shiftPressed);
+          }
+        }
+      }
+    }
+
+    // Now process the encoder data
+    uint8_t currentEncoderValue = input_.getDataPtr()[kMikroMK2_buttonsDataSize];
+    if (m_encoderValue != currentEncoderValue)
+    {
+      bool valueIncreased
+        = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
+          && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
+      if(m_encoderChangeCallback != nullptr)
+      {
+        m_encoderChangeCallback(0, valueIncreased, shiftPressed);
+      }
+      m_encoderValue = currentEncoderValue;
     }
   }
-  */
-//  memcpy( &m_buttons[0], &input_[1], kMikroMK2_buttonsDataSize );
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processPads( const Transfer& input_ )
+void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 {
   //\todo process pad data
-  for(int i = 1; i <= kMikroMK2_padDataSize; i+=2 )
+  for (int i = 1; i <= kMikroMK2_padDataSize; i += 2)
   {
-    uint16_t l = input_[ i    ];
-    uint16_t h = input_[ i +1 ];
-    uint8_t pad = ( h & 0xF0 ) >> 4;
-    m_padsRawData[pad].write( ( ( h & 0x0F ) << 8 ) | l );
-    m_padsAvgData[pad] = ( ( ( h & 0x0F ) << 8 ) | l );
+    uint16_t l = input_[i];
+    uint16_t h = input_[i + 1];
+    uint8_t pad = (h & 0xF0) >> 4;
+    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
+    m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
 
     Device::Button btn(Device::Button::Unknown);
-    switch( (  pad ) )
+    switch ((pad))
     {
-      case 0:  btn = Device::Button::Pad13; break;
-      case 1:  btn = Device::Button::Pad14; break;
-      case 2:  btn = Device::Button::Pad15; break;
-      case 3:  btn = Device::Button::Pad16; break;
-      case 4:  btn = Device::Button::Pad9;  break;
-      case 5:  btn = Device::Button::Pad10; break;
-      case 6:  btn = Device::Button::Pad11; break;
-      case 7:  btn = Device::Button::Pad12; break;
-      case 8:  btn = Device::Button::Pad5;  break;
-      case 9:  btn = Device::Button::Pad6;  break;
-      case 10: btn = Device::Button::Pad7;  break;
-      case 11: btn = Device::Button::Pad8;  break;
-      case 12: btn = Device::Button::Pad1;  break;
-      case 13: btn = Device::Button::Pad2;  break;
-      case 14: btn = Device::Button::Pad3;  break;
-      case 15: btn = Device::Button::Pad4;  break;
+      case 0:
+        btn = Device::Button::Pad13;
+        break;
+      case 1:
+        btn = Device::Button::Pad14;
+        break;
+      case 2:
+        btn = Device::Button::Pad15;
+        break;
+      case 3:
+        btn = Device::Button::Pad16;
+        break;
+      case 4:
+        btn = Device::Button::Pad9;
+        break;
+      case 5:
+        btn = Device::Button::Pad10;
+        break;
+      case 6:
+        btn = Device::Button::Pad11;
+        break;
+      case 7:
+        btn = Device::Button::Pad12;
+        break;
+      case 8:
+        btn = Device::Button::Pad5;
+        break;
+      case 9:
+        btn = Device::Button::Pad6;
+        break;
+      case 10:
+        btn = Device::Button::Pad7;
+        break;
+      case 11:
+        btn = Device::Button::Pad8;
+        break;
+      case 12:
+        btn = Device::Button::Pad1;
+        break;
+      case 13:
+        btn = Device::Button::Pad2;
+        break;
+      case 14:
+        btn = Device::Button::Pad3;
+        break;
+      case 15:
+        btn = Device::Button::Pad4;
+        break;
     }
-
-    if( m_padsAvgData[pad] > 300 )
+/*
+    if (m_padsAvgData[pad] > 300)
     {
-      setLed( btn, static_cast<uint8_t>( m_padsAvgData[pad] >> 4 ) );
+      setLed(btn, static_cast<uint8_t>(m_padsAvgData[pad] >> 4));
     }
     else
     {
-      setLed( btn, 0 );
+      setLed(btn, 0);
     }
-    m_isDirtyLeds = true;
+    m_isDirtyLeds = true;*/
   }
-  
-  if( m_padsChangeCallback != nullptr )
+
+  if (m_padsChangeCallback != nullptr)
   {
-    m_padsChangeCallback( 0xffff, &m_padsAvgData[0] );
+    m_padsChangeCallback(0xffff, &m_padsAvgData[0]);
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isRGBLed( Led led_ )
+bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
 {
-  if(  Led::Group == led_
-    || Led::Pad1  == led_
-    || Led::Pad2  == led_
-    || Led::Pad3  == led_
-    || Led::Pad4  == led_
-    || Led::Pad5  == led_
-    || Led::Pad6  == led_
-    || Led::Pad7  == led_
-    || Led::Pad8  == led_
-    || Led::Pad9  == led_
-    || Led::Pad10 == led_
-    || Led::Pad11 == led_
-    || Led::Pad12 == led_
-    || Led::Pad13 == led_
-    || Led::Pad14 == led_
-    || Led::Pad15 == led_
-    || Led::Pad16 == led_
-  )
+  if (Led::Group == led_ || Led::Pad1 == led_ || Led::Pad2 == led_ || Led::Pad3 == led_ || Led::Pad4 == led_
+      || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_ || Led::Pad8 == led_ || Led::Pad9 == led_
+      || Led::Pad10 == led_ || Led::Pad11 == led_ || Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_
+      || Led::Pad15 == led_ || Led::Pad16 == led_)
   {
     return true;
   }
-  
+
   return false;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed( Device::Button btn_ ) const noexcept
+DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) const noexcept
 {
-#define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
+#define M_LED_CASE(idLed)     \
+  case Device::Button::idLed: \
+    return Led::idLed
 
-  switch ( btn_ )
+  switch (btn_)
   {
     M_LED_CASE(F1);
     M_LED_CASE(F2);
@@ -569,11 +635,13 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed( Device::Button btn_ 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Device::Button DeviceMaschineMikroMK2::getDeviceButton( Button btn_ ) const noexcept
+Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
 {
-#define M_BTN_CASE(idBtn) case Button::idBtn: return Device::Button::idBtn
+#define M_BTN_CASE(idBtn) \
+  case Button::idBtn:     \
+    return Device::Button::idBtn
 
-  switch ( btn_ )
+  switch (btn_)
   {
     M_BTN_CASE(F1);
     M_BTN_CASE(F2);
@@ -632,10 +700,19 @@ Device::Button DeviceMaschineMikroMK2::getDeviceButton( Button btn_ ) const noex
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed( Button button_ ) const noexcept
+bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 {
-  uint8_t buttonPos = static_cast<uint8_t>( button_ );
-  return ( ( m_buttons[ buttonPos >> 3 ] & ( 1 << ( buttonPos % 8 ) ) ) != 0 );
+  uint8_t buttonPos = static_cast<uint8_t>(button_);
+  return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+{
+  uint8_t* buttonsData = transfer_.getDataPtr() + 1;
+  uint8_t buttonPos = static_cast<uint8_t>(button_);
+  return ((buttonsData[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

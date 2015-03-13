@@ -217,8 +217,8 @@ public:
   void setLed( Device::Button, uint8_t                   ) override;
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
   
-  GDisplay* getDisplay( uint8_t displayIndex_ );
-  void tick();
+  GDisplay* getDisplay( uint8_t displayIndex_ ) override;
+  void tick() override;
 
 private:
 
@@ -249,11 +249,14 @@ private:
 
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
+  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
   tPtr<GDisplay>      m_display;
   
   uint8_t             m_leds[ kMikroMK2_ledsDataSize ];
   uint8_t             m_buttons[ kMikroMK2_buttonsDataSize ];
+  bool                m_buttonStates[kMikroMK2_nButtons];
+  uint8_t             m_encoderValue;
   
   tBuffer             m_padsRawData[ kMikroMK2_nPads ];
   uint16_t            m_padsAvgData[ kMikroMK2_nPads ];
