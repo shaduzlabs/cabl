@@ -1,0 +1,24 @@
+# Build products
+build/
+arduino/
+ipch/
+cmake_install.cmake
+Makefile
+
+# Mac specific
+*.DS_Store
+xcuserdata/
+project.xcworkspace/
+*.pbxuser
+
+# Windows specific
+*.bak
+*.opt
+*.user
+*.suo
+*.sdf
+*.ncb
+*.opensdf
+
+# Temporary files
+*~
