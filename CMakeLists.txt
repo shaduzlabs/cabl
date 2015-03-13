@@ -27,8 +27,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 find_package (hidapi)
 find_package (libusb)
 
-include(cotire)
-
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
 #link_directories(${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
 
@@ -187,8 +185,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
           add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
           set_target_properties(kompletIOStatic PROPERTIES OUTPUT_NAME kompletIO)
 
-          target_link_libraries( kompletIO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
-          cotire(kompletIO)
+          target_link_libraries( kompletIO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
 
           install (TARGETS    kompletIO        DESTINATION lib)
           install (TARGETS    kompletIOStatic  DESTINATION lib)
@@ -211,4 +208,26 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 # -------------------------------------------------------------------------------------------------------------------- #
 #  Arduino / Teensy                                                                                                    #
 # -------------------------------------------------------------------------------------------------------------------- #
+
+
+# -------------------------------------------------------------------------------------------------------------------- #
+#  Examples : Euclidean step sequencer                                                                                 #
+# -------------------------------------------------------------------------------------------------------------------- #
+
+SET( 
+     Examples_evklid_FILES      examples/evklid/main.cpp
+                                examples/evklid/bjorklund.h
+                                examples/evklid/Sequence.h
+                                examples/evklid/Evklid.h
+                                examples/evklid/Evklid.cpp
+                                examples/evklid/RtMidi.h
+                                examples/evklid/RtMidi.cpp
+)
+
+add_executable(evklid ${Examples_evklid_FILES} )
+target_link_libraries(evklid kompletIO)
+IF (APPLE)
+target_link_libraries(evklid "-framework CoreFoundation" "-framework CoreAudio" "-framework CoreMidi")
+ENDIF (APPLE)
+set_target_properties(evklid PROPERTIES COMPILE_DEFINITIONS __MACOSX_CORE__)
 
