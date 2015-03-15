@@ -40,34 +40,36 @@ Transfer::Transfer()
 //----------------------------------------------------------------------------------------------------------------------
 
 Transfer::Transfer( uint16_t length_ )
-  : m_pData( new uint8_t[length_] )
-  , m_length( length_ )
 {
-
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-
-Transfer::Transfer( const uint8_t* pData_, uint16_t length_ )
-  : Transfer( length_ )
-{
-  setData( pData_, length_ );
+  m_data.resize(length_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Transfer::Transfer(
-  const uint8_t* pHeader_,
-  uint16_t headerLength_,
-  const uint8_t* pData_,
-  uint16_t dataLength_
-)
-  : Transfer( headerLength_ + dataLength_ )
+Transfer::Transfer( tRawData data_ )
 {
-  memcpy( m_pData.get(), pHeader_, headerLength_ );
-  memcpy( ( m_pData.get() + headerLength_ ), pData_, dataLength_ );
+  m_data.resize(data_.size());
+  std::copy(data_.begin(),data_.end(),data_.begin());
 }
+
 //----------------------------------------------------------------------------------------------------------------------
+
+Transfer::Transfer( tRawData header_, tRawData data_ )
+{
+  m_data.resize(header_.size()+data_.size());
+  std::copy(header_.begin(),header_.end(),m_data.begin());
+  std::copy(data_.begin(),data_.end(),&m_data[header_.size()]);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+Transfer::Transfer( tRawData header_, const uint8_t* pData_, uint16_t dataLength_ )
+{
+  m_data.resize(header_.size()+dataLength_);
+  std::copy(header_.begin(),header_.end(),m_data.begin());
+  std::copy(pData_,pData_+dataLength_,&m_data[header_.size()]);
+}
+
 /*
 
 Transfer::Transfer( const std::initializer_list<uint8_t>& data_, uint8_t endpoint_ )
@@ -109,7 +111,7 @@ Transfer::~Transfer()
 
 void Transfer::reset()
 {  
-  m_length = 0;
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -119,9 +121,8 @@ void Transfer::setData( const uint8_t* data_, uint16_t length_ )
   if( length_ == 0 || data_ == nullptr )
     return;
   
-  m_length = length_;
-  m_pData.reset( new uint8_t[m_length] );
-  memcpy( m_pData.get(), data_, m_length );
+  m_data.resize( length_ );
+  memcpy( m_data.data(), data_, length_ );
 }
 
 //----------------------------------------------------------------------------------------------------------------------

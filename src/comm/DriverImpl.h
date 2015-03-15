@@ -42,7 +42,7 @@ public:
   virtual bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) = 0;
   virtual void disconnect() = 0;
 
-  virtual bool read( Transfer&, uint8_t ) const = 0;
+  virtual bool read( Transfer&, uint8_t ) = 0;
   virtual bool write( const Transfer&, uint8_t ) const = 0;
 
 };

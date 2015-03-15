@@ -41,37 +41,37 @@ public:
   
   Transfer();
   Transfer( uint16_t length_ );
-  Transfer( const uint8_t* data_, uint16_t length_ );
-  Transfer( const uint8_t* pHeader_, uint16_t headerLength_, const uint8_t* pData_, uint16_t dataLength_ );
   
-  //Transfer( const std::initializer_list<uint8_t>& data_, uint8_t endpoint_ );
- // Transfer( const std::initializer_list<uint8_t>& header_, const uint8_t* data_, uint16_t length_, uint8_t endpoint_ );
+  Transfer( tRawData data_ );
+  Transfer( tRawData header_, tRawData data_ );
+  Transfer( tRawData header_, const uint8_t* pData_, uint16_t dataLength_ );
   
   virtual ~Transfer();
   
-  operator bool() const{ return ( m_pData && ( m_length > 0 ) ); }
+  operator bool() const{ return ( m_data.size() > 0 ); }
   
   inline uint8_t &operator[](int i)
   {
-    return m_pData[i];
+    return m_data[i];
   }
  
   inline const uint8_t &operator[](int i) const
   {
-    return m_pData[i];
+    return m_data[i];
   }
   
   void reset();
   
-  uint8_t* getDataPtr() const { return m_pData.get(); }
+//  uint8_t* getDataPtr() const { return m_pData.get(); }
+//  void setData( const uint8_t*, uint16_t );
+  const tRawData& getData() const { return m_data; }
   void setData( const uint8_t*, uint16_t );
   
-  uint16_t getSize() const noexcept{ return m_length; }
+  uint16_t size() const noexcept{ return m_data.size(); }
 
 private:
 
-  tPtr<uint8_t[]>  m_pData;
-  uint16_t         m_length;
+  tRawData         m_data;
  
 };
   

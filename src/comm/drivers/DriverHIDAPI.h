@@ -44,13 +44,13 @@ public:
   bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
   void disconnect() override;
 
-  bool read( Transfer&, uint8_t ) const override;
+  bool read( Transfer&, uint8_t ) override;
   bool write( const Transfer& , uint8_t) const override;
   
 private:
   
  // tCollVendorIds m_collVendorIds;
-  tPtr<uint8_t[]>                 m_inputBuffer;
+  tRawData                        m_inputBuffer;
   tDeviceHandle*                  m_pCurrentDevice;
 };
   

@@ -76,8 +76,7 @@ Canvas::Canvas( uint16_t width_, uint16_t height_, tAllocation allocationType_ )
       break;
     }
   }
-  m_pData.reset( new uint8_t[ m_canvasSizeInBytes ] );
-  memset( m_pData.get(), 0, m_canvasSizeInBytes );
+  m_data.resize(m_canvasSizeInBytes);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -85,7 +84,7 @@ Canvas::Canvas( uint16_t width_, uint16_t height_, tAllocation allocationType_ )
 
 Canvas::~Canvas()
 {
- // delete[] m_pData;
+ // delete[] m_data;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -93,14 +92,14 @@ Canvas::~Canvas()
 void Canvas::invert()
 {
   for( uint16_t i = 0; i < m_canvasSizeInBytes; i++ )
-    m_pData[i] = ~m_pData[ i ];
+    m_data[i] = ~m_data[ i ];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 void Canvas::fillPattern( uint8_t value_ )
 {
-  memset( m_pData.get(), value_, m_canvasSizeInBytes );
+  memset( m_data.data(), value_, m_canvasSizeInBytes );
 }
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -118,15 +117,15 @@ void Canvas::setPixel( uint16_t x_, uint16_t y_, tColor color_ )
   switch( color_ )
   {
     case tColor::WHITE:
-      m_pData[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
+      m_data[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
       break;
       
     case tColor::BLACK:
-      m_pData[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
+      m_data[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
       break;
       
     case tColor::INVERT:
-      m_pData[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
+      m_data[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
       break;
       
     default:
@@ -142,7 +141,7 @@ Canvas::tColor Canvas::getPixel( uint8_t x_, uint8_t y_ ) const
     return tColor::BLACK;
   
   return
-  ( m_pData[ ( m_canvasWidthInBytes * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
+  ( m_data[ ( m_canvasWidthInBytes * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
   ? tColor::BLACK
   : tColor::WHITE;
 }

@@ -67,15 +67,15 @@ void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
   switch( color_ )
   {
     case tColor::WHITE:
-      getDataPtr()[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
+      getData()[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
       break;
 
     case tColor::BLACK:
-      getDataPtr()[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
+      getData()[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
       break;
 
     case tColor::INVERT:
-      getDataPtr()[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
+      getData()[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
       break;
 
     default:
@@ -95,7 +95,7 @@ GDisplay::tColor GDisplayMaschineMK2::getPixelImpl( uint8_t x_, uint8_t y_ ) con
     return tColor::BLACK;
 
   return 
-    ( getDataPtr()[ ( getCanvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
+    ( getData()[ ( getCanvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
     ? tColor::BLACK 
     : tColor::WHITE;
 }

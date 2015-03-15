@@ -49,9 +49,9 @@ namespace sl
 GDisplay::GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, tAllocation allocationType_ )
 : Canvas( width_, height_, allocationType_ )
 , m_isDirty(false)
-, m_pChunksDirtyFlags( new bool[numDisplayChunks_] )
 , m_numDisplayChunks( numDisplayChunks_ )
 {
+  m_pChunksDirtyFlags.resize(numDisplayChunks_);
   resetDirtyFlags();
 }
 

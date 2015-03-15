@@ -39,15 +39,14 @@ namespace sl
 {
   
 DriverLIBUSB::DriverLIBUSB()
-  : m_inputBuffer( new uint8_t[ kLIBUSBInputBufferSize ] )
-  , m_pCurrentDevice(nullptr)
+  : m_pCurrentDevice(nullptr)
 {
   libusb_init( &m_pContext );
 
 #ifdef DEBUG
   libusb_set_debug	( m_pContext, 3 );
 #endif
-
+  m_inputBuffer.resize(kLIBUSBInputBufferSize);
 }
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -110,13 +109,13 @@ void DriverLIBUSB::disconnect()
   
 //----------------------------------------------------------------------------------------------------------------------
   
-bool DriverLIBUSB::read( Transfer& transfer_, uint8_t endpoint_ ) const
+bool DriverLIBUSB::read( Transfer& transfer_, uint8_t endpoint_ )
 {
   int nBytesRead = 0;
   int result = libusb_bulk_transfer(
     m_pCurrentDevice,                 // Device handle
     endpoint_,                         // Endpoint
-    m_inputBuffer.get(),              // Data pointer
+    m_inputBuffer.data(),              // Data pointer
     kLIBUSBInputBufferSize,           // Size of data
     &nBytesRead,                      // N. of bytes actually written
     kReadTimeout                      // Timeout
@@ -124,7 +123,7 @@ bool DriverLIBUSB::read( Transfer& transfer_, uint8_t endpoint_ ) const
   
   if( ( LIBUSB_SUCCESS == result ) && ( nBytesRead > 0 ) )
   {
-    transfer_.setData( m_inputBuffer.get(), nBytesRead );
+    transfer_.setData( m_inputBuffer.data(), nBytesRead );
     return transfer_;
   }
  
@@ -141,12 +140,12 @@ bool DriverLIBUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
     int result = libusb_bulk_transfer(
       m_pCurrentDevice,                 // Device handle
       endpoint_,                        // Endpoint
-      transfer_.getDataPtr(),           // Data pointer
-      transfer_.getSize(),              // Size of data
+      const_cast<uint8_t*>(transfer_.getData().data()),       // Data pointer
+      transfer_.size(),                 // Size of data
       &nBytesWritten,                   // N. of bytes actually written
       kWriteTimeout                     // Timeout
     );
-    return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.getSize() ) );
+    return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
   }
   
   return false;

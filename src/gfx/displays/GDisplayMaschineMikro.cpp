@@ -67,15 +67,15 @@ void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_
   switch( color_ )
   {
     case tColor::WHITE:
-      getDataPtr()[ byteIndex ] |= 0x01 << ( y_ & 7 );
+      getData()[ byteIndex ] |= 0x01 << ( y_ & 7 );
       break;
       
     case tColor::BLACK:
-      getDataPtr()[ byteIndex ] &= ~(0x01 << ( y_ & 7 ) );
+      getData()[ byteIndex ] &= ~(0x01 << ( y_ & 7 ) );
       break;
       
     case tColor::INVERT:
-      getDataPtr()[ byteIndex ] ^= 0x01 << ( y_ & 7 );
+      getData()[ byteIndex ] ^= 0x01 << ( y_ & 7 );
       break;
       
     default:
@@ -95,7 +95,7 @@ GDisplay::tColor GDisplayMaschineMikro::getPixelImpl( uint8_t x_, uint8_t y_ ) c
     return tColor::BLACK;
   
   return
-  ( ( getDataPtr()[ x_ + ( getWidth() * ( y_ >> 3 ) ) ] >> ( ( y_ ) & 7 ) ) & 0x01 ) == 0
+  ( ( getData()[ x_ + ( getWidth() * ( y_ >> 3 ) ) ] >> ( ( y_ ) & 7 ) ) & 0x01 ) == 0
   ? tColor::BLACK
   : tColor::WHITE;
 }

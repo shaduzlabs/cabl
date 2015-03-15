@@ -160,7 +160,7 @@ namespace sl
 
   private:
 
-    tPtr<volatile bool[]>   m_pChunksDirtyFlags;                    //!< Chunk-specific dirty flags
+    tCollFlags              m_pChunksDirtyFlags;                    //!< Chunk-specific dirty flags
     uint8_t                 m_numDisplayChunks;                     //!< Number of display chunks
     
  //   uint32_t                m_uFrameSizeInBytes;                    //!< Frame size in bytes

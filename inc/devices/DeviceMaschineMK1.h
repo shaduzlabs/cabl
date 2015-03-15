@@ -125,7 +125,7 @@ private:
   Led getLed( Device::Button ) const noexcept;
   
   tPtr<GDisplay>      m_displays[kMASMK1_nDisplays];
-  tPtr<uint8_t[]>     m_leds;
+  tRawData            m_leds;
   
   bool                m_isDirtyLedGroup0;
   bool                m_isDirtyLedGroup1;

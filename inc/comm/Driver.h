@@ -60,7 +60,7 @@ public:
   bool connect( tVendorId vid_, tProductId pid_ );
   void disconnect();
 
-  bool read( Transfer&, uint8_t ) const;
+  bool read( Transfer&, uint8_t );
   bool write( const Transfer&, uint8_t ) const;
   
 private:

@@ -25,9 +25,11 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "util/CircularBuffer_SL.h"
 #include "util/ScopedPointer_SL.h"
-#include <memory>
 
 namespace sl
 {
@@ -35,8 +37,10 @@ namespace sl
 //----------------------------------------------------------------------------------------------------------------------
 
   template<typename T>
- //using tPtr = std::unique_ptr<T>;
-  using tPtr = util::ScopedPointer<T>;
+  using tPtr       = std::unique_ptr<T>;
+  
+  using tRawData   = std::vector<uint8_t>;
+  using tCollFlags = std::vector<bool>;
   
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -71,14 +71,14 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] |= 0xF8;
+          getData()[ byteIndex ] |= 0xF8;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] |= 0x07;
-          getDataPtr()[ byteIndex + 1 ] |= 0xC0;
+          getData()[ byteIndex ] |= 0x07;
+          getData()[ byteIndex + 1 ] |= 0xC0;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] |= 0x1F;
+          getData()[ byteIndex + 1 ] |= 0x1F;
           break;
       }
       break;
@@ -87,14 +87,14 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] &= 0x07;
+          getData()[ byteIndex ] &= 0x07;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] &= 0xF8;
-          getDataPtr()[ byteIndex + 1 ] &= 0x1F;
+          getData()[ byteIndex ] &= 0xF8;
+          getData()[ byteIndex + 1 ] &= 0x1F;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] &= 0xC0;
+          getData()[ byteIndex + 1 ] &= 0xC0;
           break;
       }
       break;
@@ -103,14 +103,14 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] ^= 0xF8;
+          getData()[ byteIndex ] ^= 0xF8;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] ^= 0x07;
-          getDataPtr()[ byteIndex + 1 ] ^= 0xC0;
+          getData()[ byteIndex ] ^= 0x07;
+          getData()[ byteIndex + 1 ] ^= 0xC0;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] ^= 0x1F;
+          getData()[ byteIndex + 1 ] ^= 0x1F;
           break;
       }
       break;
@@ -136,12 +136,12 @@ GDisplay::tColor GDisplayMaschineMK1::getPixelImpl( uint8_t x_, uint8_t y_ ) con
   switch( blockIndex )
   {
     case 0:
-      return ( getDataPtr()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
     case 1:
-      return ( getDataPtr()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
       break;
     case 2:
-      return ( getDataPtr()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
   }
   
   return tColor::BLACK;

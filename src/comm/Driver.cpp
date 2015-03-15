@@ -88,7 +88,7 @@ void Driver::disconnect()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool Driver::read( Transfer& transfer_, uint8_t endpoint_ ) const
+bool Driver::read( Transfer& transfer_, uint8_t endpoint_ )
 {
   return m_pImpl->read( transfer_, endpoint_ );
 }

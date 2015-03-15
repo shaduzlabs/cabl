@@ -373,7 +373,7 @@ void DeviceMaschineMikroMK2::sendFrame() const
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    m_driver.write(Transfer((const uint8_t[]){0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, 9, ptr, 256),
+    m_driver.write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
                    kMikroMK2_endpointDisplay);
   }
 }
@@ -384,7 +384,7 @@ void DeviceMaschineMikroMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    m_driver.write(Transfer((const uint8_t[]){0x80}, 1, &m_leds[0], 78), kMikroMK2_endpointLeds);
+    m_driver.write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
     m_isDirtyLeds = false;
   }
 }
@@ -400,12 +400,12 @@ void DeviceMaschineMikroMK2::read()
     {
       break;
     }
-    else if (input[0] == 0x01)
+    else if (input && input[0] == 0x01)
     {
       processButtons(input);
       break;
     }
-    else if (input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
+    else if (input && input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
     {
       processPads(input);
     }
@@ -456,7 +456,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
     }
 
     // Now process the encoder data
-    uint8_t currentEncoderValue = input_.getDataPtr()[kMikroMK2_buttonsDataSize];
+    uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
     if (m_encoderValue != currentEncoderValue)
     {
       bool valueIncreased
@@ -710,9 +710,8 @@ bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 
 bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
-  uint8_t* buttonsData = transfer_.getDataPtr() + 1;
   uint8_t buttonPos = static_cast<uint8_t>(button_);
-  return ((buttonsData[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
+  return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -382,13 +382,13 @@ public:
 
 protected:
 
-  uint8_t* getDataPtr() { return m_pData.get(); }
-  uint8_t* getDataPtr() const { return m_pData.get(); }
+  tRawData& getData() { return m_data; }
+  const tRawData& getData() const { return m_data; }
   uint16_t getCanvasWidthInBytes() const noexcept { return m_canvasWidthInBytes; }
   
 private:
 
-  tPtr<uint8_t[]>         m_pData;                                //!< The raw Canvas data
+  tRawData                m_data;                                //!< The raw Canvas data
   uint16_t                m_canvasWidthInBytes;
   uint32_t                m_canvasSizeInBytes;                    //!< Frame size in bytes
   uint16_t                m_width;                                //!< Canvas width in pixels
@@ -418,7 +418,7 @@ inline void Canvas::black()
 
 inline const uint8_t* Canvas::getPtr( uint16_t offset ) const
 {
-  return m_pData.get() + offset;
+  return m_data.data() + offset;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

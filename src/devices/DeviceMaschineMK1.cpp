@@ -132,11 +132,11 @@ enum class DeviceMaschineMK1::Led : uint8_t
 
 DeviceMaschineMK1::DeviceMaschineMK1()
   : Device( Driver::tDriver::LIBUSB )
-  , m_leds( new uint8_t[kMASMK1_ledsDataSize] )
   , m_pendingAcks( 0 )
 {
   m_displays[0].reset( new GDisplayMaschineMK1 );
   m_displays[1].reset( new GDisplayMaschineMK1 );
+  m_leds.resize(kMASMK1_ledsDataSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void DeviceMaschineMK1::tick()
   {
     sendLeds();
   }
-//  m_driver.write( M_TRANSFER_CREATE_RAW( 0x0C, 0xFF, 0x02, 0x05 ), 1 );
+//  m_driver.write( Transfer({ 0x0C, 0xFF, 0x02, 0x05 ), 1 );
   read();
 
 }
@@ -253,11 +253,7 @@ void DeviceMaschineMK1::init()
   }
   
   // Leds
-  memset( m_leds, 0x00, kMASMK1_ledsDataSize );
-  for(int led = 0; led < kMASMK1_ledsDataSize; led++ )
-  {
-    m_leds[led] = 0xFF;
-  }
+  std::fill(m_leds.begin(), m_leds.end(), 0);
   m_leds[ static_cast<uint8_t>( Led::DisplayBacklight )] = kMASMK1_defaultDisplaysBacklight;
   m_isDirtyLedGroup0 = true;
   m_isDirtyLedGroup1 = true;
@@ -274,47 +270,47 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ ) const
   
   uint8_t displayNumber = displayIndex_ << 1;
   
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x30                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x02, 0xBB, 0x00             ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0xD1                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x94                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xD1                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x94                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_endpointDisplay );
   
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x02, 0x20, 0x08             ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x02, 0x20, 0x0B             ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0xA6                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x31                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x34                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x30                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x5C                   ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0x25                   ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x31                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x34                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x5C                   }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x25                   }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0xAF                   ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xAF                   }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x01, 0xA6                   ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
   
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x81, 0x09, 0x04       ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x09, 0x04       }), kMASMK1_endpointDisplay );
 //  buf[i++] = 0x09;//contrast & 0x3f;
 //  buf[i++] = 0x04;//(contrast >> 6) & 0x7;
 
@@ -330,16 +326,14 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   }
   
   uint8_t displayNumber = displayIndex_ << 1;
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F ), kMASMK1_endpointDisplay );
-  m_driver.write( M_TRANSFER_CREATE_RAW( displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 ), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_endpointDisplay );
+  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_endpointDisplay );
   
   uint16_t offset = 0;
   const uint16_t dataSize = 502;
   
   m_driver.write(
-    Transfer(
-      (const uint8_t[]){ displayNumber, 0x01, 0xF7, 0x5C },
-      4,
+    Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
       m_displays[displayIndex_]->getPtr( offset ),
       dataSize
     ),
@@ -351,9 +345,7 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   {
     offset += dataSize;
     m_driver.write(
-      Transfer(
-        (const uint8_t[]){ displayNumber, 0x01, 0xF6 },
-        3,
+      Transfer({ displayNumber, 0x01, 0xF6 },
         m_displays[displayIndex_]->getPtr( offset ),
         dataSize
       ),
@@ -365,8 +357,7 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   
   m_driver.write(
     Transfer(
-      (const uint8_t[]){ displayNumber, 0x01, 0x52 },
-      3,
+      { displayNumber, 0x01, 0x52 },
       m_displays[displayIndex_]->getPtr( offset ),
       338
     ),
@@ -380,14 +371,14 @@ void DeviceMaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0 )
   {
-    m_driver.write( Transfer( (const uint8_t[]){ 0x0C, 0x00}, 2, &m_leds[0],  31 ), kMASMK1_endpointOut );
+    m_driver.write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut );
     m_pendingAcks++;
     m_isDirtyLedGroup0 = false;
   }
   
   if( m_isDirtyLedGroup1 )
   {
-    m_driver.write( Transfer( (const uint8_t[]){ 0x0C, 0x1E}, 2, &m_leds[31], 31 ), kMASMK1_endpointOut );
+    m_driver.write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut );
     m_pendingAcks++;
     m_isDirtyLedGroup1 = false;
   }
@@ -414,17 +405,17 @@ void DeviceMaschineMK1::read()
     std::cout << std::endl << std::endl;*/
   }
 
- // m_driver.write( M_TRANSFER_CREATE_RAW( 0x02, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
+ // m_driver.write( Transfer({ 0x02, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
 
   // Request dials data
   if( m_driver.read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {
     if(input[0] == 0x02)
     {
-      std::cout << "Dial Packet #IN (" << input.getSize() << "bytes):" << std::endl;
+      std::cout << "Dial Packet #IN (" << input.size() << "bytes):" << std::endl;
     
       std::cout << std::setfill('0') << std::internal;
-      for( int i = 0; i < input.getSize(); i++ )
+      for( int i = 0; i < input.size(); i++ )
       {
         std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
       }
@@ -434,15 +425,15 @@ void DeviceMaschineMK1::read()
   }
 
   // Request button data
-  m_driver.write( M_TRANSFER_CREATE_RAW( 0x04, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
+  m_driver.write( Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut );
   if( m_driver.read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {    
     if(input[0] != 0x02)
     {
-      std::cout << "Button Packet #IN (" << input.getSize() << "bytes):" << std::endl;
+      std::cout << "Button Packet #IN (" << input.size() << "bytes):" << std::endl;
     
       std::cout << std::setfill('0') << std::internal;
-      for( int i = 0; i < input.getSize(); i++ )
+      for( int i = 0; i < input.size(); i++ )
       {
         std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
       }
