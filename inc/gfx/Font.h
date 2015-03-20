@@ -28,6 +28,8 @@
 #ifndef SL_FONT_H
 #define SL_FONT_H
 
+#include <Macros.h>
+
 namespace sl
 {
 
