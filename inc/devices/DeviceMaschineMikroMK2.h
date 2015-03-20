@@ -237,7 +237,7 @@ private:
   void init() override;
 
   void initDisplay() const;
-  void sendFrame() const;
+  void sendFrame();
   void sendLeds();
   void read();
   

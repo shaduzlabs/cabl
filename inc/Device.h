@@ -25,6 +25,9 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
 
+// STL includes
+#include <functional>
+
 #include "comm/Driver.h"
 
 namespace sl
@@ -36,6 +39,7 @@ class Device
 {
 
 public:
+
   enum class Button : uint8_t
   {
     Control,
@@ -115,11 +119,11 @@ public:
     Unknown,
   };
 
+  using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
+  using tCbEncoderChanged = std::function<void(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)>;
+  
   Device(Driver::tDriver tDriver_)
-    : m_buttonsChangeCallback(nullptr)
-    , m_encodersChangeCallback(nullptr)
-    , m_padsChangeCallback(nullptr)
-    , m_driver(tDriver_)
+    : m_driver(tDriver_)
   {
   }
 
@@ -149,26 +153,9 @@ public:
   virtual bool setCallbackDials() const;
   virtual bool setCallbackPads() const;
   */
-
-  void setCallbackButtonsPressed(void (*fptr)(uint32_t mask1, uint32_t mask2, const bool* pButtons))
-  {
-    m_buttonsChangeCallback = fptr;
-  }
-
-  void setCallbackButtonChanged(void (*fptr)(Button button_, bool buttonState_, bool shiftPressed_))
-  {
-    m_buttonChangeCallback = fptr;
-  }
-
-  void setCallbackEncoderChanged(void (*fptr)(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_))
-  {
-    m_encoderChangeCallback = fptr;
-  }
-
-  void setCallbackEncodersChanged(void (*fptr)(uint16_t mask, const uint16_t* pEncoders))
-  {
-    m_encodersChangeCallback = fptr;
-  }
+  
+  void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_){ m_cbButtonChanged = cbButtonChanged_; }
+  void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
 
   void setCallbackPadsChanged(void (*fptr)(uint16_t mask, const uint16_t* pPads))
   {
@@ -176,13 +163,32 @@ public:
   }
 
 protected:
-  void (*m_buttonsChangeCallback)(uint32_t mask1, uint32_t mask2, const bool* pButtons);
-  void (*m_encodersChangeCallback)(uint16_t mask, const uint16_t* pEncoders);
   void (*m_padsChangeCallback)(uint16_t mask, const uint16_t* pPads);
 
-  void (*m_buttonChangeCallback)(Button button_, bool buttonState_, bool shiftPressed_);
-  void (*m_encoderChangeCallback)(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
+protected:
 
+  Driver& getDriver(){ return m_driver; }
+  
+  void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
+  {
+    if(m_cbButtonChanged)
+    {
+      m_cbButtonChanged(button_,buttonState_,shiftPressed_);
+    }
+  }
+  
+  void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
+  {
+    if(m_cbEncoderChanged)
+    {
+      m_cbEncoderChanged(encoderIndex_,valueIncreased_,shiftPressed_);
+    }
+  }
+private:
+
+  tCbButtonChanged    m_cbButtonChanged;
+  tCbEncoderChanged   m_cbEncoderChanged;
+  
   Driver m_driver;
 };
 

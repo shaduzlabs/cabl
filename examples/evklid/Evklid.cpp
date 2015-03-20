@@ -44,65 +44,6 @@ static const uint8_t kEvklidNumTracks = 3;
 namespace sl
 {
 
-Evklid* thisInstance;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_)
-{
-  if (button_ == Device::Button::F1)
-  {
-    if (thisInstance->getScreenPage() == Evklid::ScreenPage::Configuration)
-    {
-      thisInstance->setEncoderState(Evklid::EncoderState::Speed);
-    }
-    else
-    {
-      thisInstance->setEncoderState(Evklid::EncoderState::Length);
-    }
-  }
-  else if (button_ == Device::Button::F2)
-  {
-    if (thisInstance->getScreenPage() == Evklid::ScreenPage::Configuration)
-    {
-      thisInstance->setEncoderState(Evklid::EncoderState::Shuffle);
-    }
-    else
-    {
-      thisInstance->setEncoderState(Evklid::EncoderState::Pulses);
-    }
-  }
-  else if (button_ == Device::Button::F3)
-  {
-    if (thisInstance->getScreenPage() == Evklid::ScreenPage::Sequencer)
-    {
-      thisInstance->setEncoderState(Evklid::EncoderState::Rotate);
-    }
-  }
-  else if (button_ == Device::Button::Group && buttonState_)
-  {
-    thisInstance->changeTrack();
-  }
-  else if (button_ == Device::Button::Play && buttonState_)
-  {
-    thisInstance->togglePlay();
-  }
-  else if (button_ == Device::Button::Control && buttonState_)
-  {
-    thisInstance->setScreenPage(thisInstance->getScreenPage() == Evklid::ScreenPage::Configuration
-                                  ? Evklid::ScreenPage::Sequencer
-                                  : Evklid::ScreenPage::Configuration);
-  }
-  //  thisInstance->getDevice()->setLed(button_, ((unsigned)(buttonState_)) * 255);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
-{
-  thisInstance->setEncoder(valueIncreased_, shiftPressed_);
-}
-
 //----------------------------------------------------------------------------------------------------------------------
 
 void padsChanged(uint16_t mask, const uint16_t* pPads)
@@ -124,14 +65,12 @@ Evklid::Evklid(Device* pDevice_)
   , m_delayEven(125)
   , m_delayOdd(125)
 {
-  thisInstance = this;
-
   m_pDevice->connect();
   m_pDevice->getDisplay(0)->black();
 
-  m_pDevice->setCallbackPadsChanged(padsChanged);
-  m_pDevice->setCallbackButtonChanged(buttonChanged);
-  m_pDevice->setCallbackEncoderChanged(encoderChanged);
+//  m_pDevice->setCallbackPadsChanged(padsChanged);
+  m_pDevice->setCallbackButtonChanged(std::bind(&Evklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  m_pDevice->setCallbackEncoderChanged(std::bind(&Evklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
   for (uint8_t i = 0; i < kEvklidNumTracks; i++)
   {
@@ -143,6 +82,63 @@ Evklid::Evklid(Device* pDevice_)
   }
 
   m_pMidiout->openVirtualPort("Euklid");
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Evklid::buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_)
+{
+  if (button_ == Device::Button::F1)
+  {
+    if (getScreenPage() == Evklid::ScreenPage::Configuration)
+    {
+      setEncoderState(Evklid::EncoderState::Speed);
+    }
+    else
+    {
+      setEncoderState(Evklid::EncoderState::Length);
+    }
+  }
+  else if (button_ == Device::Button::F2)
+  {
+    if (getScreenPage() == Evklid::ScreenPage::Configuration)
+    {
+      setEncoderState(Evklid::EncoderState::Shuffle);
+    }
+    else
+    {
+      setEncoderState(Evklid::EncoderState::Pulses);
+    }
+  }
+  else if (button_ == Device::Button::F3)
+  {
+    if (getScreenPage() == Evklid::ScreenPage::Sequencer)
+    {
+      setEncoderState(Evklid::EncoderState::Rotate);
+    }
+  }
+  else if (button_ == Device::Button::Group && buttonState_)
+  {
+    changeTrack();
+  }
+  else if (button_ == Device::Button::Play && buttonState_)
+  {
+    togglePlay();
+  }
+  else if (button_ == Device::Button::Control && buttonState_)
+  {
+    setScreenPage(getScreenPage() == Evklid::ScreenPage::Configuration
+                                  ? Evklid::ScreenPage::Sequencer
+                                  : Evklid::ScreenPage::Configuration);
+  }
+  //  getDevice()->setLed(button_, ((unsigned)(buttonState_)) * 255);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Evklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
+{
+  setEncoder(valueIncreased_, shiftPressed_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

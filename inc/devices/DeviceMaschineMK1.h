@@ -117,8 +117,8 @@ private:
 
   void init() override;
 
-  void initDisplay( uint8_t displayIndex_ ) const;
-  void sendFrame( uint8_t displayIndex_ ) const;
+  void initDisplay( uint8_t displayIndex_ );
+  void sendFrame( uint8_t displayIndex_ );
   void sendLeds();
   void read();
   

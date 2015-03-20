@@ -235,7 +235,7 @@ DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
 
 bool DeviceMaschineMikroMK2::connect()
 {
-  if (!m_driver.connect(kMikroMK2_vendorId, kMikroMK2_productId))
+  if (!getDriver().connect(kMikroMK2_vendorId, kMikroMK2_productId))
   {
     return false;
   }
@@ -367,13 +367,13 @@ void DeviceMaschineMikroMK2::initDisplay() const
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::sendFrame() const
+void DeviceMaschineMikroMK2::sendFrame()
 {
   uint8_t yOffset = 0;
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    m_driver.write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+    getDriver().write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
                    kMikroMK2_endpointDisplay);
   }
 }
@@ -384,7 +384,7 @@ void DeviceMaschineMikroMK2::sendLeds()
 {
   //  if (m_isDirtyLeds)
   {
-    m_driver.write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
+    getDriver().write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
     m_isDirtyLeds = false;
   }
 }
@@ -396,7 +396,7 @@ void DeviceMaschineMikroMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!m_driver.read(input, kMikroMK2_endpointInput))
+    if (!getDriver().read(input, kMikroMK2_endpointInput))
     {
       break;
     }
@@ -446,11 +446,8 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         changedButton = getDeviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-          memcpy(&m_buttons[0], &input_[1], kMikroMK2_buttonsDataSize);
-          if (m_buttonChangeCallback != nullptr)
-          {
-            m_buttonChangeCallback(changedButton, buttonPressed, shiftPressed);
-          }
+          memcpy(&m_buttons[0], &input_[1], kMikroMK2_buttonsDataSize); //! \todo: remove!
+          buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
       }
     }
@@ -462,10 +459,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
       bool valueIncreased
         = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      if (m_encoderChangeCallback != nullptr)
-      {
-        m_encoderChangeCallback(0, valueIncreased, shiftPressed);
-      }
+        encoderChanged(0, valueIncreased, shiftPressed);
       m_encoderValue = currentEncoderValue;
     }
   }

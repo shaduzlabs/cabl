@@ -151,7 +151,7 @@ DeviceMaschineMK1::~DeviceMaschineMK1()
   
 bool DeviceMaschineMK1::connect()
 {
-  if( !m_driver.connect( kMASMK1_vendorId, kMASMK1_productId ) )
+  if( !getDriver().connect( kMASMK1_vendorId, kMASMK1_productId ) )
   {
     return false;
   }
@@ -236,7 +236,7 @@ void DeviceMaschineMK1::tick()
   {
     sendLeds();
   }
-//  m_driver.write( Transfer({ 0x0C, 0xFF, 0x02, 0x05 ), 1 );
+//  getDriver().write( Transfer({ 0x0C, 0xFF, 0x02, 0x05 ), 1 );
   read();
 
 }
@@ -261,7 +261,7 @@ void DeviceMaschineMK1::init()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ ) const
+void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
 {
   if( displayIndex_ > 1 )
   {
@@ -270,47 +270,47 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ ) const
   
   uint8_t displayNumber = displayIndex_ << 1;
   
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xD1                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x94                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0xD1                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x94                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_endpointDisplay );
   
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x31                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x34                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x5C                   }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0x25                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x31                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x34                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x5C                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0x25                   }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xAF                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0xAF                   }), kMASMK1_endpointDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
   
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x09, 0x04       }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x09, 0x04       }), kMASMK1_endpointDisplay );
 //  buf[i++] = 0x09;//contrast & 0x3f;
 //  buf[i++] = 0x04;//(contrast >> 6) & 0x7;
 
@@ -318,7 +318,7 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ ) const
 
 //----------------------------------------------------------------------------------------------------------------------
   
-void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
+void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
 {
   if( displayIndex_ > 1 )
   {
@@ -326,13 +326,13 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   }
   
   uint8_t displayNumber = displayIndex_ << 1;
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_endpointDisplay );
-  m_driver.write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_endpointDisplay );
+  getDriver().write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_endpointDisplay );
   
   uint16_t offset = 0;
   const uint16_t dataSize = 502;
   
-  m_driver.write(
+  getDriver().write(
     Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
       m_displays[displayIndex_]->getPtr( offset ),
       dataSize
@@ -344,7 +344,7 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   for(uint8_t chunk = 1; chunk < m_displays[displayIndex_]->getNumberOfChunks() - 1 ; chunk++ )
   {
     offset += dataSize;
-    m_driver.write(
+    getDriver().write(
       Transfer({ displayNumber, 0x01, 0xF6 },
         m_displays[displayIndex_]->getPtr( offset ),
         dataSize
@@ -355,7 +355,7 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ ) const
   
   offset += dataSize;
   
-  m_driver.write(
+  getDriver().write(
     Transfer(
       { displayNumber, 0x01, 0x52 },
       m_displays[displayIndex_]->getPtr( offset ),
@@ -371,14 +371,14 @@ void DeviceMaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0 )
   {
-    m_driver.write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut );
+    getDriver().write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut );
     m_pendingAcks++;
     m_isDirtyLedGroup0 = false;
   }
   
   if( m_isDirtyLedGroup1 )
   {
-    m_driver.write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut );
+    getDriver().write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut );
     m_pendingAcks++;
     m_isDirtyLedGroup1 = false;
   }
@@ -390,7 +390,7 @@ void DeviceMaschineMK1::sendLeds()
 void DeviceMaschineMK1::read()
 {
   Transfer input;
-  if( m_driver.read( input, kMASMK1_endpointInputPads ) )
+  if( getDriver().read( input, kMASMK1_endpointInputPads ) )
   {
   /*
 //    std::cout << "Packet #IN (" << input.getSize() << "bytes):" << std::endl;
@@ -405,10 +405,10 @@ void DeviceMaschineMK1::read()
     std::cout << std::endl << std::endl;*/
   }
 
- // m_driver.write( Transfer({ 0x02, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
+ // getDriver().write( Transfer({ 0x02, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
 
   // Request dials data
-  if( m_driver.read( input, kMASMK1_endpointInputButtonsAndDials ) )
+  if( getDriver().read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {
     if(input[0] == 0x02)
     {
@@ -425,8 +425,8 @@ void DeviceMaschineMK1::read()
   }
 
   // Request button data
-  m_driver.write( Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut );
-  if( m_driver.read( input, kMASMK1_endpointInputButtonsAndDials ) )
+  getDriver().write( Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut );
+  if( getDriver().read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {    
     if(input[0] != 0x02)
     {
@@ -550,7 +550,7 @@ Dials
   if( m_pendingAcks > 1)
   {
     Transfer input;
-    m_driver.read( input, 0x81 );
+    getDriver().read( input, 0x81 );
     m_pendingAcks--;
   }
 */
