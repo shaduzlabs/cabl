@@ -322,12 +322,12 @@ void DeviceMaschineMikroMK2::tick()
 {
   static int state = 0;
   //\todo enable once display dirty flag is properly set
-  if (state == 0 )//&& m_display->isDirty())
+  if (state == 0) //&& m_display->isDirty())
   {
     sendFrame();
   }
 
-  else if (state == 1 )
+  else if (state == 1)
   {
     sendLeds();
   }
@@ -382,7 +382,7 @@ void DeviceMaschineMikroMK2::sendFrame() const
 
 void DeviceMaschineMikroMK2::sendLeds()
 {
-//  if (m_isDirtyLeds)
+  //  if (m_isDirtyLeds)
   {
     m_driver.write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
     m_isDirtyLeds = false;
@@ -462,7 +462,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
       bool valueIncreased
         = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      if(m_encoderChangeCallback != nullptr)
+      if (m_encoderChangeCallback != nullptr)
       {
         m_encoderChangeCallback(0, valueIncreased, shiftPressed);
       }
@@ -485,67 +485,44 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
     m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
 
     Device::Button btn(Device::Button::Unknown);
-    switch ((pad))
+
+#define M_PAD_CASE(value, pad) \
+  case value:                  \
+    btn = Device::Button::pad; \
+    break
+
+    switch (pad)
     {
-      case 0:
-        btn = Device::Button::Pad13;
-        break;
-      case 1:
-        btn = Device::Button::Pad14;
-        break;
-      case 2:
-        btn = Device::Button::Pad15;
-        break;
-      case 3:
-        btn = Device::Button::Pad16;
-        break;
-      case 4:
-        btn = Device::Button::Pad9;
-        break;
-      case 5:
-        btn = Device::Button::Pad10;
-        break;
-      case 6:
-        btn = Device::Button::Pad11;
-        break;
-      case 7:
-        btn = Device::Button::Pad12;
-        break;
-      case 8:
-        btn = Device::Button::Pad5;
-        break;
-      case 9:
-        btn = Device::Button::Pad6;
-        break;
-      case 10:
-        btn = Device::Button::Pad7;
-        break;
-      case 11:
-        btn = Device::Button::Pad8;
-        break;
-      case 12:
-        btn = Device::Button::Pad1;
-        break;
-      case 13:
-        btn = Device::Button::Pad2;
-        break;
-      case 14:
-        btn = Device::Button::Pad3;
-        break;
-      case 15:
-        btn = Device::Button::Pad4;
-        break;
+      M_PAD_CASE(0, Pad13);
+      M_PAD_CASE(1, Pad14);
+      M_PAD_CASE(2, Pad15);
+      M_PAD_CASE(3, Pad16);
+      M_PAD_CASE(4, Pad9);
+      M_PAD_CASE(5, Pad10);
+      M_PAD_CASE(6, Pad11);
+      M_PAD_CASE(7, Pad12);
+      M_PAD_CASE(8, Pad5);
+      M_PAD_CASE(9, Pad6);
+      M_PAD_CASE(10, Pad7);
+      M_PAD_CASE(11, Pad8);
+      M_PAD_CASE(12, Pad1);
+      M_PAD_CASE(13, Pad2);
+      M_PAD_CASE(14, Pad3);
+      M_PAD_CASE(15, Pad4);
     }
-/*
-    if (m_padsAvgData[pad] > 300)
-    {
-      setLed(btn, static_cast<uint8_t>(m_padsAvgData[pad] >> 4));
-    }
-    else
-    {
-      setLed(btn, 0);
-    }
-    m_isDirtyLeds = true;*/
+
+#undef M_PAD_CASE
+
+    /*
+        if (m_padsAvgData[pad] > 300)
+        {
+          setLed(btn, static_cast<uint8_t>(m_padsAvgData[pad] >> 4));
+        }
+        else
+        {
+          setLed(btn, 0);
+        }
+        m_isDirtyLeds = true;*/
   }
 
   if (m_padsChangeCallback != nullptr)
