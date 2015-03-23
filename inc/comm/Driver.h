@@ -47,7 +47,7 @@ public:
     MOCK,
     HIDAPI,
     LIBUSB,
-    SAM3X,
+    SAM3X8E,
     MAX3421E,
   };
   

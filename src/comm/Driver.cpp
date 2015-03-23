@@ -29,11 +29,15 @@
 
 #include "comm/drivers/DriverMOCK.h"
 
-#if !defined (__arm__) && !defined (__SAM3X8E__)
+#if defined (__arm__)
+#if defined (__SAM3X8E__)
+#include "comm/drivers/Driver_SAM3X8E.h"
+#else
+#include "comm/drivers/Driver_MAX3421E.h"
+#endif
+#else
 #include "comm/drivers/DriverHIDAPI.h"
 #include "comm/drivers/DriverLIBUSB.h"
-#else
-#include "comm/drivers/Driver_SAM3X.h"
 #endif
 
 namespace sl
@@ -51,8 +55,8 @@ Driver::Driver( tDriver type_ )
       m_pImpl.reset( new DriverLIBUSB );
       break;
 #else
-    case tDriver::SAM3X:
-      m_pImpl.reset( new DriverSAM3X );
+    case tDriver::SAM3X8E:
+      m_pImpl.reset( new DriverSAM3X8E );
       break;
     case tDriver::MAX3421E:
       m_pImpl.reset( new DriverMAX3421E );
