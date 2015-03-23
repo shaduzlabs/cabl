@@ -222,6 +222,8 @@ DeviceMaschineMikroMK2::DeviceMaschineMikroMK2()
   , m_display(new GDisplayMaschineMikro)
   , m_isDirtyLeds(false)
 {
+ m_buttons.resize(kMikroMK2_buttonsDataSize);
+ m_leds.resize(kMikroMK2_ledsDataSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -351,9 +353,6 @@ void DeviceMaschineMikroMK2::init()
   m_display.get()->white();
 
   // Leds
-  memset(m_leds, 0x00, kMikroMK2_ledsDataSize);
-  memset(m_buttons, 0x00, kMikroMK2_buttonsDataSize);
-  memset(m_buttonStates, 0x00, kMikroMK2_nButtons);
   m_isDirtyLeds = true;
 }
 
@@ -446,7 +445,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         changedButton = getDeviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-          memcpy(&m_buttons[0], &input_[1], kMikroMK2_buttonsDataSize); //! \todo: remove!
+      //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
       }

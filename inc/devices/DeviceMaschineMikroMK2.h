@@ -253,8 +253,8 @@ private:
 
   tPtr<GDisplay>      m_display;
   
-  uint8_t             m_leds[ kMikroMK2_ledsDataSize ];
-  uint8_t             m_buttons[ kMikroMK2_buttonsDataSize ];
+  tRawData            m_leds;
+  tRawData            m_buttons;
   bool                m_buttonStates[kMikroMK2_nButtons];
   uint8_t             m_encoderValue;
   

@@ -122,7 +122,7 @@ void Transfer::setData( const uint8_t* data_, uint16_t length_ )
     return;
   
   m_data.resize( length_ );
-  memcpy( m_data.data(), data_, length_ );
+  std::copy(data_,(data_+length_),m_data.begin());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
