@@ -176,14 +176,20 @@ SET (
 #  OS X                                                                                                                #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 #          link_directories(/usr/local/lib/) 
           
 #          add_executable( kompletIO kompletIO/main.cpp ${kompletIO_ALL} )
           add_library( kompletIO SHARED ${kompletIO_ALL} )
+          set_target_properties(kompletIO PROPERTIES 
+                                          OUTPUT_NAME kompletIO
+                                          OUTPUT_NAME_DEBUG kompletIOd)
+
           add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
-          set_target_properties(kompletIOStatic PROPERTIES OUTPUT_NAME kompletIO)
+          set_target_properties(kompletIOStatic PROPERTIES 
+                                                OUTPUT_NAME kompletIO
+                                                OUTPUT_NAME_DEBUG kompletIOd)
 
           target_link_libraries( kompletIO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
 
@@ -195,11 +201,34 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
           install (DIRECTORY  inc/gfx          DESTINATION "include/kompletIO")
           install (DIRECTORY  inc/util         DESTINATION "include/kompletIO")
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #  LINUX                                                                                                               #
 # -------------------------------------------------------------------------------------------------------------------- #
+
+if (UNIX)
+          add_library( kompletIO SHARED ${kompletIO_ALL} )
+          set_target_properties(kompletIO PROPERTIES 
+                                          OUTPUT_NAME kompletIO
+                                          OUTPUT_NAME_DEBUG kompletIOd)
+
+          add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
+          set_target_properties(kompletIOStatic PROPERTIES 
+                                                OUTPUT_NAME kompletIO
+                                                OUTPUT_NAME_DEBUG kompletIOd)
+
+          target_link_libraries( kompletIO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
+
+          install (TARGETS    kompletIO        DESTINATION lib)
+          install (TARGETS    kompletIOStatic  DESTINATION lib)
+          install (FILES      ${inc_INCLUDES}  DESTINATION "include/kompletIO")
+          install (DIRECTORY  inc/comm         DESTINATION "include/kompletIO")
+          install (DIRECTORY  inc/devices      DESTINATION "include/kompletIO")
+          install (DIRECTORY  inc/gfx          DESTINATION "include/kompletIO")
+          install (DIRECTORY  inc/util         DESTINATION "include/kompletIO")
+
+endif(UNIX)
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #  Windows                                                                                                             #
