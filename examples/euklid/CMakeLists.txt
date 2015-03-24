@@ -2,8 +2,8 @@ SET(
      Examples_euklid_FILES      main.cpp
                                 bjorklund.h
                                 Sequence.h
-                                euklid.h
-                                euklid.cpp
+                                Euklid.h
+                                Euklid.cpp
                                 RtMidi.h
                                 RtMidi.cpp
 )
