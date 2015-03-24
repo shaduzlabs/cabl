@@ -16,7 +16,7 @@ cmake_minimum_required (VERSION 3.0.0)
 
 project (kompletIO)
 
-set(LIBRARY_FILE_NAME     "libk-io")
+set(LIBRARY_FILE_NAME     "k-io")
 set(LIBRARY_FOLDER_NAME   "k-io")
 set(DEBUG_SUFFIX          "_d")
 
