@@ -25,17 +25,17 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 
 #include <devices/DeviceMaschineMikroMK2.h>
-#include "Evklid.h"
+#include "Euklid.h"
 
 using namespace sl;
 
 int main(int argc, const char* argv[])
 {
   DeviceMaschineMikroMK2 device;
-  Evklid evklid(&device);
+  Euklid euklid(&device);
   while (true)
   {
-    evklid.tick();
+    euklid.tick();
   }
 
   return 0;
