@@ -15,6 +15,7 @@ set (kompletIO_VERSION_MINOR 1)
 #  "${PROJECT_SOURCE_DIR}/inc/version.h.in"
 #  "${PROJECT_BINARY_DIR}/version.h"
 #  )
+
  
 # add the binary tree to the search path for include files so that we will find version.h
 #include_directories("${PROJECT_BINARY_DIR}")
@@ -207,7 +208,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 #  LINUX                                                                                                               #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-if (UNIX)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
           add_library( kompletIO SHARED ${kompletIO_ALL} )
           set_target_properties(kompletIO PROPERTIES 
                                           OUTPUT_NAME kompletIO
@@ -228,7 +229,7 @@ if (UNIX)
           install (DIRECTORY  inc/gfx          DESTINATION "include/kompletIO")
           install (DIRECTORY  inc/util         DESTINATION "include/kompletIO")
 
-endif(UNIX)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #  Windows                                                                                                             #
@@ -240,23 +241,9 @@ endif(UNIX)
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
-#  Examples : Euclidean step sequencer                                                                                 #
+#  Examples                                                                                                            #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-SET( 
-     Examples_evklid_FILES      examples/evklid/main.cpp
-                                examples/evklid/bjorklund.h
-                                examples/evklid/Sequence.h
-                                examples/evklid/Evklid.h
-                                examples/evklid/Evklid.cpp
-                                examples/evklid/RtMidi.h
-                                examples/evklid/RtMidi.cpp
-)
+add_subdirectory(examples/euklid Euklid)
 
-add_executable(evklid ${Examples_evklid_FILES} )
-target_link_libraries(evklid kompletIO)
-IF (APPLE)
-target_link_libraries(evklid "-framework CoreFoundation" "-framework CoreAudio" "-framework CoreMidi")
-ENDIF (APPLE)
-set_target_properties(evklid PROPERTIES COMPILE_DEFINITIONS __MACOSX_CORE__)
 

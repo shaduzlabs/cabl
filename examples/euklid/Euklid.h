@@ -44,7 +44,7 @@ void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
 void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_);
 void padsChanged(uint16_t mask, const uint16_t* pPads);
 
-class Evklid
+class Euklid
 {
 public:
   enum class EncoderState
@@ -62,7 +62,7 @@ public:
     Configuration,
   };
 
-  Evklid(Device*);
+  Euklid(Device*);
 
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);

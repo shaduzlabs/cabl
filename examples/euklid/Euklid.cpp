@@ -24,7 +24,7 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "Evklid.h"
+#include "Euklid.h"
 
 #include <sstream>
 
@@ -33,10 +33,10 @@
 
 namespace
 {
-static const uint8_t kEvklidDefaultSteps = 16;
-static const uint8_t kEvklidDefaultPulses = 4;
-static const uint8_t kEvklidDefaultOffset = 0;
-static const uint8_t kEvklidNumTracks = 3;
+static const uint8_t kEuklidDefaultSteps = 16;
+static const uint8_t kEuklidDefaultPulses = 4;
+static const uint8_t kEuklidDefaultOffset = 0;
+static const uint8_t kEuklidNumTracks = 3;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ void padsChanged(uint16_t mask, const uint16_t* pPads)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Evklid::Evklid(Device* pDevice_)
+Euklid::Euklid(Device* pDevice_)
   : m_pDevice(pDevice_)
   , m_encoderState(EncoderState::Length)
   , m_screenPage(ScreenPage::Sequencer)
@@ -69,14 +69,14 @@ Evklid::Evklid(Device* pDevice_)
   m_pDevice->getDisplay(0)->black();
 
 //  m_pDevice->setCallbackPadsChanged(padsChanged);
-  m_pDevice->setCallbackButtonChanged(std::bind(&Evklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  m_pDevice->setCallbackEncoderChanged(std::bind(&Evklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  m_pDevice->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  m_pDevice->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-  for (uint8_t i = 0; i < kEvklidNumTracks; i++)
+  for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
-    m_lengths[i] = kEvklidDefaultSteps;
-    m_pulses[i] = kEvklidDefaultPulses;
-    m_rotates[i] = kEvklidDefaultOffset;
+    m_lengths[i] = kEuklidDefaultSteps;
+    m_pulses[i] = kEuklidDefaultPulses;
+    m_rotates[i] = kEuklidDefaultOffset;
     m_sequences[i].calculate(m_lengths[i], m_pulses[i]);
     m_sequences[i].rotate(m_rotates[i]);
   }
@@ -86,35 +86,35 @@ Evklid::Evklid(Device* pDevice_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_)
+void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_)
 {
   if (button_ == Device::Button::F1)
   {
-    if (getScreenPage() == Evklid::ScreenPage::Configuration)
+    if (getScreenPage() == Euklid::ScreenPage::Configuration)
     {
-      setEncoderState(Evklid::EncoderState::Speed);
+      setEncoderState(Euklid::EncoderState::Speed);
     }
     else
     {
-      setEncoderState(Evklid::EncoderState::Length);
+      setEncoderState(Euklid::EncoderState::Length);
     }
   }
   else if (button_ == Device::Button::F2)
   {
-    if (getScreenPage() == Evklid::ScreenPage::Configuration)
+    if (getScreenPage() == Euklid::ScreenPage::Configuration)
     {
-      setEncoderState(Evklid::EncoderState::Shuffle);
+      setEncoderState(Euklid::EncoderState::Shuffle);
     }
     else
     {
-      setEncoderState(Evklid::EncoderState::Pulses);
+      setEncoderState(Euklid::EncoderState::Pulses);
     }
   }
   else if (button_ == Device::Button::F3)
   {
-    if (getScreenPage() == Evklid::ScreenPage::Sequencer)
+    if (getScreenPage() == Euklid::ScreenPage::Sequencer)
     {
-      setEncoderState(Evklid::EncoderState::Rotate);
+      setEncoderState(Euklid::EncoderState::Rotate);
     }
   }
   else if (button_ == Device::Button::Group && buttonState_)
@@ -127,23 +127,23 @@ void Evklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   }
   else if (button_ == Device::Button::Control && buttonState_)
   {
-    setScreenPage(getScreenPage() == Evklid::ScreenPage::Configuration
-                                  ? Evklid::ScreenPage::Sequencer
-                                  : Evklid::ScreenPage::Configuration);
+    setScreenPage(getScreenPage() == Euklid::ScreenPage::Configuration
+                                  ? Euklid::ScreenPage::Sequencer
+                                  : Euklid::ScreenPage::Configuration);
   }
   //  getDevice()->setLed(button_, ((unsigned)(buttonState_)) * 255);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
+void Euklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
 {
   setEncoder(valueIncreased_, shiftPressed_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::tick()
+void Euklid::tick()
 {
   m_pDevice->tick();
   updateGUI();
@@ -151,7 +151,7 @@ void Evklid::tick()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::updateClock()
+void Euklid::updateClock()
 {
   unsigned quarterDuration = 60000/m_bpm;
   float delayQuarterNote = quarterDuration / 4.0;
@@ -162,14 +162,14 @@ void Evklid::updateClock()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::play()
+void Euklid::play()
 {
   m_quarterNote = 0;
   updateClock();
   
   while (m_play)
   {
-    for (uint8_t i = 0; i < kEvklidNumTracks; i++)
+    for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
       uint8_t channel = 0x99 + i;
       uint8_t note = 0x24;
@@ -204,7 +204,7 @@ void Evklid::play()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::updateGUI()
+void Euklid::updateGUI()
 {
   m_pDevice->getDisplay(0)->black();
   m_pDevice->getDisplay(0)->printStr(32, 52, "E U K L I D");
@@ -241,7 +241,7 @@ void Evklid::updateGUI()
   }
 
   // Update pads
-  for (uint8_t t = 0; t < kEvklidNumTracks; t++)
+  for (uint8_t t = 0; t < kEuklidNumTracks; t++)
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
 
@@ -307,7 +307,7 @@ void Evklid::updateGUI()
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::drawConfigurationPage()
+void Euklid::drawConfigurationPage()
 {
   if(m_encoderState != EncoderState::Speed && m_encoderState != EncoderState::Shuffle)
   {
@@ -345,7 +345,7 @@ void Evklid::drawConfigurationPage()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::drawSequencerPage()
+void Euklid::drawSequencerPage()
 {
   if(m_encoderState != EncoderState::Length && m_encoderState != EncoderState::Pulses && m_encoderState != EncoderState::Rotate)
   {
@@ -354,7 +354,7 @@ void Evklid::drawSequencerPage()
 
   m_pDevice->getDisplay(0)->printStr(5, 2, "Length Pulses Rotate");
 
-  for (uint8_t i = 0; i < kEvklidNumTracks; i++)
+  for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
@@ -391,7 +391,7 @@ void Evklid::drawSequencerPage()
       break;
   }
 
-  for (uint8_t t = 0; t < kEvklidNumTracks; t++)
+  for (uint8_t t = 0; t < kEuklidNumTracks; t++)
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
 
@@ -410,7 +410,7 @@ void Evklid::drawSequencerPage()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
+void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
 {
   uint8_t step = (shiftPressed_ ? 5 : 1);
   switch (m_encoderState)
@@ -453,19 +453,19 @@ void Evklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::togglePlay()
+void Euklid::togglePlay()
 {
   m_play = !m_play;
   if (m_play)
   {
     m_pDevice->setLed(Device::Button::Play, 255);
-    m_clockFuture = std::async(std::launch::async, std::bind(&Evklid::play, this));
+    m_clockFuture = std::async(std::launch::async, std::bind(&Euklid::play, this));
   }
   else
   {
     m_pDevice->setLed(Device::Button::Play, 0);
     m_clockFuture.get();
-    for (uint8_t t = 0; t < kEvklidNumTracks; t++)
+    for (uint8_t t = 0; t < kEuklidNumTracks; t++)
     {
       m_sequences[t].reset();
     }
@@ -475,17 +475,17 @@ void Evklid::togglePlay()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Evklid::changeTrack()
+void Euklid::changeTrack()
 {
   m_currentTrack++;
-  if (m_currentTrack >= kEvklidNumTracks)
+  if (m_currentTrack >= kEuklidNumTracks)
   {
     m_currentTrack = 0;
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-uint8_t Evklid::getEncoderValue(
+uint8_t Euklid::getEncoderValue(
   bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_)
 {
   if (valueIncreased_ && ((currentValue_ + step_) <= maxValue_))
@@ -501,7 +501,7 @@ uint8_t Evklid::getEncoderValue(
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Device::Button Evklid::getPadLed(uint8_t padIndex_)
+Device::Button Euklid::getPadLed(uint8_t padIndex_)
 {
   switch (padIndex_)
   {
