@@ -244,6 +244,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 #  Examples                                                                                                            #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-add_subdirectory(examples/euklid Euklid)
+add_subdirectory(examples Examples)
 
 
