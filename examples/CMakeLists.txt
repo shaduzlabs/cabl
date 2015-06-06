@@ -5,10 +5,10 @@
 # RtMidi ------------------------------------------------------------------------------------------------------------- #
 SET( 
   Libraries_RtMidi_FILES 
-    ${CMAKE_SOURCE_DIR}/ext/RtMidi/RtMidi.h 
-    ${CMAKE_SOURCE_DIR}/ext/RtMidi/RtMidi.cpp 
+    ${CMAKE_SOURCE_DIR}/submodules/rtmidi/RtMidi.h 
+    ${CMAKE_SOURCE_DIR}/submodules/rtmidi/RtMidi.cpp 
 )
-include_directories("${CMAKE_SOURCE_DIR}/ext/RtMidi")
+include_directories("${CMAKE_SOURCE_DIR}/submodules/rtmidi")
 
 # -------------------------------------------------------------------------------------------------------------------- #
 #  PROJECTS                                                                                                            #

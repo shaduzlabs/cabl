@@ -26,8 +26,11 @@ set_target_properties(
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
-target_link_libraries(${PROJECT_NAME} kompletIO)
-
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  target_link_libraries(${PROJECT_NAME} kompletIOStatic)
+else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  target_link_libraries(${PROJECT_NAME} kompletIO)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # OS X specific ------------------------------------------------------------------------------------------------------ #
 

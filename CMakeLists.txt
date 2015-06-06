@@ -34,19 +34,17 @@ set (kompletIO_VERSION_MINOR 1)
 # add the binary tree to the search path for include files so that we will find version.h
 #include_directories("${PROJECT_BINARY_DIR}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 # C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
-find_package(hidapi REQUIRED)
-find_package(libusb REQUIRED)
-
-include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
-#link_directories(${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
+if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  find_package(hidapi REQUIRED)
+  find_package(libusb REQUIRED)
+endif(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 message(STATUS "CMAKE_TOOLCHAIN_FILE='${CMAKE_TOOLCHAIN_FILE}'")
-
 
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
@@ -98,6 +96,52 @@ source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
 source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
+  set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
+
+  SET( 
+    lib_hidapi_LIBRARY      
+      submodules/hidapi/hidapi/hidapi.h
+      submodules/hidapi/windows/hid.c
+  )
+  
+  SET( 
+    lib_libusb_LIBRARY      
+      submodules/libusb/msvc/config.h
+      submodules/libusb/libusb/core.c
+      submodules/libusb/libusb/descriptor.c
+      submodules/libusb/libusb/hotplug.c
+      submodules/libusb/libusb/io.c
+      submodules/libusb/libusb/os/poll_windows.c
+      submodules/libusb/libusb/strerror.c
+      submodules/libusb/libusb/sync.c
+      submodules/libusb/libusb/os/threads_windows.c
+      submodules/libusb/libusb/os/windows_usb.c
+  )
+
+  source_group("src"           FILES ${lib_hidapi_LIBRARY})
+  source_group("src"           FILES ${lib_libusb_LIBRARY})
+
+  add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
+  set_target_properties(
+  hidapi 
+  PROPERTIES 
+    OUTPUT_NAME         "hidapi"
+    OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
+  )
+
+  add_library( libusb STATIC ${lib_libusb_LIBRARY} )
+  set_target_properties(
+  libusb 
+  PROPERTIES 
+    OUTPUT_NAME         "libusb"
+    OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
+  )
+  target_include_directories( libusb PRIVATE "submodules/libusb/msvc/" )
+
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 SET ( 
   kompletIO_INCLUDES
@@ -195,6 +239,8 @@ SET (
 
 # All platforms ------------------------------------------------------------------------------------------------------ #
 
+include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
+
 SET ( 
   kompletIO_ALL
     ${kompletIO_INCLUDES}
@@ -253,6 +299,12 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Windows specific --------------------------------------------------------------------------------------------------- #
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  
+  target_link_libraries( kompletIO        libusb hidapi setupapi.lib)
+  target_link_libraries( kompletIOStatic  libusb hidapi setupapi.lib)
+  
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # Arduino/Teensy specific -------------------------------------------------------------------------------------------- #
 
