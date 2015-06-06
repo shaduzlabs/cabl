@@ -39,8 +39,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
-find_package(HIDAPI REQUIRED)
-find_package(LibUSB REQUIRED)
+find_package(hidapi REQUIRED)
+find_package(libsu REQUIRED)
 
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
 #link_directories(${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
@@ -234,9 +234,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  add_library( kompletIO SHARED ${kompletIO_ALL} )
-  add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
-  set_target_properties(kompletIOStatic PROPERTIES OUTPUT_NAME kompletIO)
   target_link_libraries( kompletIO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
 
   install (TARGETS    kompletIO        DESTINATION lib)

@@ -32,7 +32,7 @@
 #if defined (__arm__)
 #if defined (__SAM3X8E__)
 #include "comm/drivers/Driver_SAM3X8E.h"
-#else
+#elif defined (__MAX3421E__)
 #include "comm/drivers/Driver_MAX3421E.h"
 #endif
 #else
