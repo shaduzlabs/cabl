@@ -29,12 +29,10 @@
 
 #include "comm/drivers/DriverMOCK.h"
 
-#if defined (__arm__)
 #if defined (__SAM3X8E__)
-#include "comm/drivers/Driver_SAM3X8E.h"
+#include "comm/drivers/DriverSAM3X8E.h"
 #elif defined (__MAX3421E__)
-#include "comm/drivers/Driver_MAX3421E.h"
-#endif
+#include "comm/drivers/DriverMAX3421E.h"
 #else
 #include "comm/drivers/DriverHIDAPI.h"
 #include "comm/drivers/DriverLIBUSB.h"
@@ -47,19 +45,20 @@ Driver::Driver( tDriver type_ )
 {
   switch( type_ )
   {
-#if !defined (__arm__) && !defined (__SAM3X8E__)
+#if defined (__SAM3X8E__)
+    case tDriver::SAM3X8E:
+      m_pImpl.reset( new DriverSAM3X8E );
+      break;
+#elif defined (__MAX3421E__)
+    case tDriver::MAX3421E:
+      m_pImpl.reset( new DriverMAX3421E );
+      break;
+#else
     case tDriver::HIDAPI:
       m_pImpl.reset( new DriverHIDAPI );
       break;
     case tDriver::LIBUSB:
       m_pImpl.reset( new DriverLIBUSB );
-      break;
-#else
-    case tDriver::SAM3X8E:
-      m_pImpl.reset( new DriverSAM3X8E );
-      break;
-    case tDriver::MAX3421E:
-      m_pImpl.reset( new DriverMAX3421E );
       break;
 #endif
     case tDriver::MOCK:

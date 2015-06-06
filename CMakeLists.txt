@@ -120,6 +120,10 @@ SET(
     src/comm/drivers/DriverLIBUSB.h
     src/comm/drivers/DriverMOCK.cpp
     src/comm/drivers/DriverMOCK.h
+    src/comm/drivers/DriverMAX3421E.cpp
+    src/comm/drivers/DriverMAX3421E.h
+    src/comm/drivers/DriverSAM3X8E.cpp
+    src/comm/drivers/DriverSAM3X8E.h
 )
 SET( 
   src_comm_SRCS
