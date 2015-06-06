@@ -121,6 +121,7 @@ public:
 
   using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
   using tCbEncoderChanged = std::function<void(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)>;
+  using tCbPadChanged = std::function<void(Button pad_, uint16_t value_, bool shiftPressed)>;
   
   Device(Driver::tDriver tDriver_)
     : m_driver(tDriver_)
@@ -140,34 +141,15 @@ public:
 
   virtual void setLed(Button, uint8_t) = 0;
   virtual void setLed(Button, uint8_t, uint8_t, uint8_t) = 0;
-  /*
-  virtual uint8_t getNumberOfDisplays() const;
-  virtual bool getNumberOfRGBLeds() const;
-  virtual bool getNumberOfLeds() const;
 
-  virtual bool hasRGBLeds() const;
-  virtual bool hasStandardDisplays() const;
-
-
-  virtual bool setCallbackButtons() const;
-  virtual bool setCallbackDials() const;
-  virtual bool setCallbackPads() const;
-  */
-  
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_){ m_cbButtonChanged = cbButtonChanged_; }
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
+  void setCallbackPadChanged(tCbPadChanged cbPadChanged_){ m_cbPadChanged = cbPadChanged_;}
 
-  void setCallbackPadsChanged(void (*fptr)(uint16_t mask, const uint16_t* pPads))
-  {
-    m_padsChangeCallback = fptr;
-  }
-
-protected:
-  void (*m_padsChangeCallback)(uint16_t mask, const uint16_t* pPads);
-
+  
 protected:
 
-  Driver& getDriver(){ return m_driver; }
+ Driver& getDriver(){ return m_driver; }
   
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
@@ -184,10 +166,20 @@ protected:
       m_cbEncoderChanged(encoderIndex_,valueIncreased_,shiftPressed_);
     }
   }
+  
+  void padChanged(Button pad_, uint16_t value_, bool shiftPressed_)
+  {
+    if(m_cbPadChanged)
+    {
+      m_cbPadChanged(pad_,value_,shiftPressed_);
+    }
+  }
+  
 private:
 
   tCbButtonChanged    m_cbButtonChanged;
   tCbEncoderChanged   m_cbEncoderChanged;
+  tCbPadChanged       m_cbPadChanged;
   
   Driver m_driver;
 };

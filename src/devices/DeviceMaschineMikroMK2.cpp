@@ -230,6 +230,7 @@ DeviceMaschineMikroMK2::DeviceMaschineMikroMK2()
 
 DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
 {
+  getDriver().disconnect();
 }
 
 
@@ -381,7 +382,7 @@ void DeviceMaschineMikroMK2::sendFrame()
 
 void DeviceMaschineMikroMK2::sendLeds()
 {
-  //  if (m_isDirtyLeds)
+//  if (m_isDirtyLeds)
   {
     getDriver().write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
     m_isDirtyLeds = false;
@@ -408,7 +409,7 @@ void DeviceMaschineMikroMK2::read()
     {
       processPads(input);
     }
-    /*
+/*
         std::cout << std::setfill('0') << std::internal;
 
         for( int i = 0; i < input.getSize(); i++ )
@@ -447,9 +448,9 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         {
       //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
+          }
         }
       }
-    }
 
     // Now process the encoder data
     uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
@@ -506,21 +507,10 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 
 #undef M_PAD_CASE
 
-    /*
-        if (m_padsAvgData[pad] > 300)
-        {
-          setLed(btn, static_cast<uint8_t>(m_padsAvgData[pad] >> 4));
-        }
-        else
-        {
-          setLed(btn, 0);
-        }
-        m_isDirtyLeds = true;*/
-  }
-
-  if (m_padsChangeCallback != nullptr)
-  {
-    m_padsChangeCallback(0xffff, &m_padsAvgData[0]);
+    if (m_padsAvgData[pad] > 1000)
+    {
+      padChanged(btn, m_padsAvgData[pad],isButtonPressed(input_, Button::Shift));
+    }    
   }
 }
 
