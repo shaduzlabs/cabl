@@ -12,7 +12,7 @@
 #  k-IO Libraries                                                                                                      #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 2.8.0)
 
 project (kompletIO)
 
@@ -29,7 +29,7 @@ set (kompletIO_VERSION_MINOR 1)
 #  "${PROJECT_SOURCE_DIR}/inc/version.h.in"
 #  "${PROJECT_BINARY_DIR}/version.h"
 #  )
-
+ 
  
 # add the binary tree to the search path for include files so that we will find version.h
 #include_directories("${PROJECT_BINARY_DIR}")
@@ -39,8 +39,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
-find_package (hidapi)
-find_package (libusb)
+find_package(HIDAPI REQUIRED)
+find_package(LibUSB REQUIRED)
 
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
 #link_directories(${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
@@ -177,15 +177,15 @@ source_group("src\\gfx\\fonts\\data" FILES ${src_gfx_fonts_data_SRCS})
 source_group("src\\util"             FILES ${src_util_SRCS})
 
 SET ( 
-  kompletIO_SRCS
-    ${src_comm_drivers_SRCS}
-    ${src_comm_SRCS}
-    ${src_devices_SRCS}
-    ${src_gfx_displays_SRCS}
-    ${src_gfx_fonts_SRCS}
-    ${src_gfx_fonts_data_SRCS}
-    ${src_gfx_SRCS}
-    ${src_util_SRCS}
+      kompletIO_SRCS
+      ${src_comm_drivers_SRCS}
+      ${src_comm_SRCS}
+      ${src_devices_SRCS}
+      ${src_gfx_displays_SRCS}
+      ${src_gfx_fonts_SRCS}
+      ${src_gfx_fonts_data_SRCS}
+      ${src_gfx_SRCS}
+      ${src_util_SRCS}
 )
 
 
@@ -234,7 +234,10 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  target_link_libraries( kompletIO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
+  add_library( kompletIO SHARED ${kompletIO_ALL} )
+  add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
+  set_target_properties(kompletIOStatic PROPERTIES OUTPUT_NAME kompletIO)
+  target_link_libraries( kompletIO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
 
   install (TARGETS    kompletIO        DESTINATION lib)
   install (TARGETS    kompletIOStatic  DESTINATION lib)
