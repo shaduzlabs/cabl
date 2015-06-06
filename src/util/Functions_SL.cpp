@@ -52,7 +52,7 @@ uint32_t randomRange( uint32_t min_, uint32_t max_ )
   bucket      = RAND_MAX / range;
   /* There are range buckets, plus one smaller interval
    within remainder of RAND_MAX */
-  if ( base_random < RAND_MAX - remainder ) {
+  if ( base_random < static_cast<uint32_t>(RAND_MAX - remainder) ) {
     return min_ + base_random/bucket;
   } else {
     return randomRange ( min_, max_ );

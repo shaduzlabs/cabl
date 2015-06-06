@@ -67,7 +67,7 @@ public:
   const tRawData& getData() const { return m_data; }
   void setData( const uint8_t*, uint16_t );
   
-  uint16_t size() const noexcept{ return m_data.size(); }
+  size_t size() const noexcept{ return m_data.size(); }
 
 private:
 

@@ -87,7 +87,7 @@ bool DriverMOCK::write(const Transfer& transfer_, uint8_t endpoint_) const
 
   std::cout << std::setfill('0') << std::internal;
 
-  for (int i = 0; i < transfer_.size(); i++)
+  for (unsigned i = 0; i < transfer_.size(); i++)
   {
     std::cout << std::hex << std::setw(2) << (int)transfer_[i] << std::dec << " ";
   }

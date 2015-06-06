@@ -36,7 +36,7 @@ class DriverLIBUSB : public DriverImpl
 {
 public:
 
-  using tDeviceHandle   = struct libusb_device_handle; 
+  using tDeviceHandle   = struct ::libusb_device_handle; 
   
   DriverLIBUSB();
   ~DriverLIBUSB() override;
