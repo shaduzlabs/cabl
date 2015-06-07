@@ -80,7 +80,6 @@ SET(
   inc_util_INCLUDES
     inc/util/CircularBuffer_SL.h
     inc/util/Functions_SL.h
-    inc/util/ScopedPointer_SL.h
 )
 
 SET( 
