@@ -46,13 +46,6 @@ namespace sl
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void padsChanged(uint16_t mask, const uint16_t* pPads)
-{
-  // nothing to do here...
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
 Euklid::Euklid(Device* pDevice_)
   : m_pDevice(pDevice_)
   , m_encoderState(EncoderState::Length)
@@ -79,9 +72,9 @@ bool Euklid::connect()
   
   m_pDevice->getDisplay(0)->black();
 
-//  m_pDevice->setCallbackPadsChanged(padsChanged);
   m_pDevice->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
   m_pDevice->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  m_pDevice->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
@@ -150,7 +143,20 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
 
 void Euklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
 {
-  setEncoder(valueIncreased_, shiftPressed_);
+	setEncoder(valueIncreased_, shiftPressed_);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::padChanged(Device::Button pad_, uint16_t value_, bool shiftPressed_)
+{
+  static auto lastEvent = std::chrono::system_clock::now();
+  auto now = std::chrono::system_clock::now();
+  if (now - lastEvent > std::chrono::milliseconds(180))
+  {
+    lastEvent = now;
+    m_sequences[m_currentTrack].toggleStep(getPadIndex(pad_));
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -518,56 +524,81 @@ Device::Button Euklid::getPadLed(uint8_t padIndex_)
 {
   switch (padIndex_)
   {
-    case 0:
-      return Device::Button::Pad13;
-      break;
-    case 1:
-      return Device::Button::Pad14;
-      break;
-    case 2:
-      return Device::Button::Pad15;
-      break;
-    case 3:
-      return Device::Button::Pad16;
-      break;
-    case 4:
-      return Device::Button::Pad9;
-      break;
-    case 5:
-      return Device::Button::Pad10;
-      break;
-    case 6:
-      return Device::Button::Pad11;
-      break;
-    case 7:
-      return Device::Button::Pad12;
-      break;
-    case 8:
-      return Device::Button::Pad5;
-      break;
-    case 9:
-      return Device::Button::Pad6;
-      break;
-    case 10:
-      return Device::Button::Pad7;
-      break;
-    case 11:
-      return Device::Button::Pad8;
-      break;
-    case 12:
-      return Device::Button::Pad1;
-      break;
-    case 13:
-      return Device::Button::Pad2;
-      break;
-    case 14:
-      return Device::Button::Pad3;
-      break;
-    case 15:
-      return Device::Button::Pad4;
-      break;
+  case 0:
+    return Device::Button::Pad13;
+    break;
+  case 1:
+    return Device::Button::Pad14;
+    break;
+  case 2:
+    return Device::Button::Pad15;
+    break;
+  case 3:
+    return Device::Button::Pad16;
+    break;
+  case 4:
+    return Device::Button::Pad9;
+    break;
+  case 5:
+    return Device::Button::Pad10;
+    break;
+  case 6:
+    return Device::Button::Pad11;
+    break;
+  case 7:
+    return Device::Button::Pad12;
+    break;
+  case 8:
+    return Device::Button::Pad5;
+    break;
+  case 9:
+    return Device::Button::Pad6;
+    break;
+  case 10:
+    return Device::Button::Pad7;
+    break;
+  case 11:
+    return Device::Button::Pad8;
+    break;
+  case 12:
+    return Device::Button::Pad1;
+    break;
+  case 13:
+    return Device::Button::Pad2;
+    break;
+  case 14:
+    return Device::Button::Pad3;
+    break;
+  case 15:
+    return Device::Button::Pad4;
+    break;
   }
   return Device::Button::Unknown;
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+uint8_t Euklid::getPadIndex(Device::Button pad_)
+{
+  switch (pad_)
+  {
+    case Device::Button::Pad13: return 0;
+    case Device::Button::Pad14: return 1;
+    case Device::Button::Pad15: return 2;
+    case Device::Button::Pad16: return 3;
+    case Device::Button::Pad9: return 4;
+    case Device::Button::Pad10: return 5;
+    case Device::Button::Pad11: return 6;
+    case Device::Button::Pad12: return 7;
+    case Device::Button::Pad5: return 8;
+    case Device::Button::Pad6: return 9;
+    case Device::Button::Pad7: return 10;
+    case Device::Button::Pad8: return 11;
+    case Device::Button::Pad1: return 12;
+    case Device::Button::Pad2: return 13;
+    case Device::Button::Pad3: return 14;
+    case Device::Button::Pad4: return 15;
+  }
+  return 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

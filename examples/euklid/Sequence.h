@@ -55,6 +55,33 @@ public:
   uint8_t getLength() const{ return length; }
   uint8_t getPos() const{ return pos; }
   T getBits() const {return bits; }
+
+  void setStep(uint8_t pos_, bool value_)
+  {
+    if (pos_ < length)
+	  {
+	    if (value_)
+	    {
+        bits |= (1<<pos_);
+	    }
+	    else
+	    {
+        T mask = 1 << pos_;
+        bits &= ~(mask);
+	    }
+	  }
+  }
+  void toggleStep(uint8_t pos_)
+  {
+    int pos = pos_ - offset;
+    if (pos < 0)
+    {
+      pos += length;
+    }
+    bool value = (bits & (1 << pos)) > 0;
+    setStep(pos, !value);
+  }
+
 private:
   T bits;
   uint8_t length;

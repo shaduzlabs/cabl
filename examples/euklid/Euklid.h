@@ -40,10 +40,6 @@ namespace sl
 
 class Device;
 
-void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
-void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_);
-void padsChanged(uint16_t mask, const uint16_t* pPads);
-
 class Euklid
 {
 public:
@@ -68,6 +64,7 @@ public:
   
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
+  void padChanged(Device::Button pad_, uint16_t value_, bool shiftPressed);
   
   bool tick();
 
@@ -106,6 +103,7 @@ private:
   uint8_t getEncoderValue(
     bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_);
   Device::Button getPadLed(uint8_t padIndex_);
+  uint8_t getPadIndex(Device::Button pad_);
 
   Sequence<uint16_t> m_sequences[3];
   Device* m_pDevice;
