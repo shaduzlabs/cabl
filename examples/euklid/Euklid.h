@@ -64,6 +64,8 @@ public:
 
   Euklid(Device*);
 
+  bool connect();
+  
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
   

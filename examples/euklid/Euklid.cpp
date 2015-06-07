@@ -65,7 +65,18 @@ Euklid::Euklid(Device* pDevice_)
   , m_delayEven(125)
   , m_delayOdd(125)
 {
-  m_pDevice->connect();
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool Euklid::connect()
+{
+  if(!m_pDevice->connect())
+  {
+    return false;
+  }
+  
   m_pDevice->getDisplay(0)->black();
 
 //  m_pDevice->setCallbackPadsChanged(padsChanged);
@@ -82,6 +93,7 @@ Euklid::Euklid(Device* pDevice_)
   }
 
   m_pMidiout->openVirtualPort("Euklid");
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

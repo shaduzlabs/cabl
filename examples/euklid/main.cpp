@@ -33,6 +33,13 @@ int main(int argc, const char* argv[])
 {
   DeviceMaschineMikroMK2 device;
   Euklid euklid(&device);
+
+  if(!euklid.connect())
+  {
+    std::cout << "ERROR: could not connect to device." << std::endl;
+    return -1;
+  }
+
   while (true)
   {
     euklid.tick();
