@@ -222,7 +222,7 @@ GDisplay* DeviceMaschineMK1::getDisplay( uint8_t displayIndex_ )
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::tick()
+bool DeviceMaschineMK1::tick()
 {
   for( int i=0; i< kMASMK1_nDisplays; i++ )
   {
@@ -234,11 +234,18 @@ void DeviceMaschineMK1::tick()
   }
   if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1 )
   {
-    sendLeds();
+    if(!sendLeds())
+    {
+      return false;
+    }
   }
 //  getDriver().write( Transfer({ 0x0C, 0xFF, 0x02, 0x05 ), 1 );
-  read();
+  if(!read())
+  {
+    return false;
+  }
 
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -318,11 +325,11 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
 
 //----------------------------------------------------------------------------------------------------------------------
   
-void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
+bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
 {
   if( displayIndex_ > 1 )
   {
-    return;
+    return false;
   }
   
   uint8_t displayNumber = displayIndex_ << 1;
@@ -332,66 +339,84 @@ void DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   uint16_t offset = 0;
   const uint16_t dataSize = 502;
   
-  getDriver().write(
-    Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
-      m_displays[displayIndex_]->getPtr( offset ),
-      dataSize
-    ),
-    kMASMK1_endpointDisplay
-  );
+  if(!getDriver().write(
+      Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
+        m_displays[displayIndex_]->getPtr( offset ),
+        dataSize
+      ),
+      kMASMK1_endpointDisplay
+  ))
+  {
+    return false;
+  }
   
   displayNumber++;
   for(uint8_t chunk = 1; chunk < m_displays[displayIndex_]->getNumberOfChunks() - 1 ; chunk++ )
   {
     offset += dataSize;
-    getDriver().write(
-      Transfer({ displayNumber, 0x01, 0xF6 },
-        m_displays[displayIndex_]->getPtr( offset ),
-        dataSize
-      ),
-      kMASMK1_endpointDisplay
-    );
+    if(!getDriver().write(
+        Transfer({ displayNumber, 0x01, 0xF6 },
+          m_displays[displayIndex_]->getPtr( offset ),
+          dataSize
+        ),
+        kMASMK1_endpointDisplay
+    ))
+    {
+      return false;
+    }
   }
   
   offset += dataSize;
   
-  getDriver().write(
+  if(!getDriver().write(
     Transfer(
       { displayNumber, 0x01, 0x52 },
       m_displays[displayIndex_]->getPtr( offset ),
       338
     ),
     kMASMK1_endpointDisplay
-  );
+  ))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::sendLeds()
+bool DeviceMaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0 )
   {
-    getDriver().write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut );
+    if(!getDriver().write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut ))
+    {
+      return false;
+    }
     m_pendingAcks++;
     m_isDirtyLedGroup0 = false;
   }
   
   if( m_isDirtyLedGroup1 )
   {
-    getDriver().write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut );
+    if(!getDriver().write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut ))
+    {
+      return false;
+    }
     m_pendingAcks++;
     m_isDirtyLedGroup1 = false;
   }
-
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::read()
+bool DeviceMaschineMK1::read()
 {
   Transfer input;
-  if( getDriver().read( input, kMASMK1_endpointInputPads ) )
+  if( !getDriver().read( input, kMASMK1_endpointInputPads ) )
   {
+    return false;
   /*
 //    std::cout << "Packet #IN (" << input.getSize() << "bytes):" << std::endl;
     
@@ -423,6 +448,10 @@ void DeviceMaschineMK1::read()
       std::cout << std::endl << std::endl;
     }
   }
+  else
+  {
+    return false;
+  }
 
   // Request button data
   getDriver().write( Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut );
@@ -441,6 +470,12 @@ void DeviceMaschineMK1::read()
       std::cout << std::endl << std::endl;
     }
   }
+  else
+  {
+    return false;
+  }
+
+  return true;
 
   /*
   

@@ -218,7 +218,7 @@ public:
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
   
   GDisplay* getDisplay( uint8_t displayIndex_ ) override;
-  void tick() override;
+  bool tick() override;
 
 private:
 
@@ -237,9 +237,9 @@ private:
   void init() override;
 
   void initDisplay() const;
-  void sendFrame();
-  void sendLeds();
-  void read();
+  bool sendFrame();
+  bool sendLeds();
+  bool read();
   
   void processButtons( const Transfer& );
   void processPads( const Transfer& );

@@ -106,7 +106,7 @@ public:
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
   
   GDisplay* getDisplay( uint8_t displayIndex_ );
-  void tick();
+  bool tick() override;
 
 private:
 
@@ -118,9 +118,9 @@ private:
   void init() override;
 
   void initDisplay( uint8_t displayIndex_ );
-  void sendFrame( uint8_t displayIndex_ );
-  void sendLeds();
-  void read();
+  bool sendFrame( uint8_t displayIndex_ );
+  bool sendLeds();
+  bool read();
   
   Led getLed( Device::Button ) const noexcept;
   

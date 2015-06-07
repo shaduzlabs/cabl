@@ -69,7 +69,7 @@ public:
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
   
-  void tick();
+  bool tick();
 
   void updateClock();
   

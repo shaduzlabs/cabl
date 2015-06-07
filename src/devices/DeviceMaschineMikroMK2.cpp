@@ -321,28 +321,32 @@ GDisplay* DeviceMaschineMikroMK2::getDisplay(uint8_t displayIndex_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::tick()
+bool DeviceMaschineMikroMK2::tick()
 {
   static int state = 0;
+  bool success = false;
+
   //\todo enable once display dirty flag is properly set
   if (state == 0) //&& m_display->isDirty())
   {
-    sendFrame();
+    success = sendFrame();
   }
 
   else if (state == 1)
   {
-    sendLeds();
+    success = sendLeds();
   }
   else if (state == 2)
   {
-    read();
+    success = read();
   }
 
   if (++state >= 3)
   {
     state = 0;
   }
+
+  return success;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -367,38 +371,46 @@ void DeviceMaschineMikroMK2::initDisplay() const
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::sendFrame()
+bool DeviceMaschineMikroMK2::sendFrame()
 {
   uint8_t yOffset = 0;
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    getDriver().write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-                   kMikroMK2_endpointDisplay);
+    if(!getDriver().write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+                   kMikroMK2_endpointDisplay))
+    {
+      return false;
+    }
   }
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::sendLeds()
+bool DeviceMaschineMikroMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    getDriver().write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds);
+    if(!getDriver().write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds))
+    {
+      return false;
+    }
     m_isDirtyLeds = false;
   }
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::read()
+bool DeviceMaschineMikroMK2::read()
 {
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
     if (!getDriver().read(input, kMikroMK2_endpointInput))
     {
-      break;
+      return false;
     }
     else if (input && input[0] == 0x01)
     {
@@ -419,6 +431,7 @@ void DeviceMaschineMikroMK2::read()
 
         std::cout << std::endl << std::endl;*/
   }
+  return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

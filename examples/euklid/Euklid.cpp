@@ -155,10 +155,11 @@ void Euklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool sh
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Euklid::tick()
+bool Euklid::tick()
 {
-  m_pDevice->tick();
+  bool result = m_pDevice->tick();
   updateGUI();
+  return result;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

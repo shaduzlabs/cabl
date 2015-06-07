@@ -135,7 +135,7 @@ public:
   virtual bool connect() = 0;
   virtual void init() = 0;
 
-  virtual void tick() = 0;
+  virtual bool tick() = 0;
   virtual GDisplay* getDisplay(uint8_t displayIndex_) = 0;
 
 
