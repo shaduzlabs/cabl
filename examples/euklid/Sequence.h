@@ -49,7 +49,7 @@ public:
   {
     if (pos >= length)
       pos = 0;
-    return bits & (1UL << pos++);
+    return ((bits & (1UL << pos++))>0);
   }
   
   uint8_t getLength() const{ return length; }

@@ -173,10 +173,10 @@ bool Euklid::tick()
 void Euklid::updateClock()
 {
   unsigned quarterDuration = 60000/m_bpm;
-  float delayQuarterNote = quarterDuration / 4.0;
-  float shuffleDelay = delayQuarterNote * (m_shuffle/300.0);
-  m_delayEven = delayQuarterNote + shuffleDelay;
-  m_delayOdd = delayQuarterNote - shuffleDelay;
+  float delayQuarterNote = quarterDuration / 4.0f;
+  float shuffleDelay = delayQuarterNote * (m_shuffle/300.0f);
+  m_delayEven = static_cast<uint16_t>(delayQuarterNote + shuffleDelay);
+  m_delayOdd = static_cast<uint16_t>(delayQuarterNote - shuffleDelay);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -207,7 +207,7 @@ void Euklid::play()
       }
     }
 
-    uint8_t delay = m_delayEven;
+    uint16_t delay = m_delayEven;
     if (m_quarterNote % 2 > 0)
     {
       delay = m_delayOdd;
