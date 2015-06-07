@@ -71,13 +71,13 @@ static void daemonize()
   sid = setsid();
   if (sid < 0) {
     /* Log the failure */
-    syslog (LOG_ERROR, "[k-io] ERROR: Failed to create a new session");
+    syslog (LOG_ERR, "[k-io] ERROR: Failed to create a new session");
     exit(EXIT_FAILURE);
   }
 
   /* Change the current working directory */
   if ((chdir("/")) < 0) {
-    syslog (LOG_ERROR, "[k-io] ERROR: Failed to change the working directory");
+    syslog (LOG_ERR, "[k-io] ERROR: Failed to change the working directory");
     exit(EXIT_FAILURE);
   }
 
@@ -103,7 +103,7 @@ int main(int argc, const char* argv[])
   {
     if(!euklid.connect())
     {
-      syslog (LOG_ERROR, "[k-io] ERROR: could not connect to device.");
+      syslog (LOG_ERR, "[k-io] ERROR: could not connect to device.");
       std::this_thread::sleep_for(std::chrono::seconds(5));
     }
     else
