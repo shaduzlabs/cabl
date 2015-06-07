@@ -29,7 +29,6 @@
 #include <vector>
 
 #include "util/CircularBuffer_SL.h"
-#include "util/ScopedPointer_SL.h"
 
 namespace sl
 {

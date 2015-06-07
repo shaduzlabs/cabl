@@ -24,8 +24,8 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
-
-#include "ScopedPointer_SL.h"
+#include <stdint.h>
+#include <memory>
 
 namespace sl
 {
@@ -96,7 +96,7 @@ private:
   mutable uint16_t      m_indexRead;
   mutable uint16_t      m_available;
   
-  ScopedPointer<T[]> m_pData;
+  std::unique_ptr<T[]> m_pData;
 
 };
   
