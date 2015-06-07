@@ -72,7 +72,7 @@ void GDisplay::setPixel( uint16_t x_, uint16_t y_, tColor color_ )
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplay::getPixel( uint8_t x_, uint8_t y_ ) const
+GDisplay::tColor GDisplay::getPixel(uint16_t x_, uint16_t y_ ) const
 {
   return getPixelImpl( x_,y_ );
 }

@@ -440,7 +440,7 @@ bool DeviceMaschineMK1::read()
       std::cout << "Dial Packet #IN (" << input.size() << "bytes):" << std::endl;
     
       std::cout << std::setfill('0') << std::internal;
-      for( int i = 0; i < input.size(); i++ )
+      for( size_t i = 0; i < input.size(); i++ )
       {
         std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
       }
@@ -462,7 +462,7 @@ bool DeviceMaschineMK1::read()
       std::cout << "Button Packet #IN (" << input.size() << "bytes):" << std::endl;
     
       std::cout << std::setfill('0') << std::internal;
-      for( int i = 0; i < input.size(); i++ )
+      for(size_t i = 0; i < input.size(); i++ )
       {
         std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
       }

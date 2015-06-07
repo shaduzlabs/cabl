@@ -99,7 +99,7 @@ bool DriverHIDAPI::write(const Transfer& transfer_, uint8_t endpoint_) const
   if (transfer_)
   {
     int nBytesWritten = hid_write(m_pCurrentDevice, transfer_.getData().data(), transfer_.size());
-    return (nBytesWritten >= transfer_.size());
+    return (nBytesWritten >= static_cast<int>(transfer_.size()));
   }
 
   return false;

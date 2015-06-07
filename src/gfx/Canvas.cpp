@@ -135,7 +135,7 @@ void Canvas::setPixel( uint16_t x_, uint16_t y_, tColor color_ )
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Canvas::tColor Canvas::getPixel( uint8_t x_, uint8_t y_ ) const
+Canvas::tColor Canvas::getPixel(uint16_t x_, uint16_t y_ ) const
 {
   if ( x_ >= getWidth() || y_ >= getHeight() )
     return tColor::BLACK;

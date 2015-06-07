@@ -88,7 +88,7 @@ namespace sl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    tColor getPixel( uint8_t x_, uint8_t y_ ) const override;
+    tColor getPixel(uint16_t x_, uint16_t y_ ) const override;
         
     /** @} */ // End of group Primitives
 
@@ -152,7 +152,7 @@ namespace sl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    virtual tColor getPixelImpl( uint8_t x_, uint8_t y_ ) const = 0;
+    virtual tColor getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
     
     void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
     

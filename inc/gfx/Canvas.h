@@ -160,7 +160,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual tColor getPixel( uint8_t x_, uint8_t y_ ) const;
+  virtual tColor getPixel(uint16_t x_, uint16_t y_ ) const;
   
   //! Draw a line
   /*!

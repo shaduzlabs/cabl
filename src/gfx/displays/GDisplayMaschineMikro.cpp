@@ -89,7 +89,7 @@ void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplayMaschineMikro::getPixelImpl( uint8_t x_, uint8_t y_ ) const
+GDisplay::tColor GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ ) const
 {
   if ( x_ >= getWidth() || y_ >= getHeight() )
     return tColor::BLACK;
