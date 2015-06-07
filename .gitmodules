@@ -1,0 +1,9 @@
+[submodule "submodules/libusb"]
+	path = submodules/libusb
+	url = https://github.com/libusb/libusb.git
+[submodule "submodules/hidapi"]
+	path = submodules/hidapi
+	url = https://github.com/signal11/hidapi.git
+[submodule "submodules/rtmidi"]
+	path = submodules/rtmidi
+	url = https://github.com/thestk/rtmidi.git
