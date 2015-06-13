@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*----------------------------------------------------------------------------------------------------------------------
 
                  %%%%%%%%%%%%%%%%%                
                  %%%%%%%%%%%%%%%%%
@@ -23,9 +23,14 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
-#include <Macros.h>
+#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/DeviceMaschineMK1.h"
+#include "util/Version_SL.h"
+
+#include "k-io-config.h"
 
 namespace sl
 {
@@ -34,57 +39,16 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Font
+class Lib
 {
 
 public:
 
-  virtual uint8_t  getWidth()         const noexcept = 0;
-  virtual uint8_t  getHeight()        const noexcept = 0;
-  virtual uint8_t  getCharSpacing()   const noexcept = 0;
-  
-  virtual uint8_t  getFirstChar()     const noexcept = 0;
-  virtual uint8_t  getLastChar()      const noexcept = 0;
-  
-  virtual uint8_t  getBytesPerLine()  const noexcept = 0;
-  
-  virtual bool     getPixel( uint8_t char_, uint8_t x_, uint8_t y_ ) const noexcept = 0;
-  
-  virtual inline bool getPixelImpl( uint8_t* pFontData_, uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
-  {
-    if( c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
-      return false;
-    
-    if( getBytesPerLine() == 1 )
-    {
-      return ( ( pFontData_[ ( c_ * getHeight() ) + y_ ] & ( 0x080 >> x_ ) ) > 0 );
-    }
-    else
-    {
-      return (
-       ( pFontData_[ ( c_ * getHeight() ) + ( y_ * getBytesPerLine() ) + ( x_ >> 3 ) ] & ( 0x080 >> ( x_ % 8 ) ) ) > 0
-      );
-    }
-  }
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
-template<class TFontClass>
-class FontBase : public Font
-{
-  
-public:
-
-  static TFontClass* get()
-  {
-    static TFontClass m_font;
-    return &m_font;
-  }
+  static std::string getVersion() { return util::Version(KIO_VERSION_MAJOR, KIO_VERSION_MINOR, KIO_VERSION_MICRO); }
   
 };
-  
-//----------------------------------------------------------------------------------------------------------------------
 
-} // kio
-} // sl
+//--------------------------------------------------------------------------------------------------------------------
+
+} // namespace kio
+} // namespace sl

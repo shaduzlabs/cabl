@@ -24,54 +24,18 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#pragma once
-
-#include "comm/DriverImpl.h"
-#include "comm/DeviceHandleImpl.h"
+#include "k-io.h"
 
 namespace sl
 {
 namespace kio
 {
-  
-//----------------------------------------------------------------------------------------------------------------------
-
-class DriverMOCK : public DriverImpl
-{
-public:
-
-  DriverMOCK();
-  ~DriverMOCK() override;
-  
-  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
-
-};
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DeviceHandleMOCK : public DeviceHandleImpl
-{
-public:
 
-  using tDeviceHandle = void;
 
-  DeviceHandleMOCK(tDeviceHandle*);
-
-  void disconnect() override;
-
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
-
-private:
-
-  tRawData           m_inputBuffer;
-  tDeviceHandle*     m_pCurrentDevice;
-
-  static uint32_t    s_numPacketR;
-  static uint32_t    s_numPacketW;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 } // kio
 } // sl

@@ -23,12 +23,18 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandleImpl.h"
 
 namespace sl
 {
+namespace kio
+{
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class DriverMAX3421E : public DriverImpl
 {
@@ -37,21 +43,33 @@ public:
   DriverMAX3421E();
   ~DriverMAX3421E() override;
   
-  bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
-  void disconnect() override;
-
-  bool read( Transfer&, uint8_t ) override;
-  bool write( const Transfer&, uint8_t ) const override;
-  
-private:
-  
-  tRawData           m_inputBuffer;
-  
-  static uint32_t    s_numPacketR;
-  static uint32_t    s_numPacketW;
+  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
 
 };
-  
+
 //----------------------------------------------------------------------------------------------------------------------
 
+class DeviceHandleMAX3421E : public DeviceHandleImpl
+{
+public:
+
+  using tDeviceHandle = void;
+
+  DeviceHandleMAX3421E(tDeviceHandle*);
+
+  void disconnect() override;
+
+  bool read(Transfer&, uint8_t) override;
+  bool write(const Transfer&, uint8_t) const override;
+
+private:
+
+  tRawData           m_inputBuffer;
+  tDeviceHandle*     m_pCurrentDevice;
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+} // kio
 } // sl

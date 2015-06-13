@@ -34,8 +34,9 @@
 
 namespace sl
 {
-  namespace util
-  {
+namespace util
+{
+  
 //----------------------------------------------------------------------------------------------------------------------
 
 uint32_t randomRange( uint32_t min_, uint32_t max_ )

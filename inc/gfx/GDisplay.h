@@ -25,13 +25,12 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
 
-#ifndef SL_GDISPLAY_H
-#define SL_GDISPLAY_H
-
 #include <stdint.h>
 #include "Canvas.h"
 
 namespace sl
+{
+namespace kio
 {
   class Font;
   
@@ -168,6 +167,5 @@ namespace sl
   
 //----------------------------------------------------------------------------------------------------------------------
   
-} // SL
-
-#endif // SL_GDISPLAY_H
+} // kio
+} // sl

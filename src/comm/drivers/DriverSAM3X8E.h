@@ -23,35 +23,54 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandleImpl.h"
 
 namespace sl
 {
+namespace kio
+{
+  
+//----------------------------------------------------------------------------------------------------------------------
 
 class DriverSAM3X8E : public DriverImpl
 {
 public:
 
+  using tDeviceHandle = void;
+
   DriverSAM3X8E();
   ~DriverSAM3X8E() override;
-  
-  bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+
+  tPtr<DeviceHandleImpl> connect(Driver::tVendorId vid_, Driver::tProductId pid_) override;
+ 
+ };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class DeviceHandleSAM3XE : public DeviceHandleImpl
+{
+public:
+
+  using tDeviceHandle = void;
+
+  DeviceHandleSAM3XE(tDeviceHandle*);
+
   void disconnect() override;
 
-  bool read( Transfer&, uint8_t ) override;
-  bool write( const Transfer&, uint8_t ) const override;
-  
-private:
-  
-  tRawData           m_inputBuffer;
-  
-  static uint32_t    s_numPacketR;
-  static uint32_t    s_numPacketW;
+  bool read(Transfer&, uint8_t) override;
+  bool write(const Transfer&, uint8_t) const override;
 
+private:
+
+  tRawData                        m_inputBuffer;
+  tDeviceHandle*                  m_pCurrentDevice;
 };
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

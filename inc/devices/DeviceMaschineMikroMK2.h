@@ -23,13 +23,12 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_DEVICE_MIKRO_MK2_H
-#define SL_DEVICE_MIKRO_MK2_H
+#pragma once
 
 #include "Device.h"
 #include "gfx/GDisplay.h"
+
 /*
  
  uint8_t buf[79];
@@ -201,9 +200,14 @@
  
  6th byte: Encoder value (0x0 to 0x0e)
  */
+ 
 namespace sl
 {
- 
+namespace kio
+{
+  
+//----------------------------------------------------------------------------------------------------------------------
+
 class DeviceMaschineMikroMK2 : public Device
 {
  
@@ -267,6 +271,5 @@ private:
   
 //----------------------------------------------------------------------------------------------------------------------
   
+} // kio
 } // sl
-
-#endif // SL_DEVICE_MIKRO_MK2_H

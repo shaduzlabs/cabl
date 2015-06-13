@@ -94,6 +94,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 SET( 
   inc_comm_INCLUDES          
     inc/comm/Driver.h
+    inc/comm/DeviceHandle.h
     inc/comm/Transfer.h
 )
 
@@ -123,10 +124,12 @@ SET(
   inc_util_INCLUDES
     inc/util/CircularBuffer_SL.h
     inc/util/Functions_SL.h
+    inc/util/Version_SL.h
 )
 
 SET( 
   inc_INCLUDES
+    inc/k-io.h
     inc/Device.h
     inc/Macros.h
     inc/Types.h
@@ -169,6 +172,8 @@ SET(
   src_comm_SRCS
     src/comm/Driver.cpp
     src/comm/DriverImpl.h
+    src/comm/DeviceHandle.cpp
+    src/comm/DeviceHandleImpl.h
     src/comm/Transfer.cpp
 )
 
@@ -209,6 +214,12 @@ SET(
   src_util_SRCS
     src/util/CircularBuffer_SL.cpp
     src/util/Functions_SL.cpp
+    src/util/Version_SL.cpp
+)
+
+SET( 
+  src_SRCS
+    src/k-io.cpp
 )
 
 source_group("src\\comm"             FILES ${src_comm_SRCS})
@@ -222,6 +233,7 @@ source_group("src\\util"             FILES ${src_util_SRCS})
 
 SET ( 
       kompletIO_SRCS
+      ${src_SRCS}
       ${src_comm_drivers_SRCS}
       ${src_comm_SRCS}
       ${src_devices_SRCS}

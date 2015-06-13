@@ -30,59 +30,64 @@
 
 namespace
 {
-
-uint16_t kMAX3421EnputBufferSize = 512; // Size of the input buffer
+  uint16_t kMAX3421EnputBufferSize = 512; // Size of the input buffer
 }
 
 namespace sl
 {
-
-//----------------------------------------------------------------------------------------------------------------------
-
-uint32_t DriverMAX3421E::s_numPacketR;
-uint32_t DriverMAX3421E::s_numPacketW;
+namespace kio
+{
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverMAX3421E::DriverMAX3421E()
 {
-  m_inputBuffer.resize(kMAX3421EnputBufferSize);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverMAX3421E::~DriverMAX3421E()
 {
-  disconnect();
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverMAX3421E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+tPtr<DeviceHandleImpl> DriverMAX3421E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+{
+  return nullptr;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleMAX3421E::DeviceHandleMAX3421E(tDeviceHandle* pDeviceHandle)
+  : m_pCurrentDevice(pDeviceHandle)
+{
+  m_inputBuffer.resize(kMAX3421EnputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleMAX3421E::disconnect()
+{
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceHandleMAX3421E::read(Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DriverMAX3421E::disconnect()
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DriverMAX3421E::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_) const
-{
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
+} // kio
 } // sl

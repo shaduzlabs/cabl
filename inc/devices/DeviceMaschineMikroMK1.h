@@ -23,15 +23,17 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_DEVICE_MIKRO_MK1_H
-#define SL_DEVICE_MIKRO_MK1_H
+#pragma once
 
 #include "Device.h"
 
 namespace sl
 {
+namespace kio
+{
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class DeviceMaschineMikroMK1 : public Device
 {
@@ -45,6 +47,5 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
-
-#endif // SL_DEVICE_MIKRO_MK1_H

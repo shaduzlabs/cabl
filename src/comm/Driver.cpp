@@ -26,6 +26,7 @@
 
 #include "comm/Driver.h"
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandle.h"
 
 #include "comm/drivers/DriverMOCK.h"
 
@@ -39,6 +40,8 @@
 #endif
 
 namespace sl
+{
+namespace kio
 {
 
 Driver::Driver( tDriver type_ )
@@ -77,32 +80,12 @@ Driver::~Driver()
   
 //----------------------------------------------------------------------------------------------------------------------
   
-bool Driver::connect( tVendorId vid_, tProductId pid_  )
+tPtr<DeviceHandle> Driver::connect( tVendorId vid_, tProductId pid_  )
 {
-  return m_pImpl->connect( vid_,pid_ );
+  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( vid_,pid_ )));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Driver::disconnect()
-{
-  m_pImpl->disconnect();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool Driver::read( Transfer& transfer_, uint8_t endpoint_ )
-{
-  return m_pImpl->read( transfer_, endpoint_ );
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-
-bool Driver::write(const Transfer& transfer_, uint8_t endpoint_ ) const
-{
-  return m_pImpl->write( transfer_, endpoint_ );
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
+} // kio
 } // sl

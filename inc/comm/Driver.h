@@ -23,19 +23,24 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_DRIVER_H
-#define SL_DRIVER_H
+#pragma once
 
 #include <cstdint>
 #include "Types.h"
 
 namespace sl
 {
+namespace kio
+{
 
+//----------------------------------------------------------------------------------------------------------------------
+
+class DeviceHandle;
 class DriverImpl;
 class Transfer;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Driver
 {
@@ -57,11 +62,7 @@ public:
    Driver( tDriver type_ );
   ~Driver();
 
-  bool connect( tVendorId vid_, tProductId pid_ );
-  void disconnect();
-
-  bool read( Transfer&, uint8_t );
-  bool write( const Transfer&, uint8_t ) const;
+  tPtr<DeviceHandle> connect( tVendorId vid_, tProductId pid_ );
   
 private:
  
@@ -71,6 +72,5 @@ private:
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
-
-#endif // SL_DRIVER_H

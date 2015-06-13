@@ -23,18 +23,19 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_GDISPLAY_MASCHINE_MK2_H
-#define SL_GDISPLAY_MASCHINE_MK2_H
+#pragma once
 
 #include "gfx/GDisplay.h"
 
-#include <hidapi.h>
 #include <map>
 
 namespace sl
 {
+namespace kio
+{
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class GDisplayMaschineMK2 : public GDisplay
 {
@@ -71,6 +72,6 @@ protected:
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
 
-#endif // SL_GDISPLAY_MASCHINE_MK2_H

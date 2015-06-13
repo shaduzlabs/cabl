@@ -38,7 +38,7 @@
 namespace sl
 {
 
-class Device;
+class kio::Device;
 
 class Euklid
 {
@@ -58,13 +58,13 @@ public:
     Configuration,
   };
 
-  Euklid(Device*);
+  Euklid(kio::Device*);
 
   bool connect();
   
-  void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
+  void buttonChanged(kio::Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
-  void padChanged(Device::Button pad_, uint16_t value_, bool shiftPressed);
+  void padChanged(kio::Device::Button pad_, uint16_t value_, bool shiftPressed);
   
   bool tick();
 
@@ -77,7 +77,7 @@ public:
   void drawConfigurationPage();
   void drawSequencerPage();
 
-  Device* getDevice()
+  kio::Device* getDevice()
   {
     return m_pDevice;
   }
@@ -102,11 +102,11 @@ public:
 private:
   uint8_t getEncoderValue(
     bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_);
-  Device::Button getPadLed(uint8_t padIndex_);
-  uint8_t getPadIndex(Device::Button pad_);
+  kio::Device::Button getPadLed(uint8_t padIndex_);
+  uint8_t getPadIndex(kio::Device::Button pad_);
 
   Sequence<uint16_t> m_sequences[3];
-  Device* m_pDevice;
+  kio::Device* m_pDevice;
 
   std::future<void> m_clockFuture;
   EncoderState m_encoderState;

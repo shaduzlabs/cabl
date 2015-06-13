@@ -28,45 +28,44 @@
 
 namespace
 {
-  
   uint16_t kLIBUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kReadTimeout =  10;              // Timeout of a input bulk transfer (0 = NO timeout)
-  uint16_t kWriteTimeout = 60;             // Timeout of a output bulk transfer (0 = NO timeout)
-  
+  uint16_t kLIBUSBReadTimeout =  10;            // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLIBUSBWriteTimeout = 60;            // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
 namespace sl
 {
-  
-DriverLIBUSB::DriverLIBUSB()
-  : m_pCurrentDevice(nullptr)
+namespace kio
 {
-  libusb_init( &m_pContext );
+  
+//----------------------------------------------------------------------------------------------------------------------
+
+DriverLIBUSB::DriverLIBUSB()
+{
+  libusb_init(&m_pContext);
 
 #ifdef DEBUG
-  libusb_set_debug	( m_pContext, 3 );
+  libusb_set_debug( m_pContext, 3);
 #endif
-  m_inputBuffer.resize(kLIBUSBInputBufferSize);
 }
   
 //----------------------------------------------------------------------------------------------------------------------
   
 DriverLIBUSB::~DriverLIBUSB()
 {
-  disconnect();
   libusb_exit( m_pContext );
 }
   
 //----------------------------------------------------------------------------------------------------------------------
   
-bool DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tProductId pid_ )
+tPtr<DeviceHandleImpl> DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tProductId pid_ )
 {
-  disconnect();
   
   bool bConnected = false;
   libusb_device **devices;
   ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
   
+  tDeviceHandle* pCurrentDevice = nullptr;
   for( int i=0; i<nDevices; ++i )
   {
     libusb_device *device = devices[i];
@@ -75,7 +74,8 @@ bool DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tProductId pid_ )
     if( ( descriptor.idVendor != vid_ ) || ( descriptor.idProduct != pid_ ) )
       continue;
     
-    int e = libusb_open(device, &m_pCurrentDevice);
+    
+    int e = libusb_open(device, &pCurrentDevice);
     if(e == 0)
     {
       bConnected = true;
@@ -85,20 +85,28 @@ bool DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tProductId pid_ )
   
   libusb_free_device_list(devices, 1);
   
-  libusb_set_configuration( m_pCurrentDevice, 1 );
-  libusb_claim_interface( m_pCurrentDevice, 0 );
+  libusb_set_configuration(pCurrentDevice, 1 );
+  libusb_claim_interface(pCurrentDevice, 0 );
 
-  libusb_set_interface_alt_setting	(	m_pCurrentDevice, 0, 1 );
+  libusb_set_interface_alt_setting  (pCurrentDevice, 0, 1 );
   
-  if( m_pCurrentDevice == NULL)
-    return false;
+  if(pCurrentDevice == nullptr || !bConnected)
+    return nullptr;
 
-  return bConnected;
+  return tPtr<DeviceHandleImpl>(new DeviceHandleLibUSB(pCurrentDevice));
 }
-  
+
 //----------------------------------------------------------------------------------------------------------------------
 
-void DriverLIBUSB::disconnect()
+DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
+  : m_pCurrentDevice(pDeviceHandle)
+{
+  m_inputBuffer.resize(kLIBUSBInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleLibUSB::disconnect()
 {
   if( m_pCurrentDevice != nullptr )
   {
@@ -109,16 +117,16 @@ void DriverLIBUSB::disconnect()
   
 //----------------------------------------------------------------------------------------------------------------------
   
-bool DriverLIBUSB::read( Transfer& transfer_, uint8_t endpoint_ )
+bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
 {
   int nBytesRead = 0;
   int result = libusb_bulk_transfer(
     m_pCurrentDevice,                 // Device handle
-    endpoint_,                         // Endpoint
-    m_inputBuffer.data(),              // Data pointer
+    endpoint_,                        // Endpoint
+    m_inputBuffer.data(),             // Data pointer
     kLIBUSBInputBufferSize,           // Size of data
     &nBytesRead,                      // N. of bytes actually written
-    kReadTimeout                      // Timeout
+    kLIBUSBReadTimeout                // Timeout
   );
   
   if( ( LIBUSB_SUCCESS == result ) && ( nBytesRead > 0 ) )
@@ -132,7 +140,7 @@ bool DriverLIBUSB::read( Transfer& transfer_, uint8_t endpoint_ )
   
 //----------------------------------------------------------------------------------------------------------------------
   
-bool DriverLIBUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
+bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
 {
   int nBytesWritten = 0;
   if( transfer_ == true )
@@ -143,7 +151,7 @@ bool DriverLIBUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
       const_cast<uint8_t*>(transfer_.getData().data()),       // Data pointer
       transfer_.size(),                 // Size of data
       &nBytesWritten,                   // N. of bytes actually written
-      kWriteTimeout                     // Timeout
+      kLIBUSBWriteTimeout                     // Timeout
     );
     return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
   }
@@ -153,4 +161,5 @@ bool DriverLIBUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

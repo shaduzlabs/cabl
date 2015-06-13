@@ -29,8 +29,11 @@
 #include <functional>
 
 #include "comm/Driver.h"
+#include "comm/DeviceHandle.h"
 
 namespace sl
+{
+namespace kio
 {
 
 class GDisplay;
@@ -123,8 +126,8 @@ public:
   using tCbEncoderChanged = std::function<void(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)>;
   using tCbPadChanged = std::function<void(Button pad_, uint16_t value_, bool shiftPressed)>;
   
-  Device(Driver::tDriver tDriver_)
-    : m_driver(tDriver_)
+  Device(DeviceHandle deviceHandle_)
+    : m_deviceHandle(std::move(deviceHandle_))
   {
   }
 
@@ -149,7 +152,7 @@ public:
   
 protected:
 
- Driver& getDriver(){ return m_driver; }
+  DeviceHandle& getDeviceHandle(){ return m_deviceHandle; }
   
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
@@ -181,9 +184,10 @@ private:
   tCbEncoderChanged   m_cbEncoderChanged;
   tCbPadChanged       m_cbPadChanged;
   
-  Driver m_driver;
+  DeviceHandle        m_deviceHandle;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

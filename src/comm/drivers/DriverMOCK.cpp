@@ -30,57 +30,66 @@
 
 namespace
 {
-
-uint16_t kTESTInputBufferSize = 512; // Size of the TEST input buffer
+  uint16_t kMOCKInputBufferSize = 512; // Size of the TEST input buffer
 }
 
 namespace sl
 {
+namespace kio
+{
 
 //----------------------------------------------------------------------------------------------------------------------
 
-uint32_t DriverMOCK::s_numPacketR;
-uint32_t DriverMOCK::s_numPacketW;
+uint32_t DeviceHandleMOCK::s_numPacketR;
+uint32_t DeviceHandleMOCK::s_numPacketW;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverMOCK::DriverMOCK()
 {
-  m_inputBuffer.resize(kTESTInputBufferSize);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverMOCK::~DriverMOCK()
 {
-  disconnect();
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverMOCK::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+tPtr<DeviceHandleImpl> DriverMOCK::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+{
+  return nullptr;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleMOCK::DeviceHandleMOCK(tDeviceHandle* pDeviceHandle)
+  : m_pCurrentDevice(pDeviceHandle)
+{
+  m_inputBuffer.resize(kMOCKInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleMOCK::disconnect()
+{
+  
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceHandleMOCK::read(Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DriverMOCK::disconnect()
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DriverMOCK::read(Transfer& transfer_, uint8_t endpoint_)
-{
-
-
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DriverMOCK::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleMOCK::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
   std::cout << "Packet #" << s_numPacketW << " (" << transfer_.size() << " bytes) -> endpoint "
             << static_cast<uint32_t>(endpoint_) << ":" << std::endl;
@@ -101,4 +110,5 @@ bool DriverMOCK::write(const Transfer& transfer_, uint8_t endpoint_) const
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

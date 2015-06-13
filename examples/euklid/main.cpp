@@ -38,10 +38,12 @@
 #define syslog(a,b) std::cout<<b<<std::endl;
 #endif
 
-#include <devices/DeviceMaschineMikroMK2.h>
+#include <k-io.h>
 #include "Euklid.h"
 
+
 using namespace sl;
+using namespace sl::kio;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -95,6 +97,8 @@ int main(int argc, const char* argv[])
 {
   daemonize();
   syslog (LOG_NOTICE, "[k-io] started");
+
+  std::cout << "Version: " << kio::Lib::getVersion() << std::endl;
 
   DeviceMaschineMikroMK2 device;
   Euklid euklid(&device);

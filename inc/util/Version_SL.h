@@ -25,53 +25,51 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 
 #pragma once
-
-#include "comm/DriverImpl.h"
-#include "comm/DeviceHandleImpl.h"
+#include <string>
 
 namespace sl
 {
-namespace kio
+namespace util
 {
-  
-//----------------------------------------------------------------------------------------------------------------------
 
-class DriverMOCK : public DriverImpl
+class Version
 {
 public:
 
-  DriverMOCK();
-  ~DriverMOCK() override;
-  
-  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  Version(unsigned vMajor_ = 0, unsigned vMinor_ = 0, unsigned vMicro_ = 0)
+    : m_vMajor( vMajor_ )
+    , m_vMinor( vMinor_ )
+    , m_vMicro( vMicro_ )
+  {}
+ 
+  operator bool() const{ return ( m_vMajor + m_vMinor + m_vMicro ) > 0; }
 
-};
+  unsigned getMajor() const { return m_vMajor; }
+  unsigned getMinor() const { return m_vMinor; }
+  unsigned getMicro() const { return m_vMicro; }
 
-//----------------------------------------------------------------------------------------------------------------------
+  void setMajor(unsigned vMajor_){ m_vMajor = vMajor_; }
+  void setMinor(unsigned vMinor_){ m_vMinor = vMinor_; }
+  void setMicro(unsigned vMicro_){ m_vMicro = vMicro_; }
 
-class DeviceHandleMOCK : public DeviceHandleImpl
-{
-public:
+  void reset();
 
-  using tDeviceHandle = void;
+  std::string toString() const;
+  operator std::string() const;
 
-  DeviceHandleMOCK(tDeviceHandle*);
-
-  void disconnect() override;
-
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
+  bool operator == (const Version& other_) const;
+  bool operator != (const Version& other_) const;
+  bool operator >= (const Version& other_) const;
+  bool operator >  (const Version& other_) const;
+  bool operator <= (const Version& other_) const;
+  bool operator <  (const Version& other_) const;
 
 private:
 
-  tRawData           m_inputBuffer;
-  tDeviceHandle*     m_pCurrentDevice;
-
-  static uint32_t    s_numPacketR;
-  static uint32_t    s_numPacketW;
+  unsigned m_vMajor;
+  unsigned m_vMinor;
+  unsigned m_vMicro;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
-
-} // kio
-} // sl
+} // namespace util
+} // namespace sl

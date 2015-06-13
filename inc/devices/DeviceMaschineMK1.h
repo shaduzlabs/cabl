@@ -23,10 +23,8 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_DEVICE_MASCHINE_MK1_H
-#define SL_DEVICE_MASCHINE_MK1_H
+#pragma once
 
 #include "Device.h"
 #include "gfx/GDisplay.h"
@@ -34,7 +32,11 @@
 
 namespace sl
 {
+namespace kio
+{
   
+//----------------------------------------------------------------------------------------------------------------------
+
 class DeviceMaschineMK1 : public Device
 {
   typedef enum{
@@ -135,6 +137,5 @@ private:
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
-
-#endif // SL_DEVICE_MASCHINE_MK1_H

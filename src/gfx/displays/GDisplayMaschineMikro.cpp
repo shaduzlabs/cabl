@@ -43,7 +43,11 @@ namespace
 
 namespace sl
 {
+namespace kio
+{
   
+//----------------------------------------------------------------------------------------------------------------------
+
 GDisplayMaschineMikro::GDisplayMaschineMikro()
   : GDisplay( kMikro_displayWidth, kMikro_displayHeight, kMikro_nOfDisplayDataChunks, tAllocation::COL_1BYTE_8_PIXELS )
 {
@@ -102,4 +106,5 @@ GDisplay::tColor GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ )
  
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

@@ -30,59 +30,63 @@
 
 namespace
 {
-
-uint16_t kSAM3X8EInputBufferSize = 512; // Size of the input buffer
+  uint16_t kSAM3X8EInputBufferSize = 512; // Size of the input buffer
 }
 
 namespace sl
 {
-
-//----------------------------------------------------------------------------------------------------------------------
-
-uint32_t DriverSAM3X8E::s_numPacketR;
-uint32_t DriverSAM3X8E::s_numPacketW;
+namespace kio
+{
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverSAM3X8E::DriverSAM3X8E()
 {
-  m_inputBuffer.resize(kSAM3X8EInputBufferSize);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverSAM3X8E::~DriverSAM3X8E()
 {
-  disconnect();
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverSAM3X8E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+tPtr<DeviceHandleImpl> DriverSAM3X8E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+{
+  return nullptr;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleSAM3XE::DeviceHandleSAM3XE(tDeviceHandle* pDeviceHandle)
+  : m_pCurrentDevice(pDeviceHandle)
+{
+  m_inputBuffer.resize(kSAM3X8EInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void DeviceHandleSAM3XE::disconnect()
+{
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceHandleSAM3XE::read(Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DriverSAM3X8E::disconnect()
-{
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DriverSAM3X8E::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleSAM3XE::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverSAM3X8E::write(const Transfer& transfer_, uint8_t endpoint_) const
-{
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
+} // kio
 } // sl

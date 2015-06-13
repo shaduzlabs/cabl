@@ -23,25 +23,42 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandleImpl.h"
 
 #include <hidapi.h>
 
 namespace sl
 {
+namespace kio
+{
 
 class DriverHIDAPI : public DriverImpl
 {
 public:
-
-  using tDeviceHandle   = hid_device;
+  
+  using tDeviceHandle = hid_device;  
   
   DriverHIDAPI();
   ~DriverHIDAPI() override;
   
-  bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  
+};
+  
+//----------------------------------------------------------------------------------------------------------------------
+
+class DeviceHandleHIDAPI : public DeviceHandleImpl
+{
+public:
+ 
+  using tDeviceHandle = hid_device;
+  
+  DeviceHandleHIDAPI(tDeviceHandle*);
+  
   void disconnect() override;
 
   bool read( Transfer&, uint8_t ) override;
@@ -49,11 +66,11 @@ public:
   
 private:
   
- // tCollVendorIds m_collVendorIds;
   tRawData                        m_inputBuffer;
   tDeviceHandle*                  m_pCurrentDevice;
 };
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

@@ -23,14 +23,20 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandleImpl.h"
 
 #include <libusb.h>
 
 namespace sl
 {
+namespace kio
+{
+  
+//----------------------------------------------------------------------------------------------------------------------
 
 class DriverLIBUSB : public DriverImpl
 {
@@ -41,20 +47,35 @@ public:
   DriverLIBUSB();
   ~DriverLIBUSB() override;
   
-  bool connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
-  void disconnect() override;
+  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
 
-  bool read( Transfer&, uint8_t ) override;
-  bool write( const Transfer&, uint8_t ) const override;
-  
 private:
-  
-  tRawData                        m_inputBuffer;
-  tDeviceHandle*                  m_pCurrentDevice;
 
   libusb_context*                 m_pContext;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class DeviceHandleLibUSB : public DeviceHandleImpl
+{
+public:
+
+  using tDeviceHandle = struct ::libusb_device_handle;
+
+  DeviceHandleLibUSB(tDeviceHandle*);
+
+  void disconnect() override;
+
+  bool read(Transfer&, uint8_t) override;
+  bool write(const Transfer&, uint8_t) const override;
+
+private:
+
+  tRawData                        m_inputBuffer;
+  tDeviceHandle*                  m_pCurrentDevice;
 };
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl

@@ -32,6 +32,8 @@
 
 namespace sl
 {
+namespace kio
+{
 
 class FontBig : public FontBase<FontBig> // CRTP
 {
@@ -64,6 +66,7 @@ public:
   
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
 
 #endif // SL_FONT_BIG_H

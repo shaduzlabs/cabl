@@ -23,21 +23,22 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#ifndef SL_DEVICE_MASCHINE_MK2_H
-#define SL_DEVICE_MASCHINE_MK2_H
+#pragma once
 
 #include "Device.h"
 
 namespace sl
 {
+namespace kio
+{
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class DeviceMaschineMK2 : public Device
 {
   
 public:
-  
   
   typedef enum{
      btnLedControl = 1,
@@ -155,6 +156,5 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
   
+} // kio
 } // sl
-
-#endif // SL_DEVICE_MASCHINE_MK2_H

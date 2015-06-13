@@ -24,6 +24,6 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#define KOMPLETIO_VERSION_MAJOR @kompletIO_VERSION_MAJOR@
-#define KOMPLETIO_VERSION_MINOR @kompletIO_VERSION_MINOR@
-#define KOMPLETIO_VERSION_MICRO @kompletIO_VERSION_MICRO@
+#define KIO_VERSION_MAJOR @kompletIO_VERSION_MAJOR@
+#define KIO_VERSION_MINOR @kompletIO_VERSION_MINOR@
+#define KIO_VERSION_MICRO @kompletIO_VERSION_MICRO@

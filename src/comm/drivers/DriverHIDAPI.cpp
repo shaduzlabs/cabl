@@ -26,50 +26,57 @@
 
 #include "DriverHIDAPI.h"
 
-//----------------------------------------------------------------------------------------------------------------------
-
 namespace
 {
-
-uint16_t kHIDAPIInputBufferSize = 512; // Size of the HIDAPI input buffer
+  uint16_t kHIDAPIInputBufferSize = 512; // Size of the HIDAPI input buffer
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace sl
 {
+namespace kio
+{
+
+//----------------------------------------------------------------------------------------------------------------------
 
 DriverHIDAPI::DriverHIDAPI()
-  : m_pCurrentDevice(nullptr)
 {
   hid_init();
-  m_inputBuffer.resize(kHIDAPIInputBufferSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverHIDAPI::~DriverHIDAPI()
 {
-  disconnect();
   hid_exit();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverHIDAPI::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+tPtr<DeviceHandleImpl> DriverHIDAPI::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
 {
 
-  disconnect();
-  m_pCurrentDevice = hid_open(vid_, pid_, NULL);
-  if (m_pCurrentDevice == NULL)
-    return false;
-  hid_set_nonblocking(m_pCurrentDevice, 0);
-  return true;
+  tDeviceHandle* pCurrentDevice = hid_open(vid_, pid_, nullptr);
+  if (pCurrentDevice == nullptr)
+    return nullptr;
+    
+  hid_set_nonblocking(pCurrentDevice, 0);
+  
+  return tPtr<DeviceHandleImpl>(new DeviceHandleHIDAPI(pCurrentDevice));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DriverHIDAPI::disconnect()
+DeviceHandleHIDAPI::DeviceHandleHIDAPI(tDeviceHandle* pDeviceHandle)
+  : m_pCurrentDevice(pDeviceHandle)
+{
+  m_inputBuffer.resize(kHIDAPIInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleHIDAPI::disconnect()
 {
   if (m_pCurrentDevice != nullptr)
   {
@@ -80,7 +87,7 @@ void DriverHIDAPI::disconnect()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverHIDAPI::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t endpoint_)
 {
   int nBytesRead = hid_read(m_pCurrentDevice, m_inputBuffer.data(), kHIDAPIInputBufferSize);
   if (nBytesRead > 0)
@@ -94,7 +101,7 @@ bool DriverHIDAPI::read(Transfer& transfer_, uint8_t endpoint_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DriverHIDAPI::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
   if (transfer_)
   {
@@ -107,4 +114,5 @@ bool DriverHIDAPI::write(const Transfer& transfer_, uint8_t endpoint_) const
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // kio
 } // sl
