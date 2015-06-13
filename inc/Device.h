@@ -23,12 +23,12 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
+
 #pragma once
 
 // STL includes
 #include <functional>
 
-#include "comm/Driver.h"
 #include "comm/DeviceHandle.h"
 
 namespace sl
@@ -126,8 +126,19 @@ public:
   using tCbEncoderChanged = std::function<void(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)>;
   using tCbPadChanged = std::function<void(Button pad_, uint16_t value_, bool shiftPressed)>;
   
-  Device(DeviceHandle deviceHandle_)
-    : m_deviceHandle(std::move(deviceHandle_))
+  enum class Type
+  {
+    Unknown,
+    MaschineMk1,
+    MaschineMk2,
+    MaschineMikroMk1,
+    MaschineMikroMk2,
+  };
+  
+  static Type getType(uint16_t, uint16_t);
+  
+  Device(tPtr<DeviceHandle> pDeviceHandle_)
+    : m_pDeviceHandle(std::move(pDeviceHandle_))
   {
   }
 
@@ -135,7 +146,8 @@ public:
   {
   }
 
-  virtual bool connect() = 0;
+//  virtual bool connect() = 0;
+
   virtual void init() = 0;
 
   virtual bool tick() = 0;
@@ -149,11 +161,9 @@ public:
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
   void setCallbackPadChanged(tCbPadChanged cbPadChanged_){ m_cbPadChanged = cbPadChanged_;}
 
+  DeviceHandle* getDeviceHandle(){ return m_pDeviceHandle.get(); }
   
 protected:
-
-  DeviceHandle& getDeviceHandle(){ return m_deviceHandle; }
-  
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
     if(m_cbButtonChanged)
@@ -184,7 +194,7 @@ private:
   tCbEncoderChanged   m_cbEncoderChanged;
   tCbPadChanged       m_cbPadChanged;
   
-  DeviceHandle        m_deviceHandle;
+  tPtr<DeviceHandle>  m_pDeviceHandle;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

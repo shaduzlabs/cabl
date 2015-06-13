@@ -26,9 +26,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include "Types.h"
-#include "comm/DeviceHandleImpl.h"
+#include <string>
+#include "Device.h"
 
 namespace sl
 {
@@ -37,23 +36,55 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Transfer;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class DeviceHandle
+class DeviceDescriptor
 {
-
 public:
-  DeviceHandle(tPtr<DeviceHandleImpl>);
+  using tVendorId = uint16_t;
+  using tProductId = uint16_t;
+  using tSerialNumber = std::string;
+  
+  DeviceDescriptor(
+    tVendorId vendorId_,
+    tProductId productId_,
+    Device::Type type_,
+    tSerialNumber serialNumber_="",
+    bool isHid_ = false
+  )
+    :m_vendorId(vendorId_)
+    ,m_productId(productId_)
+    ,m_type(type_)
+    ,m_serialNumber(serialNumber_)
+    ,m_isHid(isHid_)
+  { }
+  
+  tVendorId getVendorId() const{ return m_vendorId; }
+  tProductId getProductId() const{ return m_productId; }
+  Device::Type getType() const { return m_type; }
+  tSerialNumber getSerialNumber() const{ return m_serialNumber; }
+  bool isHID() const { return m_isHid; }
 
-  void disconnect();
+  bool operator==(const DeviceDescriptor& other_) const
+  {
+    return (m_vendorId == other_.m_vendorId)         &&
+           (m_productId == other_.m_productId)       &&
+           (m_serialNumber == other_.m_serialNumber) &&
+           (m_isHid == other_.m_isHid);
+  }
 
-  bool read(Transfer&, uint8_t);
-  bool write(const Transfer&, uint8_t) const;
-
+  bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }
+  
+  bool isSameProduct(const DeviceDescriptor& other_) const
+  {
+    return (m_vendorId == other_.m_vendorId) && (m_productId == other_.m_productId);
+  }
+  
 private:
-  tPtr<DeviceHandleImpl> m_pImpl;
+
+  tVendorId m_vendorId;
+  tProductId m_productId;
+  Device::Type m_type;
+  tSerialNumber m_serialNumber;
+  bool m_isHid = false;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

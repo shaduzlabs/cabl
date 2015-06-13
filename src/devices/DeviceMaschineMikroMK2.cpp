@@ -219,8 +219,8 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::DeviceMaschineMikroMK2()
-  : Device(Driver::tDriver::HIDAPI)
+DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
+  : Device(std::move(pDeviceHandle_))
   , m_display(new GDisplayMaschineMikro)
   , m_isDirtyLeds(false)
 {
@@ -232,24 +232,8 @@ DeviceMaschineMikroMK2::DeviceMaschineMikroMK2()
 
 DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
 {
-  getDeviceHandle().disconnect();
+
 }
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DeviceMaschineMikroMK2::connect()
-{
-  if (!getDeviceHandle().connect(kMikroMK2_vendorId, kMikroMK2_productId))
-  {
-    return false;
-  }
-
-  init();
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -379,7 +363,7 @@ bool DeviceMaschineMikroMK2::sendFrame()
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    if(!getDeviceHandle().write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+    if(!getDeviceHandle()->write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
                    kMikroMK2_endpointDisplay))
     {
       return false;
@@ -394,7 +378,7 @@ bool DeviceMaschineMikroMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle().write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds))
     {
       return false;
     }
@@ -410,7 +394,7 @@ bool DeviceMaschineMikroMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle().read(input, kMikroMK2_endpointInput))
+    if (!getDeviceHandle()->read(input, kMikroMK2_endpointInput))
     {
       return false;
     }

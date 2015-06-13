@@ -80,9 +80,16 @@ Driver::~Driver()
   
 //----------------------------------------------------------------------------------------------------------------------
   
-tPtr<DeviceHandle> Driver::connect( tVendorId vid_, tProductId pid_  )
+Driver::tCollDeviceDescriptor Driver::enumerate()
 {
-  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( vid_,pid_ )));
+  return m_pImpl->enumerate();
+}
+  
+//----------------------------------------------------------------------------------------------------------------------
+  
+tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
+{
+  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( device_ )));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

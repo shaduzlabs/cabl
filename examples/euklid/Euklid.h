@@ -30,6 +30,7 @@
 
 #include <stdint.h>
 #include <Device.h>
+#include <Application.h>
 #include "Sequence.h"
 
 #define __MACOSX_CORE__ 1
@@ -38,11 +39,12 @@
 namespace sl
 {
 
-class kio::Device;
+using namespace kio;
 
-class Euklid
+class Euklid : public Application
 {
 public:
+
   enum class EncoderState
   {
     Length,
@@ -58,16 +60,16 @@ public:
     Configuration,
   };
 
-  Euklid(kio::Device*);
+  Euklid();
 
-  bool connect();
+  bool initHardware() override;
+  bool tick() override;
   
-  void buttonChanged(kio::Device::Button button_, bool buttonState_, bool shiftState_);
+  void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_);
-  void padChanged(kio::Device::Button pad_, uint16_t value_, bool shiftPressed);
+  void padChanged(Device::Button pad_, uint16_t value_, bool shiftPressed);
   
-  bool tick();
-
+  
   void updateClock();
   
   void play();
@@ -76,11 +78,6 @@ public:
   
   void drawConfigurationPage();
   void drawSequencerPage();
-
-  kio::Device* getDevice()
-  {
-    return m_pDevice;
-  }
 
   void setEncoderState(EncoderState encoderState_)
   {
@@ -100,13 +97,13 @@ public:
   void changeTrack();
 
 private:
+
   uint8_t getEncoderValue(
     bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_);
-  kio::Device::Button getPadLed(uint8_t padIndex_);
-  uint8_t getPadIndex(kio::Device::Button pad_);
+  Device::Button getPadLed(uint8_t padIndex_);
+  uint8_t getPadIndex(Device::Button pad_);
 
   Sequence<uint16_t> m_sequences[3];
-  kio::Device* m_pDevice;
 
   std::future<void> m_clockFuture;
   EncoderState m_encoderState;
@@ -129,4 +126,5 @@ private:
   uint16_t  m_delayOdd;
   
 };
-}
+
+} // namespace sl

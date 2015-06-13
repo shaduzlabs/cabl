@@ -96,13 +96,10 @@ static void daemonize()
 int main(int argc, const char* argv[])
 {
   daemonize();
-  syslog (LOG_NOTICE, "[k-io] started");
 
-  std::cout << "Version: " << kio::Lib::getVersion() << std::endl;
-
-  DeviceMaschineMikroMK2 device;
-  Euklid euklid(&device);
-
+  Euklid euklid;
+  euklid.run();
+  /*
   while(true)
   {
     if(!euklid.connect())
@@ -117,7 +114,7 @@ int main(int argc, const char* argv[])
       syslog (LOG_NOTICE, "[k-io] device disconnected");
     }
   }
-
+*/
   syslog (LOG_NOTICE, "[k-io] terminated");
   return 0;
 }

@@ -51,13 +51,41 @@ DriverHIDAPI::~DriverHIDAPI()
 {
   hid_exit();
 }
+  
+//----------------------------------------------------------------------------------------------------------------------
+
+Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
+{
+  Driver::tCollDeviceDescriptor collDeviceDescriptor;
+  struct hid_device_info *devices;
+
+	devices = hid_enumerate(0x0, 0x0);
+	while (devices)
+  {
+    std::wstring wSerialNumber(devices->serial_number);
+    std::string strSerialNumber(wSerialNumber.begin(), wSerialNumber.end());
+    DeviceDescriptor deviceDescriptor(
+      devices->vendor_id,
+      devices->product_id,
+      Device::getType(devices->vendor_id,devices->product_id),
+      strSerialNumber,
+      true
+    );
+    collDeviceDescriptor.push_back(deviceDescriptor);
+		devices = devices->next;
+	}
+	hid_free_enumeration(devices);
+  
+  return collDeviceDescriptor;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
-tPtr<DeviceHandleImpl> DriverHIDAPI::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 {
-
-  tDeviceHandle* pCurrentDevice = hid_open(vid_, pid_, nullptr);
+  std::string serialNumber(device_.getSerialNumber());
+  std::wstring wSerialNumber(serialNumber.begin(), serialNumber.end());
+  tDeviceHandle* pCurrentDevice = hid_open(device_.getVendorId(), device_.getProductId(), wSerialNumber.c_str());
   if (pCurrentDevice == nullptr)
     return nullptr;
     
@@ -72,6 +100,13 @@ DeviceHandleHIDAPI::DeviceHandleHIDAPI(tDeviceHandle* pDeviceHandle)
   : m_pCurrentDevice(pDeviceHandle)
 {
   m_inputBuffer.resize(kHIDAPIInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleHIDAPI::~DeviceHandleHIDAPI()
+{
+  disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -94,6 +94,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 SET( 
   inc_comm_INCLUDES          
     inc/comm/Driver.h
+    inc/comm/DeviceDescriptor.h
     inc/comm/DeviceHandle.h
     inc/comm/Transfer.h
 )
@@ -129,8 +130,9 @@ SET(
 
 SET( 
   inc_INCLUDES
-    inc/k-io.h
+    inc/Application.h
     inc/Device.h
+    inc/k-io.h
     inc/Macros.h
     inc/Types.h
 )
@@ -219,6 +221,8 @@ SET(
 
 SET( 
   src_SRCS
+    src/Application.cpp
+    src/Device.cpp
     src/k-io.cpp
 )
 
@@ -230,6 +234,7 @@ source_group("src\\gfx\\displays"    FILES ${src_gfx_displays_SRCS})
 source_group("src\\gfx\\fonts"       FILES ${src_gfx_fonts_SRCS})
 source_group("src\\gfx\\fonts\\data" FILES ${src_gfx_fonts_data_SRCS})
 source_group("src\\util"             FILES ${src_util_SRCS})
+source_group("src"                   FILES ${src_SRCS})
 
 SET ( 
       kompletIO_SRCS

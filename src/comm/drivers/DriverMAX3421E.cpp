@@ -54,17 +54,30 @@ DriverMAX3421E::~DriverMAX3421E()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-tPtr<DeviceHandleImpl> DriverMAX3421E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+Driver::tCollDeviceDescriptor DriverMAX3421E::enumerate()
+{
+  return Driver::tCollDeviceDescriptor();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+tPtr<DeviceHandleImpl> DriverMAX3421E::connect(const DeviceDescriptor&)
 {
   return nullptr;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceHandleMAX3421E::DeviceHandleMAX3421E(tDeviceHandle* pDeviceHandle)
-  : m_pCurrentDevice(pDeviceHandle)
+DeviceHandleMAX3421E::DeviceHandleMAX3421E(tDeviceHandle*)
 {
   m_inputBuffer.resize(kMAX3421EnputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleMAX3421E::~DeviceHandleMAX3421E()
+{
+  disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

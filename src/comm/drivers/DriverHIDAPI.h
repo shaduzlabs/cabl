@@ -45,7 +45,8 @@ public:
   DriverHIDAPI();
   ~DriverHIDAPI() override;
   
-  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  Driver::tCollDeviceDescriptor enumerate() override;
+  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
   
 };
   
@@ -58,6 +59,7 @@ public:
   using tDeviceHandle = hid_device;
   
   DeviceHandleHIDAPI(tDeviceHandle*);
+  ~DeviceHandleHIDAPI();
   
   void disconnect() override;
 

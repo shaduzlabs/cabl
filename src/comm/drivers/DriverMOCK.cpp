@@ -59,7 +59,14 @@ DriverMOCK::~DriverMOCK()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-tPtr<DeviceHandleImpl> DriverMOCK::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+Driver::tCollDeviceDescriptor DriverMOCK::enumerate()
+{
+  return Driver::tCollDeviceDescriptor();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+tPtr<DeviceHandleImpl> DriverMOCK::connect(const DeviceDescriptor&)
 {
   return nullptr;
 }
@@ -67,10 +74,16 @@ tPtr<DeviceHandleImpl> DriverMOCK::connect(Driver::tVendorId vid_, Driver::tProd
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceHandleMOCK::DeviceHandleMOCK(tDeviceHandle* pDeviceHandle)
-  : m_pCurrentDevice(pDeviceHandle)
+DeviceHandleMOCK::DeviceHandleMOCK(tDeviceHandle*)
 {
   m_inputBuffer.resize(kMOCKInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleMOCK::~DeviceHandleMOCK()
+{
+  disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

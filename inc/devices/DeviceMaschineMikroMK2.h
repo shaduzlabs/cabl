@@ -213,11 +213,9 @@ class DeviceMaschineMikroMK2 : public Device
  
 public:
   
-  DeviceMaschineMikroMK2();
+  DeviceMaschineMikroMK2(tPtr<DeviceHandle>);
   ~DeviceMaschineMikroMK2() override;
   
-  bool connect() override;
-
   void setLed( Device::Button, uint8_t                   ) override;
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
   

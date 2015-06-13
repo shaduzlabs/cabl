@@ -54,22 +54,37 @@ DriverSAM3X8E::~DriverSAM3X8E()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-tPtr<DeviceHandleImpl> DriverSAM3X8E::connect(Driver::tVendorId vid_, Driver::tProductId pid_)
+Driver::tCollDeviceDescriptor DriverSAM3X8E::enumerate()
+{
+  return Driver::tCollDeviceDescriptor();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+tPtr<DeviceHandleImpl> DriverSAM3X8E::connect(const DeviceDescriptor&)
 {
   return nullptr;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceHandleSAM3XE::DeviceHandleSAM3XE(tDeviceHandle* pDeviceHandle)
-  : m_pCurrentDevice(pDeviceHandle)
+DeviceHandleSAM3XE::DeviceHandleSAM3XE(tDeviceHandle*)
 {
   m_inputBuffer.resize(kSAM3X8EInputBufferSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleSAM3XE::~DeviceHandleSAM3XE()
+{
+  disconnect();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 void DeviceHandleSAM3XE::disconnect()
 {
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------

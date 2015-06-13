@@ -99,10 +99,8 @@ class DeviceMaschineMK1 : public Device
   
 public:
   
-  DeviceMaschineMK1();
+  DeviceMaschineMK1(tPtr<DeviceHandle>);
   ~DeviceMaschineMK1() override;
-  
-  bool connect() override;
   
   void setLed( Device::Button, uint8_t                   ) override;
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;

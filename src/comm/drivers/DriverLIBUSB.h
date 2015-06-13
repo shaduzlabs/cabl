@@ -47,7 +47,8 @@ public:
   DriverLIBUSB();
   ~DriverLIBUSB() override;
   
-  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  Driver::tCollDeviceDescriptor enumerate() override;
+  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
 
 private:
 
@@ -63,6 +64,7 @@ public:
   using tDeviceHandle = struct ::libusb_device_handle;
 
   DeviceHandleLibUSB(tDeviceHandle*);
+  ~DeviceHandleLibUSB();
 
   void disconnect() override;
 

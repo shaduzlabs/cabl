@@ -46,7 +46,8 @@ public:
   
   virtual ~DriverImpl(){}
 
-  virtual tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) = 0;
+  virtual Driver::tCollDeviceDescriptor  enumerate() = 0;
+  virtual tPtr<DeviceHandleImpl>         connect( const DeviceDescriptor& ) = 0;
 
 };
   

@@ -43,7 +43,8 @@ public:
   DriverMAX3421E();
   ~DriverMAX3421E() override;
   
-  tPtr<DeviceHandleImpl> connect( Driver::tVendorId vid_, Driver::tProductId pid_ ) override;
+  Driver::tCollDeviceDescriptor enumerate() override;
+  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
 
 };
 
@@ -56,7 +57,8 @@ public:
   using tDeviceHandle = void;
 
   DeviceHandleMAX3421E(tDeviceHandle*);
-
+  ~DeviceHandleMAX3421E();
+  
   void disconnect() override;
 
   bool read(Transfer&, uint8_t) override;
@@ -65,7 +67,6 @@ public:
 private:
 
   tRawData           m_inputBuffer;
-  tDeviceHandle*     m_pCurrentDevice;
 
 };
 

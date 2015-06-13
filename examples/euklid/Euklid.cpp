@@ -46,8 +46,8 @@ namespace sl
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Euklid::Euklid(kio::Device* pDevice_)
-  : m_pDevice(pDevice_)
+Euklid::Euklid()
+  : Application({DeviceDescriptor(0x17cc, 0x1200, Device::Type::MaschineMikroMk2)})
   , m_encoderState(EncoderState::Length)
   , m_screenPage(ScreenPage::Sequencer)
   , m_play(false)
@@ -63,18 +63,13 @@ Euklid::Euklid(kio::Device* pDevice_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool Euklid::connect()
-{
-  if(!m_pDevice->connect())
-  {
-    return false;
-  }
-  
-  m_pDevice->getDisplay(0)->black();
+bool Euklid::initHardware()
+{  
+  getDevice(0)->getDisplay(0)->black();
 
-  m_pDevice->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  m_pDevice->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  m_pDevice->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
@@ -87,6 +82,15 @@ bool Euklid::connect()
 
   m_pMidiout->openVirtualPort("Euklid");
   return true;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool Euklid::tick()
+{
+  bool result = getDevice(0)->tick();
+  updateGUI();
+  return result;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -161,15 +165,6 @@ void Euklid::padChanged(kio::Device::Button pad_, uint16_t value_, bool shiftPre
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool Euklid::tick()
-{
-  bool result = m_pDevice->tick();
-  updateGUI();
-  return result;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
 void Euklid::updateClock()
 {
   unsigned quarterDuration = 60000/m_bpm;
@@ -225,10 +220,10 @@ void Euklid::play()
 
 void Euklid::updateGUI()
 {
-  m_pDevice->getDisplay(0)->black();
-  m_pDevice->getDisplay(0)->printStr(32, 52, "E U K L I D");
-  m_pDevice->getDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
-  m_pDevice->getDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
+  getDevice(0)->getDisplay(0)->black();
+  getDevice(0)->getDisplay(0)->printStr(32, 52, "E U K L I D");
+  getDevice(0)->getDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
+  getDevice(0)->getDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
 
   switch (m_screenPage)
   {
@@ -249,13 +244,13 @@ void Euklid::updateGUI()
   switch (m_currentTrack)
   {
     case 0:
-      m_pDevice->setLed(kio::Device::Button::Group, 255, 0, 0);
+      getDevice(0)->setLed(kio::Device::Button::Group, 255, 0, 0);
       break;
     case 1:
-      m_pDevice->setLed(kio::Device::Button::Group, 0, 255, 0);
+      getDevice(0)->setLed(kio::Device::Button::Group, 0, 255, 0);
       break;
     case 2:
-      m_pDevice->setLed(kio::Device::Button::Group, 0, 0, 255);
+      getDevice(0)->setLed(kio::Device::Button::Group, 0, 0, 255);
       break;
   }
 
@@ -274,7 +269,7 @@ void Euklid::updateGUI()
 
         if (i >= m_lengths[t])
         {
-          m_pDevice->setLed(getPadLed(i), 0, 0, 0);
+          getDevice(0)->setLed(getPadLed(i), 0, 0, 0);
         }
         else if (pulses & (1 << i))
         {
@@ -283,13 +278,13 @@ void Euklid::updateGUI()
             switch (m_currentTrack)
             {
               case 0:
-                m_pDevice->setLed(pad, 255, 0, 0);
+                getDevice(0)->setLed(pad, 255, 0, 0);
                 break;
               case 1:
-                m_pDevice->setLed(pad, 0, 255, 0);
+                getDevice(0)->setLed(pad, 0, 255, 0);
                 break;
               case 2:
-                m_pDevice->setLed(pad, 0, 0, 255);
+                getDevice(0)->setLed(pad, 0, 0, 255);
                 break;
             }
           }
@@ -298,13 +293,13 @@ void Euklid::updateGUI()
             switch (m_currentTrack)
             {
               case 0:
-                m_pDevice->setLed(pad, 150, 0, 0);
+                getDevice(0)->setLed(pad, 150, 0, 0);
                 break;
               case 1:
-                m_pDevice->setLed(pad, 0, 150, 0);
+                getDevice(0)->setLed(pad, 0, 150, 0);
                 break;
               case 2:
-                m_pDevice->setLed(pad, 0, 0, 150);
+                getDevice(0)->setLed(pad, 0, 0, 150);
                 break;
             }
           }
@@ -313,11 +308,11 @@ void Euklid::updateGUI()
         {
           if (pos == (k % m_lengths[t]))
           {
-            m_pDevice->setLed(pad, 50, 50, 50);
+            getDevice(0)->setLed(pad, 50, 50, 50);
           }
           else
           {
-            m_pDevice->setLed(pad, 20, 20, 20);
+            getDevice(0)->setLed(pad, 20, 20, 20);
           }
         }
       }
@@ -333,13 +328,13 @@ void Euklid::drawConfigurationPage()
     m_encoderState = EncoderState::Speed;
   }
   
-  m_pDevice->getDisplay(0)->printStr(5, 2, " BPM   Shuffle");
-  m_pDevice->getDisplay(0)->printStr(10, 12, std::to_string(m_bpm).c_str());
-  m_pDevice->getDisplay(0)->printStr(59, 12, std::to_string(m_shuffle).c_str());
-  m_pDevice->setLed(kio::Device::Button::F1, 0);
-  m_pDevice->setLed(kio::Device::Button::F2, 0);
-  m_pDevice->setLed(kio::Device::Button::F3, 0);
-  m_pDevice->setLed(kio::Device::Button::Control, 255);
+  getDevice(0)->getDisplay(0)->printStr(5, 2, " BPM   Shuffle");
+  getDevice(0)->getDisplay(0)->printStr(10, 12, std::to_string(m_bpm).c_str());
+  getDevice(0)->getDisplay(0)->printStr(59, 12, std::to_string(m_shuffle).c_str());
+  getDevice(0)->setLed(kio::Device::Button::F1, 0);
+  getDevice(0)->setLed(kio::Device::Button::F2, 0);
+  getDevice(0)->setLed(kio::Device::Button::F3, 0);
+  getDevice(0)->setLed(kio::Device::Button::Control, 255);
   
   
   
@@ -347,14 +342,14 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      m_pDevice->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
-      m_pDevice->setLed(kio::Device::Button::F2, 255);
+      getDevice(0)->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Speed:
     {
-      m_pDevice->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
-      m_pDevice->setLed(kio::Device::Button::F1, 255);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
     default:
@@ -371,39 +366,39 @@ void Euklid::drawSequencerPage()
     m_encoderState = EncoderState::Length;
   }
 
-  m_pDevice->getDisplay(0)->printStr(5, 2, "Length Pulses Rotate");
+  getDevice(0)->getDisplay(0)->printStr(5, 2, "Length Pulses Rotate");
 
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      m_pDevice->getDisplay(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, kio::Canvas::tColor::WHITE);
+      getDevice(0)->getDisplay(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, kio::Canvas::tColor::WHITE);
     }
   }
 
-  m_pDevice->setLed(kio::Device::Button::F1, 0);
-  m_pDevice->setLed(kio::Device::Button::F2, 0);
-  m_pDevice->setLed(kio::Device::Button::F3, 0);
-  m_pDevice->setLed(kio::Device::Button::Control, 0);
+  getDevice(0)->setLed(kio::Device::Button::F1, 0);
+  getDevice(0)->setLed(kio::Device::Button::F2, 0);
+  getDevice(0)->setLed(kio::Device::Button::F3, 0);
+  getDevice(0)->setLed(kio::Device::Button::Control, 0);
 
   switch (m_encoderState)
   {
     case EncoderState::Pulses:
     {
-      m_pDevice->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
-      m_pDevice->setLed(kio::Device::Button::F2, 255);
+      getDevice(0)->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
-      m_pDevice->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
-      m_pDevice->setLed(kio::Device::Button::F3, 255);
+      getDevice(0)->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->setLed(kio::Device::Button::F3, 255);
       break;
     }
     case EncoderState::Length:
     {
-      m_pDevice->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
-      m_pDevice->setLed(kio::Device::Button::F1, 255);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
     default:
@@ -419,11 +414,11 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        m_pDevice->getDisplay(0)
+        getDevice(0)->getDisplay(0)
           ->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
       }
     }
-    m_pDevice->getDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::tColor::INVERT);
+    getDevice(0)->getDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::tColor::INVERT);
   }
 }
 
@@ -438,17 +433,22 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
     {
       m_pulses[m_currentTrack]
         = getEncoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Rotate:
     {
       m_rotates[m_currentTrack]
         = getEncoderValue(valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Length:
     {
       m_lengths[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Shuffle:
@@ -466,8 +466,6 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
     default:
       break;
   }
-  m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
-  m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -477,12 +475,12 @@ void Euklid::togglePlay()
   m_play = !m_play;
   if (m_play)
   {
-    m_pDevice->setLed(kio::Device::Button::Play, 255);
+    getDevice(0)->setLed(kio::Device::Button::Play, 255);
     m_clockFuture = std::async(std::launch::async, std::bind(&Euklid::play, this));
   }
   else
   {
-    m_pDevice->setLed(kio::Device::Button::Play, 0);
+    getDevice(0)->setLed(kio::Device::Button::Play, 0);
     m_clockFuture.get();
     for (uint8_t t = 0; t < kEuklidNumTracks; t++)
     {
@@ -565,6 +563,7 @@ uint8_t Euklid::getPadIndex(kio::Device::Button pad_)
     case kio::Device::Button::Pad2:  return 13;
     case kio::Device::Button::Pad3:  return 14;
     case kio::Device::Button::Pad4:  return 15;
+    default: return 0;
   }
   return 0;
 }

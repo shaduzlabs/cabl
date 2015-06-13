@@ -57,8 +57,53 @@ DriverLIBUSB::~DriverLIBUSB()
 }
   
 //----------------------------------------------------------------------------------------------------------------------
+
+Driver::tCollDeviceDescriptor DriverLIBUSB::enumerate()
+{
+  Driver::tCollDeviceDescriptor collDeviceDescriptor;
   
-tPtr<DeviceHandleImpl> DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tProductId pid_ )
+  libusb_device **devices;
+  ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
+  
+  tDeviceHandle* pHandle = nullptr;
+  for( int i=0; i<nDevices; ++i )
+  {
+    libusb_device *device = devices[i];
+    if(libusb_open(device, &pHandle) < 0)
+    {
+      continue;
+    }
+    struct libusb_device_descriptor descriptor;
+    libusb_get_device_descriptor(device, &descriptor);
+    std::string strSerialNumber;
+    if(descriptor.iSerialNumber != 0)
+    {
+      char sNum[256];
+      
+      if(libusb_get_string_descriptor_ascii(pHandle, descriptor.iSerialNumber,(unsigned char*)sNum, sizeof(sNum)) > 0)
+      {
+        strSerialNumber = sNum;
+      }
+    }
+    DeviceDescriptor deviceDescriptor(
+      descriptor.idVendor,
+      descriptor.idProduct,
+      Device::getType(descriptor.idVendor,descriptor.idProduct),
+      strSerialNumber,
+      false
+    );
+
+    collDeviceDescriptor.push_back(deviceDescriptor);
+  }
+  
+  libusb_free_device_list(devices, 1);
+
+  return collDeviceDescriptor;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+  
+tPtr<DeviceHandleImpl> DriverLIBUSB::connect( const DeviceDescriptor& device_ )
 {
   
   bool bConnected = false;
@@ -71,9 +116,12 @@ tPtr<DeviceHandleImpl> DriverLIBUSB::connect( Driver::tVendorId vid_, Driver::tP
     libusb_device *device = devices[i];
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    if( ( descriptor.idVendor != vid_ ) || ( descriptor.idProduct != pid_ ) )
-      continue;
-    
+    if( (descriptor.idVendor != device_.getVendorId()) ||
+        (descriptor.idProduct != device_.getProductId())
+    )
+    {
+      continue;  // ADD SERIAL NUMBER!
+    }
     
     int e = libusb_open(device, &pCurrentDevice);
     if(e == 0)
@@ -102,6 +150,13 @@ DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
   : m_pCurrentDevice(pDeviceHandle)
 {
   m_inputBuffer.resize(kLIBUSBInputBufferSize);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleLibUSB::~DeviceHandleLibUSB()
+{
+  disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
