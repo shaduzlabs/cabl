@@ -26,7 +26,7 @@
 
 #include "gfx/displays/GDisplayMaschineMK2.h"
 
-#include "util/Functions_SL.h"
+#include "util/Functions.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 

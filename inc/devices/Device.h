@@ -190,6 +190,7 @@ public:
   virtual void init() = 0;
 
   virtual bool tick() = 0;
+
   virtual GDisplay* getDisplay(uint8_t displayIndex_) = 0;
 
   virtual void setLed(Button, uint8_t) = 0;

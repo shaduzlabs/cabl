@@ -23,68 +23,55 @@
   If not, see <http://www.gnu.org/licenses/>.
 
 ----------------------------------------------------------------------------------------------------------------------*/
-#pragma once
 
-#include "util/Macros.h"
+#include "util/Functions.h"
+
+#if defined (__arm__) && defined (__SAM3X8E__)
+  #include <Arduino.h>
+#else
+#include <cstdlib>
+#endif
 
 namespace sl
 {
-namespace kio
+namespace util
 {
-
+  
 //----------------------------------------------------------------------------------------------------------------------
 
-class Font
+uint32_t randomRange( uint32_t min_, uint32_t max_ )
 {
-
-public:
-
-  virtual uint8_t  getWidth()         const noexcept = 0;
-  virtual uint8_t  getHeight()        const noexcept = 0;
-  virtual uint8_t  getCharSpacing()   const noexcept = 0;
-  
-  virtual uint8_t  getFirstChar()     const noexcept = 0;
-  virtual uint8_t  getLastChar()      const noexcept = 0;
-  
-  virtual uint8_t  getBytesPerLine()  const noexcept = 0;
-  
-  virtual bool     getPixel( uint8_t char_, uint8_t x_, uint8_t y_ ) const noexcept = 0;
-  
-  virtual inline bool getPixelImpl( uint8_t* pFontData_, uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
-  {
-    if( c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
-      return false;
-    
-    if( getBytesPerLine() == 1 )
-    {
-      return ( ( pFontData_[ ( c_ * getHeight() ) + y_ ] & ( 0x080 >> x_ ) ) > 0 );
-    }
-    else
-    {
-      return (
-       ( pFontData_[ ( c_ * getHeight() ) + ( y_ * getBytesPerLine() ) + ( x_ >> 3 ) ] & ( 0x080 >> ( x_ % 8 ) ) ) > 0
-      );
-    }
+#if defined (__arm__) && defined (__SAM3X8E__)
+  return random( min_, max_ );
+#else
+  uint32_t base_random = rand(); /* in [0, RAND_MAX] */
+  if ( RAND_MAX == base_random )
+    return randomRange( min_, max_ );
+  /* now guaranteed to be in [0, RAND_MAX) */
+  int32_t range       = max_ - min_,
+  remainder   = RAND_MAX % range,
+  bucket      = RAND_MAX / range;
+  /* There are range buckets, plus one smaller interval
+   within remainder of RAND_MAX */
+  if ( base_random < static_cast<uint32_t>(RAND_MAX - remainder) ) {
+    return min_ + base_random/bucket;
+  } else {
+    return randomRange ( min_, max_ );
   }
-};
+#endif  
+}
 
-//----------------------------------------------------------------------------------------------------------------------
-
-template<class TFontClass>
-class FontBase : public Font
+uint8_t reverseByte( uint8_t byte )
 {
-  
-public:
+  byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
+  byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
+  byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
+  return byte;
+}
 
-  static TFontClass* get()
-  {
-    static TFontClass m_font;
-    return &m_font;
-  }
-  
-};
-  
 //----------------------------------------------------------------------------------------------------------------------
 
-} // kio
+} // util
 } // sl
+
+//----------------------------------------------------------------------------------------------------------------------

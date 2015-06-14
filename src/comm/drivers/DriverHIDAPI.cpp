@@ -67,7 +67,6 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
     DeviceDescriptor deviceDescriptor(
       devices->vendor_id,
       devices->product_id,
-      Device::getType(devices->vendor_id,devices->product_id),
       strSerialNumber,
       true
     );

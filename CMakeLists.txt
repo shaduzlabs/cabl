@@ -92,6 +92,11 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
 SET( 
+  inc_app_INCLUDES          
+    inc/app/Application.h
+)
+
+SET( 
   inc_comm_INCLUDES          
     inc/comm/Driver.h
     inc/comm/DeviceDescriptor.h
@@ -101,6 +106,8 @@ SET(
 
 SET( 
   inc_devices_INCLUDES       
+    inc/devices/Device.h
+    inc/devices/DeviceFactory.h
     inc/devices/DeviceMaschineMK1.h
     inc/devices/DeviceMaschineMK2.h
     inc/devices/DeviceMaschineMikroMK1.h
@@ -123,20 +130,19 @@ SET(
 
 SET( 
   inc_util_INCLUDES
-    inc/util/CircularBuffer_SL.h
-    inc/util/Functions_SL.h
-    inc/util/Version_SL.h
+    inc/util/CircularBuffer.h
+    inc/util/Functions.h
+    inc/util/Macros.h
+    inc/util/Types.h
+    inc/util/Version.h
 )
 
 SET( 
   inc_INCLUDES
-    inc/Application.h
-    inc/Device.h
     inc/k-io.h
-    inc/Macros.h
-    inc/Types.h
 )
 
+source_group("inc\\app"              FILES ${inc_app_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
@@ -146,6 +152,7 @@ source_group("inc"                   FILES ${inc_INCLUDES})
 
 SET ( 
   k-IO_INCLUDES
+    ${inc_app_INCLUDES}
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
@@ -156,6 +163,11 @@ SET (
 
 
 # Source files ------------------------------------------------------------------------------------------------------- #
+
+SET( 
+  src_app_SRCS
+    src/app/Application.cpp
+)
 
 SET( 
   src_comm_drivers_SRCS      
@@ -181,6 +193,7 @@ SET(
 
 SET( 
   src_devices_SRCS
+    src/devices/DeviceFactory.cpp
     src/devices/DeviceMaschineMK1.cpp
     src/devices/DeviceMaschineMK2.cpp
     src/devices/DeviceMaschineMikroMK2.cpp
@@ -215,18 +228,17 @@ SET(
 
 SET( 
   src_util_SRCS
-    src/util/CircularBuffer_SL.cpp
-    src/util/Functions_SL.cpp
-    src/util/Version_SL.cpp
+    src/util/CircularBuffer.cpp
+    src/util/Functions.cpp
+    src/util/Version.cpp
 )
 
 SET( 
   src_SRCS
-    src/Application.cpp
-    src/Device.cpp
     src/k-io.cpp
 )
 
+source_group("src\\app"              FILES ${src_app_SRCS})
 source_group("src\\comm"             FILES ${src_comm_SRCS})
 source_group("src\\comm\\drivers"    FILES ${src_comm_drivers_SRCS})
 source_group("src\\devices"          FILES ${src_devices_SRCS})
@@ -240,6 +252,7 @@ source_group("src"                   FILES ${src_SRCS})
 SET ( 
       k-IO_SRCS
       ${src_SRCS}
+      ${src_app_SRCS}
       ${src_comm_drivers_SRCS}
       ${src_comm_SRCS}
       ${src_devices_SRCS}

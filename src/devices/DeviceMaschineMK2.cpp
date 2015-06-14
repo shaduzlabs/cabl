@@ -27,8 +27,7 @@
 #include "devices/DeviceMaschineMK2.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
-#include "Macros.h"
-#include "util/Functions_SL.h"
+#include "util/Functions.h"
 
 #include <thread>
 

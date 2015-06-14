@@ -27,10 +27,10 @@
 #pragma once
 
 #include <future>
-
 #include <stdint.h>
-#include <Device.h>
-#include <Application.h>
+
+#include <k-io.h>
+
 #include "Sequence.h"
 
 #define __MACOSX_CORE__ 1

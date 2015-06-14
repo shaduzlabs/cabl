@@ -47,7 +47,7 @@ namespace sl
 //----------------------------------------------------------------------------------------------------------------------
 
 Euklid::Euklid()
-  : Application({DeviceDescriptor(0x17cc, 0x1200, Device::Type::MaschineMikroMk2)})
+  : Application({DeviceDescriptor(0x17cc, 0x1200)})
   , m_encoderState(EncoderState::Length)
   , m_screenPage(ScreenPage::Sequencer)
   , m_play(false)

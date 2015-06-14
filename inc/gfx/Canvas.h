@@ -26,7 +26,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "Types.h"
+#include "util/Types.h"
 
 namespace sl
 {

@@ -27,8 +27,7 @@
 #include "devices/DeviceMaschineMK1.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
-#include "util/Functions_SL.h"
-#include "Macros.h"
+#include "util/Functions.h"
 
 #include "gfx/displays/GDisplayMaschineMK1.h"
 
@@ -473,7 +472,15 @@ bool DeviceMaschineMK1::read()
   
 
   if(getDeviceHandle()->read( input, kMASMK1_endpointInputPads ) )
-  {
+  {     /*
+    std::cout << std::setfill('0') << std::internal;
+
+    for( int i = 0; i < input.size(); i++ )
+    {
+    std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
+    }
+
+    std::cout << std::endl << std::endl;*/
     processPads(input);
   }
 
@@ -510,9 +517,10 @@ void DeviceMaschineMK1::processPads(const Transfer& input_)
   //\todo process pad data
   for (int i = 1; i < kMASMK1_padDataSize-1; i += 2)
   {
-    uint16_t l = input_[i];
-    uint16_t h = input_[i + 1];
+    uint16_t h = input_[i];
+    uint16_t l = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
+
     m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
     m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
 

@@ -27,7 +27,7 @@
 #pragma once
 
 #include <cstdint>
-#include "Types.h"
+#include "util/Types.h"
 #include "comm/DeviceHandleImpl.h"
 
 namespace sl

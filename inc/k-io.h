@@ -26,9 +26,14 @@
 
 #pragma once
 
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "app/Application.h"
+
+#include "devices/DeviceFactory.h"
 #include "devices/DeviceMaschineMK1.h"
-#include "util/Version_SL.h"
+#include "devices/DeviceMaschineMK2.h"
+#include "devices/DeviceMaschineMikroMK2.h"
+
+#include "util/Version.h"
 
 #include "k-io-config.h"
 

@@ -24,7 +24,8 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "Application.h"
+#include "app/Application.h"
+
 #include <thread> //remove and use a custom sleep function!
 #include <iostream>
 
@@ -46,10 +47,10 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 : m_collSupportedDevices(collSupportedDevices_)
 {
   std::cout << "k-IO Version " << Lib::getVersion() << std::endl;
-  m_collKnownDevices.emplace_back(0x17CC, 0x0808, Device::Type::MaschineMk1); // MK1
-  m_collKnownDevices.emplace_back(0x17CC, 0x1140, Device::Type::MaschineMk2); // MK2
-  m_collKnownDevices.emplace_back(0x17CC, 0x1110, Device::Type::MaschineMikroMk1); // Mikro MK1
-  m_collKnownDevices.emplace_back(0x17CC, 0x1200, Device::Type::MaschineMikroMk2); // Mikro MK2
+  m_collKnownDevices.emplace_back(0x17CC, 0x0808); // MK1
+  m_collKnownDevices.emplace_back(0x17CC, 0x1140); // MK2
+  m_collKnownDevices.emplace_back(0x17CC, 0x1110); // Mikro MK1
+  m_collKnownDevices.emplace_back(0x17CC, 0x1200); // Mikro MK2
 }
 
 //----------------------------------------------------------------------------------------------------------------------

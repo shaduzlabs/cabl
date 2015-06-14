@@ -29,7 +29,7 @@
 #include <map>
 
 #include "comm/Driver.h"
-#include "Device.h"
+#include "devices/Device.h"
 
 namespace sl
 {

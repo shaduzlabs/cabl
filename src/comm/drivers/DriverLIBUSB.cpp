@@ -89,7 +89,6 @@ Driver::tCollDeviceDescriptor DriverLIBUSB::enumerate()
     DeviceDescriptor deviceDescriptor(
       descriptor.idVendor,
       descriptor.idProduct,
-      Device::getType(descriptor.idVendor,descriptor.idProduct),
       strSerialNumber,
       false
     );

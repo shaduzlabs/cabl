@@ -28,7 +28,7 @@
 
 #include <cstdint>
 #include <string>
-#include "Types.h"
+#include "util/Types.h"
 #include "DeviceDescriptor.h"
 #include "DeviceHandle.h"
 

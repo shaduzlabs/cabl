@@ -24,32 +24,25 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "Device.h"
+#pragma once
 
-//----------------------------------------------------------------------------------------------------------------------
+#include "util/Types.h"
 
 namespace sl
 {
 namespace kio
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+  class Device;
+  class DeviceDescriptor;
 
- Device::Type Device::getType(uint16_t vendorId_, uint16_t productId_)
- {
-    if(vendorId_!=0x17CC)
-    {
-      return Device::Type::Unknown;
-    }
-    switch(productId_)
-    {
-      case 0x0808: return Device::Type::MaschineMk1;
-      case 0x1140: return Device::Type::MaschineMk2;
-      case 0x1110: return Device::Type::MaschineMikroMk1;
-      case 0x1200: return Device::Type::MaschineMikroMk2;
-      default: return Device::Type::Unknown;
-    }    
- }
+class DeviceFactory
+{
+public:
+
+  static tPtr<Device> getDevice(const DeviceDescriptor&);
+
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -27,7 +27,6 @@
 #pragma once
 
 #include <string>
-#include "Device.h"
 
 namespace sl
 {
@@ -46,20 +45,17 @@ public:
   DeviceDescriptor(
     tVendorId vendorId_,
     tProductId productId_,
-    Device::Type type_,
     tSerialNumber serialNumber_="",
     bool isHid_ = false
   )
     :m_vendorId(vendorId_)
     ,m_productId(productId_)
-    ,m_type(type_)
     ,m_serialNumber(serialNumber_)
     ,m_isHid(isHid_)
   { }
   
   tVendorId getVendorId() const{ return m_vendorId; }
   tProductId getProductId() const{ return m_productId; }
-  Device::Type getType() const { return m_type; }
   tSerialNumber getSerialNumber() const{ return m_serialNumber; }
   bool isHID() const { return m_isHid; }
 
@@ -82,7 +78,6 @@ private:
 
   tVendorId m_vendorId;
   tProductId m_productId;
-  Device::Type m_type;
   tSerialNumber m_serialNumber;
   bool m_isHid = false;
 };

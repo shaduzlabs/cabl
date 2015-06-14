@@ -35,7 +35,7 @@
 #include "gfx/fonts/FontNormal.h"
 #include "gfx/fonts/FontBig.h"
 
-#include "util/Functions_SL.h"
+#include "util/Functions.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
