@@ -547,22 +547,22 @@ uint8_t Euklid::getPadIndex(kio::Device::Pad pad_)
 {
   switch (pad_)
   {
-    case kio::Device::Button::Pad13: return 0;
-    case kio::Device::Button::Pad14: return 1;
-    case kio::Device::Button::Pad15: return 2;
-    case kio::Device::Button::Pad16: return 3;
-    case kio::Device::Button::Pad9:  return 4;
-    case kio::Device::Button::Pad10: return 5;
-    case kio::Device::Button::Pad11: return 6;
-    case kio::Device::Button::Pad12: return 7;
-    case kio::Device::Button::Pad5:  return 8;
-    case kio::Device::Button::Pad6:  return 9;
-    case kio::Device::Button::Pad7:  return 10;
-    case kio::Device::Button::Pad8:  return 11;
-    case kio::Device::Button::Pad1:  return 12;
-    case kio::Device::Button::Pad2:  return 13;
-    case kio::Device::Button::Pad3:  return 14;
-    case kio::Device::Button::Pad4:  return 15;
+    case kio::Device::Pad::Pad13: return 0;
+    case kio::Device::Pad::Pad14: return 1;
+    case kio::Device::Pad::Pad15: return 2;
+    case kio::Device::Pad::Pad16: return 3;
+    case kio::Device::Pad::Pad9:  return 4;
+    case kio::Device::Pad::Pad10: return 5;
+    case kio::Device::Pad::Pad11: return 6;
+    case kio::Device::Pad::Pad12: return 7;
+    case kio::Device::Pad::Pad5:  return 8;
+    case kio::Device::Pad::Pad6:  return 9;
+    case kio::Device::Pad::Pad7:  return 10;
+    case kio::Device::Pad::Pad8:  return 11;
+    case kio::Device::Pad::Pad1:  return 12;
+    case kio::Device::Pad::Pad2:  return 13;
+    case kio::Device::Pad::Pad3:  return 14;
+    case kio::Device::Pad::Pad4:  return 15;
     default: return 0;
   }
   return 0;
