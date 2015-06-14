@@ -42,10 +42,6 @@
 
 namespace
 {
-
-static const uint16_t kMikroMK2_vendorId = 0x17CC;
-static const uint16_t kMikroMK2_productId = 0x1200;
-
 static const uint8_t kMikroMK2_endpointDisplay = 0x08;
 static const uint8_t kMikroMK2_endpointLeds = 0x01;
 static const uint8_t kMikroMK2_endpointInput = 0x84;

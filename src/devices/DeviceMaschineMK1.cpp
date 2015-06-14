@@ -43,8 +43,6 @@
 
 namespace
 {
-  static const uint16_t kMASMK1_vendorId                      = 0x17CC;
-  static const uint16_t kMASMK1_productId                     = 0x0808;
   static const uint8_t  kMASMK1_endpointDisplay               = 0x08;
   static const uint8_t  kMASMK1_endpointOut                   = 0x01;
   static const uint8_t  kMASMK1_endpointInputPads             = 0x84;
