@@ -398,8 +398,6 @@ private:
   uint16_t                m_width;                                //!< Canvas width in pixels
   uint16_t                m_height;                               //!< Canvas height in pixels
   
-  volatile tFont          m_defaultFont;                          //!< Default font
-  
   Font*                   m_pFont;                                //!< The current font
 };
 

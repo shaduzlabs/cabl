@@ -53,7 +53,6 @@ namespace kio
 Canvas::Canvas( uint16_t width_, uint16_t height_, tAllocation allocationType_ )
 : m_width(width_)
 , m_height(height_)
-, m_defaultFont( tFont::SMALL )
 , m_pFont( FontNormal::get() )
 {
   switch( allocationType_ )
