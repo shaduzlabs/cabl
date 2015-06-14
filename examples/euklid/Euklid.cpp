@@ -67,9 +67,12 @@ bool Euklid::initHardware()
 {  
   getDevice(0)->getDisplay(0)->black();
 
-  getDevice(0)->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackButtonChanged(
+    std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackEncoderChanged(
+    std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackPadChanged(
+    std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
@@ -342,13 +345,15 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::tColor::INVERT,
+                                                  kio::Canvas::tColor::INVERT);
       getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Speed:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::tColor::INVERT,
+                                                  kio::Canvas::tColor::INVERT);
       getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
@@ -361,7 +366,8 @@ void Euklid::drawConfigurationPage()
 
 void Euklid::drawSequencerPage()
 {
-  if(m_encoderState != EncoderState::Length && m_encoderState != EncoderState::Pulses && m_encoderState != EncoderState::Rotate)
+  if (m_encoderState != EncoderState::Length && m_encoderState != EncoderState::Pulses
+      && m_encoderState != EncoderState::Rotate)
   {
     m_encoderState = EncoderState::Length;
   }
@@ -385,19 +391,22 @@ void Euklid::drawSequencerPage()
   {
     case EncoderState::Pulses:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::tColor::INVERT,
+                                                  kio::Canvas::tColor::INVERT);
       getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::tColor::INVERT,
+                                                  kio::Canvas::tColor::INVERT);
       getDevice(0)->setLed(kio::Device::Button::F3, 255);
       break;
     }
     case EncoderState::Length:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::tColor::INVERT, kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::tColor::INVERT,
+                                                  kio::Canvas::tColor::INVERT);
       getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
@@ -414,8 +423,8 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        getDevice(0)->getDisplay(0)
-          ->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
+        getDevice(0)->getDisplay(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7,
+                                                    kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
       }
     }
     getDevice(0)->getDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::tColor::INVERT);
