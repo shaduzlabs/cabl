@@ -37,121 +37,62 @@ namespace kio
 
 class DeviceMaschineMK2 : public Device
 {
-  
+ 
 public:
   
-  typedef enum{
-     btnLedControl = 1,
-     btnLedStep,
-     btnLedBrowse,
-     btnLedSampling,
-     brnLedBrowseLeft,
-     btnLedBrowseRight,
-     btnLedAll,
-     btnLedAutoWrite,
-  
-     btnLedP1,
-     btnLedP2,
-     btnLedP3,
-     btnLedP4,
-     btnLedP5,
-     btnLedP6,
-     btnLedP7,
-     btnLedP8,
-
-     btnLedScene,
-     btnLedPattern,
-     btnLedPadMode,
-     btnLedNavigate,
-     btnLedDuplicate,
-     btnLedSelect,
-     btnLedSolo,
-     btnLedMute,
-  
-     btnLedVolume,
-     btnLedSwing,
-     btnLedTempo,
-     btnLedMasterLeft,
-     btnLedMasterRight,
-     btnLedEnter,
-     btnLedNoteRepeat,
-
-     btnLedRestart = 49,
-     btnLedStepLeft,
-     btnLedStepRight,
-     btnLedGrid,
-     btnLedPlay,
-     btnLedRec,
-     btnLedErase,
-     btnLedShift,
-    
-  } eButtonLed;
-  
-   typedef enum{
-     
-     btnP1,
-     btnP2,
-     btnP3,
-     btnP4,
-     btnP5,
-     btnP6,
-     btnP7,
-     btnP8,
-    
-     btnControl,
-     btnStep,
-     btnBrowse,
-     btnSampling,
-     brnBrowseLeft,
-     btnBrowseRight,
-     btnAll,
-     btnAutoWrite,
-    
-     btnVolume,
-     btnSwing,
-     btnTempo,
-     btnMasterLeft,
-     btnMasterRight,
-     btnEnter,
-     btnNoteRepeat,
-     btnNotUsed,
-
-     btnGroupA,
-     btnGroupB,
-     btnGroupC,
-     btnGroupD,
-     btnGroupE,
-     btnGroupF,
-     btnGroupG,
-     btnGroupH,
-  
-     btnRestart,
-     btnStepLeft,
-     btnStepRight,
-     btnGrid,
-     btnPlay,
-     btnRec,
-     btnErase,
-     btnShift,
-     
-     btnScene,
-     btnPattern,
-     btnPadMode,
-     btnNavigate,
-     btnDuplicate,
-     btnSelect,
-     btnSolo,
-     btnMute,
-
-     btnLAST,
-  } eButton;
-
-  DeviceMaschineMK2();
+  DeviceMaschineMK2(tPtr<DeviceHandle>);
   ~DeviceMaschineMK2() override;
   
-  void setLed( Device::Led, uint8_t                   ) override;
-  void setLed( Device::Led, uint8_t, uint8_t, uint8_t ) override;
+  void setLed( Device::Button, uint8_t                   ) override;
+  void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
   
+  GDisplay* getDisplay( uint8_t displayIndex_ ) override;
+  bool tick() override;
+
+private:
+
+  enum class Led    : uint8_t;
+  enum class Button : uint8_t;
+ 
+  static constexpr uint8_t kMASMK2_nDisplays         = 2;
+  static constexpr uint8_t kMASMK2_nButtons          = 45;
+  static constexpr uint8_t kMASMK2_ledsDataSize      = 78;
+  static constexpr uint8_t kMASMK2_buttonsDataSize   = 5;
+  static constexpr uint8_t kMASMK2_padDataSize       = 64;
+  static constexpr uint8_t kMASMK2_nPads             = 16;
+  static constexpr uint8_t kMASMK2_padsBufferSize    = 16;
+
+  using tBuffer = util::CircularBuffer<uint16_t, kMASMK2_padsBufferSize>;
+
+  void init() override;
+
+  void initDisplay() const;
+  bool sendFrame();
+  bool sendLeds();
+  bool read();
+  
+  void processButtons( const Transfer& );
+  void processPads( const Transfer& );
+  
+  bool isRGBLed( Led );
+  Led getLed( Device::Button ) const noexcept;
+
+  Device::Button getDeviceButton( Button btn_ ) const noexcept;
+  bool isButtonPressed( Button button ) const noexcept;
+  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+
+  tPtr<GDisplay>      m_displays[kMASMK2_nDisplays];
+  
+  tRawData            m_leds;
+  tRawData            m_buttons;
+  bool                m_buttonStates[kMASMK2_nButtons];
+  uint8_t             m_encoderValue;
+  
+  tBuffer             m_padsRawData[ kMASMK2_nPads ];
+  uint16_t            m_padsAvgData[ kMASMK2_nPads ];
+  
+  bool                m_isDirtyLeds;
+
 };
 
 //----------------------------------------------------------------------------------------------------------------------
