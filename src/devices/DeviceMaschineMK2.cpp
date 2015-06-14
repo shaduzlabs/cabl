@@ -433,14 +433,15 @@ void DeviceMaschineMK2::initDisplay() const
 
 bool DeviceMaschineMK2::sendFrame()
 {
-  uint8_t yOffset = 0;
+  uint8_t chunkByte = 0;
   for(uint8_t i=0; i<kMASMK2_nDisplays;i++)
   {
-    for(uint8_t chunk = 0; chunk < 4; chunk++, yOffset += 2)
+    for(uint8_t chunk = 0; chunk < 8; chunk++)
     {
       uint8_t firstByte = 0xE0|i;
+      chunkByte = chunk * 8;
       const uint8_t* ptr = m_displays[i]->getPtr(chunk * 256);
-      if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+      if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
                      kMASMK2_endpointDisplay))
       {
         return false;
@@ -454,6 +455,7 @@ bool DeviceMaschineMK2::sendFrame()
 
 bool DeviceMaschineMK2::sendLeds()
 {
+return true;
 //  if (m_isDirtyLeds)
   {
     if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsButtons[0], 78), kMASMK2_endpointLeds))

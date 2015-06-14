@@ -63,8 +63,8 @@ public:
   {
     return (m_vendorId == other_.m_vendorId)         &&
            (m_productId == other_.m_productId)       &&
-           (m_serialNumber == other_.m_serialNumber) &&
-           (m_isHid == other_.m_isHid);
+           (m_serialNumber == other_.m_serialNumber) ;//&&
+//           (m_isHid == other_.m_isHid);
   }
 
   bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }
