@@ -85,6 +85,7 @@ Driver::tCollDeviceDescriptor DriverLIBUSB::enumerate()
         strSerialNumber = sNum;
       }
     }
+    libusb_close(pHandle);
     DeviceDescriptor deviceDescriptor(
       descriptor.idVendor,
       descriptor.idProduct,

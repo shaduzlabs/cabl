@@ -51,7 +51,7 @@ Transfer::Transfer( uint16_t length_ )
 Transfer::Transfer( tRawData data_ )
 {
   m_data.resize(data_.size());
-  std::copy(data_.begin(),data_.end(),data_.begin());
+  std::copy(data_.begin(),data_.end(), m_data.begin());
 }
 
 //----------------------------------------------------------------------------------------------------------------------

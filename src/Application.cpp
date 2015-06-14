@@ -117,17 +117,33 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
   }
   for (const auto& d : devicesList_)
   {
-    if(isSupportedDevice(d))
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+    Driver::tDriver tDriver = d.isHID() ? Driver::tDriver::HIDAPI : Driver::tDriver::LIBUSB;
+#endif
+    tPtr<DeviceHandle> pDeviceHandle = getDriver(tDriver)->connect(d);
+
+    if(isSupportedDevice(d) && pDeviceHandle)
     {
-      tPtr<DeviceHandle> pDeviceHandle = getDriver(Driver::tDriver::HIDAPI)->connect(d);
-      if(pDeviceHandle)
-      {
-        m_collDevices.emplace_back(new DeviceMaschineMikroMK2(std::move(pDeviceHandle)));
-        m_connected = true;
-      }
+      m_collDevices.emplace_back(new DeviceMaschineMikroMK2(std::move(pDeviceHandle)));
+      m_connected = true;
     }
     else
     {
+ 
+      m_collDevices.emplace_back(new DeviceMaschineMK1(std::move(pDeviceHandle)));
+      m_collDevices[0]->init();
+      m_connected = true;
+      /*
+      tPtr<Device> unsupportedDevice(new DeviceMaschineMK1(std::move(pDeviceHandle)));
+      unsupportedDevice->init();
+      unsupportedDevice->tick();
+
+      unsupportedDevice->getDisplay(0)->black();
+      unsupportedDevice->getDisplay(0)->printStr(0, 0, "Unsupported device!", kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
+      unsupportedDevice->getDisplay(1)->printStr(12, 44, "Unsupported device!",kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
+
+      unsupportedDevice->tick();
+      */
       // Device is known but unsupported by the current Application
     }
   }

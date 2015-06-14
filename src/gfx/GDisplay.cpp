@@ -101,7 +101,7 @@ void GDisplay::resetDirtyFlags()
 
 void GDisplay::setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ )
 {
-  unsigned chunkHeight = getHeight() / m_numDisplayChunks;
+  float chunkHeight = static_cast<float>(getHeight()) / m_numDisplayChunks;
   if( yEnd_ == 0xFFFF && yStart_ < getHeight() )
     m_pChunksDirtyFlags[ static_cast<uint8_t>( yStart_ / chunkHeight) ] = true;
   else if( yEnd_ != 0xFFFF )

@@ -217,20 +217,20 @@ bool DeviceMaschineMK1::tick()
     //\todo enable once display dirty flag is properly set
     //    if( m_displays[i]->isDirty() )
     {
- //     sendFrame(i);
+      sendFrame(i);
     }
   }
+  if (!read())
+  {
+    return false;
+  }
+
   if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1 )
   {
     if(!sendLeds())
     {
       return false;
     }
-  }
-//  getDeviceHandle()->write( Transfer({ 0x0C, 0xFF, 0x02, 0x05 ), 1 );
-  if(!read())
-  {
-    return false;
   }
 
   return true;
@@ -402,15 +402,17 @@ bool DeviceMaschineMK1::sendLeds()
 bool DeviceMaschineMK1::read()
 {
   Transfer input;
-  if( !getDeviceHandle()->read( input, kMASMK1_endpointInputPads ) )
+  
+
+  if(! getDeviceHandle()->read( input, kMASMK1_endpointInputPads ) )
   {
-    return false;
-  /*
+     return false;
+  
 //    std::cout << "Packet #IN (" << input.getSize() << "bytes):" << std::endl;
-    
+    /*
     std::cout << std::setfill('0') << std::internal;
    
-    for( int i = 0; i < input.getSize(); i++ )
+    for( int i = 0; i < input.size(); i++ )
     {
       std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
     }
@@ -421,8 +423,12 @@ bool DeviceMaschineMK1::read()
  // getDeviceHandle()->write( Transfer({ 0x02, 0xFF, 0x02, 0x05 ), kMASMK1_endpointOut );
 
   // Request dials data
+  
   if( getDeviceHandle()->read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {
+
+    getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
+
     if(input[0] == 0x02)
     {
       std::cout << "Dial Packet #IN (" << input.size() << "bytes):" << std::endl;
@@ -442,10 +448,10 @@ bool DeviceMaschineMK1::read()
   }
 
   // Request button data
-  getDeviceHandle()->write( Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut );
+  getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
   if( getDeviceHandle()->read( input, kMASMK1_endpointInputButtonsAndDials ) )
   {    
-    if(input[0] != 0x02)
+    if(input[0] != 0x04)
     {
       std::cout << "Button Packet #IN (" << input.size() << "bytes):" << std::endl;
     
