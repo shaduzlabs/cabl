@@ -458,7 +458,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
       bool valueIncreased
         = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-        encoderChanged(0, valueIncreased, shiftPressed);
+        encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
       m_encoderValue = currentEncoderValue;
     }
   }
@@ -477,11 +477,11 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
     m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
     m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
 
-    Device::Button btn(Device::Button::Unknown);
+    Device::Pad btn(Device::Pad::Unknown);
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Button::pad; \
+    btn = Device::Pad::pad; \
     break
 
     switch (pad)
@@ -508,7 +508,7 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 
     if (m_padsAvgData[pad] > 1000)
     {
-      padChanged(btn, m_padsAvgData[pad],isButtonPressed(input_, Button::Shift));
+      padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }    
   }
 }

@@ -145,14 +145,14 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Euklid::encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
+void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
 {
 	setEncoder(valueIncreased_, shiftPressed_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Euklid::padChanged(kio::Device::Button pad_, uint16_t value_, bool shiftPressed_)
+void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 {
   static auto lastEvent = std::chrono::system_clock::now();
   auto now = std::chrono::system_clock::now();
@@ -543,7 +543,7 @@ kio::Device::Button Euklid::getPadLed(uint8_t padIndex_)
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-uint8_t Euklid::getPadIndex(kio::Device::Button pad_)
+uint8_t Euklid::getPadIndex(kio::Device::Pad pad_)
 {
   switch (pad_)
   {

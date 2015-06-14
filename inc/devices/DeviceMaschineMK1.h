@@ -39,64 +39,7 @@ namespace kio
 
 class DeviceMaschineMK1 : public Device
 {
-  typedef enum{
-  
-    
-    /* NOT_ASSIGNED = 59 */
-    /* NOT_ASSIGNED = 60 */
-    /* NOT_ASSIGNED = 61 */
-/*
-  outputBuffer[16] = 0x00; // Mute
-  outputBuffer[17] = 0x00; // Solo
-  outputBuffer[18] = 0x00; // Select
-  outputBuffer[19] = 0x00; // Duplicate
-  outputBuffer[20] = 0x00; // Navigate
-  outputBuffer[21] = 0x00; // Keyboard
-  outputBuffer[22] = 0x00; // Pattern
-  outputBuffer[23] = 0x00; // Scene
-  
-  outputBuffer[24] = 0x00; // Shift
-  outputBuffer[25] = 0x00; // Erase
-  outputBuffer[26] = 0x00; // Grid
-  outputBuffer[27] = 0x00; // >
-  outputBuffer[28] = 0x00; // REC
-  outputBuffer[29] = 0x00; // Play
-  outputBuffer[30] = 0xff; // n/a
-  outputBuffer[31] = 0x00; // <
-  outputBuffer[32] = 0x00; // Loop
-  outputBuffer[33] = 0x00; // Group H
-  outputBuffer[34] = 0x00; // Group G
-  outputBuffer[35] = 0x00; // Group D
-  outputBuffer[36] = 0x00; // Group C
-  outputBuffer[37] = 0x00; // Group F
-  outputBuffer[38] = 0x00; // Group E
-  outputBuffer[39] = 0x00; // Group B
-  outputBuffer[40] = 0x00; // Group A
-  outputBuffer[41] = 0x00; // F2
-  outputBuffer[42] = 0x00; // F1
-  outputBuffer[43] = 0x00; // >
-  outputBuffer[44] = 0x00; // <
-  outputBuffer[45] = 0x00; // SAMPLING
-  outputBuffer[46] = 0x00; // Browse
-  outputBuffer[47] = 0x00; // Step
-  outputBuffer[48] = 0x00; // Control
-  
-  outputBuffer[49] = 0x00; // B8
-  outputBuffer[50] = 0x00; // B7
-  outputBuffer[51] = 0x00; // B6
-  outputBuffer[52] = 0x00; // B5
-  outputBuffer[53] = 0x00; // B4
-  outputBuffer[54] = 0x00; // B3
-  outputBuffer[55] = 0x00; // B2
-  outputBuffer[56] = 0x00; // B1
-  outputBuffer[57] = 0x00; // Note repeat
-  outputBuffer[58] = 0x5C; // Display backlight
-  outputBuffer[59] = 0x00; // n/a
-  outputBuffer[60] = 0x00; // n/a
-  outputBuffer[61] = 0x00; // n/a
-  */
-  } tMK1Leds;
-  
+   
 public:
   
   DeviceMaschineMK1(tPtr<DeviceHandle>);
@@ -111,9 +54,20 @@ public:
 private:
 
   enum class Led : uint8_t;
-  
+  enum class Button : uint8_t;
+  enum class Encoder : uint8_t;
+
   static constexpr uint8_t kMASMK1_nDisplays      = 2;
   static constexpr uint8_t kMASMK1_ledsDataSize   = 62;
+  static constexpr uint8_t kMASMK1_nButtons = 41;
+  static constexpr uint8_t kMASMK1_buttonsDataSize = 7;
+  static constexpr uint8_t kMASMK1_padDataSize = 64;
+  static constexpr uint8_t kMASMK1_padsBufferSize = 16;
+  static constexpr uint8_t kMASMK1_nPads = 16;
+
+  static constexpr uint8_t kMASMK1_nEncoders = 11;
+
+  using tBuffer = util::CircularBuffer<uint16_t, kMASMK1_padsBufferSize>;
 
   void init() override;
 
@@ -122,15 +76,28 @@ private:
   bool sendLeds();
   bool read();
   
+  void processPads(const Transfer&);
+  void processButtons(const Transfer&);
+  void processEncoders(const Transfer&);
+
   Led getLed( Device::Button ) const noexcept;
-  
+  Device::Button getDeviceButton(Button btn_) const noexcept;
+  Device::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
+  bool isButtonPressed(Button button) const noexcept;
+  bool isButtonPressed(const Transfer&, Button button_) const noexcept;
+
   tPtr<GDisplay>      m_displays[kMASMK1_nDisplays];
   tRawData            m_leds;
-  
+  tRawData            m_buttons;
+
+  bool                m_buttonStates[kMASMK1_nButtons];
+  uint16_t            m_encoderValues[kMASMK1_nEncoders];
+
+  tBuffer             m_padsRawData[kMASMK1_nPads];
+  uint16_t            m_padsAvgData[kMASMK1_nPads];
+
   bool                m_isDirtyLedGroup0;
   bool                m_isDirtyLedGroup1;
-  
-  uint8_t             m_pendingAcks;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

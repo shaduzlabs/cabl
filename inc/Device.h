@@ -55,6 +55,7 @@ public:
     F2 = AutoWrite,
     All,
     F1 = All,
+    Snap = All,
     DisplayButton1,
     DisplayButton2,
     DisplayButton3,
@@ -122,9 +123,47 @@ public:
     Unknown,
   };
 
+  enum class Encoder : uint8_t
+  {
+    Main,
+    Volume = Main,
+    Tempo,
+    Swing,
+    Encoder1,
+    Encoder2,
+    Encoder3,
+    Encoder4,
+    Encoder5,
+    Encoder6,
+    Encoder7,
+    Encoder8,
+    Unknown,
+  };
+
+  enum class Pad : uint8_t
+  {
+    Pad1,
+    Pad2,
+    Pad3,
+    Pad4,
+    Pad5,
+    Pad6,
+    Pad7,
+    Pad8,
+    Pad9,
+    Pad10,
+    Pad11,
+    Pad12,
+    Pad13,
+    Pad14,
+    Pad15,
+    Pad16,
+    Unknown,
+  };
+
   using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
-  using tCbEncoderChanged = std::function<void(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)>;
-  using tCbPadChanged = std::function<void(Button pad_, uint16_t value_, bool shiftPressed)>;
+  using tCbEncoderChanged = std::function<void(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)>;
+  using tCbPadChanged = std::function<void(Pad pad_, uint16_t value_, bool shiftPressed)>;
   
   enum class Type
   {
@@ -153,7 +192,6 @@ public:
   virtual bool tick() = 0;
   virtual GDisplay* getDisplay(uint8_t displayIndex_) = 0;
 
-
   virtual void setLed(Button, uint8_t) = 0;
   virtual void setLed(Button, uint8_t, uint8_t, uint8_t) = 0;
 
@@ -172,15 +210,15 @@ protected:
     }
   }
   
-  void encoderChanged(uint8_t encoderIndex_, bool valueIncreased_, bool shiftPressed_)
+  void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
   {
     if(m_cbEncoderChanged)
     {
-      m_cbEncoderChanged(encoderIndex_,valueIncreased_,shiftPressed_);
+      m_cbEncoderChanged(encoder_,valueIncreased_,shiftPressed_);
     }
   }
   
-  void padChanged(Button pad_, uint16_t value_, bool shiftPressed_)
+  void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_)
   {
     if(m_cbPadChanged)
     {
