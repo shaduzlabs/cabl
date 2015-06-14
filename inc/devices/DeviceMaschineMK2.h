@@ -56,7 +56,7 @@ private:
  
   static constexpr uint8_t kMASMK2_nDisplays         = 2;
   static constexpr uint8_t kMASMK2_nButtons          = 45;
-  static constexpr uint8_t kMASMK2_ledsDataSize      = 78;
+  static constexpr uint8_t kMASMK2_ledsDataSize      = 56;
   static constexpr uint8_t kMASMK2_buttonsDataSize   = 5;
   static constexpr uint8_t kMASMK2_padDataSize       = 64;
   static constexpr uint8_t kMASMK2_nPads             = 16;
@@ -83,7 +83,10 @@ private:
 
   tPtr<GDisplay>      m_displays[kMASMK2_nDisplays];
   
-  tRawData            m_leds;
+  tRawData            m_ledsButtons;
+  tRawData            m_ledsGroups;
+  tRawData            m_ledsPads;
+
   tRawData            m_buttons;
   bool                m_buttonStates[kMASMK2_nButtons];
   uint8_t             m_encoderValue;

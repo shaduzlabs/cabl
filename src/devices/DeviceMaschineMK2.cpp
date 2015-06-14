@@ -91,7 +91,7 @@ enum class DeviceMaschineMK2::Led : uint8_t{
   Enter,
   NoteRepeat,
 
-  Restart = 49,
+  Restart = 48,
   StepLeft,
   StepRight,
   Grid,
@@ -100,7 +100,135 @@ enum class DeviceMaschineMK2::Led : uint8_t{
   Erase,
   Shift,
   
+  Pad1,
+  Pad1R = Pad1,
+  Pad1G,
+  Pad1B,
+  Pad2,
+  Pad2R = Pad2,
+  Pad2G,
+  Pad2B,
+  Pad3,
+  Pad3R = Pad3,
+  Pad3G,
+  Pad3B,
+  Pad4,
+  Pad4R = Pad4,
+  Pad4G,
+  Pad4B,
+  Pad5,
+  Pad5R = Pad5,
+  Pad5G,
+  Pad5B,
+  Pad6,
+  Pad6R = Pad6,
+  Pad6G,
+  Pad6B,
+  Pad7,
+  Pad7R = Pad7,
+  Pad7G,
+  Pad7B,
+  Pad8,
+  Pad8R = Pad8,
+  Pad8G,
+  Pad8B,
+  Pad9,
+  Pad9R = Pad9,
+  Pad9G,
+  Pad9B,
+  Pad10,
+  Pad10R = Pad10,
+  Pad10G,
+  Pad10B,
+  Pad11,
+  Pad11R = Pad11,
+  Pad11G,
+  Pad11B,
+  Pad12,
+  Pad12R = Pad12,
+  Pad12G,
+  Pad12H,
+  Pad13,
+  Pad13R = Pad13,
+  Pad13G,
+  Pad13B,
+  Pad14,
+  Pad14R = Pad14,
+  Pad14G,
+  Pad14B,
+  Pad15,
+  Pad15R = Pad15,
+  Pad15G,
+  Pad15B,
+  Pad16,
+  Pad16R = Pad16,
+  Pad16G,
+  Pad16B,
   
+  GroupA,
+  GroupAR1 = GroupA,
+  GroupAG1,
+  GroupAB1,
+  GroupAR2,
+  GroupAG2,
+  GroupAB2,
+
+  GroupB,
+  GroupBR1 = GroupB,
+  GroupBG1,
+  GroupBB1,
+  GroupBR2,
+  GroupBG2,
+  GroupBB2,
+  
+  GroupC,
+  GroupCR1 = GroupC,
+  GroupCG1,
+  GroupCB1,
+  GroupCR2,
+  GroupCG2,
+  GroupCB2,
+
+  GroupD,
+  GroupDR1 = GroupD,
+  GroupDG1,
+  GroupDB1,
+  GroupDR2,
+  GroupDG2,
+  GroupDB2,
+  
+  GroupE,
+  GroupER1 = GroupE,
+  GroupEG1,
+  GroupEB1,
+  GroupER2,
+  GroupEG2,
+  GroupEB2,
+
+  GroupF,
+  GroupFR1 = GroupF,
+  GroupFG1,
+  GroupFB1,
+  GroupFR2,
+  GroupFG2,
+  GroupFB2,
+  
+  GroupG,
+  GroupGR1 = GroupG,
+  GroupGG1,
+  GroupGB1,
+  GroupGR2,
+  GroupGG2,
+  GroupGB2,
+
+  GroupH,
+  GroupHR1 = GroupH,
+  GroupHG1,
+  GroupHB1,
+  GroupHR2,
+  GroupHG2,
+  GroupHB2,
+
   Unknown,
 };
 
@@ -169,7 +297,7 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
   , m_isDirtyLeds(false)
 {
   m_buttons.resize(kMASMK2_buttonsDataSize);
-  m_leds.resize(kMASMK2_ledsDataSize);
+  m_ledsButtons.resize(kMASMK2_ledsDataSize);
   m_displays[0].reset( new GDisplayMaschineMK2 );
   m_displays[1].reset( new GDisplayMaschineMK2 );
 }
@@ -189,22 +317,22 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
 
   if (isRGBLed(led))
   {
-    uint8_t currentR = m_leds[static_cast<uint16_t>(led)];
-    uint8_t currentG = m_leds[static_cast<uint16_t>(led) + 1];
-    uint8_t currentB = m_leds[static_cast<uint16_t>(led) + 2];
+    uint8_t currentR = m_ledsButtons[static_cast<uint16_t>(led)];
+    uint8_t currentG = m_ledsButtons[static_cast<uint16_t>(led) + 1];
+    uint8_t currentB = m_ledsButtons[static_cast<uint16_t>(led) + 2];
 
-    m_leds[static_cast<uint16_t>(led)] = val_;
-    m_leds[static_cast<uint16_t>(led) + 1] = val_;
-    m_leds[static_cast<uint16_t>(led) + 2] = val_;
+    m_ledsButtons[static_cast<uint16_t>(led)] = val_;
+    m_ledsButtons[static_cast<uint16_t>(led) + 1] = val_;
+    m_ledsButtons[static_cast<uint16_t>(led) + 2] = val_;
 
     m_isDirtyLeds = (currentR != val_ || currentG != val_ || currentB != val_);
   }
   else if (Led::Unknown != led)
   {
-    uint8_t currentVal = m_leds[static_cast<uint16_t>(led)];
+    uint8_t currentVal = m_ledsButtons[static_cast<uint16_t>(led)];
     uint8_t newVal = val_;
 
-    m_leds[static_cast<uint16_t>(led)] = newVal;
+    m_ledsButtons[static_cast<uint16_t>(led)] = newVal;
     m_isDirtyLeds = (currentVal != newVal);
   }
 }
@@ -217,24 +345,24 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
 
   if (isRGBLed(led))
   {
-    uint8_t currentR = m_leds[static_cast<uint16_t>(led)];
-    uint8_t currentG = m_leds[static_cast<uint16_t>(led) + 1];
-    uint8_t currentB = m_leds[static_cast<uint16_t>(led) + 2];
+    uint8_t currentR = m_ledsButtons[static_cast<uint16_t>(led)];
+    uint8_t currentG = m_ledsButtons[static_cast<uint16_t>(led) + 1];
+    uint8_t currentB = m_ledsButtons[static_cast<uint16_t>(led) + 2];
 
-    m_leds[static_cast<uint16_t>(led)] = r_;
-    m_leds[static_cast<uint16_t>(led) + 1] = g_;
-    m_leds[static_cast<uint16_t>(led) + 2] = b_;
+    m_ledsButtons[static_cast<uint16_t>(led)] = r_;
+    m_ledsButtons[static_cast<uint16_t>(led) + 1] = g_;
+    m_ledsButtons[static_cast<uint16_t>(led) + 2] = b_;
 
     m_isDirtyLeds = (currentR != r_ || currentG != g_ || currentB != b_);
   }
   else if (Led::Unknown != led)
   {
-    uint8_t currentVal = m_leds[static_cast<uint16_t>(led)];
+    uint8_t currentVal = m_ledsButtons[static_cast<uint16_t>(led)];
 
     // Use "Maximum decomposition" -> take the channel with the highest value
     uint8_t newVal = util::max<uint8_t>(r_, g_, b_);
 
-    m_leds[static_cast<uint16_t>(led)] = newVal;
+    m_ledsButtons[static_cast<uint16_t>(led)] = newVal;
     m_isDirtyLeds = (currentVal != newVal);
   }
 }
@@ -329,7 +457,7 @@ bool DeviceMaschineMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMASMK2_endpointLeds))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsButtons[0], 78), kMASMK2_endpointLeds))
     {
       return false;
     }
