@@ -14,16 +14,16 @@
 
 cmake_minimum_required (VERSION 2.8.0)
 
-project (kompletIO)
+project (k-IO)
 
 set(LIBRARY_FILE_NAME     "k-io")
 set(LIBRARY_FOLDER_NAME   "k-io")
 set(DEBUG_SUFFIX          "_d")
 
 # The version number.
-set (kompletIO_VERSION_MAJOR 0)
-set (kompletIO_VERSION_MINOR 2)
-set (kompletIO_VERSION_MICRO 1)
+set (k-IO_VERSION_MAJOR 0)
+set (k-IO_VERSION_MINOR 2)
+set (k-IO_VERSION_MICRO 1)
  
 configure_file (
   "${PROJECT_SOURCE_DIR}/inc/k-io-config.h.in"
@@ -145,7 +145,7 @@ source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
 SET ( 
-  kompletIO_INCLUDES
+  k-IO_INCLUDES
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
@@ -182,6 +182,7 @@ SET(
 SET( 
   src_devices_SRCS
     src/devices/DeviceMaschineMK1.cpp
+    src/devices/DeviceMaschineMK2.cpp
     src/devices/DeviceMaschineMikroMK2.cpp
 )
 
@@ -237,7 +238,7 @@ source_group("src\\util"             FILES ${src_util_SRCS})
 source_group("src"                   FILES ${src_SRCS})
 
 SET ( 
-      kompletIO_SRCS
+      k-IO_SRCS
       ${src_SRCS}
       ${src_comm_drivers_SRCS}
       ${src_comm_SRCS}
@@ -255,22 +256,22 @@ SET (
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
 
 SET ( 
-  kompletIO_ALL
-    ${kompletIO_INCLUDES}
-    ${kompletIO_SRCS}
+  k-IO_ALL
+    ${k-IO_INCLUDES}
+    ${k-IO_SRCS}
 )
 
-add_library( kompletIO SHARED ${kompletIO_ALL} )
+add_library( k-IO SHARED ${k-IO_ALL} )
 set_target_properties(
-  kompletIO
+  k-IO
   PROPERTIES 
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 
-add_library( kompletIOStatic STATIC ${kompletIO_ALL} )
+add_library( k-IOStatic STATIC ${k-IO_ALL} )
 set_target_properties(
-  kompletIOStatic 
+  k-IOStatic 
   PROPERTIES 
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
@@ -280,10 +281,10 @@ set_target_properties(
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-  target_link_libraries( kompletIO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
+  target_link_libraries( k-IO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
 
-  install (TARGETS    kompletIO        DESTINATION lib)
-  install (TARGETS    kompletIOStatic  DESTINATION lib)
+  install (TARGETS    k-IO             DESTINATION lib)
+  install (TARGETS    k-IOStatic       DESTINATION lib)
   install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -297,10 +298,10 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  target_link_libraries( kompletIO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
+  target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
 
-  install (TARGETS    kompletIO        DESTINATION lib)
-  install (TARGETS    kompletIOStatic  DESTINATION lib)
+  install (TARGETS    k-IO             DESTINATION lib)
+  install (TARGETS    k-IOStatic       DESTINATION lib)
   install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -314,8 +315,8 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   
-  target_link_libraries( kompletIO        libusb hidapi setupapi.lib)
-  target_link_libraries( kompletIOStatic  libusb hidapi setupapi.lib)
+  target_link_libraries( k-IO        libusb hidapi setupapi.lib)
+  target_link_libraries( k-IOStatic  libusb hidapi setupapi.lib)
   
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 

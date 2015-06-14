@@ -27,9 +27,9 @@ set_target_properties(
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} kompletIOStatic)
+  target_link_libraries(${PROJECT_NAME} k-IOStatic)
 else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} kompletIO)
+  target_link_libraries(${PROJECT_NAME} k-IO)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # OS X specific ------------------------------------------------------------------------------------------------------ #
