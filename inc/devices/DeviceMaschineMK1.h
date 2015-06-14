@@ -98,6 +98,7 @@ private:
 
   bool                m_isDirtyLedGroup0;
   bool                m_isDirtyLedGroup1;
+  bool                m_encodersInitialized;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -202,6 +202,7 @@ enum class DeviceMaschineMK1::Encoder : uint8_t
 
 DeviceMaschineMK1::DeviceMaschineMK1(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
+  , m_encodersInitialized(false)
 {
   m_displays[0].reset( new GDisplayMaschineMK1 );
   m_displays[1].reset( new GDisplayMaschineMK1 );
@@ -600,44 +601,21 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
-    uint16_t currentEncValue = (input_.getData()[1 + (2 * i)] << 8) | input_.getData()[2 + (2 * i)];
+    uint16_t currentEncValue = (input_.getData()[1 + (2 * i)] & 0xf0);
+    if (m_encoderValues[i] == currentEncValue)
+    {
+      continue;
+    }
     bool valueIncreased
       = ((m_encoderValues[i] < currentEncValue) || ((currentEncValue == 0xffff) && (currentEncValue == 0x00)))
       && (!((m_encoderValues[i] == 0x0) && (m_encoderValues[i] == 0xffff)));
-    encoderChanged(getDeviceEncoder(currentEnc), valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+    if (m_encodersInitialized)
+    {
+      encoderChanged(getDeviceEncoder(currentEnc), valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+    }
     m_encoderValues[i] = currentEncValue;
   }
-
-
-  std::cout << "Dial Packet #IN (" << input_.size() << "bytes):" << std::endl;
-
-  std::cout << std::setfill('0') << std::internal;
-  for (size_t i = 0; i < 23; i++)
-  {
-    std::cout << std::hex << std::setw(2) << (int)input_[i] << std::dec << " ";
-  }
-
-  std::cout << std::endl << std::endl;
-
-  /*
-  Dials
-
-  Byte 0 = 0x02
-
-  Byte 1,2   = Dial 8
-  Byte 3,4   = Dial 4
-  Byte 5,6   = Swing
-  Byte 7,8   = Dial 7
-  Byte 9,10  = Dial 3
-  Byte 11,12 = Tempo
-  Byte 13,14 = Dial 6
-  Byte 15,16 = Dial 2
-  Byte 17,18 = Volume
-  Byte 19,20 = Dial 5
-  Byte 21,22 = Dial 1
-  byte 23,24,25,26,27,28,29,30,31,32 = N/A
-
-  */
+  m_encodersInitialized = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
