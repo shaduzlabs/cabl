@@ -125,13 +125,13 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
 
     if(isSupportedDevice(d) && pDeviceHandle)
     {
-      m_collDevices.emplace_back(new DeviceMaschineMikroMK2(std::move(pDeviceHandle)));
+      m_collDevices.emplace_back(new DeviceMaschineMK2(std::move(pDeviceHandle)));
       m_connected = true;
     }
     else
     {
  
-      m_collDevices.emplace_back(new DeviceMaschineMK1(std::move(pDeviceHandle)));
+      m_collDevices.emplace_back(new DeviceMaschineMK2(std::move(pDeviceHandle)));
       m_collDevices[0]->init();
       m_connected = true;
       /*
