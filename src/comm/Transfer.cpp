@@ -65,7 +65,7 @@ Transfer::Transfer( tRawData header_, tRawData data_ )
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( tRawData header_, const uint8_t* pData_, uint16_t dataLength_ )
+Transfer::Transfer( tRawData header_, const uint8_t* pData_, size_t dataLength_ )
 {
   m_data.resize(header_.size()+dataLength_);
   std::copy(header_.begin(),header_.end(),m_data.begin());
@@ -118,7 +118,7 @@ void Transfer::reset()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Transfer::setData( const uint8_t* data_, uint16_t length_ )
+void Transfer::setData( const uint8_t* data_, size_t length_ )
 {
   if( length_ == 0 || data_ == nullptr )
     return;
