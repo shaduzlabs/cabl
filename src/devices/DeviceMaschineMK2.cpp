@@ -41,9 +41,9 @@
 
 namespace
 {
-static const uint8_t kMASMK2_endpointDisplay = 0x08;
-static const uint8_t kMASMK2_endpointLeds = 0x01;
-static const uint8_t kMASMK2_endpointInput = 0x84;
+static const uint8_t kMASMK2_epDisplay = 0x08;
+static const uint8_t kMASMK2_epOut = 0x01;
+static const uint8_t kMASMK2_epInput = 0x84;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -365,6 +365,14 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
     m_isDirtyLeds = (currentVal != newVal);
   }
 }
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
+{
+  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
+  uint8_t lengthL = midiMsg_.size() & 0xFF;
+  getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMASMK2_epOut);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -450,7 +458,7 @@ bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
     chunkByte = chunk * 8;
     const uint8_t* ptr = m_displays[displayIndex_]->getPtr(chunk * 256);
     if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
-                    kMASMK2_endpointDisplay))
+                    kMASMK2_epDisplay))
     {
       return false;
     }
@@ -466,7 +474,7 @@ bool DeviceMaschineMK2::sendLeds()
 return true;
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsButtons[0], 78), kMASMK2_endpointLeds))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsButtons[0], 78), kMASMK2_epOut))
     {
       return false;
     }
@@ -482,7 +490,7 @@ bool DeviceMaschineMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMASMK2_endpointInput))
+    if (!getDeviceHandle()->read(input, kMASMK2_epInput))
     {
       return false;
     }

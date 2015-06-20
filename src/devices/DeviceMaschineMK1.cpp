@@ -42,10 +42,10 @@
 
 namespace
 {
-  static const uint8_t  kMASMK1_endpointDisplay               = 0x08;
-  static const uint8_t  kMASMK1_endpointOut                   = 0x01;
-  static const uint8_t  kMASMK1_endpointInputPads             = 0x84;
-  static const uint8_t  kMASMK1_endpointInputButtonsAndDials  = 0x81;
+  static const uint8_t  kMASMK1_epDisplay               = 0x08;
+  static const uint8_t  kMASMK1_epOut                   = 0x01;
+  static const uint8_t  kMASMK1_epInputPads             = 0x84;
+  static const uint8_t  kMASMK1_epInputButtonsAndDials  = 0x81;
   
   static const uint8_t  kMASMK1_defaultDisplaysBacklight      = 0x5C;
 }
@@ -237,6 +237,15 @@ void DeviceMaschineMK1::setLed( Device::Button btn_, uint8_t val_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void DeviceMaschineMK1::sendMidiMsg(tRawData midiMsg_)
+{
+  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
+  uint8_t lengthL = midiMsg_.size() & 0xFF;
+  getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMASMK1_epOut);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 void DeviceMaschineMK1::setLed( Device::Button btn_, uint8_t r_, uint8_t g_, uint8_t b_)
 {
   Led led = getLed( btn_ );
@@ -318,7 +327,7 @@ void DeviceMaschineMK1::init()
     m_displays[i].get()->white();
   }
   
-  getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
+  getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
 
   // Leds
   std::fill(m_leds.begin(), m_leds.end(), 0);
@@ -338,47 +347,47 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
   
   uint8_t displayNumber = displayIndex_ << 1;
   
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_epDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xD1                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x94                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xD1                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x94                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_epDisplay );
   
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_epDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_epDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x31                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x34                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x5C                   }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x25                   }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x31                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x34                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x30                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x5C                   }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0x25                   }), kMASMK1_epDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xAF                   }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xAF                   }), kMASMK1_epDisplay );
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_epDisplay );
   
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x25, 0x02       }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x25, 0x02       }), kMASMK1_epDisplay );
 //  buf[i++] = 0x09;//contrast & 0x3f;
 //  buf[i++] = 0x04;//(contrast >> 6) & 0x7;
 
@@ -394,8 +403,8 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   }
   
   uint8_t displayNumber = displayIndex_ << 1;
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_endpointDisplay );
-  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_endpointDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_epDisplay );
+  getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_epDisplay );
   
   uint16_t offset = 0;
   const uint16_t dataSize = 502;
@@ -405,7 +414,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
         m_displays[displayIndex_]->getPtr( offset ),
         dataSize
       ),
-      kMASMK1_endpointDisplay
+      kMASMK1_epDisplay
   ))
   {
     return false;
@@ -420,7 +429,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
           m_displays[displayIndex_]->getPtr( offset ),
           dataSize
         ),
-        kMASMK1_endpointDisplay
+        kMASMK1_epDisplay
     ))
     {
       return false;
@@ -435,7 +444,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
       m_displays[displayIndex_]->getPtr( offset ),
       338
     ),
-    kMASMK1_endpointDisplay
+    kMASMK1_epDisplay
   ))
   {
     return false;
@@ -450,7 +459,7 @@ bool DeviceMaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0 )
   {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_endpointOut ))
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
     {
       return false;
     }
@@ -459,7 +468,7 @@ bool DeviceMaschineMK1::sendLeds()
   
   if( m_isDirtyLedGroup1 )
   {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_endpointOut ))
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
     {
       return false;
     }
@@ -475,27 +484,27 @@ bool DeviceMaschineMK1::read()
   Transfer input;
   
 
-  if(getDeviceHandle()->read( input, kMASMK1_endpointInputPads ) )
+  if(getDeviceHandle()->read( input, kMASMK1_epInputPads ) )
   {
     processPads(input);
   }
 
-  if( getDeviceHandle()->read( input, kMASMK1_endpointInputButtonsAndDials ) )
+  if( getDeviceHandle()->read( input, kMASMK1_epInputButtonsAndDials ) )
   {
 
     if(input[0] == 0x02)
     {
-      getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
+      getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processEncoders(input);
     }
     else if (input[0] == 0x04)
     {
-      getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
+      getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processButtons(input);
     }
     else 
     {
-      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_endpointOut);
+      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
     }
   }
   else
@@ -607,6 +616,13 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
     {
       continue;
     }
+    std::cout << std::setfill('0') << std::internal;
+    for (int i = 0; i < input_.size(); i++)
+    {
+      std::cout << std::hex << std::setw(2) << (int)input_[i] << std::dec << " ";
+    }
+    std::cout << std::endl << std::endl;
+
     bool valueIncreased
       = ((m_encoderValues[i] < currentEncValue) || ((currentEncValue == 0xffff) && (currentEncValue == 0x00)))
       && (!((m_encoderValues[i] == 0x0) && (m_encoderValues[i] == 0xffff)));

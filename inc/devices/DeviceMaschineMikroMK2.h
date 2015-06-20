@@ -218,6 +218,8 @@ public:
   
   void setLed( Device::Button, uint8_t                   ) override;
   void setLed( Device::Button, uint8_t, uint8_t, uint8_t ) override;
+
+  void sendMidiMsg(tRawData) override;
   
   GDisplay* getDisplay( uint8_t displayIndex_ ) override;
   bool tick() override;

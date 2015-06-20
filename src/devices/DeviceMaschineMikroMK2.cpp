@@ -41,9 +41,9 @@
 
 namespace
 {
-static const uint8_t kMikroMK2_endpointDisplay = 0x08;
-static const uint8_t kMikroMK2_endpointLeds = 0x01;
-static const uint8_t kMikroMK2_endpointInput = 0x84;
+static const uint8_t kMikroMK2_epDisplay = 0x08;
+static const uint8_t kMikroMK2_epOut = 0x01;
+static const uint8_t kMikroMK2_epInput = 0x84;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -290,6 +290,15 @@ void DeviceMaschineMikroMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_,
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
+{
+  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
+  uint8_t lengthL = midiMsg_.size() & 0xFF;
+  getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMikroMK2_epOut);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 GDisplay* DeviceMaschineMikroMK2::getDisplay(uint8_t displayIndex_)
 {
   if (displayIndex_ > 0)
@@ -359,7 +368,7 @@ bool DeviceMaschineMikroMK2::sendFrame()
   {
     const uint8_t* ptr = m_display->getPtr(chunk * 256);
     if(!getDeviceHandle()->write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-                   kMikroMK2_endpointDisplay))
+      kMikroMK2_epDisplay))
     {
       return false;
     }
@@ -373,7 +382,7 @@ bool DeviceMaschineMikroMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_endpointLeds))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
     {
       return false;
     }
@@ -389,7 +398,7 @@ bool DeviceMaschineMikroMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMikroMK2_endpointInput))
+    if (!getDeviceHandle()->read(input, kMikroMK2_epDisplay))
     {
       return false;
     }
