@@ -35,12 +35,13 @@ namespace kio
 
   class Device;
   class DeviceDescriptor;
+  class DeviceHandle;
 
 class DeviceFactory
 {
 public:
 
-  static tPtr<Device> getDevice(const DeviceDescriptor&);
+  static Device* getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
 
 };
 

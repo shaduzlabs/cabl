@@ -29,6 +29,10 @@
 // STL includes
 #include <functional>
 
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+#include <RtMidi.h>
+#endif
+
 #include "comm/DeviceHandle.h"
 
 namespace sl

@@ -28,7 +28,6 @@
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
-
 #include <thread>
 
 #include "gfx/displays/GDisplayMaschineMK2.h"
@@ -41,9 +40,10 @@
 
 namespace
 {
-static const uint8_t kMASMK2_epDisplay = 0x08;
-static const uint8_t kMASMK2_epOut = 0x01;
-static const uint8_t kMASMK2_epInput = 0x84;
+static const uint8_t      kMASMK2_epDisplay = 0x08;
+static const uint8_t      kMASMK2_epOut = 0x01;
+static const uint8_t      kMASMK2_epInput = 0x84;
+static const std::string  kMASMK2_midiOutName = "Maschine Controller MK2";
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -308,6 +308,9 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
   , m_isDirtyPadLeds(false)
   , m_isDirtyGroupLeds(false)
   , m_isDirtyButtonLeds(false)
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  , m_pMidiout(new RtMidiOut)
+#endif
 {
   m_buttons.resize(kMASMK2_buttonsDataSize);
   m_ledsButtons.resize(kMASMK2_ledsDataSize);
@@ -316,6 +319,26 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
   m_ledsPads.resize(49);
   m_displays[0].reset( new GDisplayMaschineMK2 );
   m_displays[1].reset( new GDisplayMaschineMK2 );
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  std::string portName;
+  unsigned nPorts = m_pMidiout->getPortCount();
+  for ( unsigned int i=0; i<nPorts; i++ )
+  {
+    try
+    {
+      portName = m_pMidiout->getPortName(i);
+      if(portName == kMASMK2_midiOutName)
+      {
+        m_pMidiout->openPort(i);
+      }
+    }
+    catch (RtMidiError &error) { }
+  }
+  if(!m_pMidiout->isPortOpen())
+  {
+    m_pMidiout.reset(nullptr);
+  }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -443,11 +466,9 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
 
 void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
 {
-  uint8_t cin = (midiMsg_.data()[0]&0xF0)>>4;
-  bool result = getDeviceHandle()->write(Transfer({ cin }, midiMsg_.data(), midiMsg_.size()), kMASMK2_epOut);
-  if (result)
+  if(m_pMidiout)
   {
-    std::cout << "wrote to MIDI out!" << std::endl;
+    m_pMidiout->sendMessage(&midiMsg_);
   }
 }
 
@@ -472,7 +493,6 @@ bool DeviceMaschineMK2::tick()
 
   if (state == 0)
   {
-    sendMidiMsg({0x90,0x24,0x7F,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 });
     for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
       if (m_displays[displayIndex]->isDirty())

@@ -16,7 +16,6 @@ SET(
 add_executable(
   ${PROJECT_NAME} 
   ${Examples_euklid_FILES} 
-  ${Libraries_RtMidi_FILES}
 )
 
 set_target_properties(
@@ -31,22 +30,3 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   target_link_libraries(${PROJECT_NAME} k-IO)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-
-# OS X specific ------------------------------------------------------------------------------------------------------ #
-
-IF (APPLE)
-  
-  target_link_libraries(
-    ${PROJECT_NAME} 
-      "-framework CoreFoundation" 
-      "-framework CoreAudio" 
-      "-framework CoreMidi"
-  )
-
-  set_target_properties( 
-    ${PROJECT_NAME} 
-    PROPERTIES 
-      COMPILE_DEFINITIONS __MACOSX_CORE__
-  )
-
-ENDIF (APPLE)

@@ -98,6 +98,10 @@ private:
   bool                m_isDirtyPadLeds;
   bool                m_isDirtyGroupLeds;
   bool                m_isDirtyButtonLeds;
+  
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  tPtr<RtMidiOut>     m_pMidiout;
+#endif
 
 };
 

@@ -232,7 +232,7 @@ void Euklid::play()
         bUpdate = true;
         std::vector<uint8_t> msg(MidiMessage::noteOn(0, note.value(), 127));
         m_pMidiout->sendMessage(&msg);
-  //      getDevice(0)->sendMidiMsg(msg);
+        getDevice(0)->sendMidiMsg(msg);
       }
     }
     

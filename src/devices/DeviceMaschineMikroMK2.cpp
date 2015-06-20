@@ -292,9 +292,7 @@ void DeviceMaschineMikroMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_,
 
 void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
 {
-  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
-  uint8_t lengthL = midiMsg_.size() & 0xFF;
-  getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMikroMK2_epOut);
+ //\todo Use MaschineMikroMK2 virtual midi port
 }
 
 //----------------------------------------------------------------------------------------------------------------------

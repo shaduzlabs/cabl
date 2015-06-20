@@ -137,6 +137,24 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+# RtMidi ------------------------------------------------------------------------------------------------------------- #
+set(RTMIDI_INCLUDE_DIR "submodules/rtmidi/")
+SET( 
+  lib_rtmidi_LIBRARY      
+    submodules/rtmidi/RtMidi.h
+    submodules/rtmidi/RtMidi.cpp
+)
+source_group("src"  FILES  ${lib_rtmidi_LIBRARY})
+add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
+
+set_target_properties(
+rtmidi 
+PROPERTIES 
+  OUTPUT_NAME         "rtmidi"
+  OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
+  COMPILE_DEFINITIONS __MACOSX_CORE__
+)
+
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
 SET( 
@@ -315,7 +333,7 @@ SET (
 
 # All platforms ------------------------------------------------------------------------------------------------------ #
 
-include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
+include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${RTMIDI_INCLUDE_DIR})
 
 SET ( 
   k-IO_ALL
@@ -344,10 +362,12 @@ set_target_properties(
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit" objc)
+  target_link_libraries( k-IO PUBLIC rtmidi "-framework CoreAudio" "-framework CoreMidi")
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
   install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+  install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -360,11 +380,12 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread)
+  target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread rtmidi)
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
   install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+  install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -377,8 +398,8 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   
-  target_link_libraries( k-IO        libusb hidapi setupapi.lib)
-  target_link_libraries( k-IOStatic  libusb hidapi setupapi.lib)
+  target_link_libraries( k-IO        rtmidi libusb hidapi setupapi.lib)
+  target_link_libraries( k-IOStatic  rtmidi libusb hidapi setupapi.lib)
   
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 

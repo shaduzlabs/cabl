@@ -29,6 +29,22 @@
 #include "devices/Device.h"
 #include "comm/DeviceDescriptor.h"
 
+#include "devices/DeviceMaschineMK1.h"
+#include "devices/DeviceMaschineMK2.h"
+#include "devices/DeviceMaschineMikroMK2.h"
+
+//----------------------------------------------------------------------------------------------------------------------
+
+namespace
+{
+static const unsigned kVendor_NativeInstruments = 0x17CC;
+
+static const unsigned kProduct_MaschineMK1      = 0x0808;
+static const unsigned kProduct_MaschineMK2      = 0x1140;
+static const unsigned kProduct_MaschineMikroMK1 = 0x1110;
+static const unsigned kProduct_MaschineMikroMK2 = 0x1200;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace sl
@@ -38,8 +54,29 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-tPtr<Device> DeviceFactory::getDevice(const DeviceDescriptor& deviceDescriptor_)
+Device* DeviceFactory::getDevice(const DeviceDescriptor& deviceDescriptor_, tPtr<DeviceHandle> pDeviceHandle_)
 {
+  if(deviceDescriptor_.getVendorId()!=kVendor_NativeInstruments)
+  {
+    return nullptr;
+  }
+  switch(deviceDescriptor_.getProductId())
+  {
+    case kProduct_MaschineMK1:
+    {
+      return new DeviceMaschineMK1(std::move(pDeviceHandle_));
+    }
+    case kProduct_MaschineMK2:
+    {
+      return new DeviceMaschineMK2(std::move(pDeviceHandle_));
+    }
+    case kProduct_MaschineMikroMK2:
+    {
+      return new DeviceMaschineMikroMK2(std::move(pDeviceHandle_));
+    }
+    default:
+      return nullptr;
+  }
   return nullptr;
 }
 
