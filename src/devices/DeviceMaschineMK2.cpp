@@ -508,6 +508,7 @@ void DeviceMaschineMK2::init()
   m_isDirtyButtonLeds = true;
   m_isDirtyGroupLeds = true;
   m_isDirtyPadLeds = true;
+  m_encoderValue = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -612,6 +613,10 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
     {
       uint8_t btn = (i * 8) + k;
       Button currentButton(static_cast<Button>(btn));
+      if(currentButton>Button::Mute)
+      {
+        continue;
+      }
       if (currentButton == Button::Shift)
       {
         continue;
@@ -633,19 +638,27 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   
   // Now process the encoder data
   uint8_t currentEncoderValue = input_.getData()[kMASMK2_buttonsDataSize];
-  if (m_encoderValue != currentEncoderValue)
+  if (currentEncoderValue != m_encoderValue)
   {
-    bool valueIncreased
-      = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-        && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    bool valueIncreased = (
+      (m_encoderValue < currentEncoderValue) ||
+      (
+        (m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)
+      )
+    ) &&
+    (
+      !(
+        (m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)
+      )
+    );
     m_encoderValue = currentEncoderValue;
+    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
   
   for (int i = kMASMK2_buttonsDataSize; i < input_.size(); i++) // Skip the last byte (encoder value)
   {
-    uint8_t encoderValue = input_.getData()[i];
-    encoderValue +=0;
+  //  uint8_t encoderValue = input_.getData()[i];
+   // encoderValue +=0;
   }
 }
 
