@@ -95,7 +95,9 @@ private:
   tBuffer             m_padsRawData[ kMASMK2_nPads ];
   uint16_t            m_padsAvgData[ kMASMK2_nPads ];
   
-  bool                m_isDirtyLeds;
+  bool                m_isDirtyPadLeds;
+  bool                m_isDirtyGroupLeds;
+  bool                m_isDirtyButtonLeds;
 
 };
 
