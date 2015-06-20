@@ -276,28 +276,35 @@ GDisplay* DeviceMaschineMK1::getDisplay( uint8_t displayIndex_ )
 
 bool DeviceMaschineMK1::tick()
 {
-  for( int i=0; i< kMASMK1_nDisplays; i++ )
+  static int state = 0;
+  bool success = false;
+
+  if (state == 0)
   {
-    //\todo enable once display dirty flag is properly set
-    //    if( m_displays[i]->isDirty() )
+    for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
-      sendFrame(i);
+      if (m_displays[displayIndex]->isDirty())
+      {
+        success = sendFrame(displayIndex);
+        m_displays[displayIndex]->resetDirtyFlags();
+      }
     }
   }
-  if (!read())
+  else if (state == 1)
   {
-    return false;
+    success = sendLeds();
+  }
+  else if (state == 2 && (m_isDirtyLedGroup0 || m_isDirtyLedGroup1))
+  {
+    success = read();
   }
 
-  if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1 )
+  if (++state >= 3)
   {
-    if(!sendLeds())
-    {
-      return false;
-    }
+    state = 0;
   }
 
-  return true;
+  return success;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -514,7 +521,6 @@ bool DeviceMaschineMK1::read()
 
 void DeviceMaschineMK1::processPads(const Transfer& input_)
 {
-  //\todo process pad data
   for (int i = 1; i < kMASMK1_padDataSize-1; i += 2)
   {
     uint16_t h = input_[i];

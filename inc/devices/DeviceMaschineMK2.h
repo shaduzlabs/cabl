@@ -67,7 +67,7 @@ private:
   void init() override;
 
   void initDisplay() const;
-  bool sendFrame();
+  bool sendFrame(uint8_t displayIndex);
   bool sendLeds();
   bool read();
   

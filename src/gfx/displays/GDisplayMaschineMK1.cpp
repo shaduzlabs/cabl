@@ -72,34 +72,34 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
   switch( color_ )
   {
     case tColor::WHITE:
-      switch( blockIndex )
+      switch (blockIndex)
       {
-        case 0:
-          getData()[ byteIndex ] |= 0xF8;
-          break;
-        case 1:
-          getData()[ byteIndex ] |= 0x07;
-          getData()[ byteIndex + 1 ] |= 0xC0;
-          break;
-        case 2:
-          getData()[ byteIndex + 1 ] |= 0x1F;
-          break;
+      case 0:
+        getData()[byteIndex] &= 0x07;
+        break;
+      case 1:
+        getData()[byteIndex] &= 0xF8;
+        getData()[byteIndex + 1] &= 0x1F;
+        break;
+      case 2:
+        getData()[byteIndex + 1] &= 0xC0;
+        break;
       }
       break;
 
     case tColor::BLACK:
-      switch( blockIndex )
+      switch (blockIndex)
       {
-        case 0:
-          getData()[ byteIndex ] &= 0x07;
-          break;
-        case 1:
-          getData()[ byteIndex ] &= 0xF8;
-          getData()[ byteIndex + 1 ] &= 0x1F;
-          break;
-        case 2:
-          getData()[ byteIndex + 1 ] &= 0xC0;
-          break;
+      case 0:
+        getData()[byteIndex] |= 0xF8;
+        break;
+      case 1:
+        getData()[byteIndex] |= 0x07;
+        getData()[byteIndex + 1] |= 0xC0;
+        break;
+      case 2:
+        getData()[byteIndex + 1] |= 0x1F;
+        break;
       }
       break;
 
@@ -140,12 +140,12 @@ GDisplay::tColor GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) co
   switch( blockIndex )
   {
     case 0:
-      return ( getData()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0xF8 ) ? tColor::BLACK : tColor::WHITE;
     case 1:
-      return ( getData()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0x07 ) ? tColor::BLACK : tColor::WHITE;
       break;
     case 2:
-      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? tColor::BLACK : tColor::WHITE;
   }
   
   return tColor::BLACK;

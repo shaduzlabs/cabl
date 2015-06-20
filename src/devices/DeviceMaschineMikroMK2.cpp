@@ -308,7 +308,7 @@ bool DeviceMaschineMikroMK2::tick()
   bool success = false;
 
   //\todo enable once display dirty flag is properly set
-  if (state == 0) //&& m_display->isDirty())
+  if (state == 0 && m_display->isDirty())
   {
     success = sendFrame();
   }

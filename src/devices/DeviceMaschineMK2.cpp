@@ -385,12 +385,17 @@ bool DeviceMaschineMK2::tick()
   static int state = 0;
   bool success = false;
 
-  //\todo enable once display dirty flag is properly set
-  if (state == 0) //&& m_display->isDirty())
+  if (state == 0)
   {
-    success = sendFrame();
+    for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
+    {
+      if (m_displays[displayIndex]->isDirty())
+      {
+        success = sendFrame(displayIndex);
+        m_displays[displayIndex]->resetDirtyFlags();
+      }
+    }
   }
-
   else if (state == 1)
   {
     success = sendLeds();
@@ -431,23 +436,26 @@ void DeviceMaschineMK2::initDisplay() const
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::sendFrame()
+bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
 {
-  uint8_t chunkByte = 0;
-  for(uint8_t i=0; i<kMASMK2_nDisplays;i++)
+  if (displayIndex_ > 1)
   {
-    for(uint8_t chunk = 0; chunk < 8; chunk++)
+    return false;
+  }
+
+  uint8_t chunkByte = 0;
+  for(uint8_t chunk = 0; chunk < 8; chunk++)
+  {
+    uint8_t firstByte = 0xE0| displayIndex_;
+    chunkByte = chunk * 8;
+    const uint8_t* ptr = m_displays[displayIndex_]->getPtr(chunk * 256);
+    if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
+                    kMASMK2_endpointDisplay))
     {
-      uint8_t firstByte = 0xE0|i;
-      chunkByte = chunk * 8;
-      const uint8_t* ptr = m_displays[i]->getPtr(chunk * 256);
-      if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
-                     kMASMK2_endpointDisplay))
-      {
-        return false;
-      }
+      return false;
     }
   }
+
   return true;
 }
 
