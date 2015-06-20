@@ -133,6 +133,7 @@ SET(
     inc/util/CircularBuffer.h
     inc/util/Functions.h
     inc/util/Macros.h
+    inc/util/MidiMessage.h
     inc/util/Types.h
     inc/util/Version.h
 )
