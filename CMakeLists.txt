@@ -37,13 +37,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
 # Libraries ---------------------------------------------------------------------------------------------------------- #
 
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   find_package(hidapi REQUIRED)
   find_package(libusb REQUIRED)
-endif(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
   set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
   set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
 
@@ -87,7 +88,54 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   )
   target_include_directories( libusb PRIVATE "submodules/libusb/msvc/" )
 
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+ set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
+ set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
+
+  SET( 
+    lib_hidapi_LIBRARY      
+      submodules/hidapi/hidapi/hidapi.h
+      submodules/hidapi/mac/hid.c
+  )
+  
+  SET( 
+    lib_libusb_LIBRARY      
+      submodules/libusb/Xcode/config.h
+      submodules/libusb/libusb/core.c
+      submodules/libusb/libusb/descriptor.c
+      submodules/libusb/libusb/hotplug.c
+      submodules/libusb/libusb/io.c
+      submodules/libusb/libusb/os/poll_posix.c
+      submodules/libusb/libusb/strerror.c
+      submodules/libusb/libusb/sync.c
+      submodules/libusb/libusb/os/threads_posix.c
+      submodules/libusb/libusb/os/darwin_usb.c
+  )
+
+  source_group("src"           FILES ${lib_hidapi_LIBRARY})
+  source_group("src"           FILES ${lib_libusb_LIBRARY})
+
+  add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
+  set_target_properties(
+  hidapi 
+  PROPERTIES 
+    OUTPUT_NAME         "hidapi"
+    OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
+  )
+
+  add_library( libusb STATIC ${lib_libusb_LIBRARY} )
+  set_target_properties(
+  libusb 
+  PROPERTIES 
+    OUTPUT_NAME         "libusb"
+    OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
+  )
+  target_include_directories( libusb PRIVATE "submodules/libusb/Xcode/" )
+
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
@@ -295,7 +343,7 @@ set_target_properties(
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-  target_link_libraries( k-IO PUBLIC ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY})
+  target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit" objc)
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
