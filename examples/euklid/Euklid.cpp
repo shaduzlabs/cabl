@@ -58,7 +58,6 @@ Euklid::Euklid()
   , m_delayEven(125)
   , m_delayOdd(125)
 {
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -88,6 +87,8 @@ bool Euklid::initHardware()
   updatePads();
 
   m_pMidiout->openVirtualPort("Euklid");
+  togglePlay();
+
   return true;
 }
 
@@ -203,7 +204,6 @@ void Euklid::play()
   {
     for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
-      uint8_t channel = 0x99 + i;
       MidiNote note(MidiNote::Name::C, 2);
       if (i == 1)
       {

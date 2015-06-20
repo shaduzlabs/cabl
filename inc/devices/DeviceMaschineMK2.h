@@ -56,9 +56,9 @@ private:
   enum class Button : uint8_t;
  
   static constexpr uint8_t kMASMK2_nDisplays         = 2;
-  static constexpr uint8_t kMASMK2_nButtons          = 45;
+  static constexpr uint8_t kMASMK2_nButtons          = 48;
   static constexpr uint8_t kMASMK2_ledsDataSize      = 56;
-  static constexpr uint8_t kMASMK2_buttonsDataSize   = 5;
+  static constexpr uint8_t kMASMK2_buttonsDataSize   = 8;
   static constexpr uint8_t kMASMK2_padDataSize       = 64;
   static constexpr uint8_t kMASMK2_nPads             = 16;
   static constexpr uint8_t kMASMK2_padsBufferSize    = 16;

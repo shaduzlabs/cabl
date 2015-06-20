@@ -91,8 +91,8 @@ enum class DeviceMaschineMK2::Led : uint8_t{
   NoteRepeat,
 
   Restart = 48,
-  StepLeft,
-  StepRight,
+  TransportLeft,
+  TransportRight,
   Grid,
   Play,
   Rec,
@@ -234,14 +234,14 @@ enum class DeviceMaschineMK2::Led : uint8_t{
 //----------------------------------------------------------------------------------------------------------------------
 
 enum class DeviceMaschineMK2::Button : uint8_t{
-  P1,
-  P2,
-  P3,
-  P4,
-  P5,
-  P6,
-  P7,
-  P8,
+  DisplayButton1,
+  DisplayButton2,
+  DisplayButton3,
+  DisplayButton4,
+  DisplayButton5,
+  DisplayButton6,
+  DisplayButton7,
+  DisplayButton8,
 
   Control,
   Step,
@@ -259,7 +259,7 @@ enum class DeviceMaschineMK2::Button : uint8_t{
   MasterRight,
   Enter,
   NoteRepeat,
-  NotUsed,
+  Main,
 
   GroupA,
   GroupB,
@@ -271,8 +271,8 @@ enum class DeviceMaschineMK2::Button : uint8_t{
   GroupH,
 
   Restart,
-  StepLeft,
-  StepRight,
+  TransportLeft,
+  TransportRight,
   Grid,
   Play,
   Rec,
@@ -287,6 +287,17 @@ enum class DeviceMaschineMK2::Button : uint8_t{
   Select,
   Solo,
   Mute,
+  
+  NotUsed1,
+  NotUsed2,
+  NotUsed3,
+  NotUsed4,
+  NotUsed5,
+  NotUsed6,
+  NotUsed7,
+  NotUsed8,
+  
+  
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -297,6 +308,7 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
 {
   m_buttons.resize(kMASMK2_buttonsDataSize);
   m_ledsButtons.resize(kMASMK2_ledsDataSize);
+  m_ledsPads.resize(49);
   m_displays[0].reset( new GDisplayMaschineMK2 );
   m_displays[1].reset( new GDisplayMaschineMK2 );
 }
@@ -314,15 +326,16 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
 {
   Led led = getLed(btn_);
 
-  if (isRGBLed(led))
+  if (isRGBLed(led) && led < Led::GroupA)
   {
-    uint8_t currentR = m_ledsButtons[static_cast<uint16_t>(led)];
-    uint8_t currentG = m_ledsButtons[static_cast<uint16_t>(led) + 1];
-    uint8_t currentB = m_ledsButtons[static_cast<uint16_t>(led) + 2];
+    uint8_t firstPadIndex = static_cast<uint8_t>(Led::Pad1);
+    uint8_t currentR = m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex];
+    uint8_t currentG = m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex];
+    uint8_t currentB = m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex];
 
-    m_ledsButtons[static_cast<uint16_t>(led)] = val_;
-    m_ledsButtons[static_cast<uint16_t>(led) + 1] = val_;
-    m_ledsButtons[static_cast<uint16_t>(led) + 2] = val_;
+    m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex] = val_;
+    m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex] = val_;
+    m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex] = val_;
 
     m_isDirtyLeds = (currentR != val_ || currentG != val_ || currentB != val_);
   }
@@ -342,15 +355,17 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
 {
   Led led = getLed(btn_);
 
-  if (isRGBLed(led))
+  if (isRGBLed(led) && led < Led::GroupA)
   {
-    uint8_t currentR = m_ledsButtons[static_cast<uint16_t>(led)];
-    uint8_t currentG = m_ledsButtons[static_cast<uint16_t>(led) + 1];
-    uint8_t currentB = m_ledsButtons[static_cast<uint16_t>(led) + 2];
+    uint8_t firstPadIndex = static_cast<uint8_t>(Led::Pad1);
+    
+    uint8_t currentR = m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex];
+    uint8_t currentG = m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex];
+    uint8_t currentB = m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex];
 
-    m_ledsButtons[static_cast<uint16_t>(led)] = r_;
-    m_ledsButtons[static_cast<uint16_t>(led) + 1] = g_;
-    m_ledsButtons[static_cast<uint16_t>(led) + 2] = b_;
+    m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex] = r_;
+    m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex] = g_;
+    m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex] = b_;
 
     m_isDirtyLeds = (currentR != r_ || currentG != g_ || currentB != b_);
   }
@@ -471,10 +486,9 @@ bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
 
 bool DeviceMaschineMK2::sendLeds()
 {
-return true;
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsButtons[0], 78), kMASMK2_epOut))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsPads[0], 49), kMASMK2_epOut))
     {
       return false;
     }
@@ -497,7 +511,7 @@ bool DeviceMaschineMK2::read()
     else if (input && input[0] == 0x01)
     {
       processButtons(input);
-      break;
+      return true;
     }
     else if (input && input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
     {
@@ -515,7 +529,7 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
-  for (int i = 0; i < kMASMK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
+  for (int i = 0; i < kMASMK2_buttonsDataSize; i++) // Skip the last byte (encoder value)
   {
     for (int k = 0; k < 8; k++)
     {
@@ -534,20 +548,26 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
         {
       //    std::copy(&input_[1],&input_[kMASMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
-          }
         }
       }
-
-    // Now process the encoder data
-    uint8_t currentEncoderValue = input_.getData()[kMASMK2_buttonsDataSize];
-    if (m_encoderValue != currentEncoderValue)
-    {
-      bool valueIncreased
-        = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-          && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-        encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
-      m_encoderValue = currentEncoderValue;
     }
+  }
+  
+  // Now process the encoder data
+  uint8_t currentEncoderValue = input_.getData()[kMASMK2_buttonsDataSize];
+  if (m_encoderValue != currentEncoderValue)
+  {
+    bool valueIncreased
+      = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
+        && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
+      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    m_encoderValue = currentEncoderValue;
+  }
+  
+  for (int i = kMASMK2_buttonsDataSize; i < input_.size(); i++) // Skip the last byte (encoder value)
+  {
+    uint8_t encoderValue = input_.getData()[i];
+    encoderValue +=0;
   }
 }
 
@@ -556,12 +576,12 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
 void DeviceMaschineMK2::processPads(const Transfer& input_)
 {
   //\todo process pad data
-  for (int i = 1; i <= kMASMK2_padDataSize; i += 2)
+  for (int i = 1; i < kMASMK2_padDataSize; i += 2)
   {
     uint16_t l = input_[i];
     uint16_t h = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
-    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
+   // m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
     m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
 
     Device::Pad btn(Device::Pad::Unknown);
@@ -604,15 +624,15 @@ void DeviceMaschineMK2::processPads(const Transfer& input_)
 
 bool DeviceMaschineMK2::isRGBLed(Led led_)
 {
-/*
-  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ || Led::GroupE == led_ || Led::GroupF == led_ || Led::GroupG == led_ || Led::GroupA == led_ || Led::Pad1 == led_ || Led::Pad2 == led_ || Led::Pad3 == led_ || Led::Pad4 == led_
-      || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_ || Led::Pad8 == led_ || Led::Pad9 == led_
-      || Led::Pad10 == led_ || Led::Pad11 == led_ || Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_
-      || Led::Pad15 == led_ || Led::Pad16 == led_)
+
+  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ || Led::GroupE == led_
+      || Led::GroupF == led_ || Led::GroupG == led_ || Led::GroupH == led_ || Led::Pad1 == led_ || Led::Pad2 == led_
+      || Led::Pad3 == led_ || Led::Pad4 == led_ || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_
+      || Led::Pad8 == led_ || Led::Pad9 == led_ || Led::Pad10 == led_ || Led::Pad11 == led_ || Led::Pad12 == led_
+      || Led::Pad13 == led_ || Led::Pad14 == led_ || Led::Pad15 == led_ || Led::Pad16 == led_)
   {
     return true;
   }
-*/
   return false;
 }
 
@@ -627,6 +647,68 @@ DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Button btn_) const noex
   switch (btn_)
   {
     M_LED_CASE(Control);
+    M_LED_CASE(Step);
+    M_LED_CASE(Browse);
+    M_LED_CASE(Sampling);
+    M_LED_CASE(BrowseLeft);
+    M_LED_CASE(BrowseRight);
+    M_LED_CASE(All);
+    M_LED_CASE(AutoWrite);
+    M_LED_CASE(DisplayButton1);
+    M_LED_CASE(DisplayButton2);
+    M_LED_CASE(DisplayButton3);
+    M_LED_CASE(DisplayButton4);
+    M_LED_CASE(DisplayButton5);
+    M_LED_CASE(DisplayButton6);
+    M_LED_CASE(DisplayButton7);
+    M_LED_CASE(DisplayButton8);
+    M_LED_CASE(Scene);
+    M_LED_CASE(Pattern);
+    M_LED_CASE(PadMode);
+    M_LED_CASE(Navigate);
+    M_LED_CASE(Duplicate);
+    M_LED_CASE(Select);
+    M_LED_CASE(Solo);
+    M_LED_CASE(Mute);
+    M_LED_CASE(Volume);
+    M_LED_CASE(Swing);
+    M_LED_CASE(Tempo);
+    M_LED_CASE(MasterLeft);
+    M_LED_CASE(MasterRight);
+    M_LED_CASE(Enter);
+    M_LED_CASE(NoteRepeat);
+    M_LED_CASE(Restart);
+    M_LED_CASE(TransportLeft);
+    M_LED_CASE(TransportRight);
+    M_LED_CASE(Grid);
+    M_LED_CASE(Play);
+    M_LED_CASE(Rec);
+    M_LED_CASE(Erase);
+    M_LED_CASE(Shift);
+    M_LED_CASE(Pad1);
+    M_LED_CASE(Pad2);
+    M_LED_CASE(Pad3);
+    M_LED_CASE(Pad4);
+    M_LED_CASE(Pad5);
+    M_LED_CASE(Pad6);
+    M_LED_CASE(Pad7);
+    M_LED_CASE(Pad8);
+    M_LED_CASE(Pad9);
+    M_LED_CASE(Pad10);
+    M_LED_CASE(Pad11);
+    M_LED_CASE(Pad12);
+    M_LED_CASE(Pad13);
+    M_LED_CASE(Pad14);
+    M_LED_CASE(Pad15);
+    M_LED_CASE(Pad16);
+    M_LED_CASE(GroupA);
+    M_LED_CASE(GroupB);
+    M_LED_CASE(GroupC);
+    M_LED_CASE(GroupD);
+    M_LED_CASE(GroupE);
+    M_LED_CASE(GroupF);
+    M_LED_CASE(GroupG);
+    M_LED_CASE(GroupH);
 
     default:
     {
@@ -647,7 +729,54 @@ Device::Button DeviceMaschineMK2::getDeviceButton(Button btn_) const noexcept
 
   switch (btn_)
   {
+    M_BTN_CASE(DisplayButton1);
+    M_BTN_CASE(DisplayButton2);
+    M_BTN_CASE(DisplayButton3);
+    M_BTN_CASE(DisplayButton4);
+    M_BTN_CASE(DisplayButton5);
+    M_BTN_CASE(DisplayButton6);
+    M_BTN_CASE(DisplayButton7);
+    M_BTN_CASE(DisplayButton8);
     M_BTN_CASE(Control);
+    M_BTN_CASE(Step);
+    M_BTN_CASE(Browse);
+    M_BTN_CASE(Sampling);
+    M_BTN_CASE(BrowseLeft);
+    M_BTN_CASE(BrowseRight);
+    M_BTN_CASE(All);
+    M_BTN_CASE(AutoWrite);
+    M_BTN_CASE(Volume);
+    M_BTN_CASE(Swing);
+    M_BTN_CASE(Tempo);
+    M_BTN_CASE(MasterLeft);
+    M_BTN_CASE(MasterRight);
+    M_BTN_CASE(Enter);
+    M_BTN_CASE(NoteRepeat);
+    M_BTN_CASE(GroupA);
+    M_BTN_CASE(GroupB);
+    M_BTN_CASE(GroupC);
+    M_BTN_CASE(GroupD);
+    M_BTN_CASE(GroupE);
+    M_BTN_CASE(GroupF);
+    M_BTN_CASE(GroupG);
+    M_BTN_CASE(GroupH);
+    M_BTN_CASE(Restart);
+    M_BTN_CASE(TransportLeft);
+    M_BTN_CASE(TransportRight);
+    M_BTN_CASE(Grid);
+    M_BTN_CASE(Play);
+    M_BTN_CASE(Rec);
+    M_BTN_CASE(Erase);
+    M_BTN_CASE(Shift);
+    M_BTN_CASE(Scene);
+    M_BTN_CASE(Pattern);
+    M_BTN_CASE(PadMode);
+    M_BTN_CASE(Navigate);
+    M_BTN_CASE(Duplicate);
+    M_BTN_CASE(Select);
+    M_BTN_CASE(Solo);
+    M_BTN_CASE(Mute);
+    M_BTN_CASE(Main);
 
 
     default:

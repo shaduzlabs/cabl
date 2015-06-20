@@ -89,7 +89,9 @@ public:
 
   static std::vector<uint8_t> noteOn(uint8_t channel, uint8_t note, uint8_t velocity)
   {
-    return {channel&0x0Fu|static_cast<uint8_t>(Type::NoteOn), note&0x7Fu, velocity&0x7Fu};
+    uint8_t channelByte = channel&0x0F;
+    channelByte |= static_cast<uint8_t>(Type::NoteOn);
+    return {channelByte, static_cast<uint8_t>(note&0x7F), static_cast<uint8_t>(velocity&0x7F)};
   }
 
 };

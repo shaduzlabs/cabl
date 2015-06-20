@@ -398,7 +398,7 @@ bool DeviceMaschineMikroMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMikroMK2_epDisplay))
+    if (!getDeviceHandle()->read(input, kMikroMK2_epInput))
     {
       return false;
     }
