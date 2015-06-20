@@ -30,6 +30,7 @@
 
 #include "comm/Driver.h"
 #include "devices/Device.h"
+#include "util/MidiMessage.h"
 
 namespace sl
 {

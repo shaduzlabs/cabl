@@ -154,6 +154,7 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
 {
 	setEncoder(valueIncreased_, shiftPressed_);
   updateGUI();
+  updatePads();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -175,7 +176,9 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
       getDevice(0)->setLed(getPadLed(padIndex), 0);
     }
     updateGUI();
+    updatePads();
   }
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -195,27 +198,28 @@ void Euklid::play()
 {
   m_quarterNote = 0;
   updateClock();
-  
+
   while (m_play)
   {
-    updatePads();
-    updateGUI();
     for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
       uint8_t channel = 0x99 + i;
-      uint8_t note = 0x24;
+      MidiNote note(MidiNote::Name::C, 2);
       if (i == 1)
       {
-        note = 0x26;
+        note.setNote(MidiNote::Name::D);
       }
       else if (i == 2)
       {
-        note = 0x2A;
+        note.setNote(MidiNote::Name::FSharp);
       }
       if (m_sequences[i].next())
       {
-        std::vector<uint8_t> msg{channel, note, 0x7f};
+        std::vector<uint8_t> msg(MidiMessage::noteOn(0, note.value(), 127));
         m_pMidiout->sendMessage(&msg);
+        getDevice(0)->sendMidiMsg(msg);
+   //     updateGUI();
+        updatePads();
       }
     }
 

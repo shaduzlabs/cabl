@@ -174,8 +174,6 @@ public:
     MaschineMikroMk2,
   };
   
-  static Type getType(uint16_t, uint16_t);
-  
   Device(tPtr<DeviceHandle> pDeviceHandle_)
     : m_pDeviceHandle(std::move(pDeviceHandle_))
   {
@@ -195,6 +193,8 @@ public:
 
   virtual void setLed(Button, uint8_t) = 0;
   virtual void setLed(Button, uint8_t, uint8_t, uint8_t) = 0;
+
+  virtual void sendMidiMsg(tRawData) = 0;
 
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_){ m_cbButtonChanged = cbButtonChanged_; }
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
