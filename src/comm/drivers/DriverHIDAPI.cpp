@@ -62,8 +62,13 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
 	devices = hid_enumerate(0x0, 0x0);
 	while (devices)
   {
-    std::wstring wSerialNumber(devices->serial_number);
-    std::string strSerialNumber(wSerialNumber.begin(), wSerialNumber.end());
+    std::string strSerialNumber;
+    if(devices->serial_number !=nullptr)
+    {
+      std::wstring wSerialNumber(devices->serial_number);
+      strSerialNumber = std::string(wSerialNumber.begin(), wSerialNumber.end());
+    }
+
     DeviceDescriptor deviceDescriptor(
       devices->vendor_id,
       devices->product_id,

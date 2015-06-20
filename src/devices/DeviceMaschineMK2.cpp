@@ -443,9 +443,12 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
 
 void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
 {
-  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
-  uint8_t lengthL = midiMsg_.size() & 0xFF;
-  getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMASMK2_epOut);
+  uint8_t cin = (midiMsg_.data()[0]&0xF0)>>4;
+  bool result = getDeviceHandle()->write(Transfer({ cin }, midiMsg_.data(), midiMsg_.size()), kMASMK2_epOut);
+  if (result)
+  {
+    std::cout << "wrote to MIDI out!" << std::endl;
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -469,6 +472,7 @@ bool DeviceMaschineMK2::tick()
 
   if (state == 0)
   {
+    sendMidiMsg({0x90,0x24,0x7F,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 });
     for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
       if (m_displays[displayIndex]->isDirty())

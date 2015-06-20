@@ -611,17 +611,13 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
-    uint16_t currentEncValue = (input_.getData()[1 + (2 * i)] & 0xf0);
+    uint16_t currentEncValue = (input_.getData()[2 + (2 * i)])|(input_.getData()[1 + (2 * i)] << 8);
     if (m_encoderValues[i] == currentEncValue)
     {
       continue;
     }
-    std::cout << std::setfill('0') << std::internal;
-    for (int i = 0; i < input_.size(); i++)
-    {
-      std::cout << std::hex << std::setw(2) << (int)input_[i] << std::dec << " ";
-    }
-    std::cout << std::endl << std::endl;
+
+    std::cout << (int)((m_encoderValues[i] & 0xFF00) >> 8) << " " << (int)(m_encoderValues[i] & 0xFF) << " " << currentEncValue << std::endl;
 
     bool valueIncreased
       = ((m_encoderValues[i] < currentEncValue) || ((currentEncValue == 0xffff) && (currentEncValue == 0x00)))

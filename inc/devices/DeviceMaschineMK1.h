@@ -92,7 +92,7 @@ private:
   tRawData            m_buttons;
 
   bool                m_buttonStates[kMASMK1_nButtons];
-  uint16_t            m_encoderValues[kMASMK1_nEncoders];
+  uint16_t             m_encoderValues[kMASMK1_nEncoders];
 
   tBuffer             m_padsRawData[kMASMK1_nPads];
   uint16_t            m_padsAvgData[kMASMK1_nPads];
