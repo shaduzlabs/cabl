@@ -654,12 +654,14 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
     m_encoderValue = currentEncoderValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
-  
-  for (int i = kMASMK2_buttonsDataSize; i < input_.size(); i++) // Skip the last byte (encoder value)
+
+  for (uint8_t encIndex = 0, i = kMASMK2_buttonsDataSize+1; encIndex < 8; i+=2, encIndex++)
   {
-  //  uint8_t encoderValue = input_.getData()[i];
-   // encoderValue +=0;
+    Device::Encoder encoder = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
+    uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
+    // check previous value, callback!
   }
+  std::cout << std::endl;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
