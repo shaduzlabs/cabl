@@ -71,7 +71,7 @@ public:
 	    }
 	  }
   }
-  void toggleStep(uint8_t pos_)
+  bool toggleStep(uint8_t pos_)
   {
     int pos = pos_ - offset;
     if (pos < 0)
@@ -80,6 +80,7 @@ public:
     }
     bool value = (bits & (1 << pos)) > 0;
     setStep(pos, !value);
+    return value;
   }
 
 private:

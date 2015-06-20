@@ -83,6 +83,10 @@ bool Euklid::initHardware()
     m_sequences[i].rotate(m_rotates[i]);
   }
 
+  updateGUI();
+  updateGroupLeds();
+  updatePads();
+
   m_pMidiout->openVirtualPort("Euklid");
   return true;
 }
@@ -91,9 +95,7 @@ bool Euklid::initHardware()
 
 bool Euklid::tick()
 {
-  bool result = getDevice(0)->tick();
-  updateGUI();
-  return result;
+  return getDevice(0)->tick();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -143,7 +145,7 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
                                   ? Euklid::ScreenPage::Sequencer
                                   : Euklid::ScreenPage::Configuration);
   }
-  //  getDevice()->setLed(button_, ((unsigned)(buttonState_)) * 255);
+  updateGUI();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -151,6 +153,7 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
 void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
 {
 	setEncoder(valueIncreased_, shiftPressed_);
+  updateGUI();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -162,7 +165,16 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
   if (now - lastEvent > std::chrono::milliseconds(180))
   {
     lastEvent = now;
-    m_sequences[m_currentTrack].toggleStep(getPadIndex(pad_));
+    uint8_t padIndex = getPadIndex(pad_);
+    if (m_sequences[m_currentTrack].toggleStep(padIndex))
+    {
+      getDevice(0)->setLed(getPadLed(padIndex), 255, 255, 255);
+    }
+    else
+    {
+      getDevice(0)->setLed(getPadLed(padIndex), 0);
+    }
+    updateGUI();
   }
 }
 
@@ -186,6 +198,8 @@ void Euklid::play()
   
   while (m_play)
   {
+    updatePads();
+    updateGUI();
     for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
       uint8_t channel = 0x99 + i;
@@ -242,22 +256,30 @@ void Euklid::updateGUI()
       break;
     }
   }
-  
-  // Update group led
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::updateGroupLeds()
+{
   switch (m_currentTrack)
   {
-    case 0:
-      getDevice(0)->setLed(kio::Device::Button::Group, 255, 0, 0);
-      break;
-    case 1:
-      getDevice(0)->setLed(kio::Device::Button::Group, 0, 255, 0);
-      break;
-    case 2:
-      getDevice(0)->setLed(kio::Device::Button::Group, 0, 0, 255);
-      break;
+  case 0:
+    getDevice(0)->setLed(kio::Device::Button::Group, 255, 0, 0);
+    break;
+  case 1:
+    getDevice(0)->setLed(kio::Device::Button::Group, 0, 255, 0);
+    break;
+  case 2:
+    getDevice(0)->setLed(kio::Device::Button::Group, 0, 0, 255);
+    break;
   }
+}
 
-  // Update pads
+//----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::updatePads()
+{
   for (uint8_t t = 0; t < kEuklidNumTracks; t++)
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
@@ -272,7 +294,7 @@ void Euklid::updateGUI()
 
         if (i >= m_lengths[t])
         {
-          getDevice(0)->setLed(getPadLed(i), 0, 0, 0);
+          getDevice(0)->setLed(getPadLed(i), 0);
         }
         else if (pulses & (1 << i))
         {
@@ -280,30 +302,30 @@ void Euklid::updateGUI()
           {
             switch (m_currentTrack)
             {
-              case 0:
-                getDevice(0)->setLed(pad, 255, 0, 0);
-                break;
-              case 1:
-                getDevice(0)->setLed(pad, 0, 255, 0);
-                break;
-              case 2:
-                getDevice(0)->setLed(pad, 0, 0, 255);
-                break;
+            case 0:
+              getDevice(0)->setLed(pad, 150, 0, 0);
+              break;
+            case 1:
+              getDevice(0)->setLed(pad, 0, 150, 0);
+              break;
+            case 2:
+              getDevice(0)->setLed(pad, 0, 0, 150);
+              break;
             }
           }
           else
           {
             switch (m_currentTrack)
             {
-              case 0:
-                getDevice(0)->setLed(pad, 150, 0, 0);
-                break;
-              case 1:
-                getDevice(0)->setLed(pad, 0, 150, 0);
-                break;
-              case 2:
-                getDevice(0)->setLed(pad, 0, 0, 150);
-                break;
+            case 0:
+              getDevice(0)->setLed(pad, 255, 0, 0);
+              break;
+            case 1:
+              getDevice(0)->setLed(pad, 0, 255, 0);
+              break;
+            case 2:
+              getDevice(0)->setLed(pad, 0, 0, 255);
+              break;
             }
           }
         }
@@ -311,17 +333,18 @@ void Euklid::updateGUI()
         {
           if (pos == (k % m_lengths[t]))
           {
-            getDevice(0)->setLed(pad, 50, 50, 50);
+            getDevice(0)->setLed(pad, 0, 0, 0);
           }
           else
           {
-            getDevice(0)->setLed(pad, 20, 20, 20);
+            getDevice(0)->setLed(pad, 0, 0, 0);
           }
         }
       }
     }
   }
 }
+
 //----------------------------------------------------------------------------------------------------------------------
 
 void Euklid::drawConfigurationPage()
@@ -508,6 +531,8 @@ void Euklid::changeTrack()
   {
     m_currentTrack = 0;
   }
+  updateGroupLeds();
+  updatePads();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

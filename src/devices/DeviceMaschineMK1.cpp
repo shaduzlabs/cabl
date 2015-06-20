@@ -277,7 +277,7 @@ GDisplay* DeviceMaschineMK1::getDisplay( uint8_t displayIndex_ )
 bool DeviceMaschineMK1::tick()
 {
   static int state = 0;
-  bool success = false;
+  bool success = true;
 
   if (state == 0)
   {
@@ -292,11 +292,11 @@ bool DeviceMaschineMK1::tick()
   }
   else if (state == 1)
   {
-    success = sendLeds();
-  }
-  else if (state == 2 && (m_isDirtyLedGroup0 || m_isDirtyLedGroup1))
-  {
     success = read();
+  }
+  else if (state == 2)
+  {
+    success = sendLeds();
   }
 
   if (++state >= 3)
@@ -311,9 +311,6 @@ bool DeviceMaschineMK1::tick()
 
 void DeviceMaschineMK1::init()
 {
-
-  getDeviceHandle()->write(Transfer({ 0x01 }), kMASMK1_endpointOut);
-
   // Displays
   for( int i=0; i< kMASMK1_nDisplays; i++ )
   {
@@ -479,15 +476,7 @@ bool DeviceMaschineMK1::read()
   
 
   if(getDeviceHandle()->read( input, kMASMK1_endpointInputPads ) )
-  {     /*
-    std::cout << std::setfill('0') << std::internal;
-
-    for( int i = 0; i < input.size(); i++ )
-    {
-    std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
-    }
-
-    std::cout << std::endl << std::endl;*/
+  {
     processPads(input);
   }
 

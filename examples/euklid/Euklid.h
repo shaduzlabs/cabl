@@ -75,6 +75,8 @@ public:
   void play();
 
   void updateGUI();
+  void updateGroupLeds();
+  void updatePads();
   
   void drawConfigurationPage();
   void drawSequencerPage();
