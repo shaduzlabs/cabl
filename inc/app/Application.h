@@ -52,6 +52,8 @@ public:
   void run();
   Driver::tCollDeviceDescriptor enumerateDevices();
   bool connect(Driver::tCollDeviceDescriptor);
+  
+  void setMaxConsecutiveErrors(unsigned nErrors_){ m_maxConsecutiveErrors = nErrors_;}
 
 protected:
   void setConnected(bool connected_)
@@ -71,6 +73,8 @@ private:
   bool m_appStopped;
   bool m_connected;
 
+  unsigned                      m_maxConsecutiveErrors;
+  
   Driver::tCollDeviceDescriptor m_collKnownDevices;
   Driver::tCollDeviceDescriptor m_collSupportedDevices;
 

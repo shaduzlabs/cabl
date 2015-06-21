@@ -67,9 +67,22 @@ void Application::run()
     {
       m_connected = true;
       initHardware();
+      unsigned nErrors = 0;
       while (m_connected)
       {
-        tick();
+        if(!tick())
+        {
+          nErrors++;
+          if(nErrors>=m_maxConsecutiveErrors)
+          {
+            m_connected = false;
+            m_collDevices.clear();
+          }
+        }
+        else
+        {
+       //   nErrors--;
+        }
       }
     }
     std::this_thread::sleep_for(std::chrono::seconds(kAppSleepBeforeNextDeviceSearch));

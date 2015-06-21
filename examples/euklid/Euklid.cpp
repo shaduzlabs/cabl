@@ -59,20 +59,6 @@ Euklid::Euklid()
   , m_delayOdd(125)
   , m_update(true)
 {
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool Euklid::initHardware()
-{  
-  getDevice(0)->getDisplay(0)->black();
-
-  getDevice(0)->setCallbackButtonChanged(
-    std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackEncoderChanged(
-    std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackPadChanged(
-    std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
@@ -83,9 +69,24 @@ bool Euklid::initHardware()
     m_sequences[i].rotate(m_rotates[i]);
   }
   
-  m_update = true;
-
   m_pMidiout->openVirtualPort("Euklid");
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool Euklid::initHardware()
+{  
+  getDevice(0)->getDisplay(0)->black();
+ // getDevice(0)->getDisplay(1)->black();
+
+  getDevice(0)->setCallbackButtonChanged(
+    std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackEncoderChanged(
+    std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackPadChanged(
+    std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  
+  m_update = true;
 
   return true;
 }
@@ -246,7 +247,7 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
 
 void Euklid::updateClock()
 {
-  unsigned quarterDuration = 60000/m_bpm;
+  unsigned quarterDuration = 60000.0f/m_bpm;
   float delayQuarterNote = quarterDuration / 4.0f;
   float shuffleDelay = delayQuarterNote * (m_shuffle/300.0f);
   m_delayEven = static_cast<uint16_t>(delayQuarterNote + shuffleDelay);
@@ -278,7 +279,7 @@ void Euklid::play()
       {
         std::vector<uint8_t> msg(MidiMessage::noteOn(0, note.value(), 127));
         m_pMidiout->sendMessage(&msg);
-        getDevice(0)->sendMidiMsg(msg);
+     //   getDevice(0)->sendMidiMsg(msg);
       }
     }
     

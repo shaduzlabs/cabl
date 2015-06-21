@@ -506,6 +506,10 @@ bool DeviceMaschineMK2::tick()
         success = sendFrame(displayIndex);
         m_displays[displayIndex]->resetDirtyFlags();
       }
+      else
+      {
+        success = true;
+      }
     }
   }
   else if (state == 1)
