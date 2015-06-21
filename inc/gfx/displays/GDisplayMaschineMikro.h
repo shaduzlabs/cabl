@@ -58,7 +58,7 @@ protected:
      \param color_           The pixel color (white, black, invert)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    void setPixelImpl( uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_ = true ) override;
+    void setPixelImpl( uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true ) override;
     
     //! Get the pixel value
     /*!
@@ -66,7 +66,7 @@ protected:
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    tColor getPixelImpl( uint16_t x_, uint16_t y_ ) const override;
+    Color getPixelImpl( uint16_t x_, uint16_t y_ ) const override;
 
 };
   

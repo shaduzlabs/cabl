@@ -48,7 +48,7 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, tAllocation allocationType_ )
+GDisplay::GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation allocationType_ )
 : Canvas( width_, height_, allocationType_ )
 , m_isDirty(false)
 , m_numDisplayChunks( numDisplayChunks_ )
@@ -67,14 +67,14 @@ GDisplay::~GDisplay()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void GDisplay::setPixel( uint16_t x_, uint16_t y_, tColor color_ )
+void GDisplay::setPixel( uint16_t x_, uint16_t y_, Color color_ )
 {
   setPixelImpl( x_, y_, color_, true );
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplay::getPixel(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplay::getPixel(uint16_t x_, uint16_t y_ ) const
 {
   return getPixelImpl( x_,y_ );
 }

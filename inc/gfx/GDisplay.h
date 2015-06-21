@@ -57,7 +57,7 @@ namespace kio
      \param height_ Display height in pixels
      \param numDisplayChunks_ Number of data chunks (Default value is 8)
      */
-    GDisplay( uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, tAllocation );
+    GDisplay( uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation );
     
     //! Destructor
     virtual ~GDisplay();
@@ -78,7 +78,7 @@ namespace kio
      \param y_               The Y coordinate of the pixel
      \param color_           The pixel color (white, black, invert)
      */
-    void setPixel( uint16_t x_, uint16_t y_, tColor color_ ) override;
+    void setPixel( uint16_t x_, uint16_t y_, Color color_ ) override;
     
     //! Get the pixel value
     /*!
@@ -86,7 +86,7 @@ namespace kio
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    tColor getPixel(uint16_t x_, uint16_t y_ ) const override;
+    Color getPixel(uint16_t x_, uint16_t y_ ) const override;
         
     /** @} */ // End of group Primitives
 
@@ -142,7 +142,7 @@ namespace kio
      \param color_           The pixel color (white, black, invert)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    virtual void setPixelImpl( uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_  ) = 0;
+    virtual void setPixelImpl( uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_  ) = 0;
     
     //! Get the pixel value (implementation)
     /*!
@@ -150,7 +150,7 @@ namespace kio
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    virtual tColor getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
+    virtual Color getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
     
     void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
     

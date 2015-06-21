@@ -49,36 +49,36 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMikro::GDisplayMaschineMikro()
-  : GDisplay( kMikro_displayWidth, kMikro_displayHeight, kMikro_nOfDisplayDataChunks, tAllocation::COL_1BYTE_8_PIXELS )
+  : GDisplay( kMikro_displayWidth, kMikro_displayHeight, kMikro_nOfDisplayDataChunks, Allocation::OneBytePacksOneColOfEightPixels )
 {
 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ )
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == tColor::NONE )
+  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
     return;
   
-  tColor oldColor = getPixelImpl( x_, y_ );
+  Color oldColor = getPixelImpl( x_, y_ );
   
-  if( color_ == tColor::RANDOM )
-    color_ = static_cast<tColor>( util::randomRange(0,2) );
+  if( color_ == Color::Random )
+    color_ = static_cast<Color>( util::randomRange(0,2) );
   
   uint16_t byteIndex = ( getWidth() * ( y_ >> 3 ) ) + x_;
   
   switch( color_ )
   {
-    case tColor::WHITE:
+    case Color::White:
       getData()[ byteIndex ] |= 0x01 << ( y_ & 7 );
       break;
       
-    case tColor::BLACK:
+    case Color::Black:
       getData()[ byteIndex ] &= ~(0x01 << ( y_ & 7 ) );
       break;
       
-    case tColor::INVERT:
+    case Color::Invert:
       getData()[ byteIndex ] ^= 0x01 << ( y_ & 7 );
       break;
       
@@ -93,15 +93,15 @@ void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ ) const
 {
   if ( x_ >= getWidth() || y_ >= getHeight() )
-    return tColor::BLACK;
+    return Color::Black;
   
   return
   ( ( getData()[ x_ + ( getWidth() * ( y_ >> 3 ) ) ] >> ( ( y_ ) & 7 ) ) & 0x01 ) == 0
-  ? tColor::BLACK
-  : tColor::WHITE;
+  ? Color::Black
+  : Color::White;
 }
  
 //----------------------------------------------------------------------------------------------------------------------

@@ -49,22 +49,22 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMK1::GDisplayMaschineMK1()
-  : GDisplay( kMASMK1_displayWidth, kMASMK1_displayHeight, kMASMK1_nOfDisplayDataChunks, tAllocation::ROW_2BYTES_3_PIXELS )
+  : GDisplay( kMASMK1_displayWidth, kMASMK1_displayHeight, kMASMK1_nOfDisplayDataChunks, Allocation::TwoBytesPackThreePixelsInARow )
 {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ )
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == tColor::NONE )
+  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
     return;
   
-  tColor oldColor = getPixelImpl( x_, y_ );
+  Color oldColor = getPixelImpl( x_, y_ );
   
-  if (color_ == tColor::RANDOM)
+  if (color_ == Color::Random)
   {
-    color_ = static_cast<tColor>(util::randomRange(0, 2));
+    color_ = static_cast<Color>(util::randomRange(0, 2));
   }
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
@@ -73,7 +73,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
 
   switch( color_ )
   {
-    case tColor::WHITE:
+    case Color::White:
       switch( blockIndex )
       {
         case 0:
@@ -89,7 +89,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
       }
       break;
 
-    case tColor::BLACK:
+    case Color::Black:
       switch( blockIndex )
       {
         case 0:
@@ -105,7 +105,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
       }
       break;
 
-    case tColor::INVERT:
+    case Color::Invert:
       switch( blockIndex )
       {
         case 0:
@@ -132,25 +132,25 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) const
 {
   if ( x_ >= getWidth() || y_ >= getHeight() )
-    return tColor::BLACK;
+    return Color::Black;
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
   uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
   switch( blockIndex )
   {
     case 0:
-      return ( getData()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0xF8 ) ? Color::White : Color::Black;
     case 1:
-      return ( getData()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0x07 ) ? Color::White : Color::Black;
       break;
     case 2:
-      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? Color::White : Color::Black;
   }
   
-  return tColor::BLACK;
+  return Color::Black;
  }
 
 //----------------------------------------------------------------------------------------------------------------------
