@@ -81,10 +81,8 @@ bool Euklid::initHardware()
     m_sequences[i].calculate(m_lengths[i], m_pulses[i]);
     m_sequences[i].rotate(m_rotates[i]);
   }
-
-  updateGUI();
-  updateGroupLeds();
-  updatePads();
+  
+  m_update = true;
 
   m_pMidiout->openVirtualPort("Euklid");
 
@@ -95,8 +93,14 @@ bool Euklid::initHardware()
 
 bool Euklid::tick()
 {
-//  updateGUI();
-//  updatePads();
+  if(m_update)
+  {
+    updateGUI();
+    updateGroupLeds();
+    updatePads();
+
+    m_update = false;
+  }
 
   return getDevice(0)->tick();
 }
@@ -134,9 +138,21 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
       setEncoderState(Euklid::EncoderState::Rotate);
     }
   }
-  else if (buttonState_ && (button_ == kio::Device::Button::Group || button_ == kio::Device::Button::GroupA ))
+  else if (buttonState_ && button_ == kio::Device::Button::Group)
   {
     changeTrack();
+  }
+  else if (buttonState_ && button_ == kio::Device::Button::GroupA)
+  {
+    changeTrack(0);
+  }
+  else if (buttonState_ && button_ == kio::Device::Button::GroupB)
+  {
+    changeTrack(1);
+  }
+  else if (buttonState_ && button_ == kio::Device::Button::GroupC)
+  {
+    changeTrack(2);
   }
   else if (button_ == kio::Device::Button::Play && buttonState_)
   {
@@ -155,9 +171,40 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
 
 void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
 {
-	setEncoder(valueIncreased_, shiftPressed_);
-  updateGUI();
-  updatePads();
+  uint8_t step = (shiftPressed_ ? 5 : 1);
+  switch(encoder_)
+  {
+    case Device::Encoder::Encoder1:
+    {
+      m_lengths[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    case Device::Encoder::Main:
+    {
+      setEncoder(valueIncreased_, shiftPressed_);
+      break;
+    }
+    case Device::Encoder::Encoder2:
+    {
+      m_pulses[m_currentTrack]
+        = getEncoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    case Device::Encoder::Encoder3:
+    {
+      m_rotates[m_currentTrack]
+        = getEncoderValue(valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    default:
+      break;
+  }
+  m_update = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -189,8 +236,7 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
     {
    //   getDevice(0)->setLed(getPadLed(padIndex), 0);
     }
-    updateGUI();
-    updatePads();
+    m_update = true;
   }
 
 }
@@ -215,7 +261,7 @@ void Euklid::play()
 
   while (m_play)
   {
-    bool bUpdate = false;
+    m_update = true;
     for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
       MidiNote note(MidiNote::Name::C, 2);
@@ -229,16 +275,10 @@ void Euklid::play()
       }
       if (m_sequences[i].next())
       {
-        bUpdate = true;
         std::vector<uint8_t> msg(MidiMessage::noteOn(0, note.value(), 127));
         m_pMidiout->sendMessage(&msg);
         getDevice(0)->sendMidiMsg(msg);
       }
-    }
-    
-    if(bUpdate)
-    {
-
     }
     
     uint16_t delay = m_delayEven;
@@ -287,13 +327,16 @@ void Euklid::updateGroupLeds()
   switch (m_currentTrack)
   {
   case 0:
-    getDevice(0)->setLed(kio::Device::Button::Group, 255, 0, 0);
+    getDevice(0)->setLed(kio::Device::Button::Group,  255, 0, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, 255, 0, 0);
     break;
   case 1:
-    getDevice(0)->setLed(kio::Device::Button::Group, 0, 255, 0);
+    getDevice(0)->setLed(kio::Device::Button::Group,  0, 255, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, 0, 255, 0);
     break;
   case 2:
-    getDevice(0)->setLed(kio::Device::Button::Group, 0, 0, 255);
+    getDevice(0)->setLed(kio::Device::Button::Group,  0, 0, 255);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, 0, 0, 255);
     break;
   }
 }
@@ -316,7 +359,7 @@ void Euklid::updatePads()
 
         if (i >= m_lengths[t])
         {
-          getDevice(0)->setLed(getPadLed(i), 0);
+          getDevice(0)->setLed(getPadLed(i), 0,0,0);
         }
         else if (pulses & (1 << i))
         {
@@ -340,13 +383,13 @@ void Euklid::updatePads()
             switch (m_currentTrack)
             {
             case 0:
-              getDevice(0)->setLed(pad, 180, 0, 0);
+              getDevice(0)->setLed(pad, 60, 0, 0);
               break;
             case 1:
-              getDevice(0)->setLed(pad, 0, 180, 0);
+              getDevice(0)->setLed(pad, 0, 60, 0);
               break;
             case 2:
-              getDevice(0)->setLed(pad, 0, 0, 180);
+              getDevice(0)->setLed(pad, 0, 0, 60);
               break;
             }
           }
@@ -359,7 +402,7 @@ void Euklid::updatePads()
           }
           else
           {
-            getDevice(0)->setLed(pad, 180, 180, 180);
+            getDevice(0)->setLed(pad, 60, 60, 60);
           }
         }
       }
@@ -520,8 +563,7 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
     default:
       break;
   }
-  updateGUI();
-  updatePads();
+  m_update = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -548,15 +590,21 @@ void Euklid::togglePlay()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void Euklid::changeTrack()
+void Euklid::changeTrack(uint8_t track_)
 {
-  m_currentTrack++;
-  if (m_currentTrack >= kEuklidNumTracks)
+  if(track_==0xFF)
   {
-    m_currentTrack = 0;
+    m_currentTrack++;
+    if (m_currentTrack >= kEuklidNumTracks)
+    {
+      m_currentTrack = 0;
+    }
   }
-  updateGroupLeds();
-  updatePads();
+  else
+  {
+    m_currentTrack = track_;
+  }
+  m_update = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

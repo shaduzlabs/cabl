@@ -62,6 +62,7 @@ private:
   static constexpr uint8_t kMASMK2_padDataSize       = 64;
   static constexpr uint8_t kMASMK2_nPads             = 16;
   static constexpr uint8_t kMASMK2_padsBufferSize    = 16;
+  static constexpr uint8_t kMASMK2_nEncoders         = 9;
 
   using tBuffer = util::CircularBuffer<uint16_t, kMASMK2_padsBufferSize>;
 
@@ -90,7 +91,7 @@ private:
 
   tRawData            m_buttons;
   bool                m_buttonStates[kMASMK2_nButtons];
-  uint8_t             m_encoderValue;
+  uint16_t            m_encoderValues[kMASMK2_nEncoders];
   
   tBuffer             m_padsRawData[ kMASMK2_nPads ];
   uint16_t            m_padsAvgData[ kMASMK2_nPads ];

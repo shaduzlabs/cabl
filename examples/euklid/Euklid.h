@@ -96,7 +96,7 @@ public:
 
   void togglePlay();
 
-  void changeTrack();
+  void changeTrack(uint8_t track_ = 0xFF);
 
 private:
 
@@ -126,6 +126,8 @@ private:
   uint8_t   m_quarterNote;
   uint16_t  m_delayEven;
   uint16_t  m_delayOdd;
+  
+  bool      m_update;
   
 };
 

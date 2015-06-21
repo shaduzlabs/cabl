@@ -378,6 +378,9 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
       m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex] = val_;
       m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = val_;
       m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = val_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = val_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 4 - firstGroupIndex] = val_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 5 - firstGroupIndex] = val_;
       m_isDirtyGroupLeds = (currentR != val_ || currentG != val_ || currentB != val_);
     }
 
@@ -436,6 +439,9 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
       m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex] = r_;
       m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = g_;
       m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = b_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = r_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 4 - firstGroupIndex] = g_;
+      m_ledsGroups[static_cast<uint16_t>(led) + 5 - firstGroupIndex] = b_;
 
       m_isDirtyGroupLeds = m_isDirtyGroupLeds || (currentR != r_ || currentG != g_ || currentB != b_);
     }
@@ -532,7 +538,6 @@ void DeviceMaschineMK2::init()
   m_isDirtyButtonLeds = true;
   m_isDirtyGroupLeds = true;
   m_isDirtyPadLeds = true;
-  m_encoderValue = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -662,20 +667,12 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   
   // Now process the encoder data
   uint8_t currentEncoderValue = input_.getData()[kMASMK2_buttonsDataSize];
-  if (currentEncoderValue != m_encoderValue)
+  if (currentEncoderValue != m_encoderValues[0])
   {
-    bool valueIncreased = (
-      (m_encoderValue < currentEncoderValue) ||
-      (
-        (m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)
-      )
-    ) &&
-    (
-      !(
-        (m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)
-      )
-    );
-    m_encoderValue = currentEncoderValue;
+    bool valueIncreased
+      = ((m_encoderValues[0] < currentEncoderValue) || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
+        && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
+    m_encoderValues[0] = currentEncoderValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
@@ -683,9 +680,17 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   {
     Device::Encoder encoder = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
     uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
-    // check previous value, callback!
+    uint16_t hValue = input_.getData()[i+1];
+    if(m_encoderValues[encIndex+1] != value)
+    {
+      uint16_t prevHValue = (m_encoderValues[encIndex+1] &0xF00 )>> 8 ;
+      bool valueIncreased
+        = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
+          && (!((prevHValue == 0) && (hValue == 3)));
+      m_encoderValues[encIndex+1] = value;
+      encoderChanged(encoder, valueIncreased, shiftPressed);
+    }
   }
-  std::cout << std::endl;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
