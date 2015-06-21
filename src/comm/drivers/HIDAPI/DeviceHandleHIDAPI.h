@@ -29,7 +29,7 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
-#include <libusb.h>
+#include <hidapi.h>
 
 namespace sl
 {
@@ -38,41 +38,22 @@ namespace kio
   
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverLIBUSB : public DriverImpl
+class DeviceHandleHIDAPI : public DeviceHandleImpl
 {
 public:
-
-  using tDeviceHandle   = struct ::libusb_device_handle; 
+ 
+  using tDeviceHandle = hid_device;
   
-  DriverLIBUSB();
-  ~DriverLIBUSB() override;
+  DeviceHandleHIDAPI(tDeviceHandle*);
+  ~DeviceHandleHIDAPI();
   
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
-
-private:
-
-  libusb_context*                 m_pContext;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class DeviceHandleLibUSB : public DeviceHandleImpl
-{
-public:
-
-  using tDeviceHandle = struct ::libusb_device_handle;
-
-  DeviceHandleLibUSB(tDeviceHandle*);
-  ~DeviceHandleLibUSB();
-
   void disconnect() override;
 
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
-
+  bool read( Transfer&, uint8_t ) override;
+  bool write( const Transfer& , uint8_t) const override;
+  
 private:
-
+  
   tRawData                        m_inputBuffer;
   tDeviceHandle*                  m_pCurrentDevice;
 };

@@ -24,74 +24,37 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "comm/Driver.h"
+#pragma once
+
 #include "comm/DriverImpl.h"
-#include "comm/DeviceHandle.h"
+#include "comm/DeviceHandleImpl.h"
 
-#include "comm/drivers/Probe/DriverProbe.h"
-
-#if defined (__SAM3X8E__)
-#include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
-#elif defined (__MAX3421E__)
-#include "comm/drivers/MAX3421E/DriverMAX3421E.h"
-#else
-#include "comm/drivers/HIDAPI/DriverHIDAPI.h"
-#include "comm/drivers/LibUSB/DriverLibUSB.h"
-#endif
+#include <libusb.h>
 
 namespace sl
 {
 namespace kio
 {
-
-Driver::Driver( Type type_ )
-{
-  switch( type_ )
-  {
-#if defined (__SAM3X8E__)
-    case Type::SAM3X8E:
-      m_pImpl.reset( new DriverSAM3X8E );
-      break;
-#elif defined (__MAX3421E__)
-    case Type::MAX3421E:
-      m_pImpl.reset( new DriverMAX3421E );
-      break;
-#else
-    case Type::HIDAPI:
-      m_pImpl.reset( new DriverHIDAPI );
-      break;
-    case Type::LibUSB:
-      m_pImpl.reset( new DriverLibUSB );
-      break;
-#endif
-    case Type::Probe:
-    default:
-      m_pImpl.reset( new DriverProbe );
-      break;
-    }
-}
   
 //----------------------------------------------------------------------------------------------------------------------
-  
-Driver::~Driver()
-{
 
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-  
-Driver::tCollDeviceDescriptor Driver::enumerate()
+class DriverLibUSB : public DriverImpl
 {
-  return m_pImpl->enumerate();
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-  
-tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
-{
-  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( device_ )));
-}
+public:
 
+  using tDeviceHandle   = struct ::libusb_device_handle; 
+  
+  DriverLibUSB();
+  ~DriverLibUSB() override;
+  
+  Driver::tCollDeviceDescriptor enumerate() override;
+  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
+
+private:
+
+  libusb_context*                 m_pContext;
+};
+  
 //----------------------------------------------------------------------------------------------------------------------
 
 } // kio

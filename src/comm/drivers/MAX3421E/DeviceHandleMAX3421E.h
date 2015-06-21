@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*----------------------------------------------------------------------------------------------------------------------
 
                  %%%%%%%%%%%%%%%%%                
                  %%%%%%%%%%%%%%%%%
@@ -29,49 +29,33 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
-#include <hidapi.h>
-
 namespace sl
 {
 namespace kio
 {
 
-class DriverHIDAPI : public DriverImpl
-{
-public:
-  
-  using tDeviceHandle = hid_device;  
-  
-  DriverHIDAPI();
-  ~DriverHIDAPI() override;
-  
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
-  
-};
-  
 //----------------------------------------------------------------------------------------------------------------------
 
-class DeviceHandleHIDAPI : public DeviceHandleImpl
+class DeviceHandleMAX3421E : public DeviceHandleImpl
 {
 public:
- 
-  using tDeviceHandle = hid_device;
-  
-  DeviceHandleHIDAPI(tDeviceHandle*);
-  ~DeviceHandleHIDAPI();
+
+  using tDeviceHandle = void;
+
+  DeviceHandleMAX3421E(tDeviceHandle*);
+  ~DeviceHandleMAX3421E();
   
   void disconnect() override;
 
-  bool read( Transfer&, uint8_t ) override;
-  bool write( const Transfer& , uint8_t) const override;
-  
+  bool read(Transfer&, uint8_t) override;
+  bool write(const Transfer&, uint8_t) const override;
+
 private:
-  
-  tRawData                        m_inputBuffer;
-  tDeviceHandle*                  m_pCurrentDevice;
+
+  tRawData           m_inputBuffer;
+
 };
-  
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // kio

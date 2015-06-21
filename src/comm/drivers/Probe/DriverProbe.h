@@ -36,40 +36,16 @@ namespace kio
   
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverMOCK : public DriverImpl
+class DriverProbe : public DriverImpl
 {
 public:
 
-  DriverMOCK();
-  ~DriverMOCK() override;
+  DriverProbe();
+  ~DriverProbe() override;
   
   Driver::tCollDeviceDescriptor enumerate() override;
   tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
 
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class DeviceHandleMOCK : public DeviceHandleImpl
-{
-public:
-
-  using tDeviceHandle = void;
-
-  DeviceHandleMOCK(tDeviceHandle*);
-  ~DeviceHandleMOCK();
-  
-  void disconnect() override;
-
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
-
-private:
-
-  tRawData           m_inputBuffer;
-
-  static uint32_t    s_numPacketR;
-  static uint32_t    s_numPacketW;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

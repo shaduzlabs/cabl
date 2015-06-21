@@ -49,27 +49,6 @@ public:
   tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
  
  };
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class DeviceHandleSAM3XE : public DeviceHandleImpl
-{
-public:
-
-  using tDeviceHandle = void;
-
-  DeviceHandleSAM3XE(tDeviceHandle*);
-  ~DeviceHandleSAM3XE();
-
-  void disconnect() override;
-
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
-
-private:
-
-  tRawData                        m_inputBuffer;
-};
   
 //----------------------------------------------------------------------------------------------------------------------
 

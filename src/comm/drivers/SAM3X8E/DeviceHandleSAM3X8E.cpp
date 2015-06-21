@@ -24,13 +24,11 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "DriverMOCK.h"
-#include <iostream>
-#include <iomanip>
+#include "DeviceHandleSAM3X8E.h"
 
 namespace
 {
-  uint16_t kMOCKInputBufferSize = 512; // Size of the TEST input buffer
+  uint16_t kSAM3X8EInputBufferSize = 512; // Size of the input buffer
 }
 
 namespace sl
@@ -40,84 +38,36 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-uint32_t DeviceHandleMOCK::s_numPacketR;
-uint32_t DeviceHandleMOCK::s_numPacketW;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-DriverMOCK::DriverMOCK()
+DeviceHandleSAM3XE::DeviceHandleSAM3XE(tDeviceHandle*)
 {
-
+  m_inputBuffer.resize(kSAM3X8EInputBufferSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DriverMOCK::~DriverMOCK()
-{
-
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-Driver::tCollDeviceDescriptor DriverMOCK::enumerate()
-{
-  return Driver::tCollDeviceDescriptor();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-tPtr<DeviceHandleImpl> DriverMOCK::connect(const DeviceDescriptor&)
-{
-  return nullptr;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-DeviceHandleMOCK::DeviceHandleMOCK(tDeviceHandle*)
-{
-  m_inputBuffer.resize(kMOCKInputBufferSize);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-DeviceHandleMOCK::~DeviceHandleMOCK()
+DeviceHandleSAM3XE::~DeviceHandleSAM3XE()
 {
   disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceHandleMOCK::disconnect()
+void DeviceHandleSAM3XE::disconnect()
 {
-  
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleMOCK::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleSAM3XE::read(Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleMOCK::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleSAM3XE::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
-  std::cout << "Packet #" << s_numPacketW << " (" << transfer_.size() << " bytes) -> endpoint "
-            << static_cast<uint32_t>(endpoint_) << ":" << std::endl;
-
-  std::cout << std::setfill('0') << std::internal;
-
-  for (unsigned i = 0; i < transfer_.size(); i++)
-  {
-    std::cout << std::hex << std::setw(2) << (int)transfer_[i] << std::dec << " ";
-  }
-
-  std::cout << std::endl << std::endl;
-
-  s_numPacketW++;
-
   return true;
 }
 

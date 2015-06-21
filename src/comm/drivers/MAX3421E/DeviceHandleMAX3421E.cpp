@@ -5,8 +5,8 @@
                  %%%           %%%
                  %%%           %%%
                  %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -24,13 +24,14 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#pragma once
+#include "DeviceHandleMAX3421E.h"
+#include <iostream>
+#include <iomanip>
 
-#include <cstdint>
-#include <string>
-#include "util/Types.h"
-#include "DeviceDescriptor.h"
-#include "DeviceHandle.h"
+namespace
+{
+  uint16_t kMAX3421EnputBufferSize = 512; // Size of the input buffer
+}
 
 namespace sl
 {
@@ -39,41 +40,37 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverImpl;
-class Transfer;
+DeviceHandleMAX3421E::DeviceHandleMAX3421E(tDeviceHandle*)
+{
+  m_inputBuffer.resize(kMAX3421EnputBufferSize);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/**
-  \class Driver
-  \brief The Driver wrapper class
-
-*/
-
-class Driver
+DeviceHandleMAX3421E::~DeviceHandleMAX3421E()
 {
+  disconnect();
+}
 
-public:
-  enum class Type : uint8_t
-  {
-    Probe,
-    HIDAPI,
-    LibUSB,
-    SAM3X8E,
-    MAX3421E,
-  };
+//----------------------------------------------------------------------------------------------------------------------
 
-  using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
+void DeviceHandleMAX3421E::disconnect()
+{
+}
 
-  Driver(Type type_);
-  ~Driver();
+//----------------------------------------------------------------------------------------------------------------------
 
-  tCollDeviceDescriptor enumerate();
-  tPtr<DeviceHandle> connect(const DeviceDescriptor&);
+bool DeviceHandleMAX3421E::read(Transfer& transfer_, uint8_t endpoint_)
+{
+  return true;
+}
 
-private:
-  tPtr<DriverImpl> m_pImpl;
-};
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceHandleMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_) const
+{
+  return true;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

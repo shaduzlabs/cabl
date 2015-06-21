@@ -244,18 +244,45 @@ SET(
 )
 
 SET( 
-  src_comm_drivers_SRCS      
-    src/comm/drivers/DriverHIDAPI.cpp
-    src/comm/drivers/DriverHIDAPI.h
-    src/comm/drivers/DriverLIBUSB.cpp
-    src/comm/drivers/DriverLIBUSB.h
-    src/comm/drivers/DriverMOCK.cpp
-    src/comm/drivers/DriverMOCK.h
-    src/comm/drivers/DriverMAX3421E.cpp
-    src/comm/drivers/DriverMAX3421E.h
-    src/comm/drivers/DriverSAM3X8E.cpp
-    src/comm/drivers/DriverSAM3X8E.h
+  src_comm_drivers_HIDAPI_SRCS      
+    src/comm/drivers/HIDAPI/DriverHIDAPI.cpp
+    src/comm/drivers/HIDAPI/DriverHIDAPI.h
+    src/comm/drivers/HIDAPI/DeviceHandleHIDAPI.cpp
+    src/comm/drivers/HIDAPI/DeviceHandleHIDAPI.h
 )
+
+SET( 
+  src_comm_drivers_LibUSB_SRCS      
+    src/comm/drivers/LibUSB/DriverLibUSB.cpp
+    src/comm/drivers/LibUSB/DriverLibUSB.h
+    src/comm/drivers/LibUSB/DeviceHandleLibUSB.cpp
+    src/comm/drivers/LibUSB/DeviceHandleLibUSB.h
+)
+
+SET( 
+  src_comm_drivers_MAX3421E_SRCS      
+    src/comm/drivers/MAX3421E/DriverMAX3421E.cpp
+    src/comm/drivers/MAX3421E/DriverMAX3421E.h
+    src/comm/drivers/MAX3421E/DeviceHandleMAX3421E.cpp
+    src/comm/drivers/MAX3421E/DeviceHandleMAX3421E.h
+)
+
+SET( 
+  src_comm_drivers_Probe_SRCS      
+    src/comm/drivers/Probe/DriverProbe.cpp
+    src/comm/drivers/Probe/DriverProbe.h
+    src/comm/drivers/Probe/DeviceHandleProbe.cpp
+    src/comm/drivers/Probe/DeviceHandleProbe.h
+)
+
+SET( 
+  src_comm_drivers_SAM3X8E_SRCS      
+    src/comm/drivers/SAM3X8E/DriverSAM3X8E.cpp
+    src/comm/drivers/SAM3X8E/DriverSAM3X8E.h
+    src/comm/drivers/SAM3X8E/DeviceHandleSAM3X8E.cpp
+    src/comm/drivers/SAM3X8E/DeviceHandleSAM3X8E.h
+)
+
 SET( 
   src_comm_SRCS
     src/comm/Driver.cpp
@@ -314,7 +341,14 @@ SET(
 
 source_group("src\\app"              FILES ${src_app_SRCS})
 source_group("src\\comm"             FILES ${src_comm_SRCS})
-source_group("src\\comm\\drivers"    FILES ${src_comm_drivers_SRCS})
+#source_group("src\\comm\\drivers")
+
+source_group("src\\comm\\drivers\\HIDAPI"    FILES ${src_comm_drivers_HIDAPI_SRCS})
+source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRCS})
+source_group("src\\comm\\drivers\\MAX3421E"  FILES ${src_comm_drivers_MAX3421E_SRCS})
+source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS})
+source_group("src\\comm\\drivers\\SAM3X8E"   FILES ${src_comm_drivers_SAM3X8E_SRCS})
+
 source_group("src\\devices"          FILES ${src_devices_SRCS})
 source_group("src\\gfx"              FILES ${src_gfx_SRCS})
 source_group("src\\gfx\\displays"    FILES ${src_gfx_displays_SRCS})
@@ -327,7 +361,11 @@ SET (
       k-IO_SRCS
       ${src_SRCS}
       ${src_app_SRCS}
-      ${src_comm_drivers_SRCS}
+      ${src_comm_drivers_HIDAPI_SRCS}
+      ${src_comm_drivers_LibUSB_SRCS}
+      ${src_comm_drivers_MAX3421E_SRCS}
+      ${src_comm_drivers_Probe_SRCS}
+      ${src_comm_drivers_SAM3X8E_SRCS}
       ${src_comm_SRCS}
       ${src_devices_SRCS}
       ${src_gfx_displays_SRCS}

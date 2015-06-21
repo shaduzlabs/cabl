@@ -95,7 +95,7 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
 {
   Driver::tCollDeviceDescriptor devicesList;
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  for (const auto& deviceDescriptor : getDriver(Driver::tDriver::HIDAPI)->enumerate())
+  for (const auto& deviceDescriptor : getDriver(Driver::Type::HIDAPI)->enumerate())
   {
     if (!isKnownDevice(deviceDescriptor))
     {
@@ -104,7 +104,7 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
     devicesList.push_back(deviceDescriptor);
   }
 
-  Driver::tDriver tMainDriver(Driver::tDriver::LIBUSB);
+  Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif
 
   for (const auto& deviceDescriptor : getDriver(tMainDriver)->enumerate())
@@ -132,7 +132,7 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
   for (const auto& d : devicesList_)
   {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-    Driver::tDriver tDriver = d.isHID() ? Driver::tDriver::HIDAPI : Driver::tDriver::LIBUSB;
+    Driver::Type tDriver = d.isHID() ? Driver::Type::HIDAPI : Driver::Type::LibUSB;
 #endif
     tPtr<DeviceHandle> pDeviceHandle = getDriver(tDriver)->connect(d);
 
@@ -168,7 +168,7 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Driver* Application::getDriver(Driver::tDriver tDriver_)
+Driver* Application::getDriver(Driver::Type tDriver_)
 {
   if (m_collDrivers.find(tDriver_) == m_collDrivers.end())
   {

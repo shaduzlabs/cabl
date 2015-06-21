@@ -5,8 +5,8 @@
                  %%%           %%%
                  %%%           %%%
                  %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -24,13 +24,8 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#pragma once
-
-#include <cstdint>
-#include <string>
-#include "util/Types.h"
-#include "DeviceDescriptor.h"
-#include "DeviceHandle.h"
+#include "DriverSAM3X8E.h"
+#include "DeviceHandleSAM3X8E.h"
 
 namespace sl
 {
@@ -39,41 +34,31 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverImpl;
-class Transfer;
+DriverSAM3X8E::DriverSAM3X8E()
+{
+
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/**
-  \class Driver
-  \brief The Driver wrapper class
-
-*/
-
-class Driver
+DriverSAM3X8E::~DriverSAM3X8E()
 {
 
-public:
-  enum class Type : uint8_t
-  {
-    Probe,
-    HIDAPI,
-    LibUSB,
-    SAM3X8E,
-    MAX3421E,
-  };
+}
 
-  using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
+//----------------------------------------------------------------------------------------------------------------------
 
-  Driver(Type type_);
-  ~Driver();
+Driver::tCollDeviceDescriptor DriverSAM3X8E::enumerate()
+{
+  return Driver::tCollDeviceDescriptor();
+}
 
-  tCollDeviceDescriptor enumerate();
-  tPtr<DeviceHandle> connect(const DeviceDescriptor&);
+//----------------------------------------------------------------------------------------------------------------------
 
-private:
-  tPtr<DriverImpl> m_pImpl;
-};
+tPtr<DeviceHandleImpl> DriverSAM3X8E::connect(const DeviceDescriptor&)
+{
+  return nullptr;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

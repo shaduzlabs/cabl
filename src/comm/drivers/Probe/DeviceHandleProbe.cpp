@@ -24,13 +24,14 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "DriverSAM3X8E.h"
+#include "DeviceHandleProbe.h"
+
 #include <iostream>
 #include <iomanip>
 
 namespace
 {
-  uint16_t kSAM3X8EInputBufferSize = 512; // Size of the input buffer
+  uint16_t kProbeInputBufferSize = 512; // Size of the TEST input buffer
 }
 
 namespace sl
@@ -40,64 +41,55 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DriverSAM3X8E::DriverSAM3X8E()
-{
+uint32_t DeviceHandleProbe::s_numPacketR;
+uint32_t DeviceHandleProbe::s_numPacketW;
 
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceHandleProbe::DeviceHandleProbe(tDeviceHandle*)
+{
+  m_inputBuffer.resize(kProbeInputBufferSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DriverSAM3X8E::~DriverSAM3X8E()
-{
-
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-Driver::tCollDeviceDescriptor DriverSAM3X8E::enumerate()
-{
-  return Driver::tCollDeviceDescriptor();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-tPtr<DeviceHandleImpl> DriverSAM3X8E::connect(const DeviceDescriptor&)
-{
-  return nullptr;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-DeviceHandleSAM3XE::DeviceHandleSAM3XE(tDeviceHandle*)
-{
-  m_inputBuffer.resize(kSAM3X8EInputBufferSize);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-DeviceHandleSAM3XE::~DeviceHandleSAM3XE()
+DeviceHandleProbe::~DeviceHandleProbe()
 {
   disconnect();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceHandleSAM3XE::disconnect()
+void DeviceHandleProbe::disconnect()
 {
-
+  
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleSAM3XE::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleProbe::read(Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleSAM3XE::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
+  std::cout << "Packet #" << s_numPacketW << " (" << transfer_.size() << " bytes) -> endpoint "
+            << static_cast<uint32_t>(endpoint_) << ":" << std::endl;
+
+  std::cout << std::setfill('0') << std::internal;
+
+  for (unsigned i = 0; i < transfer_.size(); i++)
+  {
+    std::cout << std::hex << std::setw(2) << (int)transfer_[i] << std::dec << " ";
+  }
+
+  std::cout << std::endl << std::endl;
+
+  s_numPacketW++;
+
   return true;
 }
 

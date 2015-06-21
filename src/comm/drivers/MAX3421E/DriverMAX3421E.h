@@ -50,27 +50,5 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DeviceHandleMAX3421E : public DeviceHandleImpl
-{
-public:
-
-  using tDeviceHandle = void;
-
-  DeviceHandleMAX3421E(tDeviceHandle*);
-  ~DeviceHandleMAX3421E();
-  
-  void disconnect() override;
-
-  bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
-
-private:
-
-  tRawData           m_inputBuffer;
-
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
 } // kio
 } // sl

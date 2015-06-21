@@ -43,7 +43,7 @@ class Application
 {
 public:
   using tCollDevices = std::vector<tPtr<Device>>;
-  using tCollDrivers = std::map<Driver::tDriver, tPtr<Driver>>;
+  using tCollDrivers = std::map<Driver::Type, tPtr<Driver>>;
   Application(const Driver::tCollDeviceDescriptor&);
 
   virtual bool tick() = 0;
@@ -64,7 +64,7 @@ protected:
   {
     return m_collDevices[index].get();
   }
-  Driver* getDriver(Driver::tDriver);
+  Driver* getDriver(Driver::Type);
   
 private:
   bool isKnownDevice(const DeviceDescriptor&) const;

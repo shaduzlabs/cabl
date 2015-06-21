@@ -24,13 +24,13 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "DriverLIBUSB.h"
+#include "DeviceHandleLibUSB.h"
 
 namespace
 {
-  uint16_t kLIBUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kLIBUSBReadTimeout =  10;            // Timeout of a input bulk transfer (0 = NO timeout)
-  uint16_t kLIBUSBWriteTimeout = 60;            // Timeout of a output bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
+  uint16_t kLibUSBReadTimeout =  10;            // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBWriteTimeout = 60;            // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
 namespace sl
@@ -40,116 +40,10 @@ namespace kio
   
 //----------------------------------------------------------------------------------------------------------------------
 
-DriverLIBUSB::DriverLIBUSB()
-{
-  libusb_init(&m_pContext);
-
-#ifdef DEBUG
-  libusb_set_debug( m_pContext, 3);
-#endif
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-  
-DriverLIBUSB::~DriverLIBUSB()
-{
-  libusb_exit( m_pContext );
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-
-Driver::tCollDeviceDescriptor DriverLIBUSB::enumerate()
-{
-  Driver::tCollDeviceDescriptor collDeviceDescriptor;
-  
-  libusb_device **devices;
-  ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
-  
-  tDeviceHandle* pHandle = nullptr;
-  for( int i=0; i<nDevices; ++i )
-  {
-    libusb_device *device = devices[i];
-    if(libusb_open(device, &pHandle) < 0)
-    {
-      continue;
-    }
-    struct libusb_device_descriptor descriptor;
-    libusb_get_device_descriptor(device, &descriptor);
-    std::string strSerialNumber;
-    if(descriptor.iSerialNumber != 0)
-    {
-      char sNum[256];
-      
-      if(libusb_get_string_descriptor_ascii(pHandle, descriptor.iSerialNumber,(unsigned char*)sNum, sizeof(sNum)) > 0)
-      {
-        strSerialNumber = sNum;
-      }
-    }
-    libusb_close(pHandle);
-    DeviceDescriptor deviceDescriptor(
-      descriptor.idVendor,
-      descriptor.idProduct,
-      strSerialNumber,
-      false
-    );
-
-    collDeviceDescriptor.push_back(deviceDescriptor);
-  }
-  
-  libusb_free_device_list(devices, 1);
-
-  return collDeviceDescriptor;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-  
-tPtr<DeviceHandleImpl> DriverLIBUSB::connect( const DeviceDescriptor& device_ )
-{
-  
-  bool bConnected = false;
-  libusb_device **devices;
-  ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
-  
-  tDeviceHandle* pCurrentDevice = nullptr;
-  for( int i=0; i<nDevices; ++i )
-  {
-    libusb_device *device = devices[i];
-    struct libusb_device_descriptor descriptor;
-    libusb_get_device_descriptor(device, &descriptor);
-    if( (descriptor.idVendor != device_.getVendorId()) ||
-        (descriptor.idProduct != device_.getProductId())
-    )
-    {
-      continue;  // ADD SERIAL NUMBER!
-    }
-    
-    int e = libusb_open(device, &pCurrentDevice);
-    if(e == 0)
-    {
-      bConnected = true;
-      break;
-    }
-  }
-  
-  libusb_free_device_list(devices, 1);
-  
-  libusb_set_configuration(pCurrentDevice, 1 );
-  libusb_claim_interface(pCurrentDevice, 0 );
-
-  libusb_set_interface_alt_setting  (pCurrentDevice, 0, 1 );
-  
-  if(pCurrentDevice == nullptr || !bConnected)
-    return nullptr;
-
-  return tPtr<DeviceHandleImpl>(new DeviceHandleLibUSB(pCurrentDevice));
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
 DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
   : m_pCurrentDevice(pDeviceHandle)
 {
-  m_inputBuffer.resize(kLIBUSBInputBufferSize);
+  m_inputBuffer.resize(kLibUSBInputBufferSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -179,9 +73,9 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
     m_pCurrentDevice,                 // Device handle
     endpoint_,                        // Endpoint
     m_inputBuffer.data(),             // Data pointer
-    kLIBUSBInputBufferSize,           // Size of data
+    kLibUSBInputBufferSize,           // Size of data
     &nBytesRead,                      // N. of bytes actually written
-    kLIBUSBReadTimeout                // Timeout
+    kLibUSBReadTimeout                // Timeout
   );
   
   if( ( LIBUSB_SUCCESS == result ) && ( nBytesRead > 0 ) )
@@ -206,7 +100,7 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) c
       const_cast<uint8_t*>(transfer_.getData().data()),       // Data pointer
       transfer_.size(),                 // Size of data
       &nBytesWritten,                   // N. of bytes actually written
-      kLIBUSBWriteTimeout                     // Timeout
+      kLibUSBWriteTimeout                     // Timeout
     );
     return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
   }
