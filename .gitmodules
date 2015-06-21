@@ -7,3 +7,6 @@
 [submodule "submodules/rtmidi"]
 	path = submodules/rtmidi
 	url = https://github.com/thestk/rtmidi.git
+[submodule "submodules/oscpack"]
+	path = submodules/oscpack
+	url = https://github.com/gardaud/oscpack.git
