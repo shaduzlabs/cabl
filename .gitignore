@@ -22,3 +22,6 @@ project.xcworkspace/
 
 # Temporary files
 *~
+
+# Documentation
+docs/
