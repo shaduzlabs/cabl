@@ -37,16 +37,16 @@ namespace test
 
 //----------------------------------------------------------------------------------------------------------------------
 
-TEST_CASE( "Null vs non-null version", "[util/version]" ) {
+TEST_CASE( "Null vs non-null, conversion to bool", "[util/version]" ) {
   Version version_empty;
   Version version_nonNull_1(1);
   Version version_nonNull_2(1,2);
   Version version_nonNull_3(1,2,3);
   
   CHECK_FALSE(version_empty);
-  CHECK(version_nonNull_1);
-  CHECK(version_nonNull_2);
-  CHECK(version_nonNull_3);
+  CHECK      (version_nonNull_1);
+  CHECK      (version_nonNull_2);
+  CHECK      (version_nonNull_3);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -92,6 +92,33 @@ TEST_CASE( "Constructor, getters and setters", "[util/version]" ) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+TEST_CASE( "Reset", "[util/version]" ) {
+  Version version_1_2_3(1,2,3);
+  
+  CHECK      (version_1_2_3);
+  
+  version_1_2_3.reset();
+  CHECK_FALSE(version_1_2_3);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+TEST_CASE( "Conversion to string", "[util/version]" ) {
+  Version version_1_2_3(1,2,3);
+  Version version_1_2(1,2);
+  Version version_1(1);
+  
+  Version version_empty;
+  
+  CHECK(version_1_2_3.toString() == "1.2.3");
+  CHECK(version_1_2.toString() == "1.2.0");
+  CHECK(version_1.toString() == "1.0.0");
+  
+  CHECK(version_empty.toString() == "0.0.0");
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 TEST_CASE( "Comparison", "[util/version]" ) {
   Version version_1_2_3(1,2,3);
   Version version_1_2_4(1,2,4);
@@ -101,7 +128,22 @@ TEST_CASE( "Comparison", "[util/version]" ) {
   
   Version version_null;
   
-  CHECK(version_1 >= version_1_3);
+  CHECK      (version_1 <  version_1_2);
+  CHECK      (version_1 <  version_1_2_3);
+  CHECK      (version_1 >= version_null);
+  CHECK      (version_1 >  version_null);
+  CHECK      (version_1 != version_null);
+  CHECK      (version_1 != version_1_2);
+  CHECK      (version_1 != version_1_2_3);
+  CHECK_FALSE(version_1 >  version_1_2);
+  CHECK_FALSE(version_1 == version_1_2);
+  CHECK_FALSE(version_1 == version_1_2_3);
+  CHECK_FALSE(version_1 >= version_1_3);
+  CHECK_FALSE(version_1 == version_null);
+  
+  CHECK(version_1_2_3 <  version_1_2_4);
+  CHECK(version_1_2_4 >= version_1_2_3);
+  
 }
 
 //----------------------------------------------------------------------------------------------------------------------
