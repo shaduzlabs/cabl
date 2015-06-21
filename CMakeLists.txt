@@ -419,4 +419,30 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 add_subdirectory(examples Examples)
 
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ON)
+IF(BUILD_DOCUMENTATION)
+ 
+  FIND_PACKAGE(Doxygen)
+  IF(NOT DOXYGEN_FOUND)
+    MESSAGE(FATAL_ERROR
+      "Doxygen is needed to build the documentation.")
+  ENDIF()
+ 
+  SET( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/docs/Doxyfile.in )
+  SET( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile              )
+  SET( doxy_html_index_file ${CMAKE_CURRENT_BINARY_DIR}/html/index.html )
+  SET( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                 ) 
+  SET( doxy_input           ${PROJECT_SOURCE_DIR}/inc                   ) 
+  SET( doxy_extra_files     ${CMAKE_CURRENT_SOURCE_DIR}/support/docs/main.dox )
+  SET( doxy_library_version "v. 1.2.3.4")
+ 
+  CONFIGURE_FILE( ${doxyfile_in} ${doxyfile} @ONLY )
+ 
+  add_custom_target(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM)
 
+  INSTALL( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/adocs )
+ENDIF()
