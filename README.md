@@ -7,5 +7,5 @@
 * Windows
 * OSX
 * Linux
-* Arduino (AVR, ARM)
+* Arduino (ARM)
 
