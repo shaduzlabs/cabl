@@ -57,6 +57,7 @@ Euklid::Euklid()
   , m_pMidiout(new RtMidiOut)
   , m_delayEven(125)
   , m_delayOdd(125)
+  , m_update(true)
 {
 }
 
