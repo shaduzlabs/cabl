@@ -29,6 +29,19 @@
 #include <algorithm>
 #include <vector>
 
+namespace sl
+{
+namespace util
+{
+
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+  \class MidiNote
+  \brief Class representing a single midi note
+
+*/
+
 class MidiNote
 {
 public:  
@@ -65,7 +78,15 @@ private:
   Name      m_note;
   int8_t    m_octave;
 };
-  
+
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+  \class MidiMessage
+  \brief Class representing a MIDI message
+
+*/
+
 class MidiMessage
 {
 public:
@@ -95,3 +116,8 @@ public:
   }
 
 };
+  
+//----------------------------------------------------------------------------------------------------------------------
+
+} // util
+} // sl

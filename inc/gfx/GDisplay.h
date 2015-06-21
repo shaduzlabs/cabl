@@ -39,7 +39,7 @@ namespace kio
   public:
     
     /**
-     * @defgroup GDisplay
+     * @defgroup GDisplay Graphic display
      * @{
      */
     
@@ -55,7 +55,7 @@ namespace kio
     /*!
      \param width_  Display width in pixels
      \param height_ Display height in pixels
-     \param height_ Number of data chunks (Default value is 8)
+     \param numDisplayChunks_ Number of data chunks (Default value is 8)
      */
     GDisplay( uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, tAllocation );
     
@@ -67,7 +67,7 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------    
     
     /**
-     * @defgroup Primitives
+     * @defgroup Primitives Drawing primitives
      * @ingroup Drawing
      * @{
      */
@@ -77,7 +77,6 @@ namespace kio
      \param x_               The X coordinate of the pixel
      \param y_               The Y coordinate of the pixel
      \param color_           The pixel color (white, black, invert)
-     \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
     void setPixel( uint16_t x_, uint16_t y_, tColor color_ ) override;
     

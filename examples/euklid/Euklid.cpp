@@ -44,6 +44,8 @@ static const uint8_t kEuklidNumTracks = 3;
 namespace sl
 {
 
+using namespace util;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 Euklid::Euklid()
