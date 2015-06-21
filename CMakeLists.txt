@@ -148,12 +148,19 @@ source_group("src"  FILES  ${lib_rtmidi_LIBRARY})
 add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
 
 set_target_properties(
-rtmidi 
-PROPERTIES 
-  OUTPUT_NAME         "rtmidi"
-  OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
-  COMPILE_DEFINITIONS __MACOSX_CORE__
+  rtmidi 
+  PROPERTIES 
+    OUTPUT_NAME         "rtmidi"
+    OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+set_target_properties(
+  rtmidi 
+  PROPERTIES 
+    COMPILE_DEFINITIONS __MACOSX_CORE__
+)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
