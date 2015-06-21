@@ -359,7 +359,7 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
     if(led < Led::GroupA)
     {
       uint8_t firstPadIndex = static_cast<uint8_t>(Led::Pad13);
-      uint8_t currentR = m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex];
+      uint8_t currentR = m_ledsPads[static_cast<uint16_t>(led)     - firstPadIndex];
       uint8_t currentG = m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex];
       uint8_t currentB = m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex];
 
@@ -375,7 +375,7 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
       uint8_t currentG = m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex];
       uint8_t currentB = m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex];
 
-      m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex] = val_;
+      m_ledsGroups[static_cast<uint16_t>(led)     - firstGroupIndex] = val_;
       m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = val_;
       m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = val_;
       m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = val_;
@@ -412,7 +412,7 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
 {
   Led led = getLed(btn_);
 
-  if (isRGBLed(led) && led < Led::GroupA)
+  if (isRGBLed(led))
   {
     if(led < Led::GroupA)
     {
@@ -436,7 +436,7 @@ void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint
       uint8_t currentG = m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex];
       uint8_t currentB = m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex];
 
-      m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex] = r_;
+      m_ledsGroups[static_cast<uint16_t>(led)     - firstGroupIndex] = r_;
       m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = g_;
       m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = b_;
       m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = r_;

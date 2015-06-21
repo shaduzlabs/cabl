@@ -329,13 +329,19 @@ void Euklid::updateGroupLeds()
   case 0:
     getDevice(0)->setLed(kio::Device::Button::Group,  255, 0, 0);
     getDevice(0)->setLed(kio::Device::Button::GroupA, 255, 0, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, 0,   0, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, 0,   0, 0);
     break;
   case 1:
     getDevice(0)->setLed(kio::Device::Button::Group,  0, 255, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, 0,   0, 0);
     getDevice(0)->setLed(kio::Device::Button::GroupB, 0, 255, 0);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, 0,   0, 0);
     break;
   case 2:
     getDevice(0)->setLed(kio::Device::Button::Group,  0, 0, 255);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, 0, 0,   0);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, 0, 0,   0);
     getDevice(0)->setLed(kio::Device::Button::GroupC, 0, 0, 255);
     break;
   }
@@ -368,13 +374,13 @@ void Euklid::updatePads()
             switch (m_currentTrack)
             {
             case 0:
-              getDevice(0)->setLed(pad, 255, 0, 0);
+              getDevice(0)->setLed(pad, 127, 0, 0);
               break;
             case 1:
-              getDevice(0)->setLed(pad, 0, 255, 0);
+              getDevice(0)->setLed(pad, 0, 127, 0);
               break;
             case 2:
-              getDevice(0)->setLed(pad, 0, 0, 255);
+              getDevice(0)->setLed(pad, 0, 0, 127);
               break;
             }
           }
@@ -398,7 +404,7 @@ void Euklid::updatePads()
         {
           if (pos == (k % m_lengths[t]))
           {
-            getDevice(0)->setLed(pad, 255, 255, 255);
+            getDevice(0)->setLed(pad, 127, 127, 127);
           }
           else
           {
