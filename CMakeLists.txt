@@ -425,6 +425,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+
   target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread rtmidi)
 
   install (TARGETS    k-IO             DESTINATION lib)
@@ -443,6 +444,13 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   
+  
+  set_target_properties(
+    k-IO
+    PROPERTIES 
+      EXCLUDE_FROM_ALL            TRUE
+      EXCLUDE_FROM_DEFAULT_BUILD  TRUE
+  )
   target_link_libraries( k-IO        rtmidi libusb hidapi setupapi.lib)
   target_link_libraries( k-IOStatic  rtmidi libusb hidapi setupapi.lib)
   

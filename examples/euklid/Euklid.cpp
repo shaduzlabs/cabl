@@ -305,8 +305,8 @@ void Euklid::updateGUI()
 {
   getDevice(0)->getDisplay(0)->black();
   getDevice(0)->getDisplay(0)->printStr(32, 52, "E U K L I D");
-  getDevice(0)->getDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
-  getDevice(0)->getDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
+  getDevice(0)->getDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
+  getDevice(0)->getDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
 
   switch (m_screenPage)
   {
@@ -443,15 +443,15 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::tColor::INVERT,
-                                                  kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::Color::Invert,
+                                                  kio::Canvas::Color::Invert);
       getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Speed:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::tColor::INVERT,
-                                                  kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::Color::Invert,
+                                                  kio::Canvas::Color::Invert);
       getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
@@ -476,7 +476,7 @@ void Euklid::drawSequencerPage()
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      getDevice(0)->getDisplay(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, kio::Canvas::tColor::WHITE);
+      getDevice(0)->getDisplay(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, kio::Canvas::Color::White);
     }
   }
 
@@ -489,22 +489,22 @@ void Euklid::drawSequencerPage()
   {
     case EncoderState::Pulses:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::tColor::INVERT,
-                                                  kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::Color::Invert,
+                                                  kio::Canvas::Color::Invert);
       getDevice(0)->setLed(kio::Device::Button::F2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::tColor::INVERT,
-                                                  kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::Color::Invert,
+                                                  kio::Canvas::Color::Invert);
       getDevice(0)->setLed(kio::Device::Button::F3, 255);
       break;
     }
     case EncoderState::Length:
     {
-      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::tColor::INVERT,
-                                                  kio::Canvas::tColor::INVERT);
+      getDevice(0)->getDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::Color::Invert,
+                                                  kio::Canvas::Color::Invert);
       getDevice(0)->setLed(kio::Device::Button::F1, 255);
       break;
     }
@@ -522,10 +522,10 @@ void Euklid::drawSequencerPage()
       if (pulses & (1 << i))
       {
         getDevice(0)->getDisplay(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7,
-                                                    kio::Canvas::tColor::WHITE, kio::Canvas::tColor::WHITE);
+                                                    kio::Canvas::Color::White, kio::Canvas::Color::White);
       }
     }
-    getDevice(0)->getDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::tColor::INVERT);
+    getDevice(0)->getDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::Color::Invert);
   }
 }
 
