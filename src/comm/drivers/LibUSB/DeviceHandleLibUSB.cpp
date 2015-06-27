@@ -102,6 +102,11 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) c
       &nBytesWritten,                   // N. of bytes actually written
       kLibUSBWriteTimeout                     // Timeout
     );
+    if(( LIBUSB_SUCCESS != result ) || ( nBytesWritten != transfer_.size() ))
+    {
+      M_LOG("[DeviceHandleLibUSB] write: error=" << result << " - transfer size: "
+            << transfer_.size() << " written: " << nBytesWritten);
+    }
     return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
   }
   

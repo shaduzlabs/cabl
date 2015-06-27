@@ -73,7 +73,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
 
   switch( color_ )
   {
-    case Color::White:
+    case Color::Black:
       switch( blockIndex )
       {
         case 0:
@@ -89,7 +89,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
       }
       break;
 
-    case Color::Black:
+    case Color::White:
       switch( blockIndex )
       {
         case 0:
@@ -142,17 +142,32 @@ GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) con
   switch( blockIndex )
   {
     case 0:
-      return ( getData()[ byteIndex ] & 0xF8 ) ? Color::White : Color::Black;
+      return ( getData()[ byteIndex ] & 0xF8 ) ? Color::Black : Color::White;
     case 1:
-      return ( getData()[ byteIndex ] & 0x07 ) ? Color::White : Color::Black;
+      return ( getData()[ byteIndex ] & 0x07 ) ? Color::Black : Color::White;
       break;
     case 2:
-      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? Color::White : Color::Black;
+      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? Color::Black : Color::White;
   }
   
   return Color::Black;
  }
 
+//----------------------------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::white()
+{
+  fillPattern(0x0);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::black()
+{
+  fillPattern(0xFF);
+
+}
+  
 //----------------------------------------------------------------------------------------------------------------------
 
 } // kio

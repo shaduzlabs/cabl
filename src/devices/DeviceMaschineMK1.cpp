@@ -308,14 +308,15 @@ bool DeviceMaschineMK1::tick()
     success = sendLeds();
   }
 
-  if (++state >= 3)
-  {
-    state = 0;
-  }
   if (!success)
   {
     std::string strStepName(state == 0 ? "sendFrame" : (state == 1 ? "read" : "sendLeds"));
     M_LOG("[DeviceMaschineMK1] tick: error in step #" << state << " (" << strStepName << ")");
+  }
+
+  if (++state >= 3)
+  {
+    state = 0;
   }
   return success;
 }
@@ -461,19 +462,20 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
 
 bool DeviceMaschineMK1::sendLeds()
 {
-  if( m_isDirtyLedGroup0 )
+  if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1)
   {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  30 ), kMASMK1_epOut ))
     {
+      M_LOG("[DeviceMaschineMK1] sendLeds: error writing first block of leds");
       return false;
     }
     m_isDirtyLedGroup0 = false;
   }
-  
-  if( m_isDirtyLedGroup1 )
+  else if( m_isDirtyLedGroup1 )
   {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 30 ), kMASMK1_epOut ))
     {
+      M_LOG("[DeviceMaschineMK1] sendLeds: error writing second block of leds");
       return false;
     }
     m_isDirtyLedGroup1 = false;
@@ -486,8 +488,7 @@ bool DeviceMaschineMK1::sendLeds()
 bool DeviceMaschineMK1::read()
 {
   Transfer input;
-  
-
+    
   if(getDeviceHandle()->read( input, kMASMK1_epInputPads ) )
   {
     processPads(input);
@@ -498,17 +499,22 @@ bool DeviceMaschineMK1::read()
 
     if(input[0] == 0x02)
     {
-      getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+ //     getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processEncoders(input);
     }
     else if (input[0] == 0x04)
     {
-      getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+  //    getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processButtons(input);
     }
-    else 
+    else if (input[0] == 0x0C)
     {
-      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+//      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+//      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+    }
+    else
+    {
+      M_LOG("[DeviceMaschineMK1] read: " << input.size() << " bytes (first one is " << (int)input.getData()[0] << ")");
     }
   }
   else

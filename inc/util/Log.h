@@ -1,10 +1,39 @@
+/*----------------------------------------------------------------------------------------------------------------------
 
-#ifdef _DEBUG
+                 %%%%%%%%%%%%%%%%%                
+                 %%%%%%%%%%%%%%%%%
+                 %%%           %%%
+                 %%%           %%%
+                 %%%           %%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
+
+------------------------------------------------------------------------------------------------------------------------
+
+  Copyright (C) 2014 Vincenzo Pacella
+
+  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with this program.  
+  If not, see <http://www.gnu.org/licenses/>.
+
+----------------------------------------------------------------------------------------------------------------------*/
+
+#pragma once
+
+#if defined(NDEBUG)
+  #define M_LOG(msg)
+#else
+
+//from: http://stackoverflow.com/questions/19415845/a-better-log-macro-using-template-metaprogramming
+
 #include <iostream>
 #define M_LOG(msg) (sl::util::Log(__TIME__  , sl::util::LogData<sl::util::None>() << msg))
-#else
-#define LOG(msg)
-#endif
 
 // Workaround GCC 4.7.2 not recognizing noinline attribute
 #ifndef NOINLINE_ATTRIBUTE
@@ -22,7 +51,10 @@ namespace util
 
 //----------------------------------------------------------------------------------------------------------------------
 
-struct None { };
+struct None
+{
+
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -83,9 +115,12 @@ void output(std::ostream& os, std::pair<Begin, Last>&& data)
 
 inline void output(std::ostream& os, None)
 {
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 } // util
 } // sl
+
+#endif

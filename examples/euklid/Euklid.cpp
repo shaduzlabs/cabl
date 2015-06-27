@@ -222,19 +222,19 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
     lastEvent = now;
     uint8_t padIndex = getPadIndex(pad_);
     if (m_sequences[m_currentTrack].toggleStep(padIndex))
-    {
+    {/*
       switch (m_currentTrack)
       {
       case 0:
-        getDevice(0)->setLed(getPadLed(padIndex), 255, 0, 0);
+        getDevice(0)->setLed(getPadLed(padIndex), 127, 0, 0);
         break;
       case 1:
-        getDevice(0)->setLed(getPadLed(padIndex), 0, 255, 0);
+        getDevice(0)->setLed(getPadLed(padIndex), 0, 127, 0);
         break;
       case 2:
-        getDevice(0)->setLed(getPadLed(padIndex), 0, 0, 255);
+        getDevice(0)->setLed(getPadLed(padIndex), 0, 0, 127);
         break;
-      }
+      }*/
     }
     else
     {
@@ -354,7 +354,7 @@ void Euklid::updateGroupLeds()
 //----------------------------------------------------------------------------------------------------------------------
 
 void Euklid::updatePads()
-{
+{  
   for (uint8_t t = 0; t < kEuklidNumTracks; t++)
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
@@ -408,11 +408,11 @@ void Euklid::updatePads()
         {
           if (pos == (k % m_lengths[t]))
           {
-            getDevice(0)->setLed(pad, 127, 127, 127);
+            getDevice(0)->setLed(pad, 30);
           }
           else
           {
-            getDevice(0)->setLed(pad, 60, 60, 60);
+            getDevice(0)->setLed(pad, 0);
           }
         }
       }

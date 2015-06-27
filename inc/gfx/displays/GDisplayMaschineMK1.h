@@ -68,6 +68,9 @@ protected:
      */
     Color getPixelImpl(uint16_t x_, uint16_t y_ ) const override;
   
+    void white() override;
+    void black() override;
+  
 };
   
 //----------------------------------------------------------------------------------------------------------------------
