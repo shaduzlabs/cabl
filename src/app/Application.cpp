@@ -77,6 +77,7 @@ void Application::run()
           {
             m_connected = false;
             m_collDevices.clear();
+            M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
           }
         }
         else
@@ -103,6 +104,7 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
     }
     devicesList.push_back(deviceDescriptor);
   }
+  M_LOG("[Application] enumerateDevices: " << devicesList.size() << " known devices found via HIDAPI");
 
   Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif
@@ -116,6 +118,7 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
     }
     devicesList.push_back(deviceDescriptor);
   }
+  M_LOG("[Application] enumerateDevices: " << devicesList.size() << " total known devices found");
 
   return devicesList;
 }

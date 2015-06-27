@@ -37,10 +37,11 @@ namespace kio
 DriverLibUSB::DriverLibUSB()
 {
   libusb_init(&m_pContext);
-
-#ifdef DEBUG
+#ifdef _DEBUG
   libusb_set_debug( m_pContext, 3);
 #endif
+
+  M_LOG("[LibUSB] initialization");
 }
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -48,12 +49,14 @@ DriverLibUSB::DriverLibUSB()
 DriverLibUSB::~DriverLibUSB()
 {
   libusb_exit( m_pContext );
+  M_LOG("[LibUSB] exit");
 }
   
 //----------------------------------------------------------------------------------------------------------------------
 
 Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
 {
+  M_LOG("[LibUSB] enumerate");
   Driver::tCollDeviceDescriptor collDeviceDescriptor;
   
   libusb_device **devices;
@@ -86,7 +89,7 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
       strSerialNumber,
       false
     );
-
+    M_LOG("[LibUSB] enumerate: found dev with S/N = " << strSerialNumber);
     collDeviceDescriptor.push_back(deviceDescriptor);
   }
   
@@ -99,7 +102,9 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
   
 tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
 {
-  
+  M_LOG("[LibUSB] connecting to " << device_.getVendorId()  << ":" 
+                                  << device_.getProductId() << ":" 
+                                  << device_.getSerialNumber() );
   bool bConnected = false;
   libusb_device **devices;
   ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
@@ -134,6 +139,10 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
   
   if(pCurrentDevice == nullptr || !bConnected)
     return nullptr;
+
+  M_LOG("[LibUSB] CONNECTED to " << device_.getVendorId() << ":"
+    << device_.getProductId() << ":"
+    << device_.getSerialNumber());
 
   return tPtr<DeviceHandleImpl>(new DeviceHandleLibUSB(pCurrentDevice));
 }

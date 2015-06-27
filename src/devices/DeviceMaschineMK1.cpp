@@ -312,7 +312,11 @@ bool DeviceMaschineMK1::tick()
   {
     state = 0;
   }
-
+  if (!success)
+  {
+    std::string strStepName(state == 0 ? "sendFrame" : (state == 1 ? "read" : "sendLeds"));
+    M_LOG("[DeviceMaschineMK1] tick: error in step #" << state << " (" << strStepName << ")");
+  }
   return success;
 }
 

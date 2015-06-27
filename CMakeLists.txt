@@ -205,6 +205,7 @@ SET(
   inc_util_INCLUDES
     inc/util/CircularBuffer.h
     inc/util/Functions.h
+    inc/util/Log.h
     inc/util/Macros.h
     inc/util/MidiMessage.h
     inc/util/Types.h

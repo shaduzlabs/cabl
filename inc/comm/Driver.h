@@ -31,6 +31,7 @@
 #include "util/Types.h"
 #include "DeviceDescriptor.h"
 #include "DeviceHandle.h"
+#include "util/Log.h"
 
 namespace sl
 {

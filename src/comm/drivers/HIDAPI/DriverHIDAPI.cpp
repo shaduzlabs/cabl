@@ -38,20 +38,23 @@ namespace kio
 
 DriverHIDAPI::DriverHIDAPI()
 {
-  hid_init();
+  int res = hid_init();
+  M_LOG("[HIDAPI] initialization (" << res << ")");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverHIDAPI::~DriverHIDAPI()
 {
-  hid_exit();
+  int res = hid_exit();
+  M_LOG("[HIDAPI] exit (" << res << ")");
 }
   
 //----------------------------------------------------------------------------------------------------------------------
 
 Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
 {
+  M_LOG("[HIDAPI] enumerate");
   Driver::tCollDeviceDescriptor collDeviceDescriptor;
   struct hid_device_info *devices;
 
@@ -71,6 +74,7 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
       strSerialNumber,
       true
     );
+    M_LOG("[HIDAPI] enumerate: found " << devices->product_string  << " with S/N = " << strSerialNumber);
     collDeviceDescriptor.push_back(deviceDescriptor);
 		devices = devices->next;
 	}
@@ -83,6 +87,10 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
 
 tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 {
+  M_LOG("[HIDAPI] connecting to " << device_.getVendorId() << ":"
+    << device_.getProductId() << ":"
+    << device_.getSerialNumber());
+
   std::string serialNumber(device_.getSerialNumber());
   std::wstring wSerialNumber(serialNumber.begin(), serialNumber.end());
   tDeviceHandle* pCurrentDevice = hid_open(device_.getVendorId(), device_.getProductId(), wSerialNumber.c_str());
@@ -91,6 +99,10 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
     
   hid_set_nonblocking(pCurrentDevice, 0);
   
+  M_LOG("[HIDAPI] CONNECTED to " << device_.getVendorId() << ":"
+    << device_.getProductId() << ":"
+    << device_.getSerialNumber());
+
   return tPtr<DeviceHandleImpl>(new DeviceHandleHIDAPI(pCurrentDevice));
 }
 
