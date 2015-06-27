@@ -101,8 +101,13 @@ public:
 private:
 
   uint8_t getEncoderValue(
-    bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_);
-  Device::Button getPadLed(uint8_t padIndex_);
+    bool valueIncreased_,
+    uint8_t step_,
+    uint8_t currentValue_,
+    uint8_t minValue_,
+    uint8_t maxValue_
+  );
+  Device::Pad getPad(uint8_t padIndex_);
   uint8_t getPadIndex(Device::Pad pad_);
 
   Sequence<uint16_t> m_sequences[3];

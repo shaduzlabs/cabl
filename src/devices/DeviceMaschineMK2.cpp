@@ -332,7 +332,10 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
         m_pMidiout->openPort(i);
       }
     }
-    catch (RtMidiError &error) { }
+    catch (RtMidiError &error) 
+    {
+      M_LOG("[DeviceMaschineMK2] RtMidiError: " << error.getMessage());
+    }
   }
   if(!m_pMidiout->isPortOpen())
   {
@@ -350,124 +353,18 @@ DeviceMaschineMK2::~DeviceMaschineMK2()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t val_)
+void DeviceMaschineMK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  Led led = getLed(btn_);
-
-  if (isRGBLed(led))
-  {
-    if(led < Led::GroupA)
-    {
-      uint8_t firstPadIndex = static_cast<uint8_t>(Led::Pad13);
-      uint8_t currentR = m_ledsPads[static_cast<uint16_t>(led)     - firstPadIndex];
-      uint8_t currentG = m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex];
-      uint8_t currentB = m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex];
-
-      m_ledsPads[static_cast<uint16_t>(led) - firstPadIndex] = val_;
-      m_ledsPads[static_cast<uint16_t>(led) + 1 - firstPadIndex] = val_;
-      m_ledsPads[static_cast<uint16_t>(led) + 2 - firstPadIndex] = val_;
-      m_isDirtyPadLeds = (currentR != val_ || currentG != val_ || currentB != val_);
-    }
-    else
-    {
-      uint8_t firstGroupIndex = static_cast<uint8_t>(Led::GroupA);
-      uint8_t currentR = m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex];
-      uint8_t currentG = m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex];
-      uint8_t currentB = m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex];
-
-      m_ledsGroups[static_cast<uint16_t>(led)     - firstGroupIndex] = val_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = val_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = val_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = val_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 4 - firstGroupIndex] = val_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 5 - firstGroupIndex] = val_;
-      m_isDirtyGroupLeds = (currentR != val_ || currentG != val_ || currentB != val_);
-    }
-
-  }
-  else if (Led::Unknown != led)
-  {
-    if(led>=Led::Restart)
-    {
-      uint8_t currentVal = m_ledsGroups[static_cast<uint16_t>(led)];
-      uint8_t newVal = val_;
-
-      m_ledsGroups[static_cast<uint16_t>(led)] = newVal;
-      m_isDirtyGroupLeds = (currentVal != newVal);
-    }
-    else
-    {
-      uint8_t currentVal = m_ledsButtons[static_cast<uint16_t>(led)];
-      uint8_t newVal = val_;
-
-      m_ledsButtons[static_cast<uint16_t>(led)] = newVal;
-      m_isDirtyButtonLeds = (currentVal != newVal);
-    }
-  }
+  setLedImpl(getLed(btn_), color_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::setLed(Device::Button btn_, uint8_t r_, uint8_t g_, uint8_t b_)
+void DeviceMaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  Led led = getLed(btn_);
-
-  if (isRGBLed(led))
-  {
-    if(led < Led::GroupA)
-    {
-      uint8_t firstPadIndex = static_cast<uint16_t>(led) - static_cast<uint8_t>(Led::Pad13);
-      
-      uint8_t currentR = m_ledsPads[firstPadIndex    ];
-      uint8_t currentG = m_ledsPads[firstPadIndex + 1];
-      uint8_t currentB = m_ledsPads[firstPadIndex + 2];
-
-      m_ledsPads[firstPadIndex]     = r_;
-      m_ledsPads[firstPadIndex + 1] = g_;
-      m_ledsPads[firstPadIndex + 2] = b_;
-
-      m_isDirtyPadLeds = m_isDirtyPadLeds || (currentR != r_ || currentG != g_ || currentB != b_);
-    }
-    else
-    {
-      uint8_t firstGroupIndex = static_cast<uint8_t>(Led::GroupA);
-      
-      uint8_t currentR = m_ledsGroups[static_cast<uint16_t>(led) - firstGroupIndex];
-      uint8_t currentG = m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex];
-      uint8_t currentB = m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex];
-
-      m_ledsGroups[static_cast<uint16_t>(led)     - firstGroupIndex] = r_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 1 - firstGroupIndex] = g_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 2 - firstGroupIndex] = b_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 3 - firstGroupIndex] = r_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 4 - firstGroupIndex] = g_;
-      m_ledsGroups[static_cast<uint16_t>(led) + 5 - firstGroupIndex] = b_;
-
-      m_isDirtyGroupLeds = m_isDirtyGroupLeds || (currentR != r_ || currentG != g_ || currentB != b_);
-    }
-  }
-  else if (Led::Unknown != led)
-  {
-    if(led>=Led::Restart)
-    {
-      uint8_t currentVal = m_ledsGroups[static_cast<uint16_t>(led)];
-      // Use "Maximum decomposition" -> take the channel with the highest value
-      uint8_t newVal = util::max<uint8_t>(r_, g_, b_);
-
-      m_ledsGroups[static_cast<uint16_t>(led)] = newVal;
-      m_isDirtyGroupLeds = m_isDirtyGroupLeds || (currentVal != newVal);
-    }
-    else
-    {
-      uint8_t currentVal = m_ledsButtons[static_cast<uint16_t>(led)];
-      // Use "Maximum decomposition" -> take the channel with the highest value
-      uint8_t newVal = util::max<uint8_t>(r_, g_, b_);
-
-      m_ledsButtons[static_cast<uint16_t>(led)] = newVal;
-      m_isDirtyButtonLeds = m_isDirtyButtonLeds || (currentVal != newVal);
-    }
-  }
+  setLedImpl(getLed(pad_), color_);
 }
+
 //----------------------------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
@@ -748,6 +645,62 @@ void DeviceMaschineMK2::processPads(const Transfer& input_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
+{
+  static const uint8_t kFirstPadIndex = static_cast<uint8_t>(Led::Pad13);
+  uint8_t ledIndex = static_cast<uint8_t>(led_);
+
+  if (isRGBLed(led_))
+  {
+    if (led_ < Led::GroupA)
+    {
+      uint8_t currentR = m_ledsPads[ledIndex - kFirstPadIndex];
+      uint8_t currentG = m_ledsPads[ledIndex - kFirstPadIndex + 1];
+      uint8_t currentB = m_ledsPads[ledIndex - kFirstPadIndex + 2];
+
+      m_ledsPads[ledIndex - kFirstPadIndex] = color_.getRed();
+      m_ledsPads[ledIndex - kFirstPadIndex + 1] = color_.getGreen();
+      m_ledsPads[ledIndex - kFirstPadIndex + 2] = color_.getBlue();
+      m_isDirtyPadLeds = m_isDirtyPadLeds ||
+        (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+    }
+    else
+    {
+      uint8_t firstGroupIndex = static_cast<uint8_t>(Led::GroupA);
+      uint8_t currentR = m_ledsGroups[ledIndex - firstGroupIndex];
+      uint8_t currentG = m_ledsGroups[ledIndex - firstGroupIndex + 1];
+      uint8_t currentB = m_ledsGroups[ledIndex - firstGroupIndex + 2];
+
+      m_ledsGroups[ledIndex - firstGroupIndex] = color_.getRed();
+      m_ledsGroups[ledIndex - firstGroupIndex + 1] = color_.getGreen();
+      m_ledsGroups[ledIndex - firstGroupIndex + 2] = color_.getBlue();
+      m_ledsGroups[ledIndex - firstGroupIndex + 3] = color_.getRed();
+      m_ledsGroups[ledIndex - firstGroupIndex + 4] = color_.getGreen();
+      m_ledsGroups[ledIndex - firstGroupIndex + 5] = color_.getBlue();
+
+      m_isDirtyGroupLeds = m_isDirtyGroupLeds ||
+        (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+    }
+
+  }
+  else if (Led::Unknown != led_)
+  {
+    uint8_t currentVal = m_ledsGroups[ledIndex];
+    uint8_t newVal = color_.getMono();
+    if (led_ >= Led::Restart)
+    {
+      m_ledsGroups[ledIndex] = newVal;
+      m_isDirtyGroupLeds = (currentVal != newVal);
+    }
+    else
+    {
+      m_ledsButtons[ledIndex] = newVal;
+      m_isDirtyButtonLeds = m_isDirtyButtonLeds || (currentVal != newVal);
+    }
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+
 bool DeviceMaschineMK2::isRGBLed(Led led_)
 {
 
@@ -811,22 +764,6 @@ DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Button btn_) const noex
     M_LED_CASE(Rec);
     M_LED_CASE(Erase);
     M_LED_CASE(Shift);
-    M_LED_CASE(Pad1);
-    M_LED_CASE(Pad2);
-    M_LED_CASE(Pad3);
-    M_LED_CASE(Pad4);
-    M_LED_CASE(Pad5);
-    M_LED_CASE(Pad6);
-    M_LED_CASE(Pad7);
-    M_LED_CASE(Pad8);
-    M_LED_CASE(Pad9);
-    M_LED_CASE(Pad10);
-    M_LED_CASE(Pad11);
-    M_LED_CASE(Pad12);
-    M_LED_CASE(Pad13);
-    M_LED_CASE(Pad14);
-    M_LED_CASE(Pad15);
-    M_LED_CASE(Pad16);
     M_LED_CASE(GroupA);
     M_LED_CASE(GroupB);
     M_LED_CASE(GroupC);
@@ -843,6 +780,41 @@ DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Button btn_) const noex
   }
 
 #undef M_LED_CASE
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Pad pad_) const noexcept
+{
+#define M_PAD_CASE(idPad)     \
+  case Device::Pad::idPad: \
+    return Led::idPad
+
+  switch (pad_)
+  {
+    M_PAD_CASE(Pad13);
+    M_PAD_CASE(Pad14);
+    M_PAD_CASE(Pad15);
+    M_PAD_CASE(Pad16);
+    M_PAD_CASE(Pad9);
+    M_PAD_CASE(Pad10);
+    M_PAD_CASE(Pad11);
+    M_PAD_CASE(Pad12);
+    M_PAD_CASE(Pad5);
+    M_PAD_CASE(Pad6);
+    M_PAD_CASE(Pad7);
+    M_PAD_CASE(Pad8);
+    M_PAD_CASE(Pad1);
+    M_PAD_CASE(Pad2);
+    M_PAD_CASE(Pad3);
+    M_PAD_CASE(Pad4);
+    default:
+    {
+      return Led::Unknown;
+    }
+  }
+
+#undef M_PAD_CASE
 }
 
 //----------------------------------------------------------------------------------------------------------------------

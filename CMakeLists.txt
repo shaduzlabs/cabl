@@ -181,6 +181,7 @@ SET(
   inc_devices_INCLUDES       
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
+    inc/devices/DeviceKompleteKontrol.h
     inc/devices/DeviceMaschineMK1.h
     inc/devices/DeviceMaschineMK2.h
     inc/devices/DeviceMaschineMikroMK1.h
@@ -189,6 +190,7 @@ SET(
 
 SET( 
   inc_gfx_displays_INCLUDES  
+    inc/gfx/displays/GDisplayDummy.h
     inc/gfx/displays/GDisplayMaschineMikro.h
     inc/gfx/displays/GDisplayMaschineMK1.h
     inc/gfx/displays/GDisplayMaschineMK2.h
@@ -205,6 +207,7 @@ SET(
   inc_util_INCLUDES
     inc/util/CircularBuffer.h
     inc/util/Functions.h
+    inc/util/LedColor.h
     inc/util/Log.h
     inc/util/Macros.h
     inc/util/MidiMessage.h
@@ -296,6 +299,7 @@ SET(
 SET( 
   src_devices_SRCS
     src/devices/DeviceFactory.cpp
+    src/devices/DeviceKompleteKontrol.cpp
     src/devices/DeviceMaschineMK1.cpp
     src/devices/DeviceMaschineMK2.cpp
     src/devices/DeviceMaschineMikroMK2.cpp

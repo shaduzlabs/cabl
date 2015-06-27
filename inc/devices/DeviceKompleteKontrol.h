@@ -26,11 +26,9 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
-#include "comm/DeviceHandleImpl.h"
-
-#include <libusb.h>
-
+#include "Device.h"
+#include "gfx/GDisplay.h"
+ 
 namespace sl
 {
 namespace kio
@@ -38,26 +36,56 @@ namespace kio
   
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverLibUSB : public DriverImpl
+class DeviceKompleteKontrol : public Device
 {
+ 
 public:
+  
+  DeviceKompleteKontrol(tPtr<DeviceHandle>, uint8_t numKeys_);
+  ~DeviceKompleteKontrol() override;
+  
+  void setLed(Device::Button, const util::LedColor&) override;
 
-  using tDeviceHandle   = struct ::libusb_device_handle; 
+  void sendMidiMsg(tRawData) override;
   
-  DriverLibUSB();
-  ~DriverLibUSB() override;
-  
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
+  GDisplay* getDisplay( uint8_t displayIndex_ ) override;
+  bool tick() override;
 
 private:
 
-  std::string getStringDescriptor(tDeviceHandle*, uint8_t);
+  enum class Led    : uint8_t;
+  enum class Button : uint8_t;
 
-  libusb_context*                 m_pContext;
+  static constexpr uint8_t kKK_nButtons = 37;
+  static constexpr uint8_t kKK_buttonsDataSize = 5;
+  
+
+  void init() override {}
+  bool sendLeds();
+  bool read();
+  
+  void processButtons( const Transfer& );
+  
+  void setLedImpl(Led, const util::LedColor&);
+  bool isRGBLed(Led);
+  Led getLed(Device::Button) const noexcept;
+
+  Device::Button getDeviceButton( Button btn_ ) const noexcept;
+  bool isButtonPressed( Button button ) const noexcept;
+  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+
+  tRawData            m_leds;
+  tRawData            m_buttons;
+  bool                m_buttonStates[kKK_nButtons];
+  uint8_t             m_encoderValue;
+
+  uint8_t             m_numKeys;
+    
+  bool                m_isDirtyLeds;
+
 };
   
 //----------------------------------------------------------------------------------------------------------------------
-
+  
 } // kio
 } // sl

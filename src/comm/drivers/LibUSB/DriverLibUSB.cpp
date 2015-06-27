@@ -72,24 +72,28 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
     }
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    std::string strSerialNumber;
-    if(descriptor.iSerialNumber != 0)
+    std::string strSerialNum = getStringDescriptor(pHandle, descriptor.iSerialNumber);
+
+#ifndef NDEBUG
+    std::string strProd = getStringDescriptor(pHandle, descriptor.iProduct);
+    std::string strManuf = getStringDescriptor(pHandle, descriptor.iManufacturer);
+
+    if (strSerialNum.empty())
     {
-      char sNum[256];
-      
-      if(libusb_get_string_descriptor_ascii(pHandle, descriptor.iSerialNumber,(unsigned char*)sNum, sizeof(sNum)) > 0)
-      {
-        strSerialNumber = sNum;
-      }
+      M_LOG("[LibUSB] enumerate: " << strProd << "(" << strManuf << ")");
     }
+    else
+    {
+      M_LOG("[LibUSB] enumerate: " << strProd << "(" << strManuf << ") with S/N \"" << strSerialNum << "\"");
+    }
+#endif
     libusb_close(pHandle);
     DeviceDescriptor deviceDescriptor(
       descriptor.idVendor,
       descriptor.idProduct,
-      strSerialNumber,
+      strSerialNum,
       false
     );
-    M_LOG("[LibUSB] enumerate: found dev with S/N = " << strSerialNumber);
     collDeviceDescriptor.push_back(deviceDescriptor);
   }
   
@@ -115,18 +119,25 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
     libusb_device *device = devices[i];
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    if( (descriptor.idVendor != device_.getVendorId()) ||
-        (descriptor.idProduct != device_.getProductId())
-    )
+    if( descriptor.idVendor != device_.getVendorId() || descriptor.idProduct != device_.getProductId())
     {
-      continue;  // ADD SERIAL NUMBER!
+      continue;
     }
     
     int e = libusb_open(device, &pCurrentDevice);
+
     if(e == 0)
     {
-      bConnected = true;
-      break;
+      std::string strSerialNum = getStringDescriptor(pCurrentDevice, descriptor.iSerialNumber);
+      if (strSerialNum == device_.getSerialNumber())
+      {
+        bConnected = true;
+        break;
+      }
+      else
+      {
+        libusb_close(pCurrentDevice);
+      }
     }
   }
   
@@ -145,6 +156,22 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
     << device_.getSerialNumber());
 
   return tPtr<DeviceHandleImpl>(new DeviceHandleLibUSB(pCurrentDevice));
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+std::string DriverLibUSB::getStringDescriptor(tDeviceHandle * pHandle_, uint8_t uDescriptor)
+{
+  if (uDescriptor != 0)
+  {
+    char sDescriptor[256];
+
+    if (libusb_get_string_descriptor_ascii(pHandle_, uDescriptor, (unsigned char*)sDescriptor, sizeof(sDescriptor)) > 0)
+    {
+     return sDescriptor;
+    }
+  }
+  return std::string();
 }
   
 //----------------------------------------------------------------------------------------------------------------------

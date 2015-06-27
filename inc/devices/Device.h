@@ -34,6 +34,7 @@
 #endif
 
 #include "comm/DeviceHandle.h"
+#include "util/LedColor.h"
 
 namespace sl
 {
@@ -107,22 +108,6 @@ public:
     F3,
     Nav,
     Main, // Enter
-    Pad1,
-    Pad2,
-    Pad3,
-    Pad4,
-    Pad5,
-    Pad6,
-    Pad7,
-    Pad8,
-    Pad9,
-    Pad10,
-    Pad11,
-    Pad12,
-    Pad13,
-    Pad14,
-    Pad15,
-    Pad16,
     MainEncoder,
     Unknown,
   };
@@ -195,8 +180,10 @@ public:
 
   virtual GDisplay* getDisplay(uint8_t displayIndex_) = 0;
 
-  virtual void setLed(Button, uint8_t) = 0;
-  virtual void setLed(Button, uint8_t, uint8_t, uint8_t) = 0;
+  virtual void setLed(Button, const util::LedColor&) = 0;
+
+  virtual void setLed(Pad, const util::LedColor&) {}
+//  virtual void setLed(Key, const LedColor&) {}
 
   virtual void sendMidiMsg(tRawData) = 0;
 

@@ -215,25 +215,18 @@ DeviceMaschineMK1::~DeviceMaschineMK1()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::setLed( Device::Button btn_, uint8_t val_)
+void DeviceMaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
 {
-  Led led = getLed( btn_ );
-  
-  if( Led::Unknown != led )
-  {
-    uint8_t currentVal = m_leds[ static_cast<uint16_t>(led)];
-    
-    m_leds[ static_cast<uint16_t>(led)] = val_;
-    if( led > Led::Unused1 )
-    {
-      m_isDirtyLedGroup1 = ( val_ != currentVal );
-    }
-    else
-    {
-      m_isDirtyLedGroup0 = ( val_ != currentVal );
-    }
-  }
+  setLedImpl(getLed(btn_), color_);
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceMaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
+{
+  setLedImpl(getLed(pad_), color_);
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -244,30 +237,6 @@ void DeviceMaschineMK1::sendMidiMsg(tRawData midiMsg_)
   getDeviceHandle()->write(Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), kMASMK1_epOut);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-
-void DeviceMaschineMK1::setLed( Device::Button btn_, uint8_t r_, uint8_t g_, uint8_t b_)
-{
-  Led led = getLed( btn_ );
-  
-  if( Led::Unknown != led )
-  {
-    uint8_t currentVal = m_leds[ static_cast<uint16_t>(led)];
-
-    // Use "Maximum decomposition" -> take the channel with the highest value
-    uint8_t newVal = util::max<uint8_t>( r_, g_, b_ );
-
-    m_leds[ static_cast<uint16_t>(led)] = newVal;
-    if( led > Led::Unused1 )
-    {
-      m_isDirtyLedGroup1 = ( currentVal != newVal );
-    }
-    else
-    {
-      m_isDirtyLedGroup0 = ( currentVal != newVal );
-    }
-  }
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -333,15 +302,17 @@ void DeviceMaschineMK1::init()
   }
   sendFrame(0);
   sendFrame(1);
-  
-  m_isDirtyLedGroup0 = true;
-  m_isDirtyLedGroup1 = true;
-  std::fill(m_leds.begin(), m_leds.end(), 0);
-  m_leds[ static_cast<uint8_t>( Led::DisplayBacklight )] = kMASMK1_defaultDisplaysBacklight;
-  sendLeds();
 
   getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
 
+  std::fill(m_leds.begin(), m_leds.end(), 0);
+  m_isDirtyLedGroup0 = true;
+  m_isDirtyLedGroup1 = true;
+  sendLeds();
+
+  m_leds[static_cast<uint8_t>(Led::DisplayBacklight)] = kMASMK1_defaultDisplaysBacklight;
+  m_isDirtyLedGroup1 = true;
+  sendLeds();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -396,9 +367,6 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
   getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x01, 0xA6                   }), kMASMK1_epDisplay );
   
   getDeviceHandle()->write( Transfer({ displayNumber, 0x00, 0x03, 0x81, 0x25, 0x02       }), kMASMK1_epDisplay );
-//  buf[i++] = 0x09;//contrast & 0x3f;
-//  buf[i++] = 0x04;//(contrast >> 6) & 0x7;
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -497,6 +465,11 @@ bool DeviceMaschineMK1::read()
   {
     processPads(input);
   }
+  else
+  {
+    M_LOG("[DeviceMaschineMK1] read: ERROR - read " << input.size() << " bytes");
+    return false;
+  }
 
   input.reset();
   if( getDeviceHandle()->read( input, kMASMK1_epInputButtonsAndDials ) )
@@ -504,28 +477,17 @@ bool DeviceMaschineMK1::read()
 
     if(input[0] == 0x02)
     {
- //     getDeviceHandle()->write(Transfer({ 0x02, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processEncoders(input);
     }
     else if (input[0] == 0x04)
     {
-  //    getDeviceHandle()->write(Transfer({ 0x04, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
       processButtons(input);
     }
-    else if (input[0] == 0x0C)
+    else if (input[0] == 0x06)
     {
-//      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
-//      getDeviceHandle()->write(Transfer({ 0xB0, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+      M_LOG("[DeviceMaschineMK1] read: received MIDI message");
+      //\todo Add MIDI in parsing
     }
-    else
-    {
-      M_LOG("[DeviceMaschineMK1] read: " << input.size() << " bytes (first one is " << (int)input.getData()[0] << ")");
-    }
-  }
-  else
-  {
-    M_LOG("[DeviceMaschineMK1] read: " << input.size() << " bytes");
-    return false;
   }
 
   return true;
@@ -649,28 +611,34 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void DeviceMaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
+{
+  uint8_t ledIndex = static_cast<uint8_t>(led_);
+
+  if (Led::Unknown != led_)
+  {
+    uint8_t currentVal = m_leds[ledIndex];
+
+    m_leds[ledIndex] = color_.getMono();
+    if (led_ > Led::Unused1)
+    {
+      m_isDirtyLedGroup1 = m_isDirtyLedGroup1 || (m_leds[ledIndex] != currentVal);
+    }
+    else
+    {
+      m_isDirtyLedGroup0 = m_isDirtyLedGroup0 || (m_leds[ledIndex] != currentVal);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 DeviceMaschineMK1::Led DeviceMaschineMK1::getLed( Device::Button btn_ ) const noexcept
 {
 #define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
 
   switch ( btn_ )
   {
-    M_LED_CASE(Pad1);
-    M_LED_CASE(Pad2);
-    M_LED_CASE(Pad3);
-    M_LED_CASE(Pad4);
-    M_LED_CASE(Pad5);
-    M_LED_CASE(Pad6);
-    M_LED_CASE(Pad7);
-    M_LED_CASE(Pad8);
-    M_LED_CASE(Pad9);
-    M_LED_CASE(Pad10);
-    M_LED_CASE(Pad11);
-    M_LED_CASE(Pad12);
-    M_LED_CASE(Pad13);
-    M_LED_CASE(Pad14);
-    M_LED_CASE(Pad15);
-    M_LED_CASE(Pad16);  
     M_LED_CASE(Mute);
     M_LED_CASE(Solo);
     M_LED_CASE(Select);
@@ -720,6 +688,41 @@ DeviceMaschineMK1::Led DeviceMaschineMK1::getLed( Device::Button btn_ ) const no
   }
 
 #undef M_LED_CASE
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+DeviceMaschineMK1::Led DeviceMaschineMK1::getLed(Device::Pad pad_) const noexcept
+{
+#define M_PAD_CASE(idPad)     \
+  case Device::Pad::idPad: \
+    return Led::idPad
+
+  switch (pad_)
+  {
+    M_PAD_CASE(Pad13);
+    M_PAD_CASE(Pad14);
+    M_PAD_CASE(Pad15);
+    M_PAD_CASE(Pad16);
+    M_PAD_CASE(Pad9);
+    M_PAD_CASE(Pad10);
+    M_PAD_CASE(Pad11);
+    M_PAD_CASE(Pad12);
+    M_PAD_CASE(Pad5);
+    M_PAD_CASE(Pad6);
+    M_PAD_CASE(Pad7);
+    M_PAD_CASE(Pad8);
+    M_PAD_CASE(Pad1);
+    M_PAD_CASE(Pad2);
+    M_PAD_CASE(Pad3);
+    M_PAD_CASE(Pad4);
+    default:
+    {
+      return Led::Unknown;
+    }
+  }
+
+#undef M_PAD_CASE
 }
 
 //----------------------------------------------------------------------------------------------------------------------

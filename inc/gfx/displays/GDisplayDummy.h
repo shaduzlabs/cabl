@@ -26,35 +26,29 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
-#include "comm/DeviceHandleImpl.h"
-
-#include <libusb.h>
+#include "gfx/GDisplay.h"
 
 namespace sl
 {
 namespace kio
 {
-  
+
 //----------------------------------------------------------------------------------------------------------------------
 
-class DriverLibUSB : public DriverImpl
+class GDisplayDummy : public GDisplay
 {
 public:
 
-  using tDeviceHandle   = struct ::libusb_device_handle; 
+    GDisplayDummy();
   
-  DriverLibUSB();
-  ~DriverLibUSB() override;
+protected:
+
+    void setPixelImpl( uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true ) override {}
+    Color getPixelImpl(uint16_t x_, uint16_t y_ ) const override {}
   
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
-
-private:
-
-  std::string getStringDescriptor(tDeviceHandle*, uint8_t);
-
-  libusb_context*                 m_pContext;
+    void white() override {}
+    void black() override {}
+  
 };
   
 //----------------------------------------------------------------------------------------------------------------------

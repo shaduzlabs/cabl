@@ -24,26 +24,18 @@
 
 ----------------------------------------------------------------------------------------------------------------------*/
 
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/DeviceKompleteKontrol.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
-
-#include <thread>
-
-#include "gfx/displays/GDisplayMaschineMikro.h"
-
-//\todo delete debug includes
-#include <iostream>
-#include <iomanip>
 
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace
 {
-static const uint8_t kMikroMK2_epDisplay = 0x08;
-static const uint8_t kMikroMK2_epOut = 0x01;
-static const uint8_t kMikroMK2_epInput = 0x84;
+static const uint8_t kKK_epDisplay = 0x08;
+static const uint8_t kKK_epOut     = 0x02;
+static const uint8_t kKK_epInput   = 0x84;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -55,7 +47,7 @@ namespace kio
 
 //----------------------------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMikroMK2::Led : uint8_t
+enum class DeviceKompleteKontrol::Led : uint8_t
 {
   F1,
   F2,
@@ -157,8 +149,7 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
-enum class DeviceMaschineMikroMK2::Button : uint8_t
+enum class DeviceKompleteKontrol::Button : uint8_t
 {
   Shift,
   Erase,
@@ -214,78 +205,67 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
+DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numKeys_)
   : Device(std::move(pDeviceHandle_))
-  , m_display(new GDisplayMaschineMikro)
+  , m_numKeys(numKeys_)
   , m_isDirtyLeds(false)
 {
- m_buttons.resize(kMikroMK2_buttonsDataSize);
- m_leds.resize(kMikroMK2_ledsDataSize);
+ //m_buttons.resize(kKK_buttonsDataSize);
+ //m_leds.resize(kKK_ledsDataSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
+DeviceKompleteKontrol::~DeviceKompleteKontrol()
 {
 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void DeviceKompleteKontrol::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-
-void DeviceMaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+/*
+void DeviceKompleteKontrol::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
-
+*/
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
+void DeviceKompleteKontrol::sendMidiMsg(tRawData midiMsg_)
 {
- //\todo Use MaschineMikroMK2 virtual midi port
+ //\todo Use KompleteKontrol hardware midi port
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMikroMK2::getDisplay(uint8_t displayIndex_)
+GDisplay* DeviceKompleteKontrol::getDisplay(uint8_t displayIndex_)
 {
-  if (displayIndex_ > 0)
-  {
-    return nullptr;
-  }
-
-  return m_display.get();
+  return nullptr;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::tick()
+bool DeviceKompleteKontrol::tick()
 {
   static int state = 0;
   bool success = false;
 
-  //\todo enable once display dirty flag is properly set
-  if (state == 0 && m_display->isDirty())
-  {
-    success = sendFrame();
-  }
-
-  else if (state == 1)
+  if (state == 0)
   {
     success = sendLeds();
   }
-  else if (state == 2)
+  else if (state == 1)
   {
     success = read();
   }
 
-  if (++state >= 3)
+  if (++state >= 2)
   {
     state = 0;
   }
@@ -295,48 +275,11 @@ bool DeviceMaschineMikroMK2::tick()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::init()
+bool DeviceKompleteKontrol::sendLeds()
 {
-  // Display
-  initDisplay();
-  m_display.get()->white();
-
-  // Leds
-  m_isDirtyLeds = true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void DeviceMaschineMikroMK2::initDisplay() const
-{
-  //\todo set backlight
-  return;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DeviceMaschineMikroMK2::sendFrame()
-{
-  uint8_t yOffset = 0;
-  for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
+  if (m_isDirtyLeds)
   {
-    const uint8_t* ptr = m_display->getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-      kMikroMK2_epDisplay))
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool DeviceMaschineMikroMK2::sendLeds()
-{
-//  if (m_isDirtyLeds)
-  {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kKK_epOut))
     {
       return false;
     }
@@ -347,12 +290,12 @@ bool DeviceMaschineMikroMK2::sendLeds()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::read()
+bool DeviceKompleteKontrol::read()
 {
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMikroMK2_epInput))
+    if (!getDeviceHandle()->read(input, kKK_epInput))
     {
       return false;
     }
@@ -361,10 +304,7 @@ bool DeviceMaschineMikroMK2::read()
       processButtons(input);
       break;
     }
-    else if (input && input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
-    {
-      processPads(input);
-    }
+
 /*
         std::cout << std::setfill('0') << std::internal;
 
@@ -380,13 +320,13 @@ bool DeviceMaschineMikroMK2::read()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
+void DeviceKompleteKontrol::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
-  for (int i = 0; i < kMikroMK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
+  for (int i = 0; i < kKK_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
   {
     for (int k = 0; k < 8; k++)
     {
@@ -403,14 +343,14 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         changedButton = getDeviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-      //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
+      //    std::copy(&input_[1],&input_[kKK_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
           }
         }
       }
 
     // Now process the encoder data
-    uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
+    uint8_t currentEncoderValue = input_.getData()[kKK_buttonsDataSize];
     if (m_encoderValue != currentEncoderValue)
     {
       bool valueIncreased
@@ -424,56 +364,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
-{
-  //\todo process pad data
-  for (int i = 1; i <= kMikroMK2_padDataSize; i += 2)
-  {
-    uint16_t l = input_[i];
-    uint16_t h = input_[i + 1];
-    uint8_t pad = (h & 0xF0) >> 4;
-    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
-    m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
-
-    Device::Pad btn(Device::Pad::Unknown);
-
-#define M_PAD_CASE(value, pad) \
-  case value:                  \
-    btn = Device::Pad::pad; \
-    break
-
-    switch (pad)
-    {
-      M_PAD_CASE(0, Pad13);
-      M_PAD_CASE(1, Pad14);
-      M_PAD_CASE(2, Pad15);
-      M_PAD_CASE(3, Pad16);
-      M_PAD_CASE(4, Pad9);
-      M_PAD_CASE(5, Pad10);
-      M_PAD_CASE(6, Pad11);
-      M_PAD_CASE(7, Pad12);
-      M_PAD_CASE(8, Pad5);
-      M_PAD_CASE(9, Pad6);
-      M_PAD_CASE(10, Pad7);
-      M_PAD_CASE(11, Pad8);
-      M_PAD_CASE(12, Pad1);
-      M_PAD_CASE(13, Pad2);
-      M_PAD_CASE(14, Pad3);
-      M_PAD_CASE(15, Pad4);
-    }
-
-#undef M_PAD_CASE
-
-    if (m_padsAvgData[pad] > 1000)
-    {
-      padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
-    }    
-  }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
+void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -502,7 +393,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
+bool DeviceKompleteKontrol::isRGBLed(Led led_)
 {
   if (Led::Group == led_ || Led::Pad1 == led_ || Led::Pad2 == led_ || Led::Pad3 == led_ || Led::Pad4 == led_
       || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_ || Led::Pad8 == led_ || Led::Pad9 == led_
@@ -517,7 +408,7 @@ bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) const noexcept
+DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -563,8 +454,8 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-
-DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
+/*
+DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -596,10 +487,10 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) con
 
 #undef M_PAD_CASE
 }
-
+*/
 //----------------------------------------------------------------------------------------------------------------------
 
-Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
+Device::Button DeviceKompleteKontrol::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -647,7 +538,7 @@ Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexce
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
+bool DeviceKompleteKontrol::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -655,7 +546,7 @@ bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);

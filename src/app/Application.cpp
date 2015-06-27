@@ -46,11 +46,17 @@ namespace kio
 Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
 : m_collSupportedDevices(collSupportedDevices_)
 {
-  std::cout << "k-IO Version " << Lib::getVersion() << std::endl;
+  M_LOG( "k-IO Version " << Lib::getVersion());
+
+  m_collKnownDevices.emplace_back(0x17CC, 0x1340); // KK S25
+  m_collKnownDevices.emplace_back(0x17CC, 0x1350); // KK S49
+  m_collKnownDevices.emplace_back(0x17CC, 0x1360); // KK S61
+
   m_collKnownDevices.emplace_back(0x17CC, 0x0808); // MK1
   m_collKnownDevices.emplace_back(0x17CC, 0x1140); // MK2
   m_collKnownDevices.emplace_back(0x17CC, 0x1110); // Mikro MK1
   m_collKnownDevices.emplace_back(0x17CC, 0x1200); // Mikro MK2
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------

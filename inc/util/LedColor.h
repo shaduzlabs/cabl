@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*----------------------------------------------------------------------------------------------------------------------
 
                  %%%%%%%%%%%%%%%%%                
                  %%%%%%%%%%%%%%%%%
@@ -26,38 +26,58 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
-#include "comm/DeviceHandleImpl.h"
-
-#include <libusb.h>
+#include "Functions.h"
 
 namespace sl
 {
-namespace kio
+namespace util
 {
-  
-//----------------------------------------------------------------------------------------------------------------------
 
-class DriverLibUSB : public DriverImpl
+class LedColor
 {
 public:
 
-  using tDeviceHandle   = struct ::libusb_device_handle; 
+  LedColor(uint8_t mono_)
+    : m_red(mono_)
+    , m_green(mono_)
+    , m_blue(mono_)
+    , m_mono(mono_)
+  {}
   
-  DriverLibUSB();
-  ~DriverLibUSB() override;
+  LedColor(uint8_t red_, uint8_t green_, uint8_t blue_)
+    : m_red(red_)
+    , m_green(green_)
+    , m_blue(blue_)
+    , m_mono(util::max<uint8_t>( red_, green_, blue_ )) // Maximum decomposition -> take the channel w/ highest value
+  {}
   
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
+  LedColor(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_)
+    : m_red( red_ )
+    , m_green( green_ )
+    , m_blue( blue_ )
+    , m_mono( mono_ )
+  {}
+ 
+  unsigned getRed  () const { return m_red;   }
+  unsigned getGreen() const { return m_green; }
+  unsigned getBlue () const { return m_blue;  }
+  unsigned getMono () const { return m_mono;  }
+
+  void setRed   (uint8_t red_  ){ m_red = red_;     }
+  void setGreen (uint8_t green_){ m_green = green_; }
+  void setBlue  (uint8_t blue_ ){ m_blue = blue_;   }
+  void setMono  (uint8_t mono_ ){ m_mono = mono_;   }
+
+  void black(){ m_red = m_blue = m_green = m_mono = 0;    }
+  void white(){ m_red = m_blue = m_green = m_mono = 0xFF; }
 
 private:
 
-  std::string getStringDescriptor(tDeviceHandle*, uint8_t);
-
-  libusb_context*                 m_pContext;
+  unsigned m_red;
+  unsigned m_green;
+  unsigned m_blue;
+  unsigned m_mono;
 };
-  
-//----------------------------------------------------------------------------------------------------------------------
 
-} // kio
-} // sl
+} // namespace util
+} // namespace sl

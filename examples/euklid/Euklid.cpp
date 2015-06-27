@@ -37,6 +37,14 @@ static const uint8_t kEuklidDefaultSteps = 16;
 static const uint8_t kEuklidDefaultPulses = 4;
 static const uint8_t kEuklidDefaultOffset = 0;
 static const uint8_t kEuklidNumTracks = 3;
+
+static const sl::util::LedColor kEuklidColor_Track[3] = { { 60,0,0,80 },{ 0,60,0,80 },{ 0,0,60,80 } };
+static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3] = { { 127,0,0,127 },{ 0,127,0,127 },{ 0,0,127,127 } };
+
+static const sl::util::LedColor kEuklidColor_Black         (  0,   0,   0,   0);
+
+static const sl::util::LedColor kEuklidColor_Step_Empty    (127, 127, 127,  20);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -249,7 +257,7 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
 
 void Euklid::updateClock()
 {
-  unsigned quarterDuration = 60000.0f/m_bpm;
+  float quarterDuration = 60000.0f/m_bpm;
   float delayQuarterNote = quarterDuration / 4.0f;
   float shuffleDelay = delayQuarterNote * (m_shuffle/300.0f);
   m_delayEven = static_cast<uint16_t>(delayQuarterNote + shuffleDelay);
@@ -331,22 +339,22 @@ void Euklid::updateGroupLeds()
   switch (m_currentTrack)
   {
   case 0:
-    getDevice(0)->setLed(kio::Device::Button::Group,  255, 0, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, 255, 0, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, 0,   0, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, 0,   0, 0);
+    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Black);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Black);
     break;
   case 1:
-    getDevice(0)->setLed(kio::Device::Button::Group,  0, 255, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, 0,   0, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, 0, 255, 0);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, 0,   0, 0);
+    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Black);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Black);
     break;
   case 2:
-    getDevice(0)->setLed(kio::Device::Button::Group,  0, 0, 255);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, 0, 0,   0);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, 0, 0,   0);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, 0, 0, 255);
+    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
+    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Black);
+    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Black);
+    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
     break;
   }
 }
@@ -362,57 +370,35 @@ void Euklid::updatePads()
     uint16_t pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, k = m_rotates[t]; i < 16; i++, k++)
     {
-      kio::Device::Button pad = getPadLed(k % m_lengths[t]);
+      kio::Device::Pad pad = getPad(k % m_lengths[t]);
 
       if (m_currentTrack == t)
       {
 
         if (i >= m_lengths[t])
         {
-          getDevice(0)->setLed(getPadLed(i), 0,0,0);
+          getDevice(0)->setLed(pad, kEuklidColor_Black);
         }
         else if (pulses & (1 << i))
         {
           if (pos == (k % m_lengths[t]))
           {
-            switch (m_currentTrack)
-            {
-            case 0:
-              getDevice(0)->setLed(pad, 127, 0, 0);
-              break;
-            case 1:
-              getDevice(0)->setLed(pad, 0, 127, 0);
-              break;
-            case 2:
-              getDevice(0)->setLed(pad, 0, 0, 127);
-              break;
-            }
+            getDevice(0)->setLed(pad, kEuklidColor_Track_CurrentStep[m_currentTrack]);
           }
           else
           {
-            switch (m_currentTrack)
-            {
-            case 0:
-              getDevice(0)->setLed(pad, 60, 0, 0);
-              break;
-            case 1:
-              getDevice(0)->setLed(pad, 0, 60, 0);
-              break;
-            case 2:
-              getDevice(0)->setLed(pad, 0, 0, 60);
-              break;
-            }
+            getDevice(0)->setLed(pad, kEuklidColor_Track[m_currentTrack]);
           }
         }
         else
         {
           if (pos == (k % m_lengths[t]))
           {
-            getDevice(0)->setLed(pad, 30);
+            getDevice(0)->setLed(pad, kEuklidColor_Step_Empty);
           }
           else
           {
-            getDevice(0)->setLed(pad, 0);
+            getDevice(0)->setLed(pad, kEuklidColor_Black);
           }
         }
       }
@@ -634,28 +620,28 @@ uint8_t Euklid::getEncoderValue(
 
 //----------------------------------------------------------------------------------------------------------------------
 
-kio::Device::Button Euklid::getPadLed(uint8_t padIndex_)
+kio::Device::Pad Euklid::getPad(uint8_t padIndex_)
 {
   switch (padIndex_)
   {
-    case 0:  return kio::Device::Button::Pad13;
-    case 1:  return kio::Device::Button::Pad14;
-    case 2:  return kio::Device::Button::Pad15;
-    case 3:  return kio::Device::Button::Pad16;
-    case 4:  return kio::Device::Button::Pad9;
-    case 5:  return kio::Device::Button::Pad10;
-    case 6:  return kio::Device::Button::Pad11;
-    case 7:  return kio::Device::Button::Pad12;
-    case 8:  return kio::Device::Button::Pad5;
-    case 9:  return kio::Device::Button::Pad6;
-    case 10: return kio::Device::Button::Pad7;
-    case 11: return kio::Device::Button::Pad8;
-    case 12: return kio::Device::Button::Pad1;
-    case 13: return kio::Device::Button::Pad2;
-    case 14: return kio::Device::Button::Pad3;
-    case 15: return kio::Device::Button::Pad4;
+    case 0:  return kio::Device::Pad::Pad13;
+    case 1:  return kio::Device::Pad::Pad14;
+    case 2:  return kio::Device::Pad::Pad15;
+    case 3:  return kio::Device::Pad::Pad16;
+    case 4:  return kio::Device::Pad::Pad9;
+    case 5:  return kio::Device::Pad::Pad10;
+    case 6:  return kio::Device::Pad::Pad11;
+    case 7:  return kio::Device::Pad::Pad12;
+    case 8:  return kio::Device::Pad::Pad5;
+    case 9:  return kio::Device::Pad::Pad6;
+    case 10: return kio::Device::Pad::Pad7;
+    case 11: return kio::Device::Pad::Pad8;
+    case 12: return kio::Device::Pad::Pad1;
+    case 13: return kio::Device::Pad::Pad2;
+    case 14: return kio::Device::Pad::Pad3;
+    case 15: return kio::Device::Pad::Pad4;
   }
-  return kio::Device::Button::Unknown;
+  return kio::Device::Pad::Unknown;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
