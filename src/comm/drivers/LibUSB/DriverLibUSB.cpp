@@ -37,7 +37,7 @@ namespace kio
 DriverLibUSB::DriverLibUSB()
 {
   libusb_init(&m_pContext);
-#ifdef _DEBUG
+#if !defined(NDEBUG)
   libusb_set_debug( m_pContext, 3);
 #endif
 

@@ -329,17 +329,19 @@ void DeviceMaschineMK1::init()
   for( int i=0; i< kMASMK1_nDisplays; i++ )
   {
     initDisplay(i);
-    m_displays[i].get()->white();
+    m_displays[i]->black();
   }
+  sendFrame(0);
+  sendFrame(1);
   
-  sendLeds();
-  getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
-
-  // Leds
-  std::fill(m_leds.begin(), m_leds.end(), 0);
-  m_leds[ static_cast<uint8_t>( Led::DisplayBacklight )] = kMASMK1_defaultDisplaysBacklight;
   m_isDirtyLedGroup0 = true;
   m_isDirtyLedGroup1 = true;
+  std::fill(m_leds.begin(), m_leds.end(), 0);
+  m_leds[ static_cast<uint8_t>( Led::DisplayBacklight )] = kMASMK1_defaultDisplaysBacklight;
+  sendLeds();
+
+  getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -463,7 +465,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
 
 bool DeviceMaschineMK1::sendLeds()
 {
-  if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1)
+  if( m_isDirtyLedGroup0)
   {
     if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
     {
@@ -471,7 +473,10 @@ bool DeviceMaschineMK1::sendLeds()
       return false;
     }
     m_isDirtyLedGroup0 = false;
+  }
 
+  if(m_isDirtyLedGroup1)
+  {
     if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
     {
       M_LOG("[DeviceMaschineMK1] sendLeds: error writing second block of leds");
@@ -493,6 +498,7 @@ bool DeviceMaschineMK1::read()
     processPads(input);
   }
 
+  input.reset();
   if( getDeviceHandle()->read( input, kMASMK1_epInputButtonsAndDials ) )
   {
 
@@ -518,6 +524,7 @@ bool DeviceMaschineMK1::read()
   }
   else
   {
+    M_LOG("[DeviceMaschineMK1] read: " << input.size() << " bytes");
     return false;
   }
 

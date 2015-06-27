@@ -29,8 +29,8 @@
 namespace
 {
   uint16_t kLibUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kLibUSBReadTimeout =  10;            // Timeout of a input bulk transfer (0 = NO timeout)
-  uint16_t kLibUSBWriteTimeout = 60;            // Timeout of a output bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBReadTimeout =  50;            // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBWriteTimeout = 50;            // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
 namespace sl
@@ -74,7 +74,7 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
     endpoint_,                        // Endpoint
     m_inputBuffer.data(),             // Data pointer
     kLibUSBInputBufferSize,           // Size of data
-    &nBytesRead,                      // N. of bytes actually written
+    &nBytesRead,                      // N. of bytes actually read
     kLibUSBReadTimeout                // Timeout
   );
   

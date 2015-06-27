@@ -158,6 +158,7 @@ GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) con
 void GDisplayMaschineMK1::white()
 {
   fillPattern(0x0);
+  m_isDirty = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -165,7 +166,7 @@ void GDisplayMaschineMK1::white()
 void GDisplayMaschineMK1::black()
 {
   fillPattern(0xFF);
-
+  m_isDirty = true;
 }
   
 //----------------------------------------------------------------------------------------------------------------------
