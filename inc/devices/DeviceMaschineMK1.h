@@ -77,6 +77,8 @@ private:
   bool sendFrame( uint8_t displayIndex_ );
   bool sendLeds();
   bool read();
+
+  void readPadData(Transfer);
   
   void processPads(const Transfer&);
   void processButtons(const Transfer&);

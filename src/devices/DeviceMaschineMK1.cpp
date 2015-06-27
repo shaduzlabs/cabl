@@ -313,6 +313,8 @@ void DeviceMaschineMK1::init()
   m_leds[static_cast<uint8_t>(Led::DisplayBacklight)] = kMASMK1_defaultDisplaysBacklight;
   m_isDirtyLedGroup1 = true;
   sendLeds();
+
+  getDeviceHandle()->readAsync(kMASMK1_epInputPads, std::bind(&DeviceMaschineMK1::readPadData, this, std::placeholders::_1));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -460,18 +462,6 @@ bool DeviceMaschineMK1::sendLeds()
 bool DeviceMaschineMK1::read()
 {
   Transfer input;
-    
-  if(getDeviceHandle()->read( input, kMASMK1_epInputPads ) )
-  {
-    processPads(input);
-  }
-  else
-  {
-    M_LOG("[DeviceMaschineMK1] read: ERROR - read " << input.size() << " bytes");
-    return false;
-  }
-
-  input.reset();
   if( getDeviceHandle()->read( input, kMASMK1_epInputButtonsAndDials ) )
   {
 
@@ -491,6 +481,18 @@ bool DeviceMaschineMK1::read()
   }
 
   return true;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void sl::kio::DeviceMaschineMK1::readPadData(Transfer input_)
+{
+  static unsigned step = 0;
+  if (step++ == 31)
+  {
+    processPads(input_);
+    step = 0;
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

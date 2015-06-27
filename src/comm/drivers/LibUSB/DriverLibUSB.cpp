@@ -25,6 +25,9 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 
 #include "DriverLibUSB.h"
+
+#include <thread>
+
 #include "DeviceHandleLibUSB.h"
 
 namespace sl
@@ -35,11 +38,22 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------
 
 DriverLibUSB::DriverLibUSB()
+  :m_usbThreadRunning(true)
 {
   libusb_init(&m_pContext);
 #if !defined(NDEBUG)
   libusb_set_debug( m_pContext, 3);
 #endif
+
+  m_usbThread = std::thread(
+    [this]() 
+    {
+      while (m_usbThreadRunning)
+      {
+       libusb_handle_events(m_pContext);
+      }
+    }
+  );
 
   M_LOG("[LibUSB] initialization");
 }
@@ -48,7 +62,17 @@ DriverLibUSB::DriverLibUSB()
   
 DriverLibUSB::~DriverLibUSB()
 {
+  m_usbThreadRunning = false;
+  struct timeval tv = { 1, 0 };
+  int completed = 0;
+  //cout << "before  libusb_handle_events_timeout " << std::endl;	
+  int err = libusb_handle_events_timeout_completed(m_pContext, &tv, &completed);
+
   libusb_exit( m_pContext );
+  if (m_usbThread.joinable())
+  {
+    m_usbThread.join();
+  }
   M_LOG("[LibUSB] exit");
 }
   

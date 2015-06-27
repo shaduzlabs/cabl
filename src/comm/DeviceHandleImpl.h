@@ -25,6 +25,8 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
 
+#include <functional>
+
 namespace sl
 {
 namespace kio
@@ -40,7 +42,9 @@ class DeviceHandleImpl
 {
 
 public:
-  
+
+  using tCbRead = std::function<void(Transfer)>;
+
   virtual ~DeviceHandleImpl(){}
 
   virtual void disconnect() = 0;
@@ -48,6 +52,7 @@ public:
   virtual bool read( Transfer&, uint8_t ) = 0;
   virtual bool write( const Transfer&, uint8_t ) const = 0;
 
+  virtual void readAsync(uint8_t endpoint_, tCbRead cbRead_) {}
 };
   
 //----------------------------------------------------------------------------------------------------------------------

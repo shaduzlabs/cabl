@@ -45,12 +45,15 @@ class DeviceHandle
 {
 
 public:
+
   DeviceHandle(tPtr<DeviceHandleImpl>);
 
   void disconnect();
 
   bool read(Transfer&, uint8_t);
   bool write(const Transfer&, uint8_t) const;
+
+  void readAsync(uint8_t, DeviceHandleImpl::tCbRead);
 
 private:
   tPtr<DeviceHandleImpl> m_pImpl;

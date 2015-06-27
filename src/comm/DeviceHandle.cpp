@@ -63,5 +63,12 @@ bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_ ) const
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void DeviceHandle::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead cbRead_)
+{
+  m_pImpl->readAsync(endpoint_, cbRead_);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 } // kio
 } // sl

@@ -29,7 +29,7 @@
 namespace
 {
   uint16_t kLibUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kLibUSBReadTimeout =  2;       // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBReadTimeout =  100;       // Timeout of a input bulk transfer (0 = NO timeout)
   uint16_t kLibUSBWriteTimeout = 50;      // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
@@ -111,6 +111,47 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) c
   }
   
   return false;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleLibUSB::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead cbRead_)
+{
+  m_cbRead = cbRead_;
+  readAsyncImpl(endpoint_);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
+{
+  libusb_transfer* pTransfer = libusb_alloc_transfer(0);
+  libusb_fill_bulk_transfer(
+    pTransfer,
+    m_pCurrentDevice,
+    endpoint_,
+    m_inputBuffer.data(),
+    kLibUSBInputBufferSize,
+    cbTransfer,
+    this,
+    kLibUSBReadTimeout
+    );
+  int ret = libusb_submit_transfer(pTransfer);
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
+{
+  DeviceHandleLibUSB* pSelf = (DeviceHandleLibUSB*)pTransfer_->user_data;
+  tRawData data(pTransfer_->buffer, pTransfer_->buffer + pTransfer_->actual_length);
+ // if(pTransfer_->status)
+  pSelf->m_cbRead({ data });
+  if (pSelf->m_pCurrentDevice)
+  {
+    pSelf->readAsyncImpl(pTransfer_->endpoint);
+  }
 }
   
 //----------------------------------------------------------------------------------------------------------------------

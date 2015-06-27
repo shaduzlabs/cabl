@@ -29,6 +29,8 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
+#include <thread>
+
 #include <libusb.h>
 
 namespace sl
@@ -53,7 +55,8 @@ public:
 private:
 
   std::string getStringDescriptor(tDeviceHandle*, uint8_t);
-
+  bool                            m_usbThreadRunning;
+  std::thread                     m_usbThread;
   libusb_context*                 m_pContext;
 };
   

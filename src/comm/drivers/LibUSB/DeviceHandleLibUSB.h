@@ -31,6 +31,7 @@
 
 #include <libusb.h>
 
+
 namespace sl
 {
 namespace kio
@@ -52,10 +53,16 @@ public:
   bool read(Transfer&, uint8_t) override;
   bool write(const Transfer&, uint8_t) const override;
 
+  void readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead) override;
+
 private:
+
+  void readAsyncImpl(uint8_t endpoint_);
+  static void __stdcall cbTransfer(libusb_transfer*);
 
   tRawData                        m_inputBuffer;
   tDeviceHandle*                  m_pCurrentDevice;
+  DeviceHandleImpl::tCbRead       m_cbRead;
 };
   
 //----------------------------------------------------------------------------------------------------------------------
