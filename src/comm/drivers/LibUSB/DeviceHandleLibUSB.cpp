@@ -83,7 +83,8 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
     transfer_.setData( m_inputBuffer.data(), nBytesRead );
     return transfer_;
   }
- 
+  M_LOG("[DeviceHandleLibUSB] read: error=" << result << " - transfer size: "
+            << transfer_.size() << " read: " << nBytesRead);
   return false;
 }
   

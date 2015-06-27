@@ -332,6 +332,7 @@ void DeviceMaschineMK1::init()
     m_displays[i].get()->white();
   }
   
+  sendLeds();
   getDeviceHandle()->write(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
 
   // Leds
@@ -464,16 +465,14 @@ bool DeviceMaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0 || m_isDirtyLedGroup1)
   {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  30 ), kMASMK1_epOut ))
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
     {
       M_LOG("[DeviceMaschineMK1] sendLeds: error writing first block of leds");
       return false;
     }
     m_isDirtyLedGroup0 = false;
-  }
-  else if( m_isDirtyLedGroup1 )
-  {
-    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 30 ), kMASMK1_epOut ))
+
+    if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
     {
       M_LOG("[DeviceMaschineMK1] sendLeds: error writing second block of leds");
       return false;
