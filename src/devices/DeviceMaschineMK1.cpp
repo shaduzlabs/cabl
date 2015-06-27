@@ -310,11 +310,17 @@ void DeviceMaschineMK1::init()
   m_isDirtyLedGroup1 = true;
   sendLeds();
 
+  getDeviceHandle()->readAsync(
+    kMASMK1_epInputButtonsAndDials,
+    std::bind(&DeviceMaschineMK1::cbRead,
+    this,
+    std::placeholders::_1)
+  );
+
   m_leds[static_cast<uint8_t>(Led::DisplayBacklight)] = kMASMK1_defaultDisplaysBacklight;
   m_isDirtyLedGroup1 = true;
   sendLeds();
 
-  getDeviceHandle()->readAsync(kMASMK1_epInputPads, std::bind(&DeviceMaschineMK1::readPadData, this, std::placeholders::_1));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -461,38 +467,15 @@ bool DeviceMaschineMK1::sendLeds()
 
 bool DeviceMaschineMK1::read()
 {
+
   Transfer input;
-  if( getDeviceHandle()->read( input, kMASMK1_epInputButtonsAndDials ) )
+  if( !getDeviceHandle()->read( input, kMASMK1_epInputPads ) )
   {
-
-    if(input[0] == 0x02)
-    {
-      processEncoders(input);
-    }
-    else if (input[0] == 0x04)
-    {
-      processButtons(input);
-    }
-    else if (input[0] == 0x06)
-    {
-      M_LOG("[DeviceMaschineMK1] read: received MIDI message");
-      //\todo Add MIDI in parsing
-    }
+    M_LOG("[DeviceMaschineMK1] read: ERROR");
+    return false;
   }
-
+  processPads(input);
   return true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void sl::kio::DeviceMaschineMK1::readPadData(Transfer input_)
-{
-  static unsigned step = 0;
-  if (step++ == 31)
-  {
-    processPads(input_);
-    step = 0;
-  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -583,11 +566,13 @@ void DeviceMaschineMK1::processButtons(const Transfer& input_)
 //----------------------------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMK1::processEncoders(const Transfer& input_)
-{/*
+{
+/*
   if ((input_.getData()[6] & 0x80) == 0)
   {
     return;
   }*/
+  //\todo improve encoder value parsing
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
@@ -816,6 +801,25 @@ Device::Encoder DeviceMaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
     }
   }
 #undef M_ENCODER_CASE
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void sl::kio::DeviceMaschineMK1::cbRead(Transfer input_)
+{
+  if(input_[0] == 0x02)
+  {
+    processEncoders(input_);
+  }
+  else if (input_[0] == 0x04)
+  {
+    processButtons(input_);
+  }
+  else if (input_[0] == 0x06)
+  {
+    M_LOG("[DeviceMaschineMK1] read: received MIDI message");
+    //\todo Add MIDI in parsing
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

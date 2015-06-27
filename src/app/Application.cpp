@@ -65,7 +65,7 @@ void Application::run()
 {
   m_appStopped = false;
 
-  if (!m_appStopped)
+  while(!m_appStopped)
   {
     // get the list of devices
     m_connected = false;

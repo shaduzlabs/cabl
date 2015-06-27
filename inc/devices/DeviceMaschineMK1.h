@@ -78,8 +78,6 @@ private:
   bool sendLeds();
   bool read();
 
-  void readPadData(Transfer);
-  
   void processPads(const Transfer&);
   void processButtons(const Transfer&);
   void processEncoders(const Transfer&);
@@ -90,6 +88,9 @@ private:
 
   Device::Button getDeviceButton(Button btn_) const noexcept;
   Device::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
+  
+  void cbRead(Transfer);
+    
   bool isButtonPressed(Button button) const noexcept;
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 

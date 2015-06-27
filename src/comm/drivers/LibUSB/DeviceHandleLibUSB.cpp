@@ -29,7 +29,7 @@
 namespace
 {
   uint16_t kLibUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kLibUSBReadTimeout =  100;       // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBReadTimeout =  2;       // Timeout of a input bulk transfer (0 = NO timeout)
   uint16_t kLibUSBWriteTimeout = 50;      // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
@@ -136,8 +136,8 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
     this,
     kLibUSBReadTimeout
     );
-  int ret = libusb_submit_transfer(pTransfer);
-
+  libusb_submit_transfer(pTransfer);
+  //\todo check libusb_submit_transfer return code
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -145,9 +145,11 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
 void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 {
   DeviceHandleLibUSB* pSelf = (DeviceHandleLibUSB*)pTransfer_->user_data;
-  tRawData data(pTransfer_->buffer, pTransfer_->buffer + pTransfer_->actual_length);
- // if(pTransfer_->status)
-  pSelf->m_cbRead({ data });
+  if(pSelf->m_cbRead && pTransfer_->status == LIBUSB_TRANSFER_COMPLETED && pTransfer_->actual_length > 0)
+  {
+    tRawData data(pTransfer_->buffer, pTransfer_->buffer + pTransfer_->actual_length);
+    pSelf->m_cbRead({ data });
+  }
   if (pSelf->m_pCurrentDevice)
   {
     pSelf->readAsyncImpl(pTransfer_->endpoint);
