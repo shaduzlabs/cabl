@@ -204,13 +204,17 @@ SET(
 )
 
 SET( 
+  inc_midi_INCLUDES
+    inc/midi/MidiMessage.h
+)
+
+SET( 
   inc_util_INCLUDES
     inc/util/CircularBuffer.h
     inc/util/Functions.h
     inc/util/LedColor.h
     inc/util/Log.h
     inc/util/Macros.h
-    inc/util/MidiMessage.h
     inc/util/Types.h
     inc/util/Version.h
 )
@@ -225,6 +229,7 @@ source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
 source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
+source_group("inc\\midi"             FILES ${inc_midi_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
@@ -235,6 +240,7 @@ SET (
     ${inc_devices_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
     ${inc_gfx_INCLUDES}
+    ${inc_midi_INCLUDES}
     ${inc_util_INCLUDES}
     ${inc_INCLUDES}
 )
