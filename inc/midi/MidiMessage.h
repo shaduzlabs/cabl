@@ -82,16 +82,8 @@ private:
   int8_t    m_octave;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-/**
-  \class MidiMessage
-  \brief Class representing a MIDI message
-
-*/
-/*
-template<uint8_t MessageType>
-class MidiMessageT
+class MidiMessage
 {
 public:
 
@@ -112,21 +104,69 @@ public:
     Reset = 0xff,
   };
 
-  virtual ~MidiMessageT() {}
-  virtual tRawData data() = 0;
+  virtual const tRawData& data() const = 0;
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+  \class MidiMessage
+  \brief Class representing a MIDI message
+
+*/
+
+template<MidiMessage::Type MsgType>
+class MidiMessageBase : public MidiMessage
+{
+public:
+
+  enum class Type : uint8_t {
+    NoteOff = 0x80,
+    NoteOn = 0x90,
+    PolyPressure = 0xa0,
+    ControlChange = 0xb0,
+    ProgramChange = 0xc0,
+    ChannelPressure = 0xd0,
+    PitchBend = 0xe0,
+    SysexStart = 0xf0,
+    MTC = 0xf1,
+    SongPosition = 0xf2,
+    SongSelect = 0xf3,
+    TuneRequest = 0xf6,
+    SysexEnd = 0xf7,
+    Reset = 0xff,
+  };
+
+  virtual ~MidiMessageBase() {}
   uint8_t getType() const{ return static_cast<uint8_t>(m_type); }
+
+//};
+
+private:
+
+  MidiMessage::Type  m_type{MsgType};
+};
+
+class NoteOn : public util::MidiMessageBase<util::MidiMessage::Type::NoteOn>
+{
+public:
+
+  NoteOn(uint8_t channel_, uint8_t note_, uint8_t velocity_)
+  : m_data({static_cast<uint8_t>((channel_ &0x0F) | getType()), static_cast<uint8_t>(note_ & 0x7F), static_cast<uint8_t>(velocity_ & 0x7F)})
+  {
+  
+  }
+  
+  const tRawData& data() const override { return m_data; }
+  
+ // const operator tRawData*() { return &m_data; }
   
 private:
 
-  Type  m_type{MidiMessage};
+  tRawData  m_data;
 };
-
-class NoteOn : public MidiMessageT<MidiMessageT::Type::NoteOn>
-{
-  template<uint8_t T>
-  tRawData data() override{ return tRawData(); }
-};
-*/
+/*
 class MidiMessage
 {
 public:
@@ -205,7 +245,7 @@ public:
   }
 
 };
-  
+  */
 //----------------------------------------------------------------------------------------------------------------------
 
 } // util

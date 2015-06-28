@@ -287,7 +287,9 @@ void Euklid::play()
       }
       if (m_sequences[i].next())
       {
-        std::vector<uint8_t> msg(MidiMessage::noteOn(0, note.value(), 127));
+        MidiMessage* m = new NoteOn(0, note.value(), 127);
+        NoteOn noteObj(0, note.value(), 127);
+        std::vector<uint8_t> msg(noteObj.data());
         m_pMidiout->sendMessage(&msg);
      //   getDevice(0)->sendMidiMsg(msg);
       }
