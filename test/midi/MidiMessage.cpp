@@ -37,18 +37,16 @@ namespace test
 
 //----------------------------------------------------------------------------------------------------------------------
 
-TEST_CASE("a", "[midi]") {
-  /*
-  Version version_empty;
-  Version version_nonNull_1(1);
-  Version version_nonNull_2(1, 2);
-  Version version_nonNull_3(1, 2, 3);
+TEST_CASE("Test MidiMessage", "[midi]") {
 
-  CHECK_FALSE(version_empty);
-  CHECK(version_nonNull_1);
-  CHECK(version_nonNull_2);
-  CHECK(version_nonNull_3);
-  */
+  NoteOff msgNoteOff(MidiMessage::Channel::Ch13, 120,64);
+  CHECK(msgNoteOff.getChannel() == MidiMessage::Channel::Ch13);
+  CHECK(msgNoteOff.getNote() == 120);
+  CHECK(msgNoteOff.getVelocity() == 64);
+
+  tPtr<MidiMessage> msgNoteOffParsed = parseMidiMessage(msgNoteOff.data());
+  CHECK(msgNoteOff.getType() == msgNoteOffParsed->getType());
+
 }
  
 

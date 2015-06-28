@@ -39,6 +39,10 @@ namespace midi
 
 //----------------------------------------------------------------------------------------------------------------------
 
+#define M_MIDI_BYTE(data) static_cast<uint8_t>(0x7F&data)
+
+//----------------------------------------------------------------------------------------------------------------------
+
 /**
   \class MidiNote
   \brief Class representing a single midi note
@@ -87,24 +91,64 @@ class MidiMessage
 {
 public:
 
-  enum class Type : uint8_t {
+  enum class Type : uint8_t 
+  {
     NoteOff = 0x80,
     NoteOn = 0x90,
-    PolyPressure = 0xa0,
-    ControlChange = 0xb0,
-    ProgramChange = 0xc0,
-    ChannelPressure = 0xd0,
-    PitchBend = 0xe0,
-    SysexStart = 0xf0,
-    MTC = 0xf1,
-    SongPosition = 0xf2,
-    SongSelect = 0xf3,
-    TuneRequest = 0xf6,
-    SysexEnd = 0xf7,
-    Reset = 0xff,
+    PolyPressure = 0xA0,
+    ControlChange = 0xB0,
+    ProgramChange = 0xC0,
+    ChannelPressure = 0xD0,
+    PitchBend = 0xE0,
+    SysexStart = 0xF0,
+    MTC = 0xF1,
+    SongPosition = 0xF2,
+    SongSelect = 0xF3,
+    // 0xF4 is reserved/unsupported
+    // 0xF5 is reserved/unsupported
+    TuneRequest = 0xF6,
+    SysexEnd = 0xF7,
+    TimingClock = 0xF8,
+    // 0xF9 is reserved/unsupported
+    Start = 0xFA,
+    Continue = 0xFB,
+    Stop = 0xFC,
+    // 0xFD is reserved/unsupported
+    ActiveSensing = 0xFE,
+    Reset = 0xFF,
   };
 
+  enum class Channel : uint8_t
+  {
+    Ch1,
+    Ch2,
+    Ch3,
+    Ch4,
+    Ch5,
+    Ch6,
+    Ch7,
+    Ch8,
+    Ch9,
+    Ch10,
+    Ch11,
+    Ch12,
+    Ch13,
+    Ch14,
+    Ch15,
+    Ch16,
+    Undefined,
+  };
+
+  MidiMessage(Type type_)
+    : m_type(type_)
+  {}
+
   virtual const tRawData& data() const = 0;
+  Type getType() const { return m_type; }
+
+private:
+
+  Type  m_type;
 
 };
 
@@ -116,137 +160,208 @@ public:
 
 */
 
-template<MidiMessage::Type MsgType>
-class MidiMessageBase : public MidiMessage
+template<midi::MidiMessage::Type MsgType>
+class MidiMessageBase : public midi::MidiMessage
 {
 public:
+  /*
+  MidiMessageBase(tRawData data_)
+    : midi::MidiMessage(MsgType)
+    , m_data( data_ )
+  {
 
-  enum class Type : uint8_t {
-    NoteOff = 0x80,
-    NoteOn = 0x90,
-    PolyPressure = 0xa0,
-    ControlChange = 0xb0,
-    ProgramChange = 0xc0,
-    ChannelPressure = 0xd0,
-    PitchBend = 0xe0,
-    SysexStart = 0xf0,
-    MTC = 0xf1,
-    SongPosition = 0xf2,
-    SongSelect = 0xf3,
-    TuneRequest = 0xf6,
-    SysexEnd = 0xf7,
-    Reset = 0xff,
-  };
+  }
+  */
+  MidiMessageBase(MidiMessage::Channel channel_, tRawData data_)
+    : midi::MidiMessage(MsgType)
+    , m_data{ static_cast<uint8_t>((static_cast<uint8_t>(channel_) | static_cast<uint8_t>(getType()))) }
+  {
+    m_data.insert(m_data.end(), data_.begin(), data_.end());
+  }
 
   virtual ~MidiMessageBase() {}
-  uint8_t getType() const{ return static_cast<uint8_t>(m_type); }
 
-//};
-
-private:
-
-  MidiMessage::Type  m_type{MsgType};
-};
-
-class NoteOn : public util::MidiMessageBase<util::MidiMessage::Type::NoteOn>
-{
-public:
-
-  NoteOn(uint8_t channel_, uint8_t note_, uint8_t velocity_)
-  : m_data({static_cast<uint8_t>((channel_ &0x0F) | getType()), static_cast<uint8_t>(note_ & 0x7F), static_cast<uint8_t>(velocity_ & 0x7F)})
-  {
-  
-  }
-  
   const tRawData& data() const override { return m_data; }
-  
- // const operator tRawData*() { return &m_data; }
-  
+
+  MidiMessage::Channel getChannel() const 
+  { 
+    return m_data.size() == 0 ? MidiMessage::Channel::Undefined : static_cast<MidiMessage::Channel>(m_data[0] & 0x0F); 
+  }
+
+  bool operator == (const MidiMessageBase& other_) const
+  {
+    return (m_data.size() == other_.m_data.size()) && (std::equal(m_data.begin(),m_data.end(),other_.m_data.begin()));
+  }
+
+  bool operator != (const MidiMessageBase& other_) const
+  {
+    return !(operator == (other_));
+  }
 private:
 
   tRawData  m_data;
 };
-/*
-class MidiMessage
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class NoteOff : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOff>
 {
 public:
 
-  enum class Type : uint8_t {
-    NoteOff = 0x80,
-    NoteOn = 0x90,
-    PolyPressure = 0xa0,
-    ControlChange = 0xb0,
-    ProgramChange = 0xc0,
-    ChannelPressure = 0xd0,
-    PitchBend = 0xe0,
-    SysexStart = 0xf0,
-    MTC = 0xf1,
-    SongPosition = 0xf2,
-    SongSelect = 0xf3,
-    TuneRequest = 0xf6,
-    SysexEnd = 0xf7,
-    Reset = 0xff,
-  };
+  NoteOff(MidiMessage::Channel channel_, uint8_t note_, uint8_t velocity_)
+  : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_ )})
+  {}
 
-//----------------------------------------------------------------------------------------------------------------------
+  uint8_t getNote() const { return data()[1]; }
 
-  static std::vector<uint8_t> noteOff(uint8_t channel_, uint8_t note_, uint8_t velocity_ = 0)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::NoteOff);
-    return { channelByte, static_cast<uint8_t>(note_ & 0x7F), static_cast<uint8_t>(velocity_ & 0x7F) };
-  }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> noteOn(uint8_t channel_, uint8_t note_, uint8_t velocity_)
-  {
-    uint8_t channelByte = (channel_ &0x0F) | static_cast<uint8_t>(Type::NoteOn);
-    return { channelByte, static_cast<uint8_t>(note_ & 0x7F), static_cast<uint8_t>(velocity_ & 0x7F) };
-  }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> polyPressure(uint8_t channel_, uint8_t note_, uint8_t pressure_)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::ControlChange);
-    return { channelByte, static_cast<uint8_t>(note_ & 0x7F), static_cast<uint8_t>(pressure_ & 0x7F) };
-  }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> controlChange(uint8_t channel_, uint8_t control_, uint8_t value_)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::ControlChange);
-    return { channelByte, static_cast<uint8_t>(control_ & 0x7F), static_cast<uint8_t>(value_ & 0x7F) };
-  }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> programChange(uint8_t channel_, uint8_t programNumber_)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::ControlChange);
-    return { channelByte, static_cast<uint8_t>(programNumber_ & 0x7F) };
-  }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> channelPressure(uint8_t channel_, uint8_t pressure_)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::ControlChange);
-    return { channelByte, static_cast<uint8_t>(pressure_ & 0x7F) };
-  }
-
-  //----------------------------------------------------------------------------------------------------------------------
-
-  static std::vector<uint8_t> pitchBend(uint8_t channel_, uint16_t value_)
-  {
-    uint8_t channelByte = (channel_ & 0x0F) | static_cast<uint8_t>(Type::ControlChange);
-    return{ channelByte, static_cast<uint8_t>(value_ & 0x7F), static_cast<uint8_t>((value_>>8) & 0x7F) };
-  }
+  uint8_t getVelocity() const { return data()[2]; }
 
 };
-  */
+
 //----------------------------------------------------------------------------------------------------------------------
+
+class NoteOn : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOn>
+{
+public:
+
+  NoteOn(MidiMessage::Channel channel_, uint8_t note_, uint8_t velocity_)
+    : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_) })
+  {}
+
+  uint8_t getNote() const { return data()[1]; }
+
+  uint8_t getVelocity() const { return data()[2]; }
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class PolyPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::PolyPressure>
+{
+public:
+
+  PolyPressure(MidiMessage::Channel channel_, uint8_t note_, uint8_t pressure_)
+    : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(pressure_) })
+  {}
+
+  uint8_t getNote() const { return data()[1]; }
+
+  uint8_t getPressure() const { return data()[2]; }
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class ControlChange : public midi::MidiMessageBase<midi::MidiMessage::Type::ControlChange>
+{
+public:
+
+  ControlChange(MidiMessage::Channel channel_, uint8_t control_, uint8_t value_)
+    : MidiMessageBase(channel_, { M_MIDI_BYTE(control_), M_MIDI_BYTE(value_) })
+  {}
+
+  uint8_t getControl() const { return data()[1]; }
+
+  uint8_t getValue() const { return data()[2]; }
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+class ProgramChange : public midi::MidiMessageBase<midi::MidiMessage::Type::ProgramChange>
+{
+public:
+
+  ProgramChange(MidiMessage::Channel channel_, uint8_t program_)
+    : MidiMessageBase(channel_, {M_MIDI_BYTE(program_)})
+  {}
+
+  uint8_t getProgram() const { return data()[1]; }
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+class ChannelPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::ChannelPressure>
+{
+public:
+
+  ChannelPressure(MidiMessage::Channel channel_, uint8_t pressure_)
+    : MidiMessageBase(channel_, {M_MIDI_BYTE(pressure_)})
+  {}
+
+  uint8_t getPressure() const { return data()[1]; }
+
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class PitchBend : public midi::MidiMessageBase<midi::MidiMessage::Type::PitchBend>
+{
+public:
+
+  PitchBend(MidiMessage::Channel channel_, uint8_t pitchL_, uint8_t pitchH_)
+    : MidiMessageBase(channel_, { M_MIDI_BYTE(pitchL_), M_MIDI_BYTE(pitchH_) })
+  {}
+
+  PitchBend(MidiMessage::Channel channel_, uint16_t pitch_)
+    : MidiMessageBase(channel_, { M_MIDI_BYTE(pitch_), M_MIDI_BYTE(pitch_ >> 7) })
+  {}
+
+  uint16_t getPitch() const
+  {
+    return static_cast<uint16_t>(data()[1] | (data()[2] << 7));
+  }
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
+{
+  size_t length = data_.size();
+  if (length < 1)
+  {
+    return nullptr;
+  }
+  uint8_t status = data_[0];
+  if ((status < 0x80) || (status == 0xF4) || (status == 0xF5) || (status == 0xF9) || (status == 0xFD))
+  {
+    return nullptr;
+  }
+  else if (status < 0xF0)
+  {
+    MidiMessage::Type type = static_cast<MidiMessage::Type>(status & 0xF0);
+    MidiMessage::Channel channel = static_cast<MidiMessage::Channel>(status & 0x0F);
+
+#define M_CHANNEL_MSG_2(idMsg)     \
+  case MidiMessage::Type::idMsg:   \
+    return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
+#define M_CHANNEL_MSG_3(idMsg)     \
+  case MidiMessage::Type::idMsg:   \
+    return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
+
+    switch (type)
+    {
+      M_CHANNEL_MSG_3(NoteOff);
+      M_CHANNEL_MSG_3(NoteOn);
+      M_CHANNEL_MSG_3(PolyPressure);
+      M_CHANNEL_MSG_3(ControlChange);
+      M_CHANNEL_MSG_2(ProgramChange);
+      M_CHANNEL_MSG_2(ChannelPressure);
+      M_CHANNEL_MSG_3(PitchBend);
+    }
+#undef M_CHANNEL_MSG_2
+#undef M_CHANNEL_MSG_3
+  }
+  else
+  {
+
+  }
+
+}
+
+#undef M_MIDI_BYTE
 
 } // midi
 } // sl
