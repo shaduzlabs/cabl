@@ -25,6 +25,8 @@ set (k-IO_VERSION_MAJOR 0)
 set (k-IO_VERSION_MINOR 2)
 set (k-IO_VERSION_MICRO 1)
  
+enable_testing()
+
 configure_file (
   "${PROJECT_SOURCE_DIR}/inc/k-io-config.h.in"
   "${PROJECT_BINARY_DIR}/k-io-config.h"
@@ -32,6 +34,7 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 
 # C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
@@ -471,7 +474,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # Unit tests --------------------------------------------------------------------------------------------------------- #
 
-add_subdirectory(test "Unit Tests")
+add_subdirectory(test)
 
 
 # Documentation (doxygen) -------------------------------------------------------------------------------------------- #
@@ -507,5 +510,5 @@ endif()
 
 # Examples ----------------------------------------------------------------------------------------------------------- #
 
-add_subdirectory(examples Examples)
+add_subdirectory(examples)
 

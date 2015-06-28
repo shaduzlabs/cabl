@@ -11,7 +11,6 @@
 include_directories( ${PROJECT_SOURCE_DIR}/submodules/catch/include )
 
 project(unit-tests)
-enable_testing(true)
 
 set( 
   test_SRCS
@@ -42,6 +41,12 @@ set(
 add_executable(
   ${PROJECT_NAME} 
   ${Test_FILES} 
+)
+
+add_test(NAME ${PROJECT_NAME}-runner 
+        COMMAND ${PROJECT_NAME} -s -b
+        CONFIGURATIONS Debug Release
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
 set_target_properties(

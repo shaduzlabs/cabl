@@ -113,7 +113,7 @@ void output(std::ostream& os, std::pair<Begin, Last>&& data)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-inline void output(std::ostream& os, None)
+inline void output(std::ostream&, None)
 {
 
 }

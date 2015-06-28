@@ -66,7 +66,7 @@ void DeviceHandleHIDAPI::disconnect()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t endpoint_)
+bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t)
 {
   int nBytesRead = hid_read(m_pCurrentDevice, m_inputBuffer.data(), kHIDAPIInputBufferSize);
   if (nBytesRead > 0)
@@ -80,7 +80,7 @@ bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t endpoint_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t) const
 {
   if (transfer_)
   {

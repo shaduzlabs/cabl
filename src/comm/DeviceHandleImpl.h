@@ -52,7 +52,7 @@ public:
   virtual bool read( Transfer&, uint8_t ) = 0;
   virtual bool write( const Transfer&, uint8_t ) const = 0;
 
-  virtual void readAsync(uint8_t endpoint_, tCbRead cbRead_) {}
+  virtual void readAsync(uint8_t, tCbRead) {}
 };
   
 //----------------------------------------------------------------------------------------------------------------------

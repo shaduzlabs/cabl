@@ -65,7 +65,7 @@ DriverLibUSB::~DriverLibUSB()
   m_usbThreadRunning = false;
   struct timeval tv = { 1, 0 };
   int completed = 0;
-  //cout << "before  libusb_handle_events_timeout " << std::endl;	
+
   int err = libusb_handle_events_timeout_completed(m_pContext, &tv, &completed);
 
   libusb_exit( m_pContext );
