@@ -27,6 +27,7 @@
 #include "catch.hpp"
 
 #include <midi/MidiMessage.h>
+#include <util/Log.h>
 
 namespace sl
 {
@@ -34,6 +35,20 @@ namespace midi
 {
 namespace test
 {
+
+class TestMidiListener : public MidiMessageListener
+{
+public:
+  TestMidiListener()
+  {
+    setCallbackNoteOff(std::bind(&TestMidiListener::midiMessageReceived, this, std::placeholders::_1));
+  }
+
+  void midiMessageReceived(tPtr<NoteOff> msg)
+  {
+
+  }
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -43,9 +58,10 @@ TEST_CASE("Test MidiMessage", "[midi]") {
   CHECK(msgNoteOff.getChannel() == MidiMessage::Channel::Ch13);
   CHECK(msgNoteOff.getNote() == 120);
   CHECK(msgNoteOff.getVelocity() == 64);
+  TestMidiListener midiListener;
 
-  tPtr<MidiMessage> msgNoteOffParsed = parseMidiMessage(msgNoteOff.data());
-  CHECK(msgNoteOff.getType() == msgNoteOffParsed->getType());
+  processMidi(&midiListener, msgNoteOff.data());
+
 
 }
  

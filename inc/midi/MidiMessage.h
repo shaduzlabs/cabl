@@ -27,6 +27,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 #include <vector>
 
 #include "util/Types.h"
@@ -359,6 +360,64 @@ static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
 
   }
 
+}
+
+
+class MidiMessageListener
+{
+public:
+
+  using tCbNoteOff          = std::function<void(tPtr<NoteOff>)>;
+  using tCbNoteOn           = std::function<void(tPtr<NoteOn>)>;
+  using tCbPolyPressure     = std::function<void(tPtr<PolyPressure>)>;
+  using tCbControlChange    = std::function<void(tPtr<ControlChange>)>;
+  using tCbProgramChange    = std::function<void(tPtr<ProgramChange>)>;
+  using tCbChannelPressure  = std::function<void(tPtr<ChannelPressure>)>;
+  using tCbPitchBend        = std::function<void(tPtr<PitchBend>)>;
+
+  virtual ~MidiMessageListener() {}
+
+  void setCallbackNoteOff(tCbNoteOff cbNoteOff_) { m_cbNoteOff = cbNoteOff_; }
+  void setCallbackNoteOn(tCbNoteOn cbNoteOn_) { m_cbNoteOn = cbNoteOn_; }
+  void setCallbackPolyPressure(tCbPolyPressure cbPolyPressure_) { m_cbPolyPressure = cbPolyPressure_; }
+  void setCallbackControlChangee(tCbControlChange cbControlChange_) { m_cbControlChange = cbControlChange_; }
+  void setCallbackProgramChang(tCbProgramChange cbProgramChange_) { m_cbProgramChange = cbProgramChange_; }
+  void setCallbackChannelPressure(tCbChannelPressure cbChannelPressure_) { m_cbChannelPressure = cbChannelPressure_; }
+  void setCallbackPitchBend(tCbPitchBend cbPitchBend_) { m_cbPitchBend = cbPitchBend_; }
+
+  void callbackNoteOff(tPtr<NoteOff> msg_) { if (m_cbNoteOff) { m_cbNoteOff(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<NoteOn> msg_) { if (m_cbNoteOn) { m_cbNoteOn(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<PolyPressure> msg_) { if (m_cbPolyPressure) { m_cbPolyPressure(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<ControlChange> msg_) { if (m_cbControlChange) { m_cbControlChange(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<ProgramChange> msg_){ if (m_cbProgramChange) { m_cbProgramChange(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<ChannelPressure> msg_) { if (m_cbChannelPressure) { m_cbChannelPressure(std::move(msg_)); } }
+  void callbackNoteOff(tPtr<PitchBend> msg_) { if (m_cbPitchBend) { m_cbPitchBend(std::move(msg_)); } }
+
+private:
+
+  tCbNoteOff          m_cbNoteOff;
+  tCbNoteOn           m_cbNoteOn;
+  tCbPolyPressure     m_cbPolyPressure;
+  tCbControlChange    m_cbControlChange;
+  tCbProgramChange    m_cbProgramChange;
+  tCbChannelPressure  m_cbChannelPressure;
+  tCbPitchBend        m_cbPitchBend;
+};
+
+
+static void processMidi(MidiMessageListener* pListener_, const tRawData& data_)
+{
+  tPtr<MidiMessage> message = parseMidiMessage(data_);
+  if (message)
+  {
+    switch (message->getType())
+    {
+      case MidiMessage::Type::NoteOff:   
+      {
+        pListener_->callbackNoteOff(tPtr<NoteOff>(dynamic_cast<NoteOff*>(message.release())));
+      }
+    }
+  }
 }
 
 #undef M_MIDI_BYTE
