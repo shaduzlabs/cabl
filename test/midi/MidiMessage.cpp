@@ -26,3 +26,34 @@
 
 #include "catch.hpp"
 
+#include <midi/MidiMessage.h>
+
+namespace sl
+{
+namespace midi
+{
+namespace test
+{
+
+//----------------------------------------------------------------------------------------------------------------------
+
+TEST_CASE("a", "[midi]") {
+  /*
+  Version version_empty;
+  Version version_nonNull_1(1);
+  Version version_nonNull_2(1, 2);
+  Version version_nonNull_3(1, 2, 3);
+
+  CHECK_FALSE(version_empty);
+  CHECK(version_nonNull_1);
+  CHECK(version_nonNull_2);
+  CHECK(version_nonNull_3);
+  */
+}
+ 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+} // test
+} // midi
+} // sl

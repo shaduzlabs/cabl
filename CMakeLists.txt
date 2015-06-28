@@ -48,13 +48,13 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
   set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
 
-  SET( 
+  set( 
     lib_hidapi_LIBRARY      
       submodules/hidapi/hidapi/hidapi.h
       submodules/hidapi/windows/hid.c
   )
   
-  SET( 
+  set( 
     lib_libusb_LIBRARY      
       submodules/libusb/msvc/config.h
       submodules/libusb/libusb/core.c
@@ -73,18 +73,18 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
   set_target_properties(
-  hidapi 
-  PROPERTIES 
-    OUTPUT_NAME         "hidapi"
-    OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
+    hidapi 
+    PROPERTIES 
+      OUTPUT_NAME         "hidapi"
+      OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
   )
 
   add_library( libusb STATIC ${lib_libusb_LIBRARY} )
   set_target_properties(
-  libusb 
-  PROPERTIES 
-    OUTPUT_NAME         "libusb"
-    OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
+    libusb 
+    PROPERTIES 
+      OUTPUT_NAME         "libusb"
+      OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
   )
   target_include_directories( libusb PRIVATE "submodules/libusb/msvc/" )
 
@@ -95,13 +95,13 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
  set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
  set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
 
-  SET( 
+  set( 
     lib_hidapi_LIBRARY      
       submodules/hidapi/hidapi/hidapi.h
       submodules/hidapi/mac/hid.c
   )
   
-  SET( 
+  set( 
     lib_libusb_LIBRARY      
       submodules/libusb/Xcode/config.h
       submodules/libusb/libusb/core.c
@@ -120,18 +120,18 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
   set_target_properties(
-  hidapi 
-  PROPERTIES 
-    OUTPUT_NAME         "hidapi"
-    OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
+    hidapi 
+    PROPERTIES 
+      OUTPUT_NAME         "hidapi"
+      OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
   )
 
   add_library( libusb STATIC ${lib_libusb_LIBRARY} )
   set_target_properties(
-  libusb 
-  PROPERTIES 
-    OUTPUT_NAME         "libusb"
-    OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
+    libusb 
+    PROPERTIES 
+      OUTPUT_NAME         "libusb"
+      OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
   )
   target_include_directories( libusb PRIVATE "submodules/libusb/Xcode/" )
 
@@ -139,7 +139,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # RtMidi ------------------------------------------------------------------------------------------------------------- #
 set(RTMIDI_INCLUDE_DIR "submodules/rtmidi/")
-SET( 
+set( 
   lib_rtmidi_LIBRARY      
     submodules/rtmidi/RtMidi.h
     submodules/rtmidi/RtMidi.cpp
@@ -164,12 +164,12 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Includes ----------------------------------------------------------------------------------------------------------- #
 
-SET( 
+set( 
   inc_app_INCLUDES          
     inc/app/Application.h
 )
 
-SET( 
+set( 
   inc_comm_INCLUDES          
     inc/comm/Driver.h
     inc/comm/DeviceDescriptor.h
@@ -177,7 +177,7 @@ SET(
     inc/comm/Transfer.h
 )
 
-SET( 
+set( 
   inc_devices_INCLUDES       
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
@@ -188,7 +188,7 @@ SET(
     inc/devices/DeviceMaschineMikroMK2.h
 )
 
-SET( 
+set( 
   inc_gfx_displays_INCLUDES  
     inc/gfx/displays/GDisplayDummy.h
     inc/gfx/displays/GDisplayMaschineMikro.h
@@ -196,19 +196,19 @@ SET(
     inc/gfx/displays/GDisplayMaschineMK2.h
 )
 
-SET( 
+set( 
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
     inc/gfx/Font.h
     inc/gfx/GDisplay.h
 )
 
-SET( 
+set( 
   inc_midi_INCLUDES
     inc/midi/MidiMessage.h
 )
 
-SET( 
+set( 
   inc_util_INCLUDES
     inc/util/CircularBuffer.h
     inc/util/Functions.h
@@ -219,7 +219,7 @@ SET(
     inc/util/Version.h
 )
 
-SET( 
+set( 
   inc_INCLUDES
     inc/k-io.h
 )
@@ -233,7 +233,7 @@ source_group("inc\\midi"             FILES ${inc_midi_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
-SET ( 
+set ( 
   k-IO_INCLUDES
     ${inc_app_INCLUDES}
     ${inc_comm_INCLUDES}
@@ -248,12 +248,12 @@ SET (
 
 # Source files ------------------------------------------------------------------------------------------------------- #
 
-SET( 
+set( 
   src_app_SRCS
     src/app/Application.cpp
 )
 
-SET( 
+set( 
   src_comm_drivers_HIDAPI_SRCS      
     src/comm/drivers/HIDAPI/DriverHIDAPI.cpp
     src/comm/drivers/HIDAPI/DriverHIDAPI.h
@@ -261,7 +261,7 @@ SET(
     src/comm/drivers/HIDAPI/DeviceHandleHIDAPI.h
 )
 
-SET( 
+set( 
   src_comm_drivers_LibUSB_SRCS      
     src/comm/drivers/LibUSB/DriverLibUSB.cpp
     src/comm/drivers/LibUSB/DriverLibUSB.h
@@ -269,7 +269,7 @@ SET(
     src/comm/drivers/LibUSB/DeviceHandleLibUSB.h
 )
 
-SET( 
+set( 
   src_comm_drivers_MAX3421E_SRCS      
     src/comm/drivers/MAX3421E/DriverMAX3421E.cpp
     src/comm/drivers/MAX3421E/DriverMAX3421E.h
@@ -277,7 +277,7 @@ SET(
     src/comm/drivers/MAX3421E/DeviceHandleMAX3421E.h
 )
 
-SET( 
+set( 
   src_comm_drivers_Probe_SRCS      
     src/comm/drivers/Probe/DriverProbe.cpp
     src/comm/drivers/Probe/DriverProbe.h
@@ -285,7 +285,7 @@ SET(
     src/comm/drivers/Probe/DeviceHandleProbe.h
 )
 
-SET( 
+set( 
   src_comm_drivers_SAM3X8E_SRCS      
     src/comm/drivers/SAM3X8E/DriverSAM3X8E.cpp
     src/comm/drivers/SAM3X8E/DriverSAM3X8E.h
@@ -293,7 +293,7 @@ SET(
     src/comm/drivers/SAM3X8E/DeviceHandleSAM3X8E.h
 )
 
-SET( 
+set( 
   src_comm_SRCS
     src/comm/Driver.cpp
     src/comm/DriverImpl.h
@@ -302,7 +302,7 @@ SET(
     src/comm/Transfer.cpp
 )
 
-SET( 
+set( 
   src_devices_SRCS
     src/devices/DeviceFactory.cpp
     src/devices/DeviceKompleteKontrol.cpp
@@ -311,41 +311,41 @@ SET(
     src/devices/DeviceMaschineMikroMK2.cpp
 )
 
-SET( 
+set( 
   src_gfx_displays_SRCS
     src/gfx/displays/GDisplayMaschineMikro.cpp
     src/gfx/displays/GDisplayMaschineMK1.cpp
     src/gfx/displays/GDisplayMaschineMK2.cpp
 )
 
-SET( 
+set( 
   src_gfx_fonts_data_SRCS
     src/gfx/fonts/data/FONT_big.h
     src/gfx/fonts/data/FONT_normal.h
     src/gfx/fonts/data/FONT_small.h
 )
 
-SET( 
+set( 
   src_gfx_fonts_SRCS
     src/gfx/fonts/FontBig.h
     src/gfx/fonts/FontNormal.h
     src/gfx/fonts/FontSmall.h
 )
 
-SET( 
+set( 
   src_gfx_SRCS
     src/gfx/Canvas.cpp
     src/gfx/GDisplay.cpp
 )
 
-SET( 
+set( 
   src_util_SRCS
     src/util/CircularBuffer.cpp
     src/util/Functions.cpp
     src/util/Version.cpp
 )
 
-SET( 
+set( 
   src_SRCS
     src/k-io.cpp
 )
@@ -368,22 +368,22 @@ source_group("src\\gfx\\fonts\\data" FILES ${src_gfx_fonts_data_SRCS})
 source_group("src\\util"             FILES ${src_util_SRCS})
 source_group("src"                   FILES ${src_SRCS})
 
-SET ( 
-      k-IO_SRCS
-      ${src_SRCS}
-      ${src_app_SRCS}
-      ${src_comm_drivers_HIDAPI_SRCS}
-      ${src_comm_drivers_LibUSB_SRCS}
-      ${src_comm_drivers_MAX3421E_SRCS}
-      ${src_comm_drivers_Probe_SRCS}
-      ${src_comm_drivers_SAM3X8E_SRCS}
-      ${src_comm_SRCS}
-      ${src_devices_SRCS}
-      ${src_gfx_displays_SRCS}
-      ${src_gfx_fonts_SRCS}
-      ${src_gfx_fonts_data_SRCS}
-      ${src_gfx_SRCS}
-      ${src_util_SRCS}
+set( 
+  k-IO_SRCS
+    ${src_SRCS}
+    ${src_app_SRCS}
+    ${src_comm_drivers_HIDAPI_SRCS}
+    ${src_comm_drivers_LibUSB_SRCS}
+    ${src_comm_drivers_MAX3421E_SRCS}
+    ${src_comm_drivers_Probe_SRCS}
+    ${src_comm_drivers_SAM3X8E_SRCS}
+    ${src_comm_SRCS}
+    ${src_devices_SRCS}
+    ${src_gfx_displays_SRCS}
+    ${src_gfx_fonts_SRCS}
+    ${src_gfx_fonts_data_SRCS}
+    ${src_gfx_SRCS}
+    ${src_util_SRCS}
 )
 
 
@@ -391,7 +391,7 @@ SET (
 
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${RTMIDI_INCLUDE_DIR})
 
-SET ( 
+set( 
   k-IO_ALL
     ${k-IO_INCLUDES}
     ${k-IO_SRCS}
@@ -436,7 +436,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-
   target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread rtmidi)
 
   install (TARGETS    k-IO             DESTINATION lib)
@@ -454,8 +453,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 # Windows specific --------------------------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  
-  
+
   set_target_properties(
     k-IO
     PROPERTIES 
@@ -479,30 +477,32 @@ add_subdirectory(test "Unit Tests")
 # Documentation (doxygen) -------------------------------------------------------------------------------------------- #
 
 option(BUILD_DOCS "Create and install the HTML based API documentation (requires Doxygen)" ON)
-IF(BUILD_DOCS)
-  FIND_PACKAGE(Doxygen)
-  IF(NOT DOXYGEN_FOUND)
-    MESSAGE(FATAL_ERROR "Doxygen is needed to build the documentation.")
-  ENDIF()
+if(BUILD_DOCS)
+  find_package(Doxygen)
+  if(NOT DOXYGEN_FOUND)
+    message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+  endif()
  
-  SET( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/docs/Doxyfile.in )
-  SET( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                       )
+  set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/docs/Doxyfile.in )
+  set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                       )
 
-  SET( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                            ) 
-  SET( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                           ) 
-  SET( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                      ) 
+  set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                            ) 
+  set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                           ) 
+  set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                      ) 
   
-  SET( doxy_kio_version     "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
+  set( doxy_kio_version     "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
  
-  CONFIGURE_FILE( ${doxyfile_in} ${doxyfile} @ONLY )
+  configure_file( ${doxyfile_in} ${doxyfile} @ONLY )
  
-  add_custom_target(doc
-        COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generating API documentation with Doxygen"
-        VERBATIM)
+  add_custom_target(
+    doc
+      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen"
+      VERBATIM
+  )
 
-ENDIF()
+endif()
 
 
 # Examples ----------------------------------------------------------------------------------------------------------- #

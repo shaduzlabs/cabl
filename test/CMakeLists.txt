@@ -1,25 +1,41 @@
+# -------------------------------------------------------------------------------------------------------------------- #
+
+                 #################
+                 #################
+                 ###           ###
+                 ###           ###
+                 ###           ###
+####################           #########################################################################################
+####################           ################################################################ www.shaduzlabs.com #####
+
 include_directories( ${PROJECT_SOURCE_DIR}/submodules/catch/include )
 
 project(unit-tests)
 enable_testing(true)
 
-SET( 
+set( 
   test_SRCS
     main.cpp
 )
 
-SET( 
+set( 
+  test_midi_SRCS
+    midi/MidiMessage.cpp
+)
+
+set( 
   test_util_SRCS
     util/Version.cpp
-    util/MidiMessage.cpp
 )
 
 source_group(""                  FILES ${test_SRCS})
+source_group("midi"              FILES ${test_midi_SRCS})
 source_group("util"              FILES ${test_util_SRCS})
 
-SET( 
+set( 
   Test_FILES      
     ${test_SRCS}
+    ${test_midi_SRCS}
     ${test_util_SRCS}
 )
 

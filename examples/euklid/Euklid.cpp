@@ -52,6 +52,7 @@ static const sl::util::LedColor kEuklidColor_Step_Empty    (127, 127, 127,  20);
 namespace sl
 {
 
+using namespace midi;
 using namespace util;
 
 //----------------------------------------------------------------------------------------------------------------------
