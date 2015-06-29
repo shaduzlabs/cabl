@@ -101,20 +101,20 @@ public:
     ProgramChange = 0xC0,
     ChannelPressure = 0xD0,
     PitchBend = 0xE0,
-    SysexStart = 0xF0,
+    Sysex = 0xF0,
     MTC = 0xF1,
     SongPosition = 0xF2,
     SongSelect = 0xF3,
-    // 0xF4 is reserved/unsupported
-    // 0xF5 is reserved/unsupported
+    Reserved_0 = 0xF4, // reserved/unsupported
+    Reserved_1 = 0xF5, // reserved/unsupported
     TuneRequest = 0xF6,
     SysexEnd = 0xF7,
     TimingClock = 0xF8,
-    // 0xF9 is reserved/unsupported
+    Reserved_2 = 0xF9, // reserved/unsupported
     Start = 0xFA,
     Continue = 0xFB,
     Stop = 0xFC,
-    // 0xFD is reserved/unsupported
+    Reserved_3 = 0xFD, // reserved/unsupported
     ActiveSensing = 0xFE,
     Reset = 0xFF,
   };
@@ -165,14 +165,14 @@ template<midi::MidiMessage::Type MsgType>
 class MidiMessageBase : public midi::MidiMessage
 {
 public:
-  /*
+  
   MidiMessageBase(tRawData data_)
     : midi::MidiMessage(MsgType)
     , m_data( data_ )
   {
 
   }
-  */
+  
   MidiMessageBase(MidiMessage::Channel channel_, tRawData data_)
     : midi::MidiMessage(MsgType)
     , m_data{ static_cast<uint8_t>((static_cast<uint8_t>(channel_) | static_cast<uint8_t>(getType()))) }
@@ -186,7 +186,9 @@ public:
 
   MidiMessage::Channel getChannel() const 
   { 
-    return m_data.size() == 0 ? MidiMessage::Channel::Undefined : static_cast<MidiMessage::Channel>(m_data[0] & 0x0F); 
+    return (m_data.size() == 0 || getType()<MidiMessage::Type::Sysex)
+      ? MidiMessage::Channel::Undefined
+      : static_cast<MidiMessage::Channel>(m_data[0] & 0x0F);
   }
 
   bool operator == (const MidiMessageBase& other_) const
@@ -318,6 +320,40 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
+class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::Sysex>
+{
+public:
+
+  SysEx(tRawData data_)
+    : MidiMessageBase(data_)
+  {
+    
+  }
+
+  tRawData getHeader() const
+  {
+    return tRawData(data().begin()+1,data().begin()+1+getManufacturerIdLength());
+  }
+  
+  tRawData getPayload() const
+  {
+    size_t headerLength = getManufacturerIdLength() + 1;
+    size_t payloadLength = data().size() - headerLength - ((data()[data().size()-1] == 0xF7) ? 1 : 0);
+    
+    return tRawData(data().begin()+headerLength,data().begin()+headerLength+payloadLength);
+  }
+
+private:
+
+  size_t getManufacturerIdLength() const
+  {
+    return (data()[1] == 0) ? 3 : 1;
+  }
+  
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
 static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
 {
   size_t length = data_.size();
@@ -351,13 +387,32 @@ static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
       M_CHANNEL_MSG_2(ProgramChange);
       M_CHANNEL_MSG_2(ChannelPressure);
       M_CHANNEL_MSG_3(PitchBend);
+      default:
+        return nullptr;
     }
 #undef M_CHANNEL_MSG_2
 #undef M_CHANNEL_MSG_3
   }
   else
   {
-
+    MidiMessage::Type type = static_cast<MidiMessage::Type>(status);
+    if(type == MidiMessage::Type::Reserved_0 ||
+       type == MidiMessage::Type::Reserved_1 ||
+       type == MidiMessage::Type::Reserved_2 ||
+       type == MidiMessage::Type::Reserved_3
+    )
+    {
+      return nullptr;
+    }
+    switch (type)
+    {
+      case MidiMessage::Type::Sysex:
+      {
+        return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
+      }
+      default:
+        return nullptr;
+    }
   }
 
 }

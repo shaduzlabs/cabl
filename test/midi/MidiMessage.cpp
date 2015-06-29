@@ -105,7 +105,8 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-TEST_CASE("Test MidiMessageListener callbacks", "[midi]") {
+TEST_CASE("Test MidiMessageListener callbacks", "[midi]")
+{
 
   TestMidiListenerCallbacks midiListener;
 
@@ -129,9 +130,31 @@ TEST_CASE("Test MidiMessageListener callbacks", "[midi]") {
 
   PitchBend msgPitchBend(MidiMessage::Channel::Ch7, 0x7F, 0x11 );
   processMidi(&midiListener, msgPitchBend.data());
-
 }
  
+
+//----------------------------------------------------------------------------------------------------------------------
+
+TEST_CASE("Test SysEx messages", "[midi]")
+{
+  // 0x00 0x21 0x02 - Mutable Instruments
+  SysEx msgSysEx_1({0xF0,0x00,0x21,0x02,0x00,0x02,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0xf7});
+  SysEx msgSysEx_2({0xF0,0x00,0x21,0x02,0x00,0x02,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09});
+  
+  CHECK(3  == msgSysEx_1.getHeader().size());
+  CHECK(11 == msgSysEx_1.getPayload().size());
+  
+  CHECK(3  == msgSysEx_2.getHeader().size());
+  CHECK(11 == msgSysEx_2.getPayload().size());
+
+  CHECK(msgSysEx_1.getPayload().size() == msgSysEx_2.getPayload().size());
+
+  // 0x41 - Roland Corporation
+  SysEx msgSysEx_3({0xF0,0x41,0x00,0x02,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0xf7});
+  CHECK(1  == msgSysEx_3.getHeader().size());
+  CHECK(11 == msgSysEx_3.getPayload().size());
+
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
