@@ -28,6 +28,7 @@
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
+#include "gfx/LCDDisplay.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -288,9 +289,21 @@ void DeviceKompleteKontrol::sendMidiMsg(tRawData midiMsg_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceKompleteKontrol::getDisplay(uint8_t displayIndex_)
+GDisplay* DeviceKompleteKontrol::getGraphicDisplay(uint8_t displayIndex_)
 {
   return &m_display;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+LCDDisplay* DeviceKompleteKontrol::getLCDDisplay(uint8_t displayIndex_)
+{
+  static LCDDisplay s_dummyLCDDisplay(0,0);
+  if (displayIndex_ > 8)
+  {
+    return &s_dummyLCDDisplay;
+  }
+  return &m_displays[displayIndex_];
 }
 
 //----------------------------------------------------------------------------------------------------------------------

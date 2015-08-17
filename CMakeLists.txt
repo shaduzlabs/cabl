@@ -197,6 +197,7 @@ set(
     inc/gfx/displays/GDisplayMaschineMikro.h
     inc/gfx/displays/GDisplayMaschineMK1.h
     inc/gfx/displays/GDisplayMaschineMK2.h
+    inc/gfx/displays/LCDDisplayKompleteKontrol.h
 )
 
 set( 
@@ -204,6 +205,7 @@ set(
     inc/gfx/Canvas.h
     inc/gfx/Font.h
     inc/gfx/GDisplay.h
+    inc/gfx/LCDDisplay.h
 )
 
 set( 
@@ -319,10 +321,12 @@ set(
     src/gfx/displays/GDisplayMaschineMikro.cpp
     src/gfx/displays/GDisplayMaschineMK1.cpp
     src/gfx/displays/GDisplayMaschineMK2.cpp
+    src/gfx/displays/LCDDisplayKompleteKontrol.cpp
 )
 
 set( 
   src_gfx_fonts_data_SRCS
+    src/gfx/fonts/data/FONT_16-seg.h
     src/gfx/fonts/data/FONT_big.h
     src/gfx/fonts/data/FONT_normal.h
     src/gfx/fonts/data/FONT_small.h

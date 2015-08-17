@@ -29,7 +29,8 @@
 #include "comm/Transfer.h"
 #include "util/Functions.h"
 
-#include "gfx/displays/GDisplayMaschineMK1.h"
+#include "gfx/LCDDisplay.h"
+#include "gfx/displays/GDisplayDummy.h"
 
 #include <thread>
 
@@ -238,15 +239,25 @@ void DeviceMaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMK1::getDisplay( uint8_t displayIndex_ )
+GDisplay* DeviceMaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
 {
-  if( displayIndex_ > 1 )
+  static GDisplayDummy s_dummyDisplay;
+  if (displayIndex_ > 1)
   {
-    return nullptr;
+    return &s_dummyDisplay;
   }
   
   return &m_displays[displayIndex_];
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+LCDDisplay* DeviceMaschineMK1::getLCDDisplay(uint8_t displayIndex_)
+{
+  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  return &s_dummyLCDDisplay;
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

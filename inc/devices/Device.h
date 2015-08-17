@@ -42,6 +42,7 @@ namespace kio
 {
 
 class GDisplay;
+class LCDDisplay;
 
 class Device
 {
@@ -212,7 +213,8 @@ public:
 
   virtual bool tick() = 0;
 
-  virtual GDisplay* getDisplay(uint8_t displayIndex_) = 0;
+  virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
+  virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
 
   virtual void setLed(Button, const util::LedColor&) = 0;
 

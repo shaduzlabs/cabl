@@ -30,7 +30,8 @@
 #include "util/Functions.h"
 #include <thread>
 
-#include "gfx/displays/GDisplayMaschineMK2.h"
+#include "gfx/LCDDisplay.h"
+#include "gfx/displays/GDisplayDummy.h"
 
 //!\todo delete debug includes
 #include <iostream>
@@ -271,15 +272,25 @@ void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMK2::getDisplay(uint8_t displayIndex_)
+GDisplay* DeviceMaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
 {
+  static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
   {
-    return nullptr;
+    return &s_dummyDisplay;
   }
 
   return &m_displays[displayIndex_];
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+LCDDisplay* DeviceMaschineMK2::getLCDDisplay(uint8_t displayIndex_)
+{
+  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  return &s_dummyLCDDisplay;
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

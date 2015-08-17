@@ -162,9 +162,9 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
       unsupportedDevice->init();
       unsupportedDevice->tick();
 
-      unsupportedDevice->getDisplay(0)->black();
-      unsupportedDevice->getDisplay(0)->printStr(0, 0, "Unsupported device!", kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
-      unsupportedDevice->getDisplay(1)->printStr(12, 44, "Unsupported device!",kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
+      unsupportedDevice->getGraphicDisplay(0)->black();
+      unsupportedDevice->getGraphicDisplay(0)->printStr(0, 0, "Unsupported device!", kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
+      unsupportedDevice->getGraphicDisplay(1)->printStr(12, 44, "Unsupported device!",kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
 
       unsupportedDevice->tick();
       */

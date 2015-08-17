@@ -50,7 +50,9 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* getDisplay( uint8_t displayIndex_ );
+  GDisplay* getGraphicDisplay( uint8_t displayIndex_ ) override;
+  LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
+
   bool tick() override;
 
 private:
