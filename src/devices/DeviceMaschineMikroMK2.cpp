@@ -193,22 +193,6 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
   Pattern,
   Scene,
 
-  Pad13,
-  Pad14,
-  Pad15,
-  Pad16,
-  Pad9,
-  Pad10,
-  Pad11,
-  Pad12,
-  Pad5,
-  Pad6,
-  Pad7,
-  Pad8,
-  Pad1,
-  Pad2,
-  Pad3,
-  Pad4,
   None,
 };
 

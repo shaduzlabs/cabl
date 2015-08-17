@@ -109,6 +109,21 @@ public:
     Nav,
     Main, // Enter
     MainEncoder,
+    Scale,
+    Arp,
+    Rwd,
+    Ffw,
+    Stop,
+    PageLeft,
+    PageRight,
+    PresetUp,
+    Instance,
+    PresetDown,
+    Back,
+    NavigateUp,
+    NavigateLeft,
+    NavigateDown,
+    NavigateRight,
     Unknown,
   };
 
@@ -150,6 +165,23 @@ public:
     Unknown,
   };
 
+
+  enum class Key : uint8_t
+  {
+    Key1,   Key2,   Key3,   Key4,   Key5,   Key6,   Key7,   Key8,   Key9,   Key10,  Key11,  Key12,
+    Key13,  Key14,  Key15,  Key16,  Key17,  Key18,  Key19,  Key20,  Key21,  Key22,  Key23,  Key24,
+    Key25,  Key26,  Key27,  Key28,  Key29,  Key30,  Key31,  Key32,  Key33,  Key34,  Key35,  Key36,
+    Key37,  Key38,  Key39,  Key40,  Key41,  Key42,  Key43,  Key44,  Key45,  Key46,  Key47,  Key48,
+    Key49,  Key50,  Key51,  Key52,  Key53,  Key54,  Key55,  Key56,  Key57,  Key58,  Key59,  Key60,
+    Key61,  Key62,  Key63,  Key64,  Key65,  Key66,  Key67,  Key68,  Key69,  Key70,  Key71,  Key72,
+    Key73,  Key74,  Key75,  Key76,  Key77,  Key78,  Key79,  Key80,  Key81,  Key82,  Key83,  Key84,
+    Key85,  Key86,  Key87,  Key88,  Key89,  Key90,  Key91,  Key92,  Key93,  Key94,  Key95,  Key96,
+    Key97,  Key98,  Key99,  Key100, Key101, Key102, Key103, Key104, Key105, Key106, Key107, Key108,
+    Key109, Key110, Key111, Key112, Key113, Key114, Key115, Key116, Key117, Key118, Key119, Key120,
+    Key121, Key122, Key123, Key124, Key125, Key126, Key127,
+    Unknown,
+  };
+  
   using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
   using tCbEncoderChanged = std::function<void(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t value_, bool shiftPressed)>;
@@ -183,7 +215,7 @@ public:
   virtual void setLed(Button, const util::LedColor&) = 0;
 
   virtual void setLed(Pad, const util::LedColor&) {}
-//  virtual void setLed(Key, const LedColor&) {}
+  virtual void setLed(Key, const util::LedColor&) {}
 
   virtual void sendMidiMsg(tRawData) = 0;
 

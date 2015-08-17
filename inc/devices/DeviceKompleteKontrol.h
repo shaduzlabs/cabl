@@ -45,6 +45,7 @@ public:
   ~DeviceKompleteKontrol() override;
   
   void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Key, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
   
@@ -53,11 +54,12 @@ public:
 
 private:
 
-  enum class Led    : uint8_t;
+  enum class Led    : uint16_t;
   enum class Button : uint8_t;
 
   static constexpr uint8_t kKK_nButtons = 37;
   static constexpr uint8_t kKK_buttonsDataSize = 5;
+  static constexpr uint8_t kKK_ledsDataSize = 25;
   
 
   void init() override {}
@@ -68,6 +70,7 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led);
+  Led getLed(Device::Key) const noexcept;
   Led getLed(Device::Button) const noexcept;
 
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
@@ -75,6 +78,7 @@ private:
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
   tRawData            m_leds;
+  tRawData            m_ledsKeys;
   tRawData            m_buttons;
   bool                m_buttonStates[kKK_nButtons];
   uint8_t             m_encoderValue;
@@ -82,6 +86,7 @@ private:
   uint8_t             m_numKeys;
     
   bool                m_isDirtyLeds;
+  bool                m_isDirtyKeyLeds;
 
 };
   
