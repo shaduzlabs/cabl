@@ -49,8 +49,29 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMK1::GDisplayMaschineMK1()
-  : GDisplay( kMASMK1_displayWidth, kMASMK1_displayHeight, kMASMK1_nOfDisplayDataChunks, Allocation::TwoBytesPackThreePixelsInARow )
+  : GDisplay( 
+      kMASMK1_displayWidth, 
+      kMASMK1_displayHeight, 
+      kMASMK1_nOfDisplayDataChunks, 
+      Allocation::TwoBytesPackThreePixelsInARow 
+    )
 {
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::white()
+{
+  fillPattern(0x0);
+  m_isDirty = true;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::black()
+{
+  fillPattern(0xFF);
+  m_isDirty = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -153,22 +174,6 @@ GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) con
   return Color::Black;
  }
 
-//----------------------------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK1::white()
-{
-  fillPattern(0x0);
-  m_isDirty = true;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK1::black()
-{
-  fillPattern(0xFF);
-  m_isDirty = true;
-}
-  
 //----------------------------------------------------------------------------------------------------------------------
 
 } // kio

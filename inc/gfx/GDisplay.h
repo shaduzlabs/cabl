@@ -125,7 +125,7 @@ namespace kio
      * @{
      */
     
-    inline uint8_t getNumberOfChunks() const noexcept { return m_numDisplayChunks; }
+    virtual uint8_t getNumberOfChunks() const noexcept { return m_numDisplayChunks; }
     
     /** @} */ // End of group Utility
     
@@ -152,7 +152,7 @@ namespace kio
      */
     virtual Color getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
     
-    void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
+    virtual void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
     
     volatile bool           m_isDirty;                              //!< Global 'dirty' flag
 

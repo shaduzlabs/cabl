@@ -58,7 +58,7 @@ public:
 private:
 
   void readAsyncImpl(uint8_t endpoint_);
-  static void __stdcall cbTransfer(libusb_transfer*); //\todo #define WINAPI      __stdcall
+  static void __stdcall cbTransfer(libusb_transfer*); //!\todo #define WINAPI      __stdcall
 
   tRawData                        m_inputBuffer;
   tDeviceHandle*                  m_pCurrentDevice;

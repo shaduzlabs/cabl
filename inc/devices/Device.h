@@ -124,6 +124,8 @@ public:
     NavigateLeft,
     NavigateDown,
     NavigateRight,
+    OctaveUp,
+    OctaveDown,
     Unknown,
   };
 
@@ -133,7 +135,7 @@ public:
     Volume = Main,
     Tempo,
     Swing,
-    Encoder1,
+    Encoder1, 
     Encoder2,
     Encoder3,
     Encoder4,
@@ -178,7 +180,7 @@ public:
     Key85,  Key86,  Key87,  Key88,  Key89,  Key90,  Key91,  Key92,  Key93,  Key94,  Key95,  Key96,
     Key97,  Key98,  Key99,  Key100, Key101, Key102, Key103, Key104, Key105, Key106, Key107, Key108,
     Key109, Key110, Key111, Key112, Key113, Key114, Key115, Key116, Key117, Key118, Key119, Key120,
-    Key121, Key122, Key123, Key124, Key125, Key126, Key127,
+    Key121, Key122, Key123, Key124, Key125, Key126, Key127, Key128,
     Unknown,
   };
   

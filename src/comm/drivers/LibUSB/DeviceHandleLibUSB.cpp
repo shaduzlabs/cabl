@@ -137,7 +137,7 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
     kLibUSBReadTimeout
     );
   libusb_submit_transfer(pTransfer);
-  //\todo check libusb_submit_transfer return code
+  //!\todo check libusb_submit_transfer return code
 }
 
 //----------------------------------------------------------------------------------------------------------------------

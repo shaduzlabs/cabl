@@ -79,7 +79,7 @@ public:
   
   uint8_t value()
   {
-    return (m_octave+1)*12 + static_cast<uint8_t>(m_note);
+    return static_cast<uint8_t>((m_octave+1)*12 + static_cast<uint8_t>(m_note));
   }
   
 private:

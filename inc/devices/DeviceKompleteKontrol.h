@@ -27,7 +27,7 @@
 #pragma once
 
 #include "Device.h"
-#include "gfx/GDisplay.h"
+#include "gfx/displays/GDisplayDummy.h"
  
 namespace sl
 {
@@ -58,11 +58,9 @@ private:
   enum class Button : uint8_t;
 
   static constexpr uint8_t kKK_nButtons = 37;
-  static constexpr uint8_t kKK_buttonsDataSize = 5;
-  static constexpr uint8_t kKK_ledsDataSize = 25;
-  
+  static constexpr uint8_t kKK_buttonsDataSize = 5; 
 
-  void init() override {}
+  void init() override;
   bool sendLeds();
   bool read();
   
@@ -77,6 +75,7 @@ private:
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
+  GDisplayDummy       m_display;
   tRawData            m_leds;
   tRawData            m_ledsKeys;
   tRawData            m_buttons;
@@ -84,6 +83,7 @@ private:
   uint8_t             m_encoderValue;
 
   uint8_t             m_numKeys;
+  uint16_t            m_ledKeysDataSize;
     
   bool                m_isDirtyLeds;
   bool                m_isDirtyKeyLeds;

@@ -33,6 +33,8 @@
 
 namespace
 {
+static const uint8_t kKK_ledsDataSize = 25;
+
 static const uint8_t kKK_epDisplay = 0x08;
 static const uint8_t kKK_epOut     = 0x02;
 static const uint8_t kKK_epInput   = 0x84;
@@ -53,33 +55,27 @@ enum class DeviceKompleteKontrol::Led : uint16_t
   Scale,
   Arp,
   Loop,
-  
   Rwd,
   Ffw,
   Play,
   Rec,
-  
   Stop,
   PageLeft,
   PageRight,
   Browse,
-  
   PresetUp,
   Instance,
   PresetDown,
-  Back,
-  
+  Back, 
   NavigateUp,
   Enter,
   NavigateLeft,
   NavigateDown,
-
   NavigateRight,
-  Undefined1,
-  Undefined2,
-  Undefined3,
-  
-  Undefined4,
+  OctaveDownWhite,
+  OctaveDownRed,
+  OctaveUpWhite,
+  OctaveUpRed,
  
   Key1,   Key1_R   = Key1,   Key1_G,   Key1_B,
   Key2,   Key2_R   = Key2,   Key2_G,   Key2_B,
@@ -208,6 +204,8 @@ enum class DeviceKompleteKontrol::Led : uint16_t
   Key125, Key125_R = Key125, Key125_G, Key125_B,
   Key126, Key126_R = Key126, Key126_G, Key126_B,
   Key127, Key127_R = Key127, Key127_G, Key127_B,
+  Key128, Key128_R = Key128, Key128_G, Key128_B,
+
   Unknown,
 
 };
@@ -222,7 +220,10 @@ enum class DeviceKompleteKontrol::Button : uint8_t
   PresetDown,
   Browse,
   Instance,
-  Stop = 8,
+  OctaveDown,
+  OctaveUp,
+
+  Stop,
   Rec,
   Play,
   NavigateRight,
@@ -230,6 +231,7 @@ enum class DeviceKompleteKontrol::Button : uint8_t
   NavigateLeft,
   Back,
   NavigateUp,
+
   Shift,
   Scale,
   Arp,
@@ -237,6 +239,8 @@ enum class DeviceKompleteKontrol::Button : uint8_t
   PageRight,
   PageLeft,
   Rwd,
+  Ffw,
+
   None,
 };
 
@@ -247,10 +251,11 @@ DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, 
   , m_numKeys(numKeys_)
   , m_isDirtyLeds(false)
   , m_isDirtyKeyLeds(false)
+  , m_ledKeysDataSize(numKeys_ * 3)
 {
  //m_buttons.resize(kKK_buttonsDataSize);
  m_leds.resize(kKK_ledsDataSize);
- m_ledsKeys.resize(m_numKeys*3);
+ m_ledsKeys.resize(m_ledKeysDataSize);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -278,14 +283,14 @@ void DeviceKompleteKontrol::setLed(Device::Key key_, const util::LedColor& color
 
 void DeviceKompleteKontrol::sendMidiMsg(tRawData midiMsg_)
 {
- //\todo Use KompleteKontrol hardware midi port
+ //!\todo Use KompleteKontrol hardware midi port
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 GDisplay* DeviceKompleteKontrol::getDisplay(uint8_t displayIndex_)
 {
-  return nullptr;
+  return &m_display;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -314,11 +319,18 @@ bool DeviceKompleteKontrol::tick()
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void sl::kio::DeviceKompleteKontrol::init()
+{
+  getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kKK_epOut);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 bool DeviceKompleteKontrol::sendLeds()
 {
   if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 25), kKK_epOut))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], kKK_ledsDataSize), kKK_epOut))
     {
       return false;
     }
@@ -326,7 +338,7 @@ bool DeviceKompleteKontrol::sendLeds()
   }
   if (m_isDirtyKeyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x82}, &m_ledsKeys[0], (m_numKeys*3) +1), kKK_epOut))
+    if(!getDeviceHandle()->write(Transfer({0x82}, &m_ledsKeys[0], m_ledKeysDataSize), kKK_epOut))
     {
       return false;
     }
@@ -351,16 +363,6 @@ bool DeviceKompleteKontrol::read()
       processButtons(input);
       break;
     }
-
-/*
-        std::cout << std::setfill('0') << std::internal;
-
-        for( int i = 0; i < input.getSize(); i++ )
-        {
-          std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
-        }
-
-        std::cout << std::endl << std::endl;*/
   }
   return true;
 }
@@ -414,7 +416,7 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
 void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 {
   static const uint8_t kFirstKeyIndex = static_cast<uint16_t>(Led::Key1);
-  uint8_t ledIndex = static_cast<uint16_t>(led_);
+  uint16_t ledIndex = static_cast<uint16_t>(led_);
 
   if (Led::Unknown == led_)
   {
@@ -500,8 +502,8 @@ DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Button btn_) co
 
 DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Key key_) const noexcept
 {
-  static Key maxKey = static_cast<Key>(m_numKeys*3);
-  if(key_ >maxKey)
+  static const Device::Key kMaxKey = static_cast<Device::Key>(m_numKeys);
+  if(key_  >= kMaxKey)
     return Led::Unknown;
   
 #define M_KEY_CASE(idKey)     \
@@ -535,7 +537,7 @@ DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Key key_) const
     M_KEY_CASE(Key111); M_KEY_CASE(Key112); M_KEY_CASE(Key113); M_KEY_CASE(Key114); M_KEY_CASE(Key115);
     M_KEY_CASE(Key116); M_KEY_CASE(Key117); M_KEY_CASE(Key118); M_KEY_CASE(Key119); M_KEY_CASE(Key120);
     M_KEY_CASE(Key121); M_KEY_CASE(Key122); M_KEY_CASE(Key123); M_KEY_CASE(Key124); M_KEY_CASE(Key125);
-    M_KEY_CASE(Key126); M_KEY_CASE(Key127);
+    M_KEY_CASE(Key126); M_KEY_CASE(Key127); M_KEY_CASE(Key128);
     default:
     {
       return Led::Unknown;
@@ -561,6 +563,8 @@ Device::Button DeviceKompleteKontrol::getDeviceButton(Button btn_) const noexcep
     M_BTN_CASE(PresetDown);
     M_BTN_CASE(Browse);
     M_BTN_CASE(Instance);
+    M_BTN_CASE(OctaveDown);
+    M_BTN_CASE(OctaveUp);
     M_BTN_CASE(Stop);
     M_BTN_CASE(Rec);
     M_BTN_CASE(Play);
@@ -576,6 +580,7 @@ Device::Button DeviceKompleteKontrol::getDeviceButton(Button btn_) const noexcep
     M_BTN_CASE(PageRight);
     M_BTN_CASE(PageLeft);
     M_BTN_CASE(Rwd);
+    M_BTN_CASE(Ffw);
     default:
     {
       return Device::Button::Unknown;

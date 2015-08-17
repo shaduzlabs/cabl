@@ -32,7 +32,7 @@
 
 #include "gfx/displays/GDisplayMaschineMK2.h"
 
-//\todo delete debug includes
+//!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
 
@@ -99,135 +99,31 @@ enum class DeviceMaschineMK2::Led : uint8_t{
   Erase,
   Shift,
   
+  Pad13, Pad13R = Pad13, Pad13G, Pad13B,
+  Pad14, Pad14R = Pad14, Pad14G, Pad14B,
+  Pad15, Pad15R = Pad15, Pad15G, Pad15B,
+  Pad16, Pad16R = Pad16, Pad16G, Pad16B,
+  Pad9,  Pad9R  = Pad9,  Pad9G,  Pad9B,
+  Pad10, Pad10R = Pad10, Pad10G, Pad10B,
+  Pad11, Pad11R = Pad11, Pad11G, Pad11B,
+  Pad12, Pad12R = Pad12, Pad12G, Pad12H,
+  Pad5,  Pad5R  = Pad5,  Pad5G,  Pad5B,
+  Pad6,  Pad6R  = Pad6,  Pad6G,  Pad6B,
+  Pad7,  Pad7R  = Pad7,  Pad7G,  Pad7B,
+  Pad8,  Pad8R  = Pad8,  Pad8G,  Pad8B,
+  Pad1,  Pad1R  = Pad1,  Pad1G,  Pad1B,
+  Pad2,  Pad2R  = Pad2,  Pad2G,  Pad2B,
+  Pad3,  Pad3R  = Pad3,  Pad3G,  Pad3B,
+  Pad4,  Pad4R  = Pad4,  Pad4G,  Pad4B,
   
-  Pad13,
-  Pad13R = Pad13,
-  Pad13G,
-  Pad13B,
-  Pad14,
-  Pad14R = Pad14,
-  Pad14G,
-  Pad14B,
-  Pad15,
-  Pad15R = Pad15,
-  Pad15G,
-  Pad15B,
-  Pad16,
-  Pad16R = Pad16,
-  Pad16G,
-  Pad16B,
-  Pad9,
-  Pad9R = Pad9,
-  Pad9G,
-  Pad9B,
-  Pad10,
-  Pad10R = Pad10,
-  Pad10G,
-  Pad10B,
-  Pad11,
-  Pad11R = Pad11,
-  Pad11G,
-  Pad11B,
-  Pad12,
-  Pad12R = Pad12,
-  Pad12G,
-  Pad12H,
-  Pad5,
-  Pad5R = Pad5,
-  Pad5G,
-  Pad5B,
-  Pad6,
-  Pad6R = Pad6,
-  Pad6G,
-  Pad6B,
-  Pad7,
-  Pad7R = Pad7,
-  Pad7G,
-  Pad7B,
-  Pad8,
-  Pad8R = Pad8,
-  Pad8G,
-  Pad8B,
-  Pad1,
-  Pad1R = Pad1,
-  Pad1G,
-  Pad1B,
-  Pad2,
-  Pad2R = Pad2,
-  Pad2G,
-  Pad2B,
-  Pad3,
-  Pad3R = Pad3,
-  Pad3G,
-  Pad3B,
-  Pad4,
-  Pad4R = Pad4,
-  Pad4G,
-  Pad4B,
-  
-  GroupA,
-  GroupAR1 = GroupA,
-  GroupAG1,
-  GroupAB1,
-  GroupAR2,
-  GroupAG2,
-  GroupAB2,
-
-  GroupB,
-  GroupBR1 = GroupB,
-  GroupBG1,
-  GroupBB1,
-  GroupBR2,
-  GroupBG2,
-  GroupBB2,
-  
-  GroupC,
-  GroupCR1 = GroupC,
-  GroupCG1,
-  GroupCB1,
-  GroupCR2,
-  GroupCG2,
-  GroupCB2,
-
-  GroupD,
-  GroupDR1 = GroupD,
-  GroupDG1,
-  GroupDB1,
-  GroupDR2,
-  GroupDG2,
-  GroupDB2,
-  
-  GroupE,
-  GroupER1 = GroupE,
-  GroupEG1,
-  GroupEB1,
-  GroupER2,
-  GroupEG2,
-  GroupEB2,
-
-  GroupF,
-  GroupFR1 = GroupF,
-  GroupFG1,
-  GroupFB1,
-  GroupFR2,
-  GroupFG2,
-  GroupFB2,
-  
-  GroupG,
-  GroupGR1 = GroupG,
-  GroupGG1,
-  GroupGB1,
-  GroupGR2,
-  GroupGG2,
-  GroupGB2,
-
-  GroupH,
-  GroupHR1 = GroupH,
-  GroupHG1,
-  GroupHB1,
-  GroupHR2,
-  GroupHG2,
-  GroupHB2,
+  GroupA, GroupAR1 = GroupA, GroupAG1, GroupAB1, GroupAR2, GroupAG2, GroupAB2,
+  GroupB, GroupBR1 = GroupB, GroupBG1, GroupBB1, GroupBR2, GroupBG2, GroupBB2,
+  GroupC, GroupCR1 = GroupC, GroupCG1, GroupCB1, GroupCR2, GroupCG2, GroupCB2,
+  GroupD, GroupDR1 = GroupD, GroupDG1, GroupDB1, GroupDR2, GroupDG2, GroupDB2,
+  GroupE, GroupER1 = GroupE, GroupEG1, GroupEB1, GroupER2, GroupEG2, GroupEB2,
+  GroupF, GroupFR1 = GroupF, GroupFG1, GroupFB1, GroupFR2, GroupFG2, GroupFB2,
+  GroupG, GroupGR1 = GroupG, GroupGG1, GroupGB1, GroupGR2, GroupGG2, GroupGB2,
+  GroupH, GroupHR1 = GroupH, GroupHG1, GroupHB1, GroupHR2, GroupHG2, GroupHB2,
 
   Unknown,
 };
@@ -298,7 +194,6 @@ enum class DeviceMaschineMK2::Button : uint8_t{
   NotUsed7,
   NotUsed8,
   
-  
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -317,8 +212,7 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
   m_ledsButtons.resize(32);
   m_ledsGroups.resize(57);
   m_ledsPads.resize(49);
-  m_displays[0].reset( new GDisplayMaschineMK2 );
-  m_displays[1].reset( new GDisplayMaschineMK2 );
+
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::string portName;
   unsigned nPorts = m_pMidiout->getPortCount();
@@ -384,7 +278,7 @@ GDisplay* DeviceMaschineMK2::getDisplay(uint8_t displayIndex_)
     return nullptr;
   }
 
-  return m_displays[displayIndex_].get();
+  return &m_displays[displayIndex_];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -398,10 +292,10 @@ bool DeviceMaschineMK2::tick()
   {
     for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
-      if (m_displays[displayIndex]->isDirty())
+      if (m_displays[displayIndex].isDirty())
       {
         success = sendFrame(displayIndex);
-        m_displays[displayIndex]->resetDirtyFlags();
+        m_displays[displayIndex].resetDirtyFlags();
       }
       else
       {
@@ -432,8 +326,8 @@ void DeviceMaschineMK2::init()
 {
   // Display
   initDisplay();
-  m_displays[0].get()->white();
-  m_displays[1].get()->white();
+  m_displays[0].white();
+  m_displays[1].white();
 
   // Leds
   m_isDirtyButtonLeds = true;
@@ -445,7 +339,7 @@ void DeviceMaschineMK2::init()
 
 void DeviceMaschineMK2::initDisplay() const
 {
-  //\todo set backlight
+  //!\todo set backlight
   return;
 }
 
@@ -463,7 +357,7 @@ bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
   {
     uint8_t firstByte = 0xE0| displayIndex_;
     chunkByte = chunk * 8;
-    const uint8_t* ptr = m_displays[displayIndex_]->getPtr(chunk * 256);
+    const uint8_t* ptr = m_displays[displayIndex_].getPtr(chunk * 256);
     if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
                     kMASMK2_epDisplay))
     {
@@ -598,7 +492,7 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
 
 void DeviceMaschineMK2::processPads(const Transfer& input_)
 {
-  //\todo process pad data
+  //!\todo process pad data
   for (int i = 1; i < kMASMK2_padDataSize; i += 2)
   {
     uint16_t l = input_[i];
@@ -649,7 +543,10 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
   static const uint8_t kFirstPadIndex = static_cast<uint8_t>(Led::Pad13);
   uint8_t ledIndex = static_cast<uint8_t>(led_);
-
+  if (Led::Unknown == led_)
+  {
+    return;
+  }
   if (isRGBLed(led_))
   {
     if (led_ < Led::GroupA)
@@ -683,7 +580,7 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
     }
 
   }
-  else if (Led::Unknown != led_)
+  else 
   {
     uint8_t currentVal = m_ledsGroups[ledIndex];
     uint8_t newVal = color_.getMono();
@@ -699,6 +596,7 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
     }
   }
 }
+
 //----------------------------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMK2::isRGBLed(Led led_)

@@ -33,7 +33,7 @@
 
 #include "gfx/displays/GDisplayMaschineMikro.h"
 
-//\todo delete debug includes
+//!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
 
@@ -65,10 +65,7 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
   BrowseLeft,
   BrowseRight,
   Main,
-  Group,
-  GroupR = Group,
-  GroupG,
-  GroupB,
+  Group, GroupR = Group, GroupG, GroupB,
   Browse,
   Sampling,
   NoteRepeat,
@@ -88,70 +85,24 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
   Select,
   Solo,
   Mute,
-  Pad13,
-  Pad13R = Pad13,
-  Pad13G,
-  Pad13B,
-  Pad14,
-  Pad14R = Pad14,
-  Pad14G,
-  Pad14B,
-  Pad15,
-  Pad15R = Pad15,
-  Pad15G,
-  Pad15B,
-  Pad16,
-  Pad16R = Pad16,
-  Pad16G,
-  Pad16B,
-  Pad9,
-  Pad9R = Pad9,
-  Pad9G,
-  Pad9B,
-  Pad10,
-  Pad10R = Pad10,
-  Pad10G,
-  Pad10B,
-  Pad11,
-  Pad11R = Pad11,
-  Pad11G,
-  Pad11B,
-  Pad12,
-  Pad12R = Pad12,
-  Pad12G,
-  Pad12H,
-  Pad5,
-  Pad5R = Pad5,
-  Pad5G,
-  Pad5B,
-  Pad6,
-  Pad6R = Pad6,
-  Pad6G,
-  Pad6B,
-  Pad7,
-  Pad7R = Pad7,
-  Pad7G,
-  Pad7B,
-  Pad8,
-  Pad8R = Pad8,
-  Pad8G,
-  Pad8B,
-  Pad1,
-  Pad1R = Pad1,
-  Pad1G,
-  Pad1B,
-  Pad2,
-  Pad2R = Pad2,
-  Pad2G,
-  Pad2B,
-  Pad3,
-  Pad3R = Pad3,
-  Pad3G,
-  Pad3B,
-  Pad4,
-  Pad4R = Pad4,
-  Pad4G,
-  Pad4B,
+  
+  Pad13, Pad13R = Pad13, Pad13G, Pad13B,
+  Pad14, Pad14R = Pad14, Pad14G, Pad14B,
+  Pad15, Pad15R = Pad15, Pad15G, Pad15B,
+  Pad16, Pad16R = Pad16, Pad16G, Pad16B,
+  Pad9,  Pad9R  = Pad9,  Pad9G,  Pad9B,
+  Pad10, Pad10R = Pad10, Pad10G, Pad10B,
+  Pad11, Pad11R = Pad11, Pad11G, Pad11B,
+  Pad12, Pad12R = Pad12, Pad12G, Pad12H,
+  Pad5,  Pad5R  = Pad5,  Pad5G,  Pad5B,
+  Pad6,  Pad6R  = Pad6,  Pad6G,  Pad6B,
+  Pad7,  Pad7R  = Pad7,  Pad7G,  Pad7B,
+  Pad8,  Pad8R  = Pad8,  Pad8G,  Pad8B,
+  Pad1,  Pad1R  = Pad1,  Pad1G,  Pad1B,
+  Pad2,  Pad2R  = Pad2,  Pad2G,  Pad2B,
+  Pad3,  Pad3R  = Pad3,  Pad3G,  Pad3B,
+  Pad4,  Pad4R  = Pad4,  Pad4G,  Pad4B,
+
   Unknown,
 };
 
@@ -200,7 +151,6 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
 
 DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
-  , m_display(new GDisplayMaschineMikro)
   , m_isDirtyLeds(false)
 {
  m_buttons.resize(kMikroMK2_buttonsDataSize);
@@ -232,7 +182,7 @@ void DeviceMaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& colo
 
 void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
 {
- //\todo Use MaschineMikroMK2 virtual midi port
+ //!\todo Use MaschineMikroMK2 virtual midi port
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -244,7 +194,7 @@ GDisplay* DeviceMaschineMikroMK2::getDisplay(uint8_t displayIndex_)
     return nullptr;
   }
 
-  return m_display.get();
+  return &m_display;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -254,8 +204,8 @@ bool DeviceMaschineMikroMK2::tick()
   static int state = 0;
   bool success = false;
 
-  //\todo enable once display dirty flag is properly set
-  if (state == 0 && m_display->isDirty())
+  //!\todo enable once display dirty flag is properly set
+  if (state == 0 && m_display.isDirty())
   {
     success = sendFrame();
   }
@@ -283,7 +233,7 @@ void DeviceMaschineMikroMK2::init()
 {
   // Display
   initDisplay();
-  m_display.get()->white();
+  m_display.white();
 
   // Leds
   m_isDirtyLeds = true;
@@ -293,7 +243,7 @@ void DeviceMaschineMikroMK2::init()
 
 void DeviceMaschineMikroMK2::initDisplay() const
 {
-  //\todo set backlight
+  //!\todo set backlight
   return;
 }
 
@@ -304,7 +254,7 @@ bool DeviceMaschineMikroMK2::sendFrame()
   uint8_t yOffset = 0;
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
-    const uint8_t* ptr = m_display->getPtr(chunk * 256);
+    const uint8_t* ptr = m_display.getPtr(chunk * 256);
     if(!getDeviceHandle()->write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
       kMikroMK2_epDisplay))
     {
@@ -410,7 +360,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
 
 void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 {
-  //\todo process pad data
+  //!\todo process pad data
   for (int i = 1; i <= kMikroMK2_padDataSize; i += 2)
   {
     uint16_t l = input_[i];
@@ -461,6 +411,11 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
+  if(Led::Unknown == led_)
+  {
+    return;
+  }
+
   if (isRGBLed(led_))
   {
     uint8_t currentR = m_leds[ledIndex];
@@ -474,7 +429,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
     m_isDirtyLeds = m_isDirtyLeds ||
       (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
   }
-  else if (Led::Unknown != led_)
+  else
   {
     uint8_t currentVal = m_leds[ledIndex];
     uint8_t newVal = color_.getMono();

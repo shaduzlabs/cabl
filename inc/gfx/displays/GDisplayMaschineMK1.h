@@ -48,7 +48,11 @@ public:
      \param height_ Number of data chunks (Default value is 8)
      */
     GDisplayMaschineMK1();
-  
+
+    void white() override;
+
+    void black() override;
+
 protected:
 
     //! Set a pixel
@@ -67,9 +71,6 @@ protected:
      \return                 The color of the selected pixel
      */
     Color getPixelImpl(uint16_t x_, uint16_t y_ ) const override;
-  
-    void white() override;
-    void black() override;
   
 };
   

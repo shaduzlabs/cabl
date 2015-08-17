@@ -90,7 +90,7 @@ Device* DeviceFactory::getDevice(const DeviceDescriptor& deviceDescriptor_, tPtr
     }
     case kProduct_MaschineMikroMK1:
     {
-     //\todo Add support for Maschine Mikro MK1
+     //!\todo Add support for Maschine Mikro MK1
      // return new DeviceMaschineMikroMK1(std::move(pDeviceHandle_));
     }
     case kProduct_MaschineMikroMK2:

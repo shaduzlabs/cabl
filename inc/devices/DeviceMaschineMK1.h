@@ -27,7 +27,7 @@
 #pragma once
 
 #include "Device.h"
-#include "gfx/GDisplay.h"
+#include "gfx/displays/GDisplayMaschineMK1.h"
 #include "comm/Transfer.h"
 
 namespace sl
@@ -94,7 +94,7 @@ private:
   bool isButtonPressed(Button button) const noexcept;
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
-  tPtr<GDisplay>      m_displays[kMASMK1_nDisplays];
+  GDisplayMaschineMK1 m_displays[kMASMK1_nDisplays];
   tRawData            m_leds;
   tRawData            m_buttons;
 

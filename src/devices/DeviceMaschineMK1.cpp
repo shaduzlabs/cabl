@@ -34,7 +34,7 @@
 #include <thread>
 
 
-//\todo delete debug includes
+//!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
 
@@ -201,8 +201,6 @@ DeviceMaschineMK1::DeviceMaschineMK1(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
   , m_encodersInitialized(false)
 {
-  m_displays[0].reset( new GDisplayMaschineMK1 );
-  m_displays[1].reset( new GDisplayMaschineMK1 );
   m_leds.resize(kMASMK1_ledsDataSize);
 }
 
@@ -247,7 +245,7 @@ GDisplay* DeviceMaschineMK1::getDisplay( uint8_t displayIndex_ )
     return nullptr;
   }
   
-  return m_displays[displayIndex_].get();
+  return &m_displays[displayIndex_];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -261,10 +259,10 @@ bool DeviceMaschineMK1::tick()
   {
     for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
-      if (m_displays[displayIndex]->isDirty())
+      if (m_displays[displayIndex].isDirty())
       {
         success = sendFrame(displayIndex);
-        m_displays[displayIndex]->resetDirtyFlags();
+        m_displays[displayIndex].resetDirtyFlags();
       }
     }
   }
@@ -298,7 +296,7 @@ void DeviceMaschineMK1::init()
   for( int i=0; i< kMASMK1_nDisplays; i++ )
   {
     initDisplay(i);
-    m_displays[i]->black();
+    m_displays[i].black();
   }
   sendFrame(0);
   sendFrame(1);
@@ -395,7 +393,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   
   if(!getDeviceHandle()->write(
       Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
-        m_displays[displayIndex_]->getPtr( offset ),
+        m_displays[displayIndex_].getPtr( offset ),
         dataSize
       ),
       kMASMK1_epDisplay
@@ -405,12 +403,12 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   }
   
   displayNumber++;
-  for(uint8_t chunk = 1; chunk < m_displays[displayIndex_]->getNumberOfChunks() - 1 ; chunk++ )
+  for(uint8_t chunk = 1; chunk < m_displays[displayIndex_].getNumberOfChunks() - 1 ; chunk++ )
   {
     offset += dataSize;
     if(!getDeviceHandle()->write(
         Transfer({ displayNumber, 0x01, 0xF6 },
-          m_displays[displayIndex_]->getPtr( offset ),
+          m_displays[displayIndex_].getPtr( offset ),
           dataSize
         ),
         kMASMK1_epDisplay
@@ -425,7 +423,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   if(!getDeviceHandle()->write(
     Transfer(
       { displayNumber, 0x01, 0x52 },
-      m_displays[displayIndex_]->getPtr( offset ),
+      m_displays[displayIndex_].getPtr( offset ),
       338
     ),
     kMASMK1_epDisplay
@@ -572,7 +570,7 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
   {
     return;
   }*/
-  //\todo improve encoder value parsing
+  //@\todo improve encoder value parsing
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
@@ -602,19 +600,21 @@ void DeviceMaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
-  if (Led::Unknown != led_)
+  if (Led::Unknown == led_)
   {
-    uint8_t currentVal = m_leds[ledIndex];
+    return;
+  }
 
-    m_leds[ledIndex] = color_.getMono();
-    if (led_ > Led::Unused1)
-    {
-      m_isDirtyLedGroup1 = m_isDirtyLedGroup1 || (m_leds[ledIndex] != currentVal);
-    }
-    else
-    {
-      m_isDirtyLedGroup0 = m_isDirtyLedGroup0 || (m_leds[ledIndex] != currentVal);
-    }
+  uint8_t currentVal = m_leds[ledIndex];
+
+  m_leds[ledIndex] = color_.getMono();
+  if (led_ > Led::Unused1)
+  {
+    m_isDirtyLedGroup1 = m_isDirtyLedGroup1 || (m_leds[ledIndex] != currentVal);
+  }
+  else
+  {
+    m_isDirtyLedGroup0 = m_isDirtyLedGroup0 || (m_leds[ledIndex] != currentVal);
   }
 }
 
@@ -818,7 +818,7 @@ void sl::kio::DeviceMaschineMK1::cbRead(Transfer input_)
   else if (input_[0] == 0x06)
   {
     M_LOG("[DeviceMaschineMK1] read: received MIDI message");
-    //\todo Add MIDI in parsing
+    //!\todo Add MIDI in parsing
   }
 }
 
