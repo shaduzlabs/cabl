@@ -34,6 +34,7 @@
 
 namespace
 {
+static const std::string  kKK_midiOutName = "KOMPLETE KONTROL S";
 static const uint8_t kKK_ledsDataSize = 25;
 
 static const uint8_t kKK_epDisplay = 0x08;
@@ -242,6 +243,17 @@ enum class DeviceKompleteKontrol::Button : uint8_t
   Rwd,
   Ffw,
 
+  TouchEncoder1,
+  TouchEncoder2,
+  TouchEncoder3,
+  TouchEncoder4,
+  TouchEncoder5,
+  TouchEncoder6,
+  TouchEncoder7,
+  TouchEncoder8,
+  
+  TouchEncoderMain,
+  
   None,
 };
 
@@ -251,19 +263,48 @@ DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, 
   : Device(std::move(pDeviceHandle_))
   , m_numKeys(numKeys_)
   , m_isDirtyLeds(false)
-  , m_isDirtyKeyLeds(false)
   , m_ledKeysDataSize(numKeys_ * 3)
+  , m_isDirtyKeyLeds(false)
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  , m_pMidiout(new RtMidiOut)
+#endif
 {
  //m_buttons.resize(kKK_buttonsDataSize);
  m_leds.resize(kKK_ledsDataSize);
  m_ledsKeys.resize(m_ledKeysDataSize);
+ 
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  std::string portName;
+  unsigned nPorts = m_pMidiout->getPortCount();
+  for ( unsigned int i=0; i<nPorts; i++ )
+  {
+    try
+    {
+      portName = m_pMidiout->getPortName(i);
+      if(portName.find(kKK_midiOutName) != std::string::npos && portName.back() == '1')
+      {
+        m_pMidiout->openPort(i);
+      }
+    }
+    catch (RtMidiError &error) 
+    {
+      M_LOG("[DeviceMaschineMK2] RtMidiError: " << error.getMessage());
+    }
+  }
+  if(!m_pMidiout->isPortOpen())
+  {
+    m_pMidiout.reset(nullptr);
+  }
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 DeviceKompleteKontrol::~DeviceKompleteKontrol()
 {
-
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  m_pMidiout->closePort();
+#endif
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -365,18 +406,20 @@ bool DeviceKompleteKontrol::sendLeds()
 bool DeviceKompleteKontrol::read()
 {
   Transfer input;
-  for (uint8_t n = 0; n < 32; n++)
+
+  if (!getDeviceHandle()->read(input, kKK_epInput))
   {
-    if (!getDeviceHandle()->read(input, kKK_epInput))
-    {
-      return false;
-    }
-    else if (input && input[0] == 0x01)
-    {
-      processButtons(input);
-      break;
-    }
+    return false;
   }
+  else if (input && input[0] == 0x01)
+  {
+    processButtons(input);
+  }
+  else
+  {
+    M_LOG("unknown!");
+  }
+  
   return true;
 }
 
@@ -407,19 +450,35 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
         {
       //    std::copy(&input_[1],&input_[kKK_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
-          }
         }
       }
+    }
+  }
+  
+  // Now process the encoder data
+  uint8_t currentEncoderValue = input_.getData()[kKK_buttonsDataSize];
+  if (currentEncoderValue != m_encoderValues[0])
+  {
+    bool valueIncreased
+      = ((m_encoderValues[0] < currentEncoderValue) || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
+        && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
+    m_encoderValues[0] = currentEncoderValue;
+    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+  }
 
-    // Now process the encoder data
-    uint8_t currentEncoderValue = input_.getData()[kKK_buttonsDataSize];
-    if (m_encoderValue != currentEncoderValue)
+  for (uint8_t encIndex = 0, i = kKK_buttonsDataSize+1; encIndex < 8; i+=2, encIndex++)
+  {
+    Device::Encoder encoder = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
+    uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
+    uint16_t hValue = input_.getData()[i+1];
+    if(m_encoderValues[encIndex+1] != value)
     {
+      uint16_t prevHValue = (m_encoderValues[encIndex+1] &0xF00 )>> 8 ;
       bool valueIncreased
-        = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-          && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-        encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
-      m_encoderValue = currentEncoderValue;
+        = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
+          && (!((prevHValue == 0) && (hValue == 3)));
+      m_encoderValues[encIndex+1] = value;
+      encoderChanged(encoder, valueIncreased, shiftPressed);
     }
   }
 }

@@ -97,7 +97,7 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
   if (pCurrentDevice == nullptr)
     return nullptr;
     
-  hid_set_nonblocking(pCurrentDevice, 0);
+  hid_set_nonblocking(pCurrentDevice, 1);
   
   M_LOG("[HIDAPI] CONNECTED to " << device_.getVendorId() << ":"
     << device_.getProductId() << ":"

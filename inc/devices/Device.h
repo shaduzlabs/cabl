@@ -127,6 +127,16 @@ public:
     NavigateRight,
     OctaveUp,
     OctaveDown,
+    TouchEncoder1,
+    TouchEncoder2,
+    TouchEncoder3,
+    TouchEncoder4,
+    TouchEncoder5,
+    TouchEncoder6,
+    TouchEncoder7,
+    TouchEncoder8,
+    TouchEncoderMain,
+    
     Unknown,
   };
 

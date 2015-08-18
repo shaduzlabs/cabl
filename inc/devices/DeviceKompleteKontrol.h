@@ -61,7 +61,8 @@ private:
   enum class Button : uint8_t;
 
   static constexpr uint8_t kKK_nButtons = 37;
-  static constexpr uint8_t kKK_buttonsDataSize = 5; 
+  static constexpr uint8_t kKK_buttonsDataSize = 6;
+  static constexpr uint8_t kKK_nEncoders = 9;
 
   void init() override;
   bool sendLeds();
@@ -83,7 +84,7 @@ private:
   tRawData                    m_ledsKeys;
   tRawData                    m_buttons;
   bool                        m_buttonStates[kKK_nButtons];
-  uint8_t                     m_encoderValue;
+  uint16_t                    m_encoderValues[kKK_nEncoders];
 
   uint8_t                     m_numKeys;
   uint16_t                    m_ledKeysDataSize;
@@ -92,6 +93,10 @@ private:
   bool                        m_isDirtyKeyLeds;
 
   LCDDisplayKompleteKontrol   m_displays[9];
+    
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
+  tPtr<RtMidiOut>     m_pMidiout;
+#endif
 };
   
 //----------------------------------------------------------------------------------------------------------------------
