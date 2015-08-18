@@ -63,8 +63,10 @@ private:
   static constexpr uint8_t kKK_nButtons = 37;
   static constexpr uint8_t kKK_buttonsDataSize = 6;
   static constexpr uint8_t kKK_nEncoders = 9;
+  static constexpr uint8_t kKK_nDisplays = 9;
 
   void init() override;
+  bool sendDisplayData();
   bool sendLeds();
   bool read();
   
@@ -81,7 +83,7 @@ private:
   
   static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
-  GDisplayDummy               m_display;
+  GDisplayDummy               m_displayDummy;
   tRawData                    m_leds;
   tRawData                    m_ledsKeys;
   tRawData                    m_buttons;
@@ -96,7 +98,7 @@ private:
 
   uint8_t                     m_firstOctave;
 
-  LCDDisplayKompleteKontrol   m_displays[9];
+  LCDDisplayKompleteKontrol   m_displays[kKK_nDisplays];
     
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   tPtr<RtMidiOut>     m_pMidiOut;

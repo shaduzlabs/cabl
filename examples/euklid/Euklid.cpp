@@ -367,9 +367,12 @@ void Euklid::updateGUI()
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
   
-  getDevice(0)->getLCDDisplay(0)->setText("Length", 0);
-  getDevice(0)->getLCDDisplay(1)->setText("Density", 0);
-  getDevice(0)->getLCDDisplay(2)->setText("Rotation", 0);
+  getDevice(0)->getLCDDisplay(0)->setText("Length", 1);
+  getDevice(0)->getLCDDisplay(0)->setValue(static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(1)->setText("Density", 1);
+  getDevice(0)->getLCDDisplay(1)->setValue(static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(2)->setText("Rotation", 1);
+  getDevice(0)->getLCDDisplay(2)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
 
   switch (m_screenPage)
   {
@@ -433,7 +436,6 @@ void Euklid::updatePads()
 
         if (i >= m_lengths[t])
         {
-          std::cout << (int)pad << " (" << (int)i << ")   ";
           getDevice(0)->setLed(pad, kEuklidColor_Black);
           getDevice(0)->setLed(key, kEuklidColor_Black);
         }
@@ -466,7 +468,6 @@ void Euklid::updatePads()
       }
     }
   }
-          std::cout << std::endl;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

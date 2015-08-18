@@ -361,7 +361,7 @@ void DeviceKompleteKontrol::sendMidiMsg(tRawData midiMsg_)
 
 GDisplay* DeviceKompleteKontrol::getGraphicDisplay(uint8_t displayIndex_)
 {
-  return &m_display;
+  return &m_displayDummy;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -385,14 +385,18 @@ bool DeviceKompleteKontrol::tick()
 
   if (state == 0)
   {
+    success = sendDisplayData();
+  }
+  else if(state == 1)
+  {
     success = sendLeds();
   }
-  else if (state == 1)
+  else if (state == 2)
   {
     success = read();
   }
 
-  if (++state >= 2)
+  if (++state >= 3)
   {
     state = 0;
   }
@@ -405,6 +409,32 @@ bool DeviceKompleteKontrol::tick()
 void sl::kio::DeviceKompleteKontrol::init()
 {
   getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kKK_epOut);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+bool DeviceKompleteKontrol::sendDisplayData()
+{
+  bool result = true;
+  
+  tRawData displayData(240);
+  
+  for(uint8_t row = 0; row < 3; row++)
+  {
+    for(uint8_t i = 0; i < kKK_nDisplays; i++)
+    {
+      if(m_displays[i].isDirty())
+      {
+        std::copy_n( m_displays[i].getData().data() + (row*16), 16, &displayData[i*16]);
+      }
+    }
+    if(!getDeviceHandle()->write(Transfer({ 0xe0, 0x00, 0x00, row, 0x00, 0x48, 0x00, 0x01, 0x00 }, displayData), kKK_epOut))
+    {
+      result = false;
+    }
+  }
+  
+  return result;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

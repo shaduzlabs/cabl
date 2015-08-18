@@ -65,7 +65,9 @@ public:
   //! Destructor
   virtual ~LCDDisplay(){}
   
-  virtual const tRawData& data() const { return m_data; }
+  virtual void clear() {}
+  
+  virtual const tRawData& getData() const { return m_data; }
   
   /** @} */ // End of group Lifetime
  

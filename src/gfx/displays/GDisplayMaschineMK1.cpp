@@ -172,7 +172,7 @@ GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) con
   }
   
   return Color::Black;
- }
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

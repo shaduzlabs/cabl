@@ -42,6 +42,8 @@ public:
   
   ~LCDDisplayKompleteKontrol();
   
+  void clear() override;
+
   void printChar(uint16_t x_, uint16_t y_, char c_) override;
 
   void setText(const std::string& string_, uint8_t row_) override; 
@@ -49,7 +51,6 @@ public:
   void setText(unsigned value_, uint8_t row_) override;
 
   void setValue(float value_, uint8_t row_) override;
-
 };
   
 //----------------------------------------------------------------------------------------------------------------------
