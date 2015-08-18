@@ -64,13 +64,21 @@ LCDDisplayKompleteKontrol::~LCDDisplayKompleteKontrol()
 void LCDDisplayKompleteKontrol::clear()
 {
   data().clear();
+  setDirty(true);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::printChar(uint16_t x_, uint16_t y_, char c_)
+void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
 {
-
+  if(row_<1 || row_>2 || col_ > 7)
+  {
+    return;
+  }
+  setDirty(true);
+  unsigned index = (row_ * 16) +col_;
+  data()[index++] = kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] & 0xff;
+  data()[index++] = (kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -132,10 +140,10 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
   setDirty(true);
   unsigned index = row_ * 16;
   float val = std::min<float>(value_,1.0f);
-  uint8_t valInterval = static_cast<uint8_t>(std::round(val*9.0));
   
   if(row_==0)
   {
+    uint8_t valInterval = static_cast<uint8_t>(std::round(val*9.0));
     data()[index++] = 0x04 | (valInterval>0? 0x03 : 0x00); // 1st bar + surrounding block (3rd bit)
     data()[index++] = 0x00; // Dots (1)
     data()[index++] = valInterval>1? 0x03 : 0x00;
@@ -153,16 +161,22 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
     data()[index++] = valInterval>7? 0x03 : 0x00;
     data()[index++] = valInterval>8? 0x03 : 0x00;
   }
-  /*
   else
   {
-    for(uint8_t i = 0; i<std::min<uint8_t>(string_.length(),8);i++)
+    uint8_t valInterval = static_cast<uint8_t>(std::round(val*8.0));
+    for(uint8_t i = 0; i<8;i++)
     {
-      const uint8_t& character = string_.at(i);
-      data()[index++] = kLCDDisplayKK_FontData[character] & 0xff;
-      data()[index++] = (kLCDDisplayKK_FontData[character] >> 8) & 0xff;
+      if(valInterval>i)
+      {
+        data()[index++] = kLCDDisplayKK_FontData[43] & 0xff;
+        data()[index++] = (kLCDDisplayKK_FontData[43] >> 8) & 0xff;
+      }
+      else{
+        data()[index++] = kLCDDisplayKK_FontData[0];
+        data()[index++] = kLCDDisplayKK_FontData[0];
+      }
     }
-  }*/
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -81,11 +81,11 @@ public:
   
   //! Print a single char
   /*!
-   \param x_               The column at which the char must be printed
-   \param y_               The row at which the char must be printed
+   \param col_             The column at which the char must be printed
+   \param row_             The row at which the char must be printed
    \param c_               The char to be printed
   */
-  virtual void printChar(uint16_t x_, uint16_t y_, char c_){}
+  virtual void printChar(uint8_t col_, uint8_t row_, char c_){}
    
   //! Print a string
   /*!

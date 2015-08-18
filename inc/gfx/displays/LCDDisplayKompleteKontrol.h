@@ -44,7 +44,7 @@ public:
   
   void clear() override;
 
-  void printChar(uint16_t x_, uint16_t y_, char c_) override;
+  void printChar(uint8_t col_, uint8_t row_, char c_) override;
 
   void setText(const std::string& string_, uint8_t row_) override; 
 

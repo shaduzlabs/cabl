@@ -367,13 +367,14 @@ void Euklid::updateGUI()
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
   
-  getDevice(0)->getLCDDisplay(0)->setText("Length", 1);
-  getDevice(0)->getLCDDisplay(0)->setValue(static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  getDevice(0)->getLCDDisplay(1)->setText("Density", 1);
-  getDevice(0)->getLCDDisplay(1)->setValue(static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  getDevice(0)->getLCDDisplay(2)->setText("Rotation", 1);
-  getDevice(0)->getLCDDisplay(2)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
-
+  getDevice(0)->getLCDDisplay(1)->setText("Length", 1);
+  getDevice(0)->getLCDDisplay(1)->setValue(static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(2)->setText("Density", 1);
+  getDevice(0)->getLCDDisplay(2)->setValue(static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(3)->setText("Rotation", 1);
+  getDevice(0)->getLCDDisplay(3)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(3)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 2);
+  
   switch (m_screenPage)
   {
     case ScreenPage::Configuration:
