@@ -78,6 +78,8 @@ private:
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+  
+  static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
   GDisplayDummy               m_display;
   tRawData                    m_leds;
@@ -92,10 +94,13 @@ private:
   bool                        m_isDirtyLeds;
   bool                        m_isDirtyKeyLeds;
 
+  uint8_t                     m_firstOctave;
+
   LCDDisplayKompleteKontrol   m_displays[9];
     
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  tPtr<RtMidiOut>     m_pMidiout;
+  tPtr<RtMidiOut>     m_pMidiOut;
+  tPtr<RtMidiIn>      m_pMidiIn;
 #endif
 };
   

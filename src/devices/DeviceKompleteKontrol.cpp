@@ -34,12 +34,13 @@
 
 namespace
 {
-static const std::string  kKK_midiOutName = "KOMPLETE KONTROL S";
+static const std::string  kKK_midiPortName = "KOMPLETE KONTROL S";
 static const uint8_t kKK_ledsDataSize = 25;
 
 static const uint8_t kKK_epDisplay = 0x08;
 static const uint8_t kKK_epOut     = 0x02;
 static const uint8_t kKK_epInput   = 0x84;
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -262,28 +263,29 @@ enum class DeviceKompleteKontrol::Button : uint8_t
 DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numKeys_)
   : Device(std::move(pDeviceHandle_))
   , m_numKeys(numKeys_)
-  , m_isDirtyLeds(false)
   , m_ledKeysDataSize(numKeys_ * 3)
+  , m_isDirtyLeds(false)
   , m_isDirtyKeyLeds(false)
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  , m_pMidiout(new RtMidiOut)
+  , m_pMidiOut(new RtMidiOut)
+  , m_pMidiIn(new RtMidiIn)
 #endif
 {
- //m_buttons.resize(kKK_buttonsDataSize);
+ m_buttons.resize(kKK_buttonsDataSize);
  m_leds.resize(kKK_ledsDataSize);
  m_ledsKeys.resize(m_ledKeysDataSize);
  
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::string portName;
-  unsigned nPorts = m_pMidiout->getPortCount();
+  unsigned nPorts = m_pMidiOut->getPortCount();
   for ( unsigned int i=0; i<nPorts; i++ )
   {
     try
     {
-      portName = m_pMidiout->getPortName(i);
-      if(portName.find(kKK_midiOutName) != std::string::npos && portName.back() == '1')
+      portName = m_pMidiOut->getPortName(i);
+      if(portName.find(kKK_midiPortName) != std::string::npos && portName.back() == '1')
       {
-        m_pMidiout->openPort(i);
+        m_pMidiOut->openPort(i);
       }
     }
     catch (RtMidiError &error) 
@@ -291,9 +293,35 @@ DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, 
       M_LOG("[DeviceMaschineMK2] RtMidiError: " << error.getMessage());
     }
   }
-  if(!m_pMidiout->isPortOpen())
+  if(!m_pMidiOut->isPortOpen())
   {
-    m_pMidiout.reset(nullptr);
+    m_pMidiOut.reset(nullptr);
+  }
+  
+  portName.clear();
+  nPorts = m_pMidiIn->getPortCount();
+  for ( unsigned int i=0; i<nPorts; i++ )
+  {
+    try
+    {
+      portName = m_pMidiIn->getPortName(i);
+      if(portName.find(kKK_midiPortName) != std::string::npos && portName.back() == '1')
+      {
+        m_pMidiIn->openPort(i);
+      }
+    }
+    catch (RtMidiError &error) 
+    {
+      M_LOG("[DeviceMaschineMK2] RtMidiError: " << error.getMessage());
+    }
+  }
+  if(!m_pMidiIn->isPortOpen())
+  {
+    m_pMidiIn.reset(nullptr);
+  }
+  else
+  {
+    m_pMidiIn->setCallback(&DeviceKompleteKontrol::midiInCallback, this );
   }
 #endif
 }
@@ -303,7 +331,8 @@ DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, 
 DeviceKompleteKontrol::~DeviceKompleteKontrol()
 {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  m_pMidiout->closePort();
+  m_pMidiOut->closePort();
+  m_pMidiIn->closePort();
 #endif
 }
 
@@ -415,10 +444,6 @@ bool DeviceKompleteKontrol::read()
   {
     processButtons(input);
   }
-  else
-  {
-    M_LOG("unknown!");
-  }
   
   return true;
 }
@@ -481,6 +506,8 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
       encoderChanged(encoder, valueIncreased, shiftPressed);
     }
   }
+  
+  m_firstOctave = input_.getData()[37];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -676,6 +703,21 @@ bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button bu
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void DeviceKompleteKontrol::midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData)
+{
+  sl::kio::DeviceKompleteKontrol* pSelf = (sl::kio::DeviceKompleteKontrol*)userData;
+  if((message->at(0)&0xf0) == 0x90)
+  {
+    pSelf->keyChanged(
+      static_cast<Device::Key>(message->at(1) - pSelf->m_firstOctave),
+      message->at(2),
+      pSelf->isButtonPressed(Button::Shift)
+    );
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -79,14 +79,12 @@ void Application::run()
         if(!tick())
         {
           nErrors++;
-/*
           if(nErrors>=m_maxConsecutiveErrors)
           {
             m_connected = false;
             m_collDevices.clear();
             M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
           }
-*/
         }
         else
         {

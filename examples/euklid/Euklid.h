@@ -68,6 +68,7 @@ public:
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
   void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
+  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed);
   
   
   void updateClock();
@@ -97,7 +98,9 @@ public:
   void togglePlay();
 
   void changeTrack(uint8_t track_ = 0xFF);
-
+  void nextTrack();
+  void prevTrack();
+  
 private:
 
   uint8_t getEncoderValue(

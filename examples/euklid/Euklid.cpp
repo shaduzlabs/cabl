@@ -44,7 +44,8 @@ static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3] = { { 127,0,0,
 
 static const sl::util::LedColor kEuklidColor_Black         (  0,   0,   0,   0);
 
-static const sl::util::LedColor kEuklidColor_Step_Empty    (127, 127, 127,  20);
+static const sl::util::LedColor kEuklidColor_Step_Empty    (35, 35, 35,  20);
+static const sl::util::LedColor kEuklidColor_Step_Empty_Current    (127, 127, 127,  50);
 
 }
 
@@ -99,6 +100,8 @@ bool Euklid::initHardware()
     std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
   getDevice(0)->setCallbackPadChanged(
     std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackKeyChanged(
+    std::bind(&Euklid::keyChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
   
   m_update = true;
 
@@ -157,6 +160,14 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
   else if (buttonState_ && button_ == kio::Device::Button::Group)
   {
     changeTrack();
+  }
+  else if (buttonState_ && button_ == kio::Device::Button::PageLeft)
+  {
+    prevTrack();
+  }
+  else if (buttonState_ && button_ == kio::Device::Button::PageRight)
+  {
+    nextTrack();
   }
   else if (buttonState_ && button_ == kio::Device::Button::GroupA)
   {
@@ -233,6 +244,40 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
   {
     lastEvent = now;
     uint8_t padIndex = getPadIndex(pad_);
+    if (m_sequences[m_currentTrack].toggleStep(padIndex))
+    {/*
+      switch (m_currentTrack)
+      {
+      case 0:
+        getDevice(0)->setLed(getPadLed(padIndex), 127, 0, 0);
+        break;
+      case 1:
+        getDevice(0)->setLed(getPadLed(padIndex), 0, 127, 0);
+        break;
+      case 2:
+        getDevice(0)->setLed(getPadLed(padIndex), 0, 0, 127);
+        break;
+      }*/
+    }
+    else
+    {
+   //   getDevice(0)->setLed(getPadLed(padIndex), 0);
+    }
+    m_update = true;
+  }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::keyChanged(kio::Device::Key key_, uint16_t value_, bool shiftPressed_)
+{
+  static auto lastEvent = std::chrono::system_clock::now();
+  auto now = std::chrono::system_clock::now();
+  if (now - lastEvent > std::chrono::milliseconds(180))
+  {
+    lastEvent = now;
+    uint8_t padIndex = static_cast<uint8_t>(key_);
     if (m_sequences[m_currentTrack].toggleStep(padIndex))
     {/*
       switch (m_currentTrack)
@@ -380,14 +425,15 @@ void Euklid::updatePads()
     uint16_t pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, k = m_rotates[t]; i < 16; i++, k++)
     {
-      kio::Device::Pad pad = getPad(k % m_lengths[t]);
-      kio::Device::Key key = static_cast<kio::Device::Key>(k % m_lengths[t]);
+      kio::Device::Pad pad = getPad(i);
+      kio::Device::Key key = static_cast<kio::Device::Key>(i);
 
       if (m_currentTrack == t)
       {
 
         if (i >= m_lengths[t])
         {
+          std::cout << (int)pad << " (" << (int)i << ")   ";
           getDevice(0)->setLed(pad, kEuklidColor_Black);
           getDevice(0)->setLed(key, kEuklidColor_Black);
         }
@@ -408,18 +454,19 @@ void Euklid::updatePads()
         {
           if (pos == (k % m_lengths[t]))
           {
-            getDevice(0)->setLed(pad, kEuklidColor_Step_Empty);
-            getDevice(0)->setLed(key, kEuklidColor_Step_Empty);
+            getDevice(0)->setLed(pad, kEuklidColor_Step_Empty_Current);
+            getDevice(0)->setLed(key, kEuklidColor_Step_Empty_Current);
           }
           else
           {
-            getDevice(0)->setLed(pad, kEuklidColor_Black);
-            getDevice(0)->setLed(key, kEuklidColor_Black);
+            getDevice(0)->setLed(pad, kEuklidColor_Step_Empty);
+            getDevice(0)->setLed(key, kEuklidColor_Step_Empty);
           }
         }
       }
     }
   }
+          std::cout << std::endl;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -622,6 +669,37 @@ void Euklid::changeTrack(uint8_t track_)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::nextTrack()
+{
+  if (m_currentTrack >= kEuklidNumTracks)
+  {
+    m_currentTrack = 0;
+  }
+  else
+  {
+    m_currentTrack++;
+  }
+  m_update = true;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Euklid::prevTrack()
+{
+  if (m_currentTrack > 0)
+  {
+    m_currentTrack--;
+  }
+  else
+  {
+    m_currentTrack = (kEuklidNumTracks - 1);
+  }
+  m_update = true;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 uint8_t Euklid::getEncoderValue(
   bool valueIncreased_, uint8_t step_, uint8_t currentValue_, uint8_t minValue_, uint8_t maxValue_)
 {

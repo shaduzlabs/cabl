@@ -69,7 +69,13 @@ void DeviceHandleHIDAPI::disconnect()
 bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t)
 {
   int nBytesRead = hid_read(m_pCurrentDevice, m_inputBuffer.data(), kHIDAPIInputBufferSize);
-  if (nBytesRead > 0)
+  
+  //!\todo check when hid_read returns 0 (no data available to read) and do not return error!
+  if(nBytesRead ==0)
+  {
+    return true;
+  }
+  else if (nBytesRead > 0)
   {
     transfer_.setData(m_inputBuffer.data(), nBytesRead);
     return transfer_;

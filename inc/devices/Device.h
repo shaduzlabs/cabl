@@ -159,22 +159,22 @@ public:
 
   enum class Pad : uint8_t
   {
-    Pad1,
-    Pad2,
-    Pad3,
-    Pad4,
-    Pad5,
-    Pad6,
-    Pad7,
-    Pad8,
-    Pad9,
-    Pad10,
-    Pad11,
-    Pad12,
     Pad13,
     Pad14,
     Pad15,
     Pad16,
+    Pad9,
+    Pad10,
+    Pad11,
+    Pad12,
+    Pad5,
+    Pad6,
+    Pad7,
+    Pad8,
+    Pad1,
+    Pad2,
+    Pad3,
+    Pad4,
     Unknown,
   };
 
@@ -198,6 +198,7 @@ public:
   using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
   using tCbEncoderChanged = std::function<void(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t value_, bool shiftPressed)>;
+  using tCbKeyChanged = std::function<void(Key pad_, uint16_t value_, bool shiftPressed)>;
   
   enum class Type
   {
@@ -236,6 +237,7 @@ public:
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_){ m_cbButtonChanged = cbButtonChanged_; }
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
   void setCallbackPadChanged(tCbPadChanged cbPadChanged_){ m_cbPadChanged = cbPadChanged_;}
+  void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_){ m_cbKeyChanged = cbKeyChanged_;}
 
   DeviceHandle* getDeviceHandle(){ return m_pDeviceHandle.get(); }
   
@@ -264,11 +266,20 @@ protected:
     }
   }
   
+  void keyChanged(Key key_, uint16_t value_, bool shiftPressed_)
+  {
+    if(m_cbKeyChanged)
+    {
+      m_cbKeyChanged(key_,value_,shiftPressed_);
+    }
+  }
+  
 private:
 
   tCbButtonChanged    m_cbButtonChanged;
   tCbEncoderChanged   m_cbEncoderChanged;
   tCbPadChanged       m_cbPadChanged;
+  tCbKeyChanged       m_cbKeyChanged;
   
   tPtr<DeviceHandle>  m_pDeviceHandle;
 };
