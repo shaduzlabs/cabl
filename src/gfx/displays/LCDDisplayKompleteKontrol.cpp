@@ -68,7 +68,7 @@ bool LCDDisplayKompleteKontrol::isDirtyRow(uint8_t row_) const
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
+void LCDDisplayKompleteKontrol::setCharacter(uint8_t col_, uint8_t row_, char c_)
 {
   if(row_<1 || row_>=kLCDKK_numRows || col_ >= kLCDKK_numCols)
   {
@@ -83,56 +83,51 @@ void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_)
+void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_, Align align_)
 {
-  if(row_ >= kLCDKK_numRows)
+  if(row_ == 0 || row_ >= kLCDKK_numRows)
   {
     return;
   }
   setDirty(true);
   m_dirtyFlags[row_] = true;
   unsigned index = row_ * 16;
-
-  if(row_==0)
+  std::string strAligned = alignText(string_, align_);
+  for(size_t i = 0; i < std::min<size_t>(strAligned.length(),8);i++)
   {
-    data()[index++] = 0x07; // 1st bar + surrounding block (3rd bit)
-    data()[index++] = 0x03; // Dots (1)
-    data()[index++] = 0x03; // 2nd bar
-    data()[index++] = 0x03; // Dots (2)
-    data()[index++] = 0x03; // 3rd bar
-    data()[index++] = 0x03; // Dots (3)
-    data()[index++] = 0x03; // 4th bar
-    data()[index++] = 0x03; // Dots (4)
-    data()[index++] = 0x03; // 5th bar
-    data()[index++] = 0x03; // Dots (5)
-    data()[index++] = 0x03; // 6th bar
-    data()[index++] = 0x03; // Dots (6)
-    data()[index++] = 0x03; // 7th bar
-    data()[index++] = 0x03; // Dots (7)
-    data()[index++] = 0x03; // 8th bar
-    data()[index++] = 0x03; // 9th bar
-  }
-  else
-  {
-    for(size_t i = 0; i < std::min<size_t>(string_.length(),8);i++)
-    {
-      const uint8_t& character = string_.at(i);
-      data()[index++] = kLCDDisplayKK_FontData[character] & 0xff;
-      data()[index++] = (kLCDDisplayKK_FontData[character] >> 8) & 0xff;
-    }
+    const uint8_t& character = strAligned.at(i);
+    data()[index++] = kLCDDisplayKK_FontData[character] & 0xff;
+    data()[index++] = (kLCDDisplayKK_FontData[character] >> 8) & 0xff;
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setText(unsigned value_, uint8_t row_)
+void LCDDisplayKompleteKontrol::setText(int value_, uint8_t row_, Align align_)
 {
-  setText(std::to_string(value_),row_);
+  setText(std::to_string(value_),row_, align_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
+void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align_)
+{
+  double integral;
+  double fractional = modf(value_, &integral);
+  std::string strValue = std::to_string(static_cast<int>(integral));
+  std::string strFractional = std::to_string(static_cast<int>(fractional*1000));
+  uint8_t emptySpaces = kLCDKK_numCols-strValue.length()-strFractional.length();
+  uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
+  resetDots(row_);
+  setDot(strValue.length()-1+leftFills, row_);
+  strValue.append(strFractional);
+  
+  setText(strValue, row_, align_);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align_)
 {
   if(row_ >= kLCDKK_numRows)
   {
@@ -147,15 +142,15 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
   if(row_==0)
   {
     uint8_t valInterval = static_cast<uint8_t>(std::round(val*9.0));
-    data()[index     ] = 0x04 | (valInterval>0? 0x03 : 0x00); // 1st bar + surrounding block (3rd bit)
-    data()[index + 2 ] = valInterval>1? 0x03 : 0x00;
-    data()[index + 4 ] = valInterval>2? 0x03 : 0x00;
-    data()[index + 6 ] = valInterval>3? 0x03 : 0x00;
-    data()[index + 8 ] = valInterval>4? 0x03 : 0x00;
-    data()[index + 10] = valInterval>5? 0x03 : 0x00;
-    data()[index + 12] = valInterval>6? 0x03 : 0x00;
-    data()[index + 14] = valInterval>7? 0x03 : 0x00;
-    data()[index + 15] = valInterval>8? 0x03 : 0x00;
+    data()[ 0] = 0x04 | (valInterval>0? 0x03 : 0x00); // 1st bar + surrounding block (3rd bit)
+    data()[ 2] = valInterval>1? 0x03 : 0x00;
+    data()[ 4] = valInterval>2? 0x03 : 0x00;
+    data()[ 6] = valInterval>3? 0x03 : 0x00;
+    data()[ 8] = valInterval>4? 0x03 : 0x00;
+    data()[10] = valInterval>5? 0x03 : 0x00;
+    data()[12] = valInterval>6? 0x03 : 0x00;
+    data()[14] = valInterval>7? 0x03 : 0x00;
+    data()[15] = valInterval>8? 0x03 : 0x00;
   }
   else
   {
@@ -173,6 +168,41 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
       }
     }
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Align align_) const
+{
+  if(string_.length()>=kLCDKK_numCols)
+  {
+    return string_.substr(0,kLCDKK_numCols);
+  }
+  
+  std::string strValue(string_);
+  switch(align_)
+  {
+    case Align::Right:
+    {
+      strValue.insert(0, kLCDKK_numCols-strValue.length(),' ');
+      break;
+    }
+    case Align::Center:
+    {
+      uint8_t nFills = kLCDKK_numCols-strValue.length();
+      uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
+      strValue.insert(0, leftFills,' ');
+      strValue.append(nFills-leftFills,' ');
+      break;
+    }
+    case Align::Left:
+    default:
+    {
+      strValue.append(kLCDKK_numCols-strValue.length(), ' ');
+      break;
+    }
+  }
+  return strValue;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -201,15 +231,15 @@ void LCDDisplayKompleteKontrol::resetDots(uint8_t row_)
   setDirty(true);
   m_dirtyFlags[row_] = true;
 
-  unsigned index = row_ * 16;
+  uint8_t mask = 1 << (row_ - 1);
 
-  data()[index +  1] = 0x00;
-  data()[index +  3] = 0x00;
-  data()[index +  5] = 0x00;
-  data()[index +  7] = 0x00;
-  data()[index +  9] = 0x00;
-  data()[index + 11] = 0x00;
-  data()[index + 13] = 0x00;
+  data()[ 1] &= ~mask;
+  data()[ 3] &= ~mask;
+  data()[ 5] &= ~mask;
+  data()[ 7] &= ~mask;
+  data()[ 9] &= ~mask;
+  data()[11] &= ~mask;
+  data()[13] &= ~mask;
 }
 
 //--------------------------------------------------------------------------------------------------

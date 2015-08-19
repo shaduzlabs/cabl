@@ -28,15 +28,19 @@ public:
 
   bool isDirtyRow(uint8_t row_) const override;
   
-  void printChar(uint8_t col_, uint8_t row_, char c_) override;
+  void setCharacter(uint8_t col_, uint8_t row_, char c_) override;
 
-  void setText(const std::string& string_, uint8_t row_) override; 
+  void setText(const std::string& string_, uint8_t row_, Align align_) override;
 
-  void setText(unsigned value_, uint8_t row_) override;
+  void setText(int value_, uint8_t row_, Align align_) override;
 
-  void setValue(float value_, uint8_t row_) override;
+  void setText(double value_, uint8_t row_, Align align_) override;
+
+  void setValue(float value_, uint8_t row_, Align align_) override;
   
 private:
+  
+  std::string alignText(const std::string&, Align align_) const;
   
   void setDot(uint8_t nDot_, uint8_t row_, bool visible_ = true);
 

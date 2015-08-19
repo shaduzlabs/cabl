@@ -209,6 +209,18 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
+    case Device::Encoder::Encoder4:
+    {
+      m_bpm = getEncoderValue(valueIncreased_, step, m_bpm, 60, 255);
+      updateClock();
+      break;
+    }
+    case Device::Encoder::Encoder5:
+    {
+      m_shuffle = getEncoderValue(valueIncreased_, step, m_shuffle, 0, 100);
+      updateClock();
+      break;
+    }
     default:
       break;
   }
@@ -343,18 +355,61 @@ void Euklid::play()
 
 void Euklid::updateGUI()
 {
+  static Canvas::Color s_colorWhite = Canvas::Color::White;
+  static LCDDisplay::Align s_alignCenter = LCDDisplay::Align::Center;
+
+  std::string strTrackName = "TRACK " + std::to_string(m_currentTrack+1);
+  
   getDevice(0)->getGraphicDisplay(0)->black();
   getDevice(0)->getGraphicDisplay(0)->printStr(32, 52, "E U K L I D");
-  getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
-  getDevice(0)->getGraphicDisplay(0)->drawFilledRect(100, 52, 28, 6, kio::Canvas::Color::White, kio::Canvas::Color::White);
+  getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 52, 28, 6, s_colorWhite, s_colorWhite);
+  getDevice(0)->getGraphicDisplay(0)->drawFilledRect(100, 52, 28, 6, s_colorWhite, s_colorWhite);
   
-  getDevice(0)->getLCDDisplay(1)->setText("Length", 1);
-  getDevice(0)->getLCDDisplay(1)->setValue(static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
+
+  getDevice(0)->getLCDDisplay(0)->setText(strTrackName, 1);
+  getDevice(0)->getLCDDisplay(0)->setText("{EUKLID}", 2,s_alignCenter);
+
+  getDevice(0)->getLCDDisplay(1)->setText("Length", 1, s_alignCenter);
+  getDevice(0)->getLCDDisplay(1)->setValue(
+    static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps,
+    0
+  );
+  getDevice(0)->getLCDDisplay(1)->setText(
+    static_cast<int>(m_lengths[m_currentTrack]),
+    2,
+    s_alignCenter
+  );
+
   getDevice(0)->getLCDDisplay(2)->setText("Density", 1);
-  getDevice(0)->getLCDDisplay(2)->setValue(static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  getDevice(0)->getLCDDisplay(2)->setValue(
+    static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps,
+    0
+  );
+  getDevice(0)->getLCDDisplay(2)->setText(
+    static_cast<double>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps,
+    2,
+    s_alignCenter
+  );
+  
   getDevice(0)->getLCDDisplay(3)->setText("Rotation", 1);
-  getDevice(0)->getLCDDisplay(3)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  getDevice(0)->getLCDDisplay(3)->setValue(static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 2);
+  getDevice(0)->getLCDDisplay(3)->setValue(
+    static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps,
+    0
+  );
+  getDevice(0)->getLCDDisplay(3)->setText(
+    static_cast<int>(m_rotates[m_currentTrack]),
+    2,s_alignCenter
+  );
+
+  getDevice(0)->getLCDDisplay(4)->setText("BPM", 1, s_alignCenter);
+  getDevice(0)->getLCDDisplay(4)->setValue(static_cast<float>(m_bpm) / 255.0, 0);
+  getDevice(0)->getLCDDisplay(4)->setText(static_cast<int>(m_bpm), 2, s_alignCenter);
+
+  getDevice(0)->getLCDDisplay(5)->setText("Shuffle", 1, s_alignCenter);
+  getDevice(0)->getLCDDisplay(5)->setValue(static_cast<float>(m_shuffle) / 100, 0);
+  getDevice(0)->getLCDDisplay(5)->setText(static_cast<int>(m_shuffle), 2, s_alignCenter);
+  
+//  getDevice(0)->getLCDDisplay(3)->setText(m_rotates[m_currentTrack], 2);
   
   switch (m_screenPage)
   {
@@ -655,7 +710,7 @@ void Euklid::changeTrack(uint8_t track_)
 
 void Euklid::nextTrack()
 {
-  if (m_currentTrack >= kEuklidNumTracks)
+  if (m_currentTrack >= (kEuklidNumTracks -1))
   {
     m_currentTrack = 0;
   }

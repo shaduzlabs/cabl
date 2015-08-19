@@ -28,6 +28,24 @@ public:
 //--------------------------------------------------------------------------------------------------
   
   /**
+   * @defgroup Types Public types
+   * @ingroup LCDDisplay
+   * @{
+   */
+  
+  //! The alignment type
+  enum class Align
+  {
+    Left,     //!< Align text to the left
+    Center,   //!< Center text
+    Right,    //!< Align text to the right
+  };
+  
+  /** @} */ // End of group Types
+  
+//--------------------------------------------------------------------------------------------------
+  
+  /**
    * @defgroup Lifetime Constructor and destructor
    * @ingroup LCDDisplay
    * @{
@@ -67,28 +85,35 @@ public:
    \param row_             The row at which the char must be printed
    \param c_               The char to be printed
   */
-  virtual void printChar(uint8_t col_, uint8_t row_, char c_){}
+  virtual void setCharacter(uint8_t col_, uint8_t row_, char c_){}
    
   //! Print a string
   /*!
    \param string_          The string to be printed
    \param row_             The row at which the string must be printed
    */
-  virtual void setText(const std::string& string_, uint8_t row_){}  
+  virtual void setText(const std::string& string_, uint8_t row_, Align = Align::Left){}
   
-  //! Print a number
+  //! Print an integer
   /*!
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void setText(unsigned value_, uint8_t row_){}  
+  virtual void setText(int value_, uint8_t row_, Align = Align::Left){}
+    
+  //! Print a floating point number
+  /*!
+   \param value_           The number to be printed
+   \param row_             The row at which the number must be printed
+   */
+  virtual void setText(double value_, uint8_t row_, Align = Align::Left){}
   
   //! Fill characters in a row according to the value
   /*!
    \param value_           The value to be shown (0...1) by filling the available chars in a row
    \param row_             The row at which the value must be shown
    */
-  virtual void setValue(float value_, uint8_t row_){}
+  virtual void setValue(float value_, uint8_t row_, Align = Align::Left){}
   
   /**@}*/ // End of Text group
   
