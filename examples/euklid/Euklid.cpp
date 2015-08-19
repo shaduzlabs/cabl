@@ -20,8 +20,12 @@ static const uint8_t kEuklidDefaultPulses = 4;
 static const uint8_t kEuklidDefaultOffset = 0;
 static const uint8_t kEuklidNumTracks = 3;
 
-static const sl::util::LedColor kEuklidColor_Track[3] = { { 60,0,0,80 },{ 0,60,0,80 },{ 0,0,60,80 } };
-static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3] = { { 127,0,0,127 },{ 0,127,0,127 },{ 0,0,127,127 } };
+static const sl::util::LedColor kEuklidColor_Track[3] = {
+  { 60,0,0,80 },{ 0,60,0,80 },{ 0,0,60,80 }
+};
+static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3] = {
+  { 127,0,0,127 },{ 0,127,0,127 },{ 0,0,127,127 }
+};
 
 static const sl::util::LedColor kEuklidColor_Black         (  0,   0,   0,   0);
 
@@ -37,6 +41,7 @@ namespace sl
 
 using namespace midi;
 using namespace util;
+using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -75,14 +80,10 @@ bool Euklid::initHardware()
 
   getDevice(0)->setLed(Device::Key::Key1, kEuklidColor_Track[0]);
   
-  getDevice(0)->setCallbackButtonChanged(
-    std::bind(&Euklid::buttonChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackEncoderChanged(
-    std::bind(&Euklid::encoderChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackPadChanged(
-    std::bind(&Euklid::padChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-  getDevice(0)->setCallbackKeyChanged(
-    std::bind(&Euklid::keyChanged, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  getDevice(0)->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, _1, _2, _3));
+  getDevice(0)->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, _1, _2, _3));
+  getDevice(0)->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, _1, _2, _3));
+  getDevice(0)->setCallbackKeyChanged(std::bind(&Euklid::keyChanged, this, _1, _2, _3));
   
   m_update = true;
 
@@ -184,7 +185,13 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
   {
     case Device::Encoder::Encoder1:
     {
-      m_lengths[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
+      m_lengths[m_currentTrack] = getEncoderValue(
+        valueIncreased_,
+        step,
+        m_lengths[m_currentTrack],
+        1,
+        16
+      );
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
@@ -196,16 +203,25 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
     }
     case Device::Encoder::Encoder2:
     {
-      m_pulses[m_currentTrack]
-        = getEncoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_pulses[m_currentTrack] = getEncoderValue(
+        valueIncreased_,
+        step,
+        m_pulses[m_currentTrack],
+        0, m_lengths[m_currentTrack]
+      );
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case Device::Encoder::Encoder3:
     {
-      m_rotates[m_currentTrack]
-        = getEncoderValue(valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_rotates[m_currentTrack] = getEncoderValue(
+        valueIncreased_,
+        step,
+        m_rotates[m_currentTrack],
+        0,
+        m_lengths[m_currentTrack]
+      );
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
@@ -564,7 +580,13 @@ void Euklid::drawSequencerPage()
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      getDevice(0)->getGraphicDisplay(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, kio::Canvas::Color::White);
+      getDevice(0)->getGraphicDisplay(0)->drawRect(
+        n * 8,
+        15 + (12 * i),
+        7,
+        7,
+        kio::Canvas::Color::White
+      );
     }
   }
 
@@ -609,13 +631,14 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        getDevice(0)->getGraphicDisplay(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7,
-                                                    kio::Canvas::Color::White, kio::Canvas::Color::White);
+        getDevice(0)->getGraphicDisplay(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7,
+                                                           7, kio::Canvas::Color::White,
+                                                           kio::Canvas::Color::White);
       }
     }
-    getDevice(0)->getGraphicDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5, kio::Canvas::Color::Invert);
+    getDevice(0)->getGraphicDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5,
+                                                 kio::Canvas::Color::Invert);
   }
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -627,22 +650,23 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
   {
     case EncoderState::Pulses:
     {
-      m_pulses[m_currentTrack]
-        = getEncoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_pulses[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0,
+                                                 m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Rotate:
     {
-      m_rotates[m_currentTrack]
-        = getEncoderValue(valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
+      m_rotates[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_rotates[m_currentTrack],
+                                                  0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Length:
     {
-      m_lengths[m_currentTrack] = getEncoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
+      m_lengths[m_currentTrack]
+        = getEncoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
