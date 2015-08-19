@@ -119,12 +119,19 @@ public:
    */
 
   
-  //! Is any of the display chunks dirty?
+  //! Is any of the display rows dirty?
   /*!
-   \return  true if the display must be redrawn, false otherwise
+   \return        true if the display must be redrawn, false otherwise
    */
   virtual bool isDirty() const { return m_isDirty; }
-   
+
+  //! Is the specified row dirty?
+  /*!
+   \param row_    The display row to check
+   \return true if the display row must be redrawn, false otherwise
+   */
+  virtual bool isDirtyRow(uint8_t row_) const { return m_isDirty; }
+  
   //! Reset the global dirty flag
   virtual void resetDirtyFlags(){ m_isDirty = false; }
   

@@ -44,6 +44,8 @@ public:
   
   void clear() override;
 
+  bool isDirtyRow(uint8_t row_) const override;
+  
   void printChar(uint8_t col_, uint8_t row_, char c_) override;
 
   void setText(const std::string& string_, uint8_t row_) override; 
@@ -51,6 +53,13 @@ public:
   void setText(unsigned value_, uint8_t row_) override;
 
   void setValue(float value_, uint8_t row_) override;
+  
+private:
+  
+  static constexpr uint8_t kLCDKK_numRows = 3;
+  static constexpr uint8_t kLCDKK_numCols = 8;
+  
+  bool                     m_dirtyFlags[kLCDKK_numRows];
 };
   
 //----------------------------------------------------------------------------------------------------------------------

@@ -47,9 +47,13 @@ namespace kio
 //----------------------------------------------------------------------------------------------------------------------
  
 LCDDisplayKompleteKontrol::LCDDisplayKompleteKontrol()
-  : LCDDisplay(8,3)
+  : LCDDisplay(kLCDKK_numCols,kLCDKK_numRows)
 {
   data().resize(48);
+  for(uint8_t i = 0; i < kLCDKK_numRows; i++)
+  {
+    m_dirtyFlags[i] = false;
+  }
 }
   
 //----------------------------------------------------------------------------------------------------------------------
@@ -69,13 +73,25 @@ void LCDDisplayKompleteKontrol::clear()
 
 //----------------------------------------------------------------------------------------------------------------------
 
+bool LCDDisplayKompleteKontrol::isDirtyRow(uint8_t row_) const
+{
+  if(row_ >= kLCDKK_numRows)
+  {
+    return false;
+  }
+  return m_dirtyFlags[row_];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
 {
-  if(row_<1 || row_>2 || col_ > 7)
+  if(row_<1 || row_>=kLCDKK_numRows || col_ >= kLCDKK_numCols)
   {
     return;
   }
   setDirty(true);
+  m_dirtyFlags[row_] = true;
   unsigned index = (row_ * 16) +col_;
   data()[index++] = kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] & 0xff;
   data()[index++] = (kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
@@ -85,11 +101,12 @@ void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
 
 void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_)
 {
-  if(row_>2)
+  if(row_ >= kLCDKK_numRows)
   {
     return;
   }
   setDirty(true);
+  m_dirtyFlags[row_] = true;
   unsigned index = row_ * 16;
 
   if(row_==0)
@@ -133,11 +150,13 @@ void LCDDisplayKompleteKontrol::setText(unsigned value_, uint8_t row_)
 
 void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
 {
-  if(row_>2)
+  if(row_ >= kLCDKK_numRows)
   {
     return;
   }
   setDirty(true);
+  m_dirtyFlags[row_] = true;
+
   unsigned index = row_ * 16;
   float val = std::min<float>(value_,1.0f);
   
