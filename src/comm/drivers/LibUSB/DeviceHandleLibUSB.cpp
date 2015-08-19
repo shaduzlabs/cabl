@@ -1,28 +1,9 @@
-/*----------------------------------------------------------------------------------------------------------------------   
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "DeviceHandleLibUSB.h"
 
@@ -38,7 +19,7 @@ namespace sl
 namespace kio
 {
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
   : m_pCurrentDevice(pDeviceHandle)
@@ -46,14 +27,14 @@ DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
   m_inputBuffer.resize(kLibUSBInputBufferSize);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceHandleLibUSB::~DeviceHandleLibUSB()
 {
   disconnect();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceHandleLibUSB::disconnect()
 {
@@ -64,7 +45,7 @@ void DeviceHandleLibUSB::disconnect()
   }
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
 bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
 {
@@ -87,7 +68,7 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
   return false;
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
 bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
 {
@@ -113,7 +94,7 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) c
   return false;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceHandleLibUSB::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead cbRead_)
 {
@@ -121,7 +102,7 @@ void DeviceHandleLibUSB::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead 
   readAsyncImpl(endpoint_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
 {
@@ -140,7 +121,7 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
   //!\todo check libusb_submit_transfer return code
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 {
@@ -156,7 +137,7 @@ void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
   }
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 } // kio
 } // sl

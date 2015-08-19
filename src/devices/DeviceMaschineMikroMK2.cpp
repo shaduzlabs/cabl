@@ -1,28 +1,9 @@
-/*----------------------------------------------------------------------------------------------------------------------
-
-                 %%%%%%%%%%%%%%%%%
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/DeviceMaschineMikroMK2.h"
 #include "comm/Driver.h"
@@ -38,7 +19,7 @@
 #include <iostream>
 #include <iomanip>
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace
 {
@@ -47,14 +28,14 @@ static const uint8_t kMikroMK2_epOut = 0x01;
 static const uint8_t kMikroMK2_epInput = 0x84;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace kio
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 enum class DeviceMaschineMikroMK2::Led : uint8_t
 {
@@ -107,7 +88,7 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
   Unknown,
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 
 enum class DeviceMaschineMikroMK2::Button : uint8_t
@@ -148,7 +129,7 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
   None,
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
@@ -158,35 +139,35 @@ DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_
  m_leds.resize(kMikroMK2_ledsDataSize);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
 {
 
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
 {
  //!\todo Use MaschineMikroMK2 virtual midi port
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 GDisplay* DeviceMaschineMikroMK2::getGraphicDisplay(uint8_t displayIndex_)
 {
@@ -199,7 +180,7 @@ GDisplay* DeviceMaschineMikroMK2::getGraphicDisplay(uint8_t displayIndex_)
   return &m_display;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 LCDDisplay* DeviceMaschineMikroMK2::getLCDDisplay(uint8_t displayIndex_)
 {
@@ -207,7 +188,7 @@ LCDDisplay* DeviceMaschineMikroMK2::getLCDDisplay(uint8_t displayIndex_)
   return &s_dummyLCDDisplay;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::tick()
 {
@@ -237,7 +218,7 @@ bool DeviceMaschineMikroMK2::tick()
   return success;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::init()
 {
@@ -249,7 +230,7 @@ void DeviceMaschineMikroMK2::init()
   m_isDirtyLeds = true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::initDisplay() const
 {
@@ -257,7 +238,7 @@ void DeviceMaschineMikroMK2::initDisplay() const
   return;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::sendFrame()
 {
@@ -274,7 +255,7 @@ bool DeviceMaschineMikroMK2::sendFrame()
   return true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::sendLeds()
 {
@@ -289,7 +270,7 @@ bool DeviceMaschineMikroMK2::sendLeds()
   return true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::read()
 {
@@ -322,7 +303,7 @@ bool DeviceMaschineMikroMK2::read()
   return true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
 {
@@ -366,7 +347,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 {
@@ -415,7 +396,7 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
@@ -449,7 +430,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
 {
@@ -464,7 +445,7 @@ bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
   return false;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) const noexcept
 {
@@ -511,7 +492,7 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) 
 #undef M_LED_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
 {
@@ -546,7 +527,7 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) con
 #undef M_PAD_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
 {
@@ -594,7 +575,7 @@ Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexce
 #undef M_LED_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 {
@@ -602,7 +583,7 @@ bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
@@ -610,7 +591,7 @@ bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button b
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 } // kio
 } // sl

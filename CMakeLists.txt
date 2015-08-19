@@ -1,16 +1,9 @@
-# -------------------------------------------------------------------------------------------------------------------- #
 
-                 #################
-                 #################
-                 ###           ###
-                 ###           ###
-                 ###           ###
-####################           #########################################################################################
-####################           ################################################################ www.shaduzlabs.com #####
-
-# -------------------------------------------------------------------------------------------------------------------- #
-#  k-IO Libraries                                                                                                      #
-# -------------------------------------------------------------------------------------------------------------------- #
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #######
 
 cmake_minimum_required (VERSION 2.8.0)
 
@@ -38,7 +31,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
-# Libraries ---------------------------------------------------------------------------------------------------------- #
+# Libraries -------------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
@@ -140,7 +133,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-# RtMidi ------------------------------------------------------------------------------------------------------------- #
+# RtMidi ----------------------------------------------------------------------------------------- #
 set(RTMIDI_INCLUDE_DIR "submodules/rtmidi/")
 set( 
   lib_rtmidi_LIBRARY      
@@ -165,7 +158,7 @@ set_target_properties(
 )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-# Includes ----------------------------------------------------------------------------------------------------------- #
+# Includes --------------------------------------------------------------------------------------- #
 
 set( 
   inc_app_INCLUDES          
@@ -251,7 +244,7 @@ set (
 )
 
 
-# Source files ------------------------------------------------------------------------------------------------------- #
+# Source files ----------------------------------------------------------------------------------- #
 
 set( 
   src_app_SRCS
@@ -394,7 +387,7 @@ set(
 )
 
 
-# All platforms ------------------------------------------------------------------------------------------------------ #
+# All platforms ---------------------------------------------------------------------------------- #
 
 include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${RTMIDI_INCLUDE_DIR})
 
@@ -420,12 +413,12 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 
-# OS X specific ------------------------------------------------------------------------------------------------------ #
+# OS X specific ---------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-  target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit" objc)
-  target_link_libraries( k-IO PUBLIC rtmidi "-framework CoreAudio" "-framework CoreMidi")
+  target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
+  target_link_libraries( k-IO PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
@@ -439,7 +432,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
-# Linux specific ----------------------------------------------------------------------------------------------------- #
+# Linux specific --------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
@@ -457,7 +450,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 
-# Windows specific --------------------------------------------------------------------------------------------------- #
+# Windows specific ------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
@@ -473,15 +466,15 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 
-# Arduino/Teensy specific -------------------------------------------------------------------------------------------- #
+# Arduino/Teensy specific ------------------------------------------------------------------------ #
 
 
-# Unit tests --------------------------------------------------------------------------------------------------------- #
+# Unit tests ------------------------------------------------------------------------------------- #
 
 add_subdirectory(test)
 
 
-# Documentation (doxygen) -------------------------------------------------------------------------------------------- #
+# Documentation (doxygen) ------------------------------------------------------------------------ #
 
 option(BUILD_DOCS "Create and install the HTML based API documentation (requires Doxygen)" ON)
 if(BUILD_DOCS)
@@ -512,7 +505,7 @@ if(BUILD_DOCS)
 endif()
 
 
-# Examples ----------------------------------------------------------------------------------------------------------- #
+# Examples --------------------------------------------------------------------------------------- #
 
 add_subdirectory(examples)
 

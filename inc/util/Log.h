@@ -1,28 +1,9 @@
-/*----------------------------------------------------------------------------------------------------------------------
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #pragma once
 
@@ -49,14 +30,14 @@ namespace sl
 namespace util
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 struct None
 {
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template<typename List>
 struct LogData
@@ -64,7 +45,7 @@ struct LogData
   List list;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template<typename List>
 void Log(const char* time, LogData<List>&& data) NOINLINE_ATTRIBUTE
@@ -74,7 +55,7 @@ void Log(const char* time, LogData<List>&& data) NOINLINE_ATTRIBUTE
   std::cout << std::endl;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template<typename Begin, typename Value>
 constexpr LogData<std::pair<Begin&&, Value&&>> operator<<(LogData<Begin>&& begin, Value&& value) noexcept
@@ -82,7 +63,7 @@ constexpr LogData<std::pair<Begin&&, Value&&>> operator<<(LogData<Begin>&& begin
   return{ { std::forward<Begin>(begin.list), std::forward<Value>(value) } };
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template<typename Begin, size_t n>
 constexpr LogData<std::pair<Begin&&, const char*>> operator<<(LogData<Begin>&& begin, const char(&value)[n]) noexcept
@@ -90,11 +71,11 @@ constexpr LogData<std::pair<Begin&&, const char*>> operator<<(LogData<Begin>&& b
   return{ { std::forward<Begin>(begin.list), value } };
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 typedef std::ostream& (*PfnManipulator)(std::ostream&);
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template<typename Begin>
 constexpr LogData<std::pair<Begin&&, PfnManipulator>> operator<<(LogData<Begin>&& begin, PfnManipulator value) noexcept
@@ -102,7 +83,7 @@ constexpr LogData<std::pair<Begin&&, PfnManipulator>> operator<<(LogData<Begin>&
   return{ { std::forward<Begin>(begin.list), value } };
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 template <typename Begin, typename Last>
 void output(std::ostream& os, std::pair<Begin, Last>&& data)
@@ -111,14 +92,14 @@ void output(std::ostream& os, std::pair<Begin, Last>&& data)
   os << data.second;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 inline void output(std::ostream&, None)
 {
 
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 } // util
 } // sl

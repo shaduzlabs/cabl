@@ -1,28 +1,10 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
 
 #include <cmath>
@@ -44,7 +26,7 @@ namespace sl
 namespace kio
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
  
 LCDDisplayKompleteKontrol::LCDDisplayKompleteKontrol()
   : LCDDisplay(kLCDKK_numCols,kLCDKK_numRows)
@@ -56,14 +38,14 @@ LCDDisplayKompleteKontrol::LCDDisplayKompleteKontrol()
   }
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 LCDDisplayKompleteKontrol::~LCDDisplayKompleteKontrol()
 {
   
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void LCDDisplayKompleteKontrol::clear()
 {
@@ -71,7 +53,7 @@ void LCDDisplayKompleteKontrol::clear()
   setDirty(true);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool LCDDisplayKompleteKontrol::isDirtyRow(uint8_t row_) const
 {
@@ -82,7 +64,7 @@ bool LCDDisplayKompleteKontrol::isDirtyRow(uint8_t row_) const
   return m_dirtyFlags[row_];
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
 {
@@ -97,7 +79,7 @@ void LCDDisplayKompleteKontrol::printChar(uint8_t col_, uint8_t row_, char c_)
   data()[index++] = (kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_)
 {
@@ -139,14 +121,14 @@ void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void LCDDisplayKompleteKontrol::setText(unsigned value_, uint8_t row_)
 {
   
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
 {
@@ -198,7 +180,7 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
 } // kio
 } // sl

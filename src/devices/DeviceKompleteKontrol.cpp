@@ -1,28 +1,9 @@
-/*----------------------------------------------------------------------------------------------------------------------
-
-                 %%%%%%%%%%%%%%%%%
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/DeviceKompleteKontrol.h"
 #include "comm/Driver.h"
@@ -30,7 +11,7 @@
 #include "util/Functions.h"
 #include "gfx/LCDDisplay.h"
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace
 {
@@ -43,14 +24,14 @@ static const uint8_t kKK_epInput   = 0x84;
 
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace kio
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 enum class DeviceKompleteKontrol::Led : uint16_t
 {
@@ -213,7 +194,7 @@ enum class DeviceKompleteKontrol::Led : uint16_t
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 enum class DeviceKompleteKontrol::Button : uint8_t
 {
@@ -258,7 +239,7 @@ enum class DeviceKompleteKontrol::Button : uint8_t
   None,
 };
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numKeys_)
   : Device(std::move(pDeviceHandle_))
@@ -326,7 +307,7 @@ DeviceKompleteKontrol::DeviceKompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, 
 #endif
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceKompleteKontrol::~DeviceKompleteKontrol()
 {
@@ -336,35 +317,35 @@ DeviceKompleteKontrol::~DeviceKompleteKontrol()
 #endif
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::setLed(Device::Key key_, const util::LedColor& color_)
 {
   setLedImpl(getLed(key_), color_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::sendMidiMsg(tRawData midiMsg_)
 {
  //!\todo Use KompleteKontrol hardware midi port
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 GDisplay* DeviceKompleteKontrol::getGraphicDisplay(uint8_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 LCDDisplay* DeviceKompleteKontrol::getLCDDisplay(uint8_t displayIndex_)
 {
@@ -376,7 +357,7 @@ LCDDisplay* DeviceKompleteKontrol::getLCDDisplay(uint8_t displayIndex_)
   return &m_displays[displayIndex_];
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::tick()
 {
@@ -404,14 +385,14 @@ bool DeviceKompleteKontrol::tick()
   return success;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void sl::kio::DeviceKompleteKontrol::init()
 {
   getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kKK_epOut);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::sendDisplayData()
 {
@@ -437,7 +418,7 @@ bool DeviceKompleteKontrol::sendDisplayData()
   return result;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::sendLeds()
 {
@@ -460,7 +441,7 @@ bool DeviceKompleteKontrol::sendLeds()
   return true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::read()
 {
@@ -478,7 +459,7 @@ bool DeviceKompleteKontrol::read()
   return true;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::processButtons(const Transfer& input_)
 {
@@ -540,7 +521,7 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
   m_firstOctave = input_.getData()[37];
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 {
@@ -575,7 +556,7 @@ void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::isRGBLed(Led led_)
 {
@@ -587,7 +568,7 @@ bool DeviceKompleteKontrol::isRGBLed(Led led_)
   return false;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Button btn_) const noexcept
 {
@@ -627,7 +608,7 @@ DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Button btn_) co
 #undef M_LED_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Key key_) const noexcept
 {
@@ -676,7 +657,7 @@ DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Key key_) const
 #undef M_PAD_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 Device::Button DeviceKompleteKontrol::getDeviceButton(Button btn_) const noexcept
 {
@@ -719,7 +700,7 @@ Device::Button DeviceKompleteKontrol::getDeviceButton(Button btn_) const noexcep
 #undef M_LED_CASE
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::isButtonPressed(Button button_) const noexcept
 {
@@ -727,7 +708,7 @@ bool DeviceKompleteKontrol::isButtonPressed(Button button_) const noexcept
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
@@ -735,7 +716,7 @@ bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button bu
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void DeviceKompleteKontrol::midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData)
 {
@@ -750,7 +731,7 @@ void DeviceKompleteKontrol::midiInCallback(double timeStamp, std::vector<unsigne
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 } // kio
 } // sl

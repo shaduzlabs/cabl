@@ -1,28 +1,9 @@
-/*----------------------------------------------------------------------------------------------------------------------
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "catch.hpp"
 
@@ -35,7 +16,7 @@ namespace util
 namespace test
 {
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 TEST_CASE( "Null vs non-null, conversion to bool", "[util/version]" ) {
   Version version_empty;
@@ -49,7 +30,7 @@ TEST_CASE( "Null vs non-null, conversion to bool", "[util/version]" ) {
   CHECK      (version_nonNull_3);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 TEST_CASE( "Constructor, getters and setters", "[util/version]" ) {
   Version version_952(9,5,2);
@@ -90,7 +71,7 @@ TEST_CASE( "Constructor, getters and setters", "[util/version]" ) {
   CHECK( version_empty.getMicro() == 91 );
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 TEST_CASE( "Reset", "[util/version]" ) {
   Version version_1_2_3(1,2,3);
@@ -101,7 +82,7 @@ TEST_CASE( "Reset", "[util/version]" ) {
   CHECK_FALSE(version_1_2_3);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 TEST_CASE( "Conversion to string", "[util/version]" ) {
   Version version_1_2_3(1,2,3);
@@ -117,7 +98,7 @@ TEST_CASE( "Conversion to string", "[util/version]" ) {
   CHECK(version_empty.toString() == "0.0.0");
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 TEST_CASE( "Comparison", "[util/version]" ) {
   Version version_1_2_3(1,2,3);
@@ -146,7 +127,7 @@ TEST_CASE( "Comparison", "[util/version]" ) {
   
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 } // test
 } // util
