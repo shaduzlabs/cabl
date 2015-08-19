@@ -55,7 +55,9 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
       strSerialNumber,
       true
     );
-    M_LOG("[HIDAPI] enumerate: found " << devices->product_string  << " with S/N = " << strSerialNumber);
+    M_LOG("[HIDAPI] enumerate: found " << devices->product_string  
+       << " with S/N = " << strSerialNumber);
+
     collDeviceDescriptor.push_back(deviceDescriptor);
 		devices = devices->next;
 	}
@@ -74,7 +76,13 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 
   std::string serialNumber(device_.getSerialNumber());
   std::wstring wSerialNumber(serialNumber.begin(), serialNumber.end());
-  tDeviceHandle* pCurrentDevice = hid_open(device_.getVendorId(), device_.getProductId(), wSerialNumber.c_str());
+
+  tDeviceHandle* pCurrentDevice = hid_open(
+    device_.getVendorId(), 
+    device_.getProductId(), 
+    wSerialNumber.c_str()
+  );
+  
   if (pCurrentDevice == nullptr)
     return nullptr;
     

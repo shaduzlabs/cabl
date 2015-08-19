@@ -71,22 +71,22 @@ public:
    
   //! Print a string
   /*!
-   \param string_               The string to be printed
-   \param row_                  The row at which the string must be printed
+   \param string_          The string to be printed
+   \param row_             The row at which the string must be printed
    */
   virtual void setText(const std::string& string_, uint8_t row_){}  
   
   //! Print a number
   /*!
-   \param value_                The number to be printed
-   \param row_                  The row at which the number must be printed
+   \param value_           The number to be printed
+   \param row_             The row at which the number must be printed
    */
   virtual void setText(unsigned value_, uint8_t row_){}  
   
   //! Fill characters in a row according to the value
   /*!
-   \param value_                The value to be shown (0...1) by filling the available chars in a row
-   \param row_                  The row at which the value must be shown
+   \param value_           The value to be shown (0...1) by filling the available chars in a row
+   \param row_             The row at which the value must be shown
    */
   virtual void setValue(float value_, uint8_t row_){}
   

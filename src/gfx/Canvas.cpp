@@ -352,7 +352,14 @@ void Canvas::drawRect( uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledRect( uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_, Color fillColor_ )
+void Canvas::drawFilledRect(
+  uint16_t x_, 
+  uint16_t y_, 
+  uint16_t w_, 
+  uint16_t h_, 
+  Color color_, 
+  Color fillColor_
+)
 {
   if( x_ > getWidth() || y_ > getHeight() || w_ == 0 || h_ == 0 )
     return;
@@ -382,7 +389,14 @@ void Canvas::drawFilledRect( uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawRectRounded(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_)
+void Canvas::drawRectRounded(
+  uint16_t x_, 
+  uint16_t y_, 
+  uint16_t w_, 
+  uint16_t h_, 
+  uint16_t r_, 
+  Color color_
+)
 {
   drawFilledRectRounded( x_, y_, w_, h_, r_, color_, Color::None );
 }
@@ -414,17 +428,71 @@ void Canvas::drawFilledRectRounded(
   drawLineVertical  ( ( x_          ), ( y_ + r_     ), ( h_ - rOffset ), color_ );
   drawLineVertical  ( ( x_ + w_ - 1 ), ( y_ + r_     ), ( h_ - rOffset ), color_ );
   
-  drawFilledCircle( ( x_ + r_         ), ( y_ + r_         ), r_, color_, fillColor_, CircleType::QuarterTopLeft );
-  drawFilledCircle( ( x_ + w_ - r_ -1 ), ( y_ + r_         ), r_, color_, fillColor_, CircleType::QuarterTopRight );
-  drawFilledCircle( ( x_ + w_ - r_ -1 ), ( y_ + h_ - r_ -1 ), r_, color_, fillColor_, CircleType::QuarterBottomRight );
-  drawFilledCircle( ( x_ + r_         ), ( y_ + h_ - r_ -1 ), r_, color_, fillColor_, CircleType::QuarterBottomLeft );
+  drawFilledCircle(
+    (x_ + r_), 
+    (y_ + r_), 
+    r_, 
+    color_, 
+    fillColor_, 
+    CircleType::QuarterTopLeft
+  );
+
+  drawFilledCircle(
+    (x_ + w_ - r_ -1),
+    (y_ + r_),
+    r_,
+    color_,
+    fillColor_,
+    CircleType::QuarterTopRight
+    );
+
+  drawFilledCircle(
+    (x_ + w_ - r_ -1),
+    ( y_ + h_ - r_ -1 ),
+    r_,
+    color_,
+    fillColor_,
+    CircleType::QuarterBottomRight
+  );
+
+  drawFilledCircle(
+    (x_ + r_),
+    (y_ + h_ - r_ -1),
+    r_,
+    color_,
+    fillColor_,
+    CircleType::QuarterBottomLeft
+  );
   
   if( fillColor_ == Color::None )
     return;
   
-  drawFilledRect( ( x_ + r_ ), ( y_ + 1           ), ( w_ - rOffset ), ( r_           ), fillColor_, fillColor_ );
-  drawFilledRect( ( x_ + 1  ), ( y_ + r_          ), ( w_ - 2       ), ( h_ - rOffset ), fillColor_, fillColor_ );
-  drawFilledRect( ( x_ + r_ ), ( y_ + h_ - 1 - r_ ), ( w_ - rOffset ), ( r_           ), fillColor_, fillColor_ );
+  drawFilledRect(
+    (x_ + r_),
+    (y_ + 1),
+    (w_ - rOffset),
+    r_, 
+    fillColor_,
+    fillColor_
+  );
+
+  drawFilledRect(
+    (x_ + 1),
+    (y_ + r_),
+    (w_ - 2),
+    (h_ - rOffset),
+    fillColor_,
+    fillColor_
+  );
+
+  drawFilledRect(
+    (x_ + r_),
+    (y_ + h_ - 1 - r_), 
+    (w_ - rOffset ),
+    (r_),
+    fillColor_, 
+    fillColor_
+  );
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -549,7 +617,10 @@ void Canvas::draw(
   uint16_t h_
 )
 {
-  if ( ( xDest_ >= m_width ) || ( yDest_ >= m_height ) || ( xSource_ >= c_.getWidth() ) || ( ySource_ >= c_.getHeight()))
+  if ( (xDest_ >= m_width)  ||
+       (yDest_ >= m_height) ||
+       (xSource_ >= c_.getWidth()) ||
+       (ySource_ >= c_.getHeight()) )
     return;
   
   uint16_t width  = ( w_ <= c_.getWidth()  && w_ > 0 ) ? w_ : c_.getWidth();
@@ -574,7 +645,10 @@ void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color co
   
   uint8_t c = c_ - pFont_->getFirstChar();
   
-  if ( ( x_ >= m_width ) || ( y_ >= m_height ) || c > pFont_->getLastChar() || c_ < pFont_->getFirstChar() )
+  if ( ( x_ >= m_width ) ||
+    ( y_ >= m_height ) ||
+    c > pFont_->getLastChar()
+    || c_ < pFont_->getFirstChar() )
     return;
   
   for ( uint8_t y=0; y < pFont_->getHeight(); y++ )

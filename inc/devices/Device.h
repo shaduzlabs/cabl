@@ -176,10 +176,10 @@ public:
     Unknown,
   };
   
-  using tCbButtonChanged = std::function<void(Button button_, bool buttonState_, bool shiftPressed)>;
-  using tCbEncoderChanged = std::function<void(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)>;
-  using tCbPadChanged = std::function<void(Pad pad_, uint16_t value_, bool shiftPressed)>;
-  using tCbKeyChanged = std::function<void(Key pad_, uint16_t value_, bool shiftPressed)>;
+  using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
+  using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
+  using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
+  using tCbKeyChanged = std::function<void(Key pad_, uint16_t val_, bool shiftKey_)>;
   
   enum class Type
   {
@@ -215,9 +215,21 @@ public:
 
   virtual void sendMidiMsg(tRawData) = 0;
 
-  void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_){ m_cbButtonChanged = cbButtonChanged_; }
-  void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_){ m_cbEncoderChanged = cbEncoderChanged_; }
-  void setCallbackPadChanged(tCbPadChanged cbPadChanged_){ m_cbPadChanged = cbPadChanged_;}
+  void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_)
+  { 
+    m_cbButtonChanged = cbButtonChanged_; 
+  }
+  
+  void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_)
+  { 
+    m_cbEncoderChanged = cbEncoderChanged_; 
+  }
+
+  void setCallbackPadChanged(tCbPadChanged cbPadChanged_)
+  { 
+    m_cbPadChanged = cbPadChanged_;
+  }
+
   void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_){ m_cbKeyChanged = cbKeyChanged_;}
 
   DeviceHandle* getDeviceHandle(){ return m_pDeviceHandle.get(); }

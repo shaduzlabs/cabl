@@ -11,7 +11,9 @@
   #define M_LOG(msg)
 #else
 
-//from: http://stackoverflow.com/questions/19415845/a-better-log-macro-using-template-metaprogramming
+/*
+See: http://stackoverflow.com/questions/19415845/a-better-log-macro-using-template-metaprogramming
+*/
 
 #include <iostream>
 #define M_LOG(msg) (sl::util::Log(__TIME__  , sl::util::LogData<sl::util::None>() << msg))
@@ -58,7 +60,10 @@ void Log(const char* time, LogData<List>&& data) NOINLINE_ATTRIBUTE
 //--------------------------------------------------------------------------------------------------
 
 template<typename Begin, typename Value>
-constexpr LogData<std::pair<Begin&&, Value&&>> operator<<(LogData<Begin>&& begin, Value&& value) noexcept
+constexpr LogData<std::pair<Begin&&, Value&&>> operator<<(
+  LogData<Begin>&& begin, 
+  Value&& value
+) noexcept
 {
   return{ { std::forward<Begin>(begin.list), std::forward<Value>(value) } };
 }
@@ -66,7 +71,10 @@ constexpr LogData<std::pair<Begin&&, Value&&>> operator<<(LogData<Begin>&& begin
 //--------------------------------------------------------------------------------------------------
 
 template<typename Begin, size_t n>
-constexpr LogData<std::pair<Begin&&, const char*>> operator<<(LogData<Begin>&& begin, const char(&value)[n]) noexcept
+constexpr LogData<std::pair<Begin&&, const char*>> operator<<(
+  LogData<Begin>&& begin, 
+  const char(&value)[n]
+) noexcept
 {
   return{ { std::forward<Begin>(begin.list), value } };
 }
@@ -78,7 +86,10 @@ typedef std::ostream& (*PfnManipulator)(std::ostream&);
 //--------------------------------------------------------------------------------------------------
 
 template<typename Begin>
-constexpr LogData<std::pair<Begin&&, PfnManipulator>> operator<<(LogData<Begin>&& begin, PfnManipulator value) noexcept
+constexpr LogData<std::pair<Begin&&, PfnManipulator>> operator<<(
+  LogData<Begin>&& begin, 
+  PfnManipulator value
+) noexcept
 {
   return{ { std::forward<Begin>(begin.list), value } };
 }

@@ -91,7 +91,8 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
     }
     devicesList.push_back(deviceDescriptor);
   }
-  M_LOG("[Application] enumerateDevices: " << devicesList.size() << " known devices found via HIDAPI");
+  M_LOG("[Application] enumerateDevices: " << devicesList.size() 
+     << " known devices found via HIDAPI");
 
   Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif
@@ -144,8 +145,20 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
       unsupportedDevice->tick();
 
       unsupportedDevice->getGraphicDisplay(0)->black();
-      unsupportedDevice->getGraphicDisplay(0)->printStr(0, 0, "Unsupported device!", kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
-      unsupportedDevice->getGraphicDisplay(1)->printStr(12, 44, "Unsupported device!",kio::Canvas::tFont::BIG, kio::Canvas::tColor::INVERT);
+      unsupportedDevice->getGraphicDisplay(0)->printStr(
+        0,
+        0,
+        "Unsupported device!",
+        kio::Canvas::tFont::BIG,
+        kio::Canvas::tColor::INVERT
+      );
+      unsupportedDevice->getGraphicDisplay(1)->printStr(
+        12,
+        44,
+        "Unsupported device!",
+        kio::Canvas::tFont::BIG,
+        kio::Canvas::tColor::INVERT
+      );
 
       unsupportedDevice->tick();
       */

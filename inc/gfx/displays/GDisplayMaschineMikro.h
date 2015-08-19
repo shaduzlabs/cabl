@@ -39,7 +39,7 @@ protected:
      \param color_           The pixel color (white, black, invert)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    void setPixelImpl( uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true ) override;
+    void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override;
     
     //! Get the pixel value
     /*!

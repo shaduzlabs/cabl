@@ -29,7 +29,7 @@ public:
     : m_red(red_)
     , m_green(green_)
     , m_blue(blue_)
-    , m_mono(util::max<uint8_t>( red_, green_, blue_ )) // Maximum decomposition -> take the channel w/ highest value
+    , m_mono(util::max<uint8_t>( red_, green_, blue_ )) // Max decomposition: take the highest value
   {}
   
   LedColor(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_)

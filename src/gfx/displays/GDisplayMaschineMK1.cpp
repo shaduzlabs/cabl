@@ -57,7 +57,7 @@ void GDisplayMaschineMK1::black()
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
   if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
     return;

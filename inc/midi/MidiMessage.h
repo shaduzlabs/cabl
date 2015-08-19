@@ -156,7 +156,7 @@ public:
   
   MidiMessageBase(MidiMessage::Channel channel_, tRawData data_)
     : midi::MidiMessage(MsgType)
-    , m_data{ static_cast<uint8_t>((static_cast<uint8_t>(channel_) | static_cast<uint8_t>(getType()))) }
+    , m_data{static_cast<uint8_t>((static_cast<uint8_t>(channel_)|static_cast<uint8_t>(getType())))}
   {
     m_data.insert(m_data.end(), data_.begin(), data_.end());
   }
@@ -174,7 +174,8 @@ public:
 
   bool operator == (const MidiMessageBase& other_) const
   {
-    return (m_data.size() == other_.m_data.size()) && (std::equal(m_data.begin(),m_data.end(),other_.m_data.begin()));
+    return (m_data.size() == other_.m_data.size()) && 
+           (std::equal(m_data.begin(),m_data.end(),other_.m_data.begin()));
   }
 
   bool operator != (const MidiMessageBase& other_) const
@@ -319,7 +320,7 @@ public:
   tRawData getPayload() const
   {
     size_t headerLength = getManufacturerIdLength() + 1;
-    size_t payloadLength = data().size() - headerLength - ((data()[data().size()-1] == 0xF7) ? 1 : 0);
+    size_t payloadLength = data().size() - headerLength - ((data().back() == 0xF7) ? 1 : 0);
     
     return tRawData(data().begin()+headerLength,data().begin()+headerLength+payloadLength);
   }
@@ -343,7 +344,11 @@ static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
     return nullptr;
   }
   uint8_t status = data_[0];
-  if ((status < 0x80) || (status == 0xF4) || (status == 0xF5) || (status == 0xF9) || (status == 0xFD))
+  if ((status  < 0x80) || 
+      (status == 0xF4) || 
+      (status == 0xF5) || 
+      (status == 0xF9) || 
+      (status == 0xFD))
   {
     return nullptr;
   }
@@ -414,20 +419,86 @@ public:
   virtual ~MidiMessageListener() {}
 
   void setCallbackNoteOff(tCbNoteOff cbNoteOff_) { m_cbNoteOff = cbNoteOff_; }
+
   void setCallbackNoteOn(tCbNoteOn cbNoteOn_) { m_cbNoteOn = cbNoteOn_; }
-  void setCallbackPolyPressure(tCbPolyPressure cbPolyPressure_) { m_cbPolyPressure = cbPolyPressure_; }
-  void setCallbackControlChangee(tCbControlChange cbControlChange_) { m_cbControlChange = cbControlChange_; }
-  void setCallbackProgramChange(tCbProgramChange cbProgramChange_) { m_cbProgramChange = cbProgramChange_; }
-  void setCallbackChannelPressure(tCbChannelPressure cbChannelPressure_) { m_cbChannelPressure = cbChannelPressure_; }
+
+  void setCallbackPolyPressure(tCbPolyPressure cbPolyPressure_)
+  { 
+    m_cbPolyPressure = cbPolyPressure_;
+  }
+
+  void setCallbackControlChangee(tCbControlChange cbControlChange_)
+  {
+    m_cbControlChange = cbControlChange_;
+  }
+
+  void setCallbackProgramChange(tCbProgramChange cbProgramChange_)
+  {
+    m_cbProgramChange = cbProgramChange_;
+  }
+
+  void setCallbackChannelPressure(tCbChannelPressure cbChannelPressure_)
+  {
+    m_cbChannelPressure = cbChannelPressure_;
+  }
+
   void setCallbackPitchBend(tCbPitchBend cbPitchBend_) { m_cbPitchBend = cbPitchBend_; }
 
-  void cbNoteOff(tPtr<NoteOff> msg_) { if (m_cbNoteOff) { m_cbNoteOff(std::move(msg_)); } }
-  void cbNoteOn(tPtr<NoteOn> msg_) { if (m_cbNoteOn) { m_cbNoteOn(std::move(msg_)); } }
-  void cbPolyPressure(tPtr<PolyPressure> msg_) { if (m_cbPolyPressure) { m_cbPolyPressure(std::move(msg_)); } }
-  void cbControlChange(tPtr<ControlChange> msg_) { if (m_cbControlChange) { m_cbControlChange(std::move(msg_)); } }
-  void cbProgramChange(tPtr<ProgramChange> msg_){ if (m_cbProgramChange) { m_cbProgramChange(std::move(msg_)); } }
-  void cbChannelPressure(tPtr<ChannelPressure> msg_) { if (m_cbChannelPressure) { m_cbChannelPressure(std::move(msg_)); } }
-  void cbPitchBend(tPtr<PitchBend> msg_) { if (m_cbPitchBend) { m_cbPitchBend(std::move(msg_)); } }
+  void cbNoteOff(tPtr<NoteOff> msg_)
+  { 
+    if(m_cbNoteOff)
+    { 
+      m_cbNoteOff(std::move(msg_)); 
+    } 
+  }
+
+  void cbNoteOn(tPtr<NoteOn> msg_)
+  {
+    if(m_cbNoteOn)
+    {
+      m_cbNoteOn(std::move(msg_));
+    }
+  }
+
+  void cbPolyPressure(tPtr<PolyPressure> msg_)
+  {
+    if(m_cbPolyPressure)
+    {
+      m_cbPolyPressure(std::move(msg_));
+    }
+  }
+
+  void cbControlChange(tPtr<ControlChange> msg_)
+  {
+    if(m_cbControlChange)
+    {
+      m_cbControlChange(std::move(msg_));
+    }
+  }
+
+  void cbProgramChange(tPtr<ProgramChange> msg_)
+  {
+    if(m_cbProgramChange)
+    {
+      m_cbProgramChange(std::move(msg_));
+    }
+  }
+
+  void cbChannelPressure(tPtr<ChannelPressure> msg_)
+  {
+    if(m_cbChannelPressure)
+    {
+      m_cbChannelPressure(std::move(msg_));
+    }
+  }
+
+  void cbPitchBend(tPtr<PitchBend> msg_)
+  {
+    if(m_cbPitchBend)
+    {
+      m_cbPitchBend(std::move(msg_));
+    }
+  }
 
 private:
 

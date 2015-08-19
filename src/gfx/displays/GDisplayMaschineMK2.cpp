@@ -30,14 +30,19 @@ namespace kio
 //--------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMK2::GDisplayMaschineMK2()
-  : GDisplay( kMASMK2_displayWidth, kMASMK2_displayHeight, kMASMK2_nOfDisplayDataChunks, Allocation::OneBytePacksOneRowOfEightPixels )
+  : GDisplay(
+      kMASMK2_displayWidth, 
+      kMASMK2_displayHeight, 
+      kMASMK2_nOfDisplayDataChunks, 
+      Allocation::OneBytePacksOneRowOfEightPixels
+    )
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
   if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
     return;

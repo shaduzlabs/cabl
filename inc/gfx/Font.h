@@ -37,7 +37,12 @@ public:
   
   virtual bool     getPixel( uint8_t char_, uint8_t x_, uint8_t y_ ) const noexcept = 0;
   
-  virtual inline bool getPixelImpl( uint8_t* pFontData_, uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
+  virtual inline bool getPixelImpl(
+    uint8_t* pFontData_, 
+    uint8_t c_, 
+    uint8_t x_, 
+    uint8_t y_ 
+  ) const noexcept
   {
     if( c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
       return false;
@@ -49,7 +54,8 @@ public:
     else
     {
       return (
-       ( pFontData_[ ( c_ * getHeight() ) + ( y_ * getBytesPerLine() ) + ( x_ >> 3 ) ] & ( 0x080 >> ( x_ % 8 ) ) ) > 0
+        ( pFontData_[ ( c_ * getHeight() ) + ( y_ * getBytesPerLine() ) + ( x_ >> 3 ) ] & 
+        ( 0x080 >> ( x_ % 8 ) ) ) > 0
       );
     }
   }

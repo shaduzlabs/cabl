@@ -30,7 +30,10 @@ class Lib
 
 public:
 
-  static std::string getVersion() { return util::Version(KIO_VERSION_MAJOR, KIO_VERSION_MINOR, KIO_VERSION_MICRO); }
+  static std::string getVersion()
+  { 
+    return util::Version(KIO_VERSION_MAJOR, KIO_VERSION_MINOR, KIO_VERSION_MICRO); 
+  }
   
 };
 

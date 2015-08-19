@@ -409,7 +409,10 @@ bool DeviceKompleteKontrol::sendDisplayData()
         std::copy_n( m_displays[i].getData().data() + (row*16), 16, &displayData[i*16]);
       }
     }
-    if(!getDeviceHandle()->write(Transfer({ 0xe0, 0x00, 0x00, row, 0x00, 0x48, 0x00, 0x01, 0x00 }, displayData), kKK_epOut))
+    if(!getDeviceHandle()->write(
+      Transfer({ 0xe0, 0x00, 0x00, row, 0x00, 0x48, 0x00, 0x01, 0x00 }, displayData), 
+      kKK_epOut
+    ))
     {
       result = false;
     }
@@ -495,8 +498,8 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
   uint8_t currentEncoderValue = input_.getData()[kKK_buttonsDataSize];
   if (currentEncoderValue != m_encoderValues[0])
   {
-    bool valueIncreased
-      = ((m_encoderValues[0] < currentEncoderValue) || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
+    bool valueIncreased = ((m_encoderValues[0] < currentEncoderValue) || 
+      ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
         && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
     m_encoderValues[0] = currentEncoderValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
@@ -504,7 +507,9 @@ void DeviceKompleteKontrol::processButtons(const Transfer& input_)
 
   for (uint8_t encIndex = 0, i = kKK_buttonsDataSize+1; encIndex < 8; i+=2, encIndex++)
   {
-    Device::Encoder encoder = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
+    Device::Encoder encoder = static_cast<Device::Encoder>(
+      static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex
+    );
     uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
     uint16_t hValue = input_.getData()[i+1];
     if(m_encoderValues[encIndex+1] != value)
@@ -544,7 +549,7 @@ void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
     m_ledsKeys[ledIndex - kFirstKeyIndex + 2] = color_.getBlue();
 
     m_isDirtyKeyLeds = m_isDirtyKeyLeds ||
-      (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+     (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
   }
   else
   {
@@ -622,32 +627,38 @@ DeviceKompleteKontrol::Led DeviceKompleteKontrol::getLed(Device::Key key_) const
 
   switch (key_)
   {
-    M_KEY_CASE(Key1);   M_KEY_CASE(Key2);   M_KEY_CASE(Key3);   M_KEY_CASE(Key4);   M_KEY_CASE(Key5);
-    M_KEY_CASE(Key6);   M_KEY_CASE(Key7);   M_KEY_CASE(Key8);   M_KEY_CASE(Key9);   M_KEY_CASE(Key10);
-    M_KEY_CASE(Key11);  M_KEY_CASE(Key12);  M_KEY_CASE(Key13);  M_KEY_CASE(Key14);  M_KEY_CASE(Key15);
-    M_KEY_CASE(Key16);  M_KEY_CASE(Key17);  M_KEY_CASE(Key18);  M_KEY_CASE(Key19);  M_KEY_CASE(Key20);
-    M_KEY_CASE(Key21);  M_KEY_CASE(Key22);  M_KEY_CASE(Key23);  M_KEY_CASE(Key24);  M_KEY_CASE(Key25);
-    M_KEY_CASE(Key26);  M_KEY_CASE(Key27);  M_KEY_CASE(Key28);  M_KEY_CASE(Key29);  M_KEY_CASE(Key30);
-    M_KEY_CASE(Key31);  M_KEY_CASE(Key32);  M_KEY_CASE(Key33);  M_KEY_CASE(Key34);  M_KEY_CASE(Key35);
-    M_KEY_CASE(Key36);  M_KEY_CASE(Key37);  M_KEY_CASE(Key38);  M_KEY_CASE(Key39);  M_KEY_CASE(Key40);
-    M_KEY_CASE(Key41);  M_KEY_CASE(Key42);  M_KEY_CASE(Key43);  M_KEY_CASE(Key44);  M_KEY_CASE(Key45);
-    M_KEY_CASE(Key46);  M_KEY_CASE(Key47);  M_KEY_CASE(Key48);  M_KEY_CASE(Key49);  M_KEY_CASE(Key50);
-    M_KEY_CASE(Key51);  M_KEY_CASE(Key52);  M_KEY_CASE(Key53);  M_KEY_CASE(Key54);  M_KEY_CASE(Key55);
-    M_KEY_CASE(Key56);  M_KEY_CASE(Key57);  M_KEY_CASE(Key58);  M_KEY_CASE(Key59);  M_KEY_CASE(Key60);
-    M_KEY_CASE(Key61);  M_KEY_CASE(Key62);  M_KEY_CASE(Key63);  M_KEY_CASE(Key64);  M_KEY_CASE(Key65);
-    M_KEY_CASE(Key66);  M_KEY_CASE(Key67);  M_KEY_CASE(Key68);  M_KEY_CASE(Key69);  M_KEY_CASE(Key70);
-    M_KEY_CASE(Key71);  M_KEY_CASE(Key72);  M_KEY_CASE(Key73);  M_KEY_CASE(Key74);  M_KEY_CASE(Key75);
-    M_KEY_CASE(Key76);  M_KEY_CASE(Key77);  M_KEY_CASE(Key78);  M_KEY_CASE(Key79);  M_KEY_CASE(Key80);
-    M_KEY_CASE(Key81);  M_KEY_CASE(Key82);  M_KEY_CASE(Key83);  M_KEY_CASE(Key84);  M_KEY_CASE(Key85);
-    M_KEY_CASE(Key86);  M_KEY_CASE(Key87);  M_KEY_CASE(Key88);  M_KEY_CASE(Key89);  M_KEY_CASE(Key90);
-    M_KEY_CASE(Key91);  M_KEY_CASE(Key92);  M_KEY_CASE(Key93);  M_KEY_CASE(Key94);  M_KEY_CASE(Key95);
-    M_KEY_CASE(Key96);  M_KEY_CASE(Key97);  M_KEY_CASE(Key98);  M_KEY_CASE(Key99);  M_KEY_CASE(Key100);
-    M_KEY_CASE(Key101); M_KEY_CASE(Key102); M_KEY_CASE(Key103); M_KEY_CASE(Key104); M_KEY_CASE(Key105);
-    M_KEY_CASE(Key106); M_KEY_CASE(Key107); M_KEY_CASE(Key108); M_KEY_CASE(Key109); M_KEY_CASE(Key110);
-    M_KEY_CASE(Key111); M_KEY_CASE(Key112); M_KEY_CASE(Key113); M_KEY_CASE(Key114); M_KEY_CASE(Key115);
-    M_KEY_CASE(Key116); M_KEY_CASE(Key117); M_KEY_CASE(Key118); M_KEY_CASE(Key119); M_KEY_CASE(Key120);
-    M_KEY_CASE(Key121); M_KEY_CASE(Key122); M_KEY_CASE(Key123); M_KEY_CASE(Key124); M_KEY_CASE(Key125);
-    M_KEY_CASE(Key126); M_KEY_CASE(Key127); M_KEY_CASE(Key128);
+    M_KEY_CASE(Key1);   M_KEY_CASE(Key2);   M_KEY_CASE(Key3);   M_KEY_CASE(Key4);
+    M_KEY_CASE(Key5);   M_KEY_CASE(Key6);   M_KEY_CASE(Key7);   M_KEY_CASE(Key8);
+    M_KEY_CASE(Key9);   M_KEY_CASE(Key10);  M_KEY_CASE(Key11);  M_KEY_CASE(Key12);
+    M_KEY_CASE(Key13);  M_KEY_CASE(Key14);  M_KEY_CASE(Key15);  M_KEY_CASE(Key16);
+    M_KEY_CASE(Key17);  M_KEY_CASE(Key18);  M_KEY_CASE(Key19);  M_KEY_CASE(Key20);
+    M_KEY_CASE(Key21);  M_KEY_CASE(Key22);  M_KEY_CASE(Key23);  M_KEY_CASE(Key24);
+    M_KEY_CASE(Key25);  M_KEY_CASE(Key26);  M_KEY_CASE(Key27);  M_KEY_CASE(Key28);
+    M_KEY_CASE(Key29);  M_KEY_CASE(Key30);  M_KEY_CASE(Key31);  M_KEY_CASE(Key32);
+    M_KEY_CASE(Key33);  M_KEY_CASE(Key34);  M_KEY_CASE(Key35);  M_KEY_CASE(Key36);
+    M_KEY_CASE(Key37);  M_KEY_CASE(Key38);  M_KEY_CASE(Key39);  M_KEY_CASE(Key40);
+    M_KEY_CASE(Key41);  M_KEY_CASE(Key42);  M_KEY_CASE(Key43);  M_KEY_CASE(Key44);
+    M_KEY_CASE(Key45);  M_KEY_CASE(Key46);  M_KEY_CASE(Key47);  M_KEY_CASE(Key48);
+    M_KEY_CASE(Key49);  M_KEY_CASE(Key50);  M_KEY_CASE(Key51);  M_KEY_CASE(Key52);
+    M_KEY_CASE(Key53);  M_KEY_CASE(Key54);  M_KEY_CASE(Key55);  M_KEY_CASE(Key56);
+    M_KEY_CASE(Key57);  M_KEY_CASE(Key58);  M_KEY_CASE(Key59);  M_KEY_CASE(Key60);
+    M_KEY_CASE(Key61);  M_KEY_CASE(Key62);  M_KEY_CASE(Key63);  M_KEY_CASE(Key64);
+    M_KEY_CASE(Key65);  M_KEY_CASE(Key66);  M_KEY_CASE(Key67);  M_KEY_CASE(Key68);
+    M_KEY_CASE(Key69);  M_KEY_CASE(Key70);  M_KEY_CASE(Key71);  M_KEY_CASE(Key72);
+    M_KEY_CASE(Key73);  M_KEY_CASE(Key74);  M_KEY_CASE(Key75);  M_KEY_CASE(Key76);
+    M_KEY_CASE(Key77);  M_KEY_CASE(Key78);  M_KEY_CASE(Key79);  M_KEY_CASE(Key80);
+    M_KEY_CASE(Key81);  M_KEY_CASE(Key82);  M_KEY_CASE(Key83);  M_KEY_CASE(Key84);
+    M_KEY_CASE(Key85);  M_KEY_CASE(Key86);  M_KEY_CASE(Key87);  M_KEY_CASE(Key88);
+    M_KEY_CASE(Key89);  M_KEY_CASE(Key90);  M_KEY_CASE(Key91);  M_KEY_CASE(Key92);
+    M_KEY_CASE(Key93);  M_KEY_CASE(Key94);  M_KEY_CASE(Key95);  M_KEY_CASE(Key96);
+    M_KEY_CASE(Key97);  M_KEY_CASE(Key98);  M_KEY_CASE(Key99);  M_KEY_CASE(Key100);
+    M_KEY_CASE(Key101); M_KEY_CASE(Key102); M_KEY_CASE(Key103); M_KEY_CASE(Key104);
+    M_KEY_CASE(Key105); M_KEY_CASE(Key106); M_KEY_CASE(Key107); M_KEY_CASE(Key108);
+    M_KEY_CASE(Key109); M_KEY_CASE(Key110); M_KEY_CASE(Key111); M_KEY_CASE(Key112);
+    M_KEY_CASE(Key113); M_KEY_CASE(Key114); M_KEY_CASE(Key115); M_KEY_CASE(Key116);
+    M_KEY_CASE(Key117); M_KEY_CASE(Key118); M_KEY_CASE(Key119); M_KEY_CASE(Key120);
+    M_KEY_CASE(Key121); M_KEY_CASE(Key122); M_KEY_CASE(Key123); M_KEY_CASE(Key124);
+    M_KEY_CASE(Key125); M_KEY_CASE(Key126); M_KEY_CASE(Key127); M_KEY_CASE(Key128);
     default:
     {
       return Led::Unknown;
@@ -710,7 +721,10 @@ bool DeviceKompleteKontrol::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool DeviceKompleteKontrol::isButtonPressed(
+  const Transfer& transfer_, 
+  Button button_
+) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
@@ -718,14 +732,18 @@ bool DeviceKompleteKontrol::isButtonPressed(const Transfer& transfer_, Button bu
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceKompleteKontrol::midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData)
+void DeviceKompleteKontrol::midiInCallback(
+  double timeStamp_,
+  std::vector<unsigned char> *pMessage_, 
+  void *userData_
+)
 {
-  sl::kio::DeviceKompleteKontrol* pSelf = (sl::kio::DeviceKompleteKontrol*)userData;
-  if((message->at(0)&0xf0) == 0x90)
+  sl::kio::DeviceKompleteKontrol* pSelf = (sl::kio::DeviceKompleteKontrol*)userData_;
+  if((pMessage_->at(0)&0xf0) == 0x90)
   {
     pSelf->keyChanged(
-      static_cast<Device::Key>(message->at(1) - pSelf->m_firstOctave),
-      message->at(2),
+      static_cast<Device::Key>(pMessage_->at(1) - pSelf->m_firstOctave),
+      pMessage_->at(2),
       pSelf->isButtonPressed(Button::Shift)
     );
   }

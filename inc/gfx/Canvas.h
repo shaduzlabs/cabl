@@ -198,9 +198,26 @@ public:
                                   Color fillColor_
                                   );
   
-  virtual void drawRect( uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_ );
-  virtual void drawFilledRect( uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_, Color fillColor_ );
-  virtual void drawRectRounded(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_);
+  virtual void drawRect(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_);
+
+  virtual void drawFilledRect(
+    uint16_t x_, 
+    uint16_t y_, 
+    uint16_t w_, 
+    uint16_t h_, 
+    Color color_, 
+    Color fillColor_ 
+  );
+
+  virtual void drawRectRounded(
+    uint16_t x_, 
+    uint16_t y_, 
+    uint16_t w_, 
+    uint16_t h_, 
+    uint16_t r_, 
+    Color color_
+  );
+
   virtual void drawFilledRectRounded(
                                      uint16_t x_,
                                      uint16_t y_,
@@ -211,7 +228,13 @@ public:
                                      Color fillColor_
                                      );
   
-  virtual void drawCircle( uint16_t rx, uint16_t ry, uint16_t r, Color color_, CircleType = CircleType::Full );
+  virtual void drawCircle(
+    uint16_t rx_, 
+    uint16_t ry_, 
+    uint16_t r_, 
+    Color color_, 
+    CircleType = CircleType::Full 
+  );
   
   virtual void drawFilledCircle(
                                 uint16_t x_,
@@ -253,11 +276,11 @@ public:
   
   //! Print a single char
   /*!
-   \param x_               The X coordinate
-   \param y_               The Y coordinate
-   \param c_               The char to be printed
-   \param font_            The font (Default is the global font which can be set using setDefaultFont)
-   \param color_           The color of the pixels
+   \param x_             The X coordinate
+   \param y_             The Y coordinate
+   \param c_             The char to be printed
+   \param font_          The font (Default is the global font which can be set using setDefaultFont)
+   \param color_         The color of the pixels
    */
   virtual void printChar(
                          uint16_t x_,
@@ -269,12 +292,12 @@ public:
   
   //! Print a string
   /*!
-   \param x_               The X coordinate
-   \param y_               The Y coordinate
-   \param pStr_            The string to be printed
-   \param font_            The font (Default is the global font which can be set using setDefaultFont)
-   \param color_           The color of the pixels
-   \param spacing_         Additional space between characters in pixels
+   \param x_             The X coordinate
+   \param y_             The Y coordinate
+   \param pStr_          The string to be printed
+   \param font_          The font (Default is the global font which can be set using setDefaultFont)
+   \param color_         The color of the pixels
+   \param spacing_       Additional space between characters in pixels
    */
   virtual void printStr(
                         uint16_t x_,
@@ -364,7 +387,7 @@ public:
    */
   uint16_t getHeight() const noexcept { return m_height; }
       
-  //! Print a string representation of the Canvas data (space if value of the pixel is 0, '0' otherwise)
+  //! Print a string representation of the Canvas (space if value of the pixel is 0, '0' otherwise)
   virtual void toString();
   
   /** @} */ // End of group Utility

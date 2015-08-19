@@ -126,7 +126,11 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
 void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 {
   DeviceHandleLibUSB* pSelf = (DeviceHandleLibUSB*)pTransfer_->user_data;
-  if(pSelf->m_cbRead && pTransfer_->status == LIBUSB_TRANSFER_COMPLETED && pTransfer_->actual_length > 0)
+  if(
+    pSelf->m_cbRead && 
+    pTransfer_->status == LIBUSB_TRANSFER_COMPLETED && 
+    pTransfer_->actual_length > 0
+  )
   {
     tRawData data(pTransfer_->buffer, pTransfer_->buffer + pTransfer_->actual_length);
     pSelf->m_cbRead({ data });

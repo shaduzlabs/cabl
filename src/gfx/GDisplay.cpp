@@ -29,7 +29,12 @@ namespace kio
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation allocationType_ )
+GDisplay::GDisplay(
+  uint16_t width_, 
+  uint16_t height_, 
+  uint8_t numDisplayChunks_, 
+  Allocation allocationType_
+)
 : Canvas( width_, height_, allocationType_ )
 , m_isDirty(false)
 , m_numDisplayChunks( numDisplayChunks_ )

@@ -350,8 +350,10 @@ bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
     uint8_t firstByte = 0xE0| displayIndex_;
     chunkByte = chunk * 8;
     const uint8_t* ptr = m_displays[displayIndex_].getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
-                    kMASMK2_epDisplay))
+    if(!getDeviceHandle()->write(
+      Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
+      kMASMK2_epDisplay)
+    )
     {
       return false;
     }
@@ -453,19 +455,21 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   }
   
   // Now process the encoder data
-  uint8_t currentEncoderValue = input_.getData()[kMASMK2_buttonsDataSize];
-  if (currentEncoderValue != m_encoderValues[0])
+  uint8_t currValue = input_.getData()[kMASMK2_buttonsDataSize];
+  if (currValue != m_encoderValues[0])
   {
-    bool valueIncreased
-      = ((m_encoderValues[0] < currentEncoderValue) || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
+    bool valueIncreased = (
+      (m_encoderValues[0] < currValue) || ((m_encoderValues[0] == 0x0f) && (currValue == 0x00)))
         && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
-    m_encoderValues[0] = currentEncoderValue;
+    m_encoderValues[0] = currValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
   for (uint8_t encIndex = 0, i = kMASMK2_buttonsDataSize+1; encIndex < 8; i+=2, encIndex++)
   {
-    Device::Encoder encoder = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
+    Device::Encoder encoder = static_cast<Device::Encoder>(
+      static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex
+    );
     uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
     uint16_t hValue = input_.getData()[i+1];
     if(m_encoderValues[encIndex+1] != value)
@@ -550,8 +554,11 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       m_ledsPads[ledIndex - kFirstPadIndex] = color_.getRed();
       m_ledsPads[ledIndex - kFirstPadIndex + 1] = color_.getGreen();
       m_ledsPads[ledIndex - kFirstPadIndex + 2] = color_.getBlue();
-      m_isDirtyPadLeds = m_isDirtyPadLeds ||
-        (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+      m_isDirtyPadLeds = m_isDirtyPadLeds || (
+        currentR != color_.getRed() || 
+        currentG != color_.getGreen() || 
+        currentB != color_.getBlue()
+      );
     }
     else
     {
@@ -567,8 +574,11 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       m_ledsGroups[ledIndex - firstGroupIndex + 4] = color_.getGreen();
       m_ledsGroups[ledIndex - firstGroupIndex + 5] = color_.getBlue();
 
-      m_isDirtyGroupLeds = m_isDirtyGroupLeds ||
-        (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+      m_isDirtyGroupLeds = m_isDirtyGroupLeds || (
+        currentR != color_.getRed() || 
+        currentG != color_.getGreen() || 
+        currentB != color_.getBlue()
+      );
     }
 
   }
@@ -594,11 +604,12 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 bool DeviceMaschineMK2::isRGBLed(Led led_)
 {
 
-  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ || Led::GroupE == led_
-      || Led::GroupF == led_ || Led::GroupG == led_ || Led::GroupH == led_ || Led::Pad1 == led_ || Led::Pad2 == led_
-      || Led::Pad3 == led_ || Led::Pad4 == led_ || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_
-      || Led::Pad8 == led_ || Led::Pad9 == led_ || Led::Pad10 == led_ || Led::Pad11 == led_ || Led::Pad12 == led_
-      || Led::Pad13 == led_ || Led::Pad14 == led_ || Led::Pad15 == led_ || Led::Pad16 == led_)
+  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ ||
+      Led::GroupE == led_ || Led::GroupF == led_ || Led::GroupG == led_ || Led::GroupH == led_ ||
+      Led::Pad1   == led_ || Led::Pad2   == led_ || Led::Pad3   == led_ || Led::Pad4   == led_ ||
+      Led::Pad5   == led_ || Led::Pad6   == led_ || Led::Pad7   == led_ || Led::Pad8   == led_ ||
+      Led::Pad9   == led_ || Led::Pad10  == led_ || Led::Pad11  == led_ || Led::Pad12  == led_ ||
+      Led::Pad13  == led_ || Led::Pad14  == led_ || Led::Pad15  == led_ || Led::Pad16  == led_  )
   {
     return true;
   }

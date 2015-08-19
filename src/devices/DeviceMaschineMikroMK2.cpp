@@ -246,8 +246,10 @@ bool DeviceMaschineMikroMK2::sendFrame()
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display.getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-      kMikroMK2_epDisplay))
+    if(!getDeviceHandle()->write(
+      Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+      kMikroMK2_epDisplay)
+    )
     {
       return false;
     }
@@ -338,8 +340,8 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
     uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
     if (m_encoderValue != currentEncoderValue)
     {
-      bool valueIncreased
-        = ((m_encoderValue < currentEncoderValue) || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
+      bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
+        ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
         encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
       m_encoderValue = currentEncoderValue;
@@ -418,7 +420,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
     m_leds[ledIndex + 2] = color_.getBlue();
 
     m_isDirtyLeds = m_isDirtyLeds ||
-      (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+     (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
   }
   else
   {
@@ -434,10 +436,12 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
 {
-  if (Led::Group == led_ || Led::Pad1 == led_ || Led::Pad2 == led_ || Led::Pad3 == led_ || Led::Pad4 == led_
-      || Led::Pad5 == led_ || Led::Pad6 == led_ || Led::Pad7 == led_ || Led::Pad8 == led_ || Led::Pad9 == led_
-      || Led::Pad10 == led_ || Led::Pad11 == led_ || Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_
-      || Led::Pad15 == led_ || Led::Pad16 == led_)
+  if (Led::Group == led_ || Led::Pad1  == led_ || Led::Pad2  == led_ || Led::Pad3  == led_ ||
+      Led::Pad4  == led_ || Led::Pad5  == led_ || Led::Pad6  == led_ || Led::Pad7  == led_ ||
+      Led::Pad8  == led_ || Led::Pad9  == led_ || Led::Pad10 == led_ || Led::Pad11 == led_ ||
+      Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_ || Led::Pad15 == led_ || 
+      Led::Pad16 == led_
+  )
   {
     return true;
   }
@@ -585,7 +589,10 @@ bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool DeviceMaschineMikroMK2::isButtonPressed(
+  const Transfer& transfer_, 
+  Button button_
+) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
