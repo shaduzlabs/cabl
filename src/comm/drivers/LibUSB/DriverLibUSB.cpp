@@ -47,7 +47,7 @@ DriverLibUSB::~DriverLibUSB()
   struct timeval tv = { 1, 0 };
   int completed = 0;
 
-  int err = libusb_handle_events_timeout_completed(m_pContext, &tv, &completed);
+  libusb_handle_events_timeout_completed(m_pContext, &tv, &completed);
 
   libusb_exit( m_pContext );
   if (m_usbThread.joinable())

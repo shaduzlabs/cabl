@@ -387,7 +387,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   const uint16_t dataSize = 502;
   
   if(!getDeviceHandle()->write(
-      Transfer({ displayNumber, 0x01, 0xF7, 0x5C },
+      Transfer({ d, 0x01, 0xF7, 0x5C },
         m_displays[displayIndex_].getPtr( offset ),
         dataSize
       ),
@@ -397,12 +397,12 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
     return false;
   }
   
-  displayNumber++;
+  d++;
   for(uint8_t chunk = 1; chunk < m_displays[displayIndex_].getNumberOfChunks() - 1 ; chunk++ )
   {
     offset += dataSize;
     if(!getDeviceHandle()->write(
-        Transfer({ displayNumber, 0x01, 0xF6 },
+        Transfer({ d, 0x01, 0xF6 },
           m_displays[displayIndex_].getPtr( offset ),
           dataSize
         ),
@@ -417,7 +417,7 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
   
   if(!getDeviceHandle()->write(
     Transfer(
-      { displayNumber, 0x01, 0x52 },
+      { d, 0x01, 0x52 },
       m_displays[displayIndex_].getPtr( offset ),
       338
     ),

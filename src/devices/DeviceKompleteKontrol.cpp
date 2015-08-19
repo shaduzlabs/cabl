@@ -15,13 +15,11 @@
 
 namespace
 {
-static const std::string  kKK_midiPortName = "KOMPLETE KONTROL S";
-static const uint8_t kKK_ledsDataSize = 25;
+  static const std::string  kKK_midiPortName = "KOMPLETE KONTROL S";
+  static const uint8_t kKK_ledsDataSize = 25;
 
-static const uint8_t kKK_epDisplay = 0x08;
-static const uint8_t kKK_epOut     = 0x02;
-static const uint8_t kKK_epInput   = 0x84;
-
+  static const uint8_t kKK_epOut     = 0x02;
+  static const uint8_t kKK_epInput   = 0x84;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -5,13 +5,12 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#pragma once
+#include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
 #include <cmath>
 #include <stdint.h>
 
 #include "util/Log.h"
-#include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
 namespace
 {

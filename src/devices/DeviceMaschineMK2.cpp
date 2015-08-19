@@ -460,7 +460,7 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
   {
     bool valueIncreased = (
       (m_encoderValues[0] < currValue) || ((m_encoderValues[0] == 0x0f) && (currValue == 0x00)))
-        && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
+        && (!((m_encoderValues[0] == 0x0) && (currValue == 0x0f)));
     m_encoderValues[0] = currValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }

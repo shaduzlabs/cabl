@@ -483,12 +483,12 @@ if(BUILD_DOCS)
     message(FATAL_ERROR "Doxygen is needed to build the documentation.")
   endif()
  
-  set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/docs/Doxyfile.in )
-  set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                       )
+  set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/doxygen/Doxyfile.in )
+  set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                          )
 
-  set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                            ) 
-  set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                           ) 
-  set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                      ) 
+  set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                               ) 
+  set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                              ) 
+  set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                         ) 
   
   set( doxy_kio_version     "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
  
