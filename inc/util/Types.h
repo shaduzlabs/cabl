@@ -12,6 +12,10 @@
 
 #include "util/CircularBuffer.h"
 
+#ifndef WIN32
+#define __stdcall
+#endif
+
 namespace sl
 {
 namespace kio
