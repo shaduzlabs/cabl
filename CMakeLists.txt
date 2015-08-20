@@ -15,9 +15,10 @@ set(DEBUG_SUFFIX          "_d")
 
 # The version number.
 set (k-IO_VERSION_MAJOR 0)
-set (k-IO_VERSION_MINOR 2)
+set (k-IO_VERSION_MINOR 9)
 set (k-IO_VERSION_MICRO 1)
- 
+set( k-IO_VERSION_STRING ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO})
+
 enable_testing()
 
 configure_file (
@@ -401,6 +402,8 @@ add_library( k-IO SHARED ${k-IO_ALL} )
 set_target_properties(
   k-IO
   PROPERTIES 
+    VERSION             "${k-IO_VERSION_STRING}"
+    SOVERSION           "${k-IO_VERSION_STRING}"
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
@@ -409,6 +412,7 @@ add_library( k-IOStatic STATIC ${k-IO_ALL} )
 set_target_properties(
   k-IOStatic 
   PROPERTIES 
+    VERSION             "${k-IO_VERSION_STRING}"
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
@@ -428,7 +432,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-
+  
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
