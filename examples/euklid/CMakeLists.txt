@@ -11,6 +11,19 @@
 
 project(euklid)
 
+set(VERSION_RESOURCES "")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  generateProductVersion(
+     VERSION_RESOURCES
+     NAME           ${PROJECT_NAME}
+     ICON           "${CMAKE_CURRENT_SOURCE_DIR}/icon.ico"
+     VERSION_MAJOR  ${k-IO_VERSION_MAJOR}
+     VERSION_MINOR  ${k-IO_VERSION_MINOR}
+     VERSION_PATCH  ${k-IO_VERSION_MICRO}
+     COMPANY_NAME   "Vincenzo Pacella"
+  ) 
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 SET( 
   Examples_euklid_FILES      
     main.cpp
@@ -18,6 +31,7 @@ SET(
     Sequence.h
     Euklid.h
     Euklid.cpp
+    ${VERSION_RESOURCES}
 )
 
 add_executable(

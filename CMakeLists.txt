@@ -33,7 +33,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
 # Libraries -------------------------------------------------------------------------------------- #
-
+set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -41,6 +41,17 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_package(libusb REQUIRED)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/support/windows/cmake")
+  include(GenerateProductVersion)
+  generateProductVersion(
+     VERSION_RESOURCES
+     NAME k-IO
+     VERSION_MAJOR ${k-IO_VERSION_MAJOR}
+     VERSION_MINOR ${k-IO_VERSION_MINOR}
+     VERSION_PATCH ${k-IO_VERSION_MICRO}
+     COMPANY_NAME  "Vincenzo Pacella"
+  )
 
   set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
   set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
@@ -242,6 +253,7 @@ set (
     ${inc_midi_INCLUDES}
     ${inc_util_INCLUDES}
     ${inc_INCLUDES}
+    ${VERSION_RESOURCES}
 )
 
 
