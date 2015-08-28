@@ -11,7 +11,8 @@
 
 #include "comm/Driver.h"
 #include "devices/Device.h"
-#include "midi/MidiMessage.h"
+
+#include "midi/MidiMessage.hpp"
 
 namespace sl
 {

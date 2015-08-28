@@ -236,7 +236,7 @@ set(
 
 set( 
   inc_midi_INCLUDES
-    inc/midi/MidiMessage.h
+    inc/midi/MidiMessage.hpp
 )
 
 set( 

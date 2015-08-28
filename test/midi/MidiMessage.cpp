@@ -7,8 +7,10 @@
 
 #include "catch.hpp"
 
-#include <midi/MidiMessage.h>
+#include <midi/MidiMessage.hpp>
 #include <util/Log.h>
+
+using namespace std::placeholders;
 
 namespace sl
 {
@@ -22,13 +24,13 @@ class TestMidiListenerCallbacks : public MidiMessageListener
 public:
   TestMidiListenerCallbacks()
   {
-    setCallbackNoteOff(std::bind(&TestMidiListenerCallbacks::noteOff, this, std::placeholders::_1));
-    setCallbackNoteOn(std::bind(&TestMidiListenerCallbacks::noteOn, this, std::placeholders::_1));
-    setCallbackPolyPressure(std::bind(&TestMidiListenerCallbacks::polyPressure, this, std::placeholders::_1));
-    setCallbackControlChangee(std::bind(&TestMidiListenerCallbacks::controlChange, this, std::placeholders::_1));
-    setCallbackProgramChange(std::bind(&TestMidiListenerCallbacks::programChange, this, std::placeholders::_1));
-    setCallbackChannelPressure(std::bind(&TestMidiListenerCallbacks::channelPressure, this, std::placeholders::_1));
-    setCallbackPitchBend(std::bind(&TestMidiListenerCallbacks::pitchBend, this, std::placeholders::_1));
+    setCallbackNoteOff(std::bind(&TestMidiListenerCallbacks::noteOff, this, _1));
+    setCallbackNoteOn(std::bind(&TestMidiListenerCallbacks::noteOn, this, _1));
+    setCallbackPolyPressure(std::bind(&TestMidiListenerCallbacks::polyPressure, this, _1));
+    setCallbackControlChangee(std::bind(&TestMidiListenerCallbacks::controlChange, this, _1));
+    setCallbackProgramChange(std::bind(&TestMidiListenerCallbacks::programChange, this, _1));
+    setCallbackChannelPressure(std::bind(&TestMidiListenerCallbacks::channelPressure, this, _1));
+    setCallbackPitchBend(std::bind(&TestMidiListenerCallbacks::pitchBend, this, _1));
   }
 
   void noteOff(tPtr<NoteOff> msg)
@@ -92,25 +94,25 @@ TEST_CASE("Test MidiMessageListener callbacks", "[midi]")
   TestMidiListenerCallbacks midiListener;
 
   NoteOff msgNoteOff(MidiMessage::Channel::Ch1, 0x61,0x41);
-  processMidi(&midiListener, msgNoteOff.data());
+  midiListener.process(msgNoteOff.data());
 
   NoteOn msgNoteOn(MidiMessage::Channel::Ch2, 0x62,0x42);
-  processMidi(&midiListener, msgNoteOn.data());
+  midiListener.process(msgNoteOn.data());
   
   PolyPressure msgPolyPressure(MidiMessage::Channel::Ch3, 0x63,0x43);
-  processMidi(&midiListener, msgPolyPressure.data());
+  midiListener.process(msgPolyPressure.data());
 
   ControlChange msgControlChange(MidiMessage::Channel::Ch4, 0x64,0x44);
-  processMidi(&midiListener, msgControlChange.data());
+  midiListener.process(msgControlChange.data());
 
   ProgramChange msgProgramChange(MidiMessage::Channel::Ch5, 0x65 );
-  processMidi(&midiListener, msgProgramChange.data());
+  midiListener.process(msgProgramChange.data());
 
   ChannelPressure msgChannelPressure(MidiMessage::Channel::Ch6, 0x66 );
-  processMidi(&midiListener, msgChannelPressure.data());
+  midiListener.process(msgChannelPressure.data());
 
   PitchBend msgPitchBend(MidiMessage::Channel::Ch7, 0x7F, 0x11 );
-  processMidi(&midiListener, msgPitchBend.data());
+  midiListener.process(msgPitchBend.data());
 }
  
 

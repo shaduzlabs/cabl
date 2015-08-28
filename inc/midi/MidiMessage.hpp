@@ -336,74 +336,6 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-static tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
-{
-  size_t length = data_.size();
-  if (length < 1)
-  {
-    return nullptr;
-  }
-  uint8_t status = data_[0];
-  if ((status  < 0x80) || 
-      (status == 0xF4) || 
-      (status == 0xF5) || 
-      (status == 0xF9) || 
-      (status == 0xFD))
-  {
-    return nullptr;
-  }
-  else if (status < 0xF0)
-  {
-    MidiMessage::Type type = static_cast<MidiMessage::Type>(status & 0xF0);
-    MidiMessage::Channel channel = static_cast<MidiMessage::Channel>(status & 0x0F);
-
-#define M_CHANNEL_MSG_2(idMsg)     \
-  case MidiMessage::Type::idMsg:   \
-    return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
-#define M_CHANNEL_MSG_3(idMsg)     \
-  case MidiMessage::Type::idMsg:   \
-    return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
-
-    switch (type)
-    {
-      M_CHANNEL_MSG_3(NoteOff);
-      M_CHANNEL_MSG_3(NoteOn);
-      M_CHANNEL_MSG_3(PolyPressure);
-      M_CHANNEL_MSG_3(ControlChange);
-      M_CHANNEL_MSG_2(ProgramChange);
-      M_CHANNEL_MSG_2(ChannelPressure);
-      M_CHANNEL_MSG_3(PitchBend);
-      default:
-        return nullptr;
-    }
-#undef M_CHANNEL_MSG_2
-#undef M_CHANNEL_MSG_3
-  }
-  else
-  {
-    MidiMessage::Type type = static_cast<MidiMessage::Type>(status);
-    if(type == MidiMessage::Type::Reserved_0 ||
-       type == MidiMessage::Type::Reserved_1 ||
-       type == MidiMessage::Type::Reserved_2 ||
-       type == MidiMessage::Type::Reserved_3
-    )
-    {
-      return nullptr;
-    }
-    switch (type)
-    {
-      case MidiMessage::Type::Sysex:
-      {
-        return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
-      }
-      default:
-        return nullptr;
-    }
-  }
-
-}
-
-
 class MidiMessageListener
 {
 public:
@@ -415,6 +347,39 @@ public:
   using tCbProgramChange    = std::function<void(tPtr<ProgramChange>)>;
   using tCbChannelPressure  = std::function<void(tPtr<ChannelPressure>)>;
   using tCbPitchBend        = std::function<void(tPtr<PitchBend>)>;
+
+
+  static void process(double timeStamp_, std::vector<unsigned char> *pMessage_, void *pUserData_)
+  {
+    MidiMessageListener* pSelf = static_cast<MidiMessageListener*>(pUserData_);
+    pSelf->process({pMessage_->begin(),pMessage_->end()});
+  }
+
+  void process(const tRawData& data_)
+  {
+    tPtr<MidiMessage> message = parseMidiMessage(data_);
+    if (message)
+    {
+  #define M_CHANNEL_CB(idMsg)       \
+        case MidiMessage::Type::idMsg: \
+          cb##idMsg(tPtr<idMsg>(dynamic_cast<idMsg*>(message.release()))); \
+          break;
+      switch (message->getType())
+      {
+        M_CHANNEL_CB(NoteOff);
+        M_CHANNEL_CB(NoteOn);
+        M_CHANNEL_CB(PolyPressure);
+        M_CHANNEL_CB(ControlChange);
+        M_CHANNEL_CB(ProgramChange);
+        M_CHANNEL_CB(ChannelPressure);
+        M_CHANNEL_CB(PitchBend);
+        default:
+          break;
+      }
+  #undef M_CHANNEL_MSG_2
+  #undef M_CHANNEL_MSG_3
+    }
+  }
 
   virtual ~MidiMessageListener() {}
 
@@ -502,6 +467,73 @@ public:
 
 private:
 
+  tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
+  {
+    size_t length = data_.size();
+    if (length < 1)
+    {
+      return nullptr;
+    }
+    uint8_t status = data_[0];
+    if ((status  < 0x80) || 
+        (status == 0xF4) || 
+        (status == 0xF5) || 
+        (status == 0xF9) || 
+        (status == 0xFD))
+    {
+      return nullptr;
+    }
+    else if (status < 0xF0)
+    {
+      MidiMessage::Type type = static_cast<MidiMessage::Type>(status & 0xF0);
+      MidiMessage::Channel channel = static_cast<MidiMessage::Channel>(status & 0x0F);
+
+  #define M_CHANNEL_MSG_2(idMsg)     \
+    case MidiMessage::Type::idMsg:   \
+      return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
+  #define M_CHANNEL_MSG_3(idMsg)     \
+    case MidiMessage::Type::idMsg:   \
+      return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
+
+      switch (type)
+      {
+        M_CHANNEL_MSG_3(NoteOff);
+        M_CHANNEL_MSG_3(NoteOn);
+        M_CHANNEL_MSG_3(PolyPressure);
+        M_CHANNEL_MSG_3(ControlChange);
+        M_CHANNEL_MSG_2(ProgramChange);
+        M_CHANNEL_MSG_2(ChannelPressure);
+        M_CHANNEL_MSG_3(PitchBend);
+        default:
+          return nullptr;
+      }
+  #undef M_CHANNEL_MSG_2
+  #undef M_CHANNEL_MSG_3
+    }
+    else
+    {
+      MidiMessage::Type type = static_cast<MidiMessage::Type>(status);
+      if(type == MidiMessage::Type::Reserved_0 ||
+         type == MidiMessage::Type::Reserved_1 ||
+         type == MidiMessage::Type::Reserved_2 ||
+         type == MidiMessage::Type::Reserved_3
+      )
+      {
+        return nullptr;
+      }
+      switch (type)
+      {
+        case MidiMessage::Type::Sysex:
+        {
+          return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
+        }
+        default:
+          return nullptr;
+      }
+    }
+
+  }
+
   tCbNoteOff          m_cbNoteOff;
   tCbNoteOn           m_cbNoteOn;
   tCbPolyPressure     m_cbPolyPressure;
@@ -511,32 +543,7 @@ private:
   tCbPitchBend        m_cbPitchBend;
 };
 
-
-static void processMidi(MidiMessageListener* pListener_, const tRawData& data_)
-{
-  tPtr<MidiMessage> message = parseMidiMessage(data_);
-  if (message)
-  {
-#define M_CHANNEL_CB(idMsg)       \
-      case MidiMessage::Type::idMsg: \
-        pListener_->cb##idMsg(tPtr<idMsg>(dynamic_cast<idMsg*>(message.release()))); \
-        break;
-    switch (message->getType())
-    {
-      M_CHANNEL_CB(NoteOff);
-      M_CHANNEL_CB(NoteOn);
-      M_CHANNEL_CB(PolyPressure);
-      M_CHANNEL_CB(ControlChange);
-      M_CHANNEL_CB(ProgramChange);
-      M_CHANNEL_CB(ChannelPressure);
-      M_CHANNEL_CB(PitchBend);
-      default:
-        break;
-    }
-#undef M_CHANNEL_MSG_2
-#undef M_CHANNEL_MSG_3
-  }
-}
+//--------------------------------------------------------------------------------------------------
 
 #undef M_MIDI_BYTE
 
