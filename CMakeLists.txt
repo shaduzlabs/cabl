@@ -32,7 +32,25 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
+
+# OSX specific ----------------------------------------------------------------------------------- #
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(CMAKE_MACOSX_RPATH ON)
+  set(CMAKE_SKIP_BUILD_RPATH FALSE)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+  if("${isSystemDir}" STREQUAL "-1")
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  endif()
+
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+
 # Libraries -------------------------------------------------------------------------------------- #
+
 set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
@@ -145,7 +163,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+
 # RtMidi ----------------------------------------------------------------------------------------- #
+
 set(RTMIDI_INCLUDE_DIR "submodules/rtmidi/")
 set( 
   lib_rtmidi_LIBRARY      
@@ -169,6 +189,7 @@ set_target_properties(
     COMPILE_DEFINITIONS __MACOSX_CORE__
 )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
 
 # Includes --------------------------------------------------------------------------------------- #
 
@@ -432,7 +453,7 @@ set_target_properties(
 # OS X specific ---------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
+  
   target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
   target_link_libraries( k-IO PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
 
