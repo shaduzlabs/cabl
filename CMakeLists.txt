@@ -523,11 +523,17 @@ if(BUILD_DOCS)
   set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/doxygen/Doxyfile.in )
   set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                          )
 
+  set( doxy_project_name    ${PROJECT_NAME}                                         ) 
   set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                               ) 
   set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                              ) 
   set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                         ) 
+  set( doxy_html_header     ${PROJECT_SOURCE_DIR}/support/doxygen/header.html       ) 
+  set( doxy_html_footer     ${PROJECT_SOURCE_DIR}/support/doxygen/footer.html       ) 
+  set( doxy_stylesheet      ${PROJECT_SOURCE_DIR}/support/doxygen/sl-doxygen.css    ) 
+  set( doxy_bootstrap_js    ${PROJECT_SOURCE_DIR}/support/doxygen/doxy-boot.js      ) 
   
-  set( doxy_kio_version     "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
+  set( doxy_project_version "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
+ 
  
   configure_file( ${doxyfile_in} ${doxyfile} @ONLY )
  
