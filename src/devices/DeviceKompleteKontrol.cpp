@@ -561,7 +561,7 @@ void DeviceKompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceKompleteKontrol::isRGBLed(Led led_)
+bool DeviceKompleteKontrol::isRGBLed(Led led_) const noexcept
 {
   if (led_ >= Led::Key1 )
   {

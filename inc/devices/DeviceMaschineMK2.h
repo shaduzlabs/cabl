@@ -62,7 +62,7 @@ private:
   void processPads( const Transfer& );
   
   void setLedImpl(Led, const util::LedColor&);
-  bool isRGBLed( Led );
+  bool isRGBLed(Led) const noexcept;
   Led getLed(Device::Button) const noexcept;
   Led getLed(Device::Pad) const noexcept;
 

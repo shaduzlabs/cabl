@@ -601,7 +601,7 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::isRGBLed(Led led_)
+bool DeviceMaschineMK2::isRGBLed(Led led_) const noexcept
 {
 
   if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ ||

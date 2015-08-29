@@ -108,9 +108,9 @@ bool Euklid::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool shiftState_)
+void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_)
 {
-  if (button_ == kio::Device::Button::F1)
+  if (button_ == Device::Button::F1)
   {
     if (getScreenPage() == Euklid::ScreenPage::Configuration)
     {
@@ -121,7 +121,7 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
       setEncoderState(Euklid::EncoderState::Length);
     }
   }
-  else if (button_ == kio::Device::Button::F2)
+  else if (button_ == Device::Button::F2)
   {
     if (getScreenPage() == Euklid::ScreenPage::Configuration)
     {
@@ -132,46 +132,52 @@ void Euklid::buttonChanged(kio::Device::Button button_, bool buttonState_, bool 
       setEncoderState(Euklid::EncoderState::Pulses);
     }
   }
-  else if (button_ == kio::Device::Button::F3)
+  else if (button_ == Device::Button::F3)
   {
     if (getScreenPage() == Euklid::ScreenPage::Sequencer)
     {
       setEncoderState(Euklid::EncoderState::Rotate);
     }
   }
-  else if (buttonState_ && button_ == kio::Device::Button::Group)
+  else if (buttonState_ && button_ == Device::Button::Group)
   {
     changeTrack();
   }
-  else if (buttonState_ && button_ == kio::Device::Button::PageLeft)
+  else if (buttonState_ && button_ == Device::Button::PageLeft)
   {
     prevTrack();
   }
-  else if (buttonState_ && button_ == kio::Device::Button::PageRight)
+  else if (buttonState_ && button_ == Device::Button::PageRight)
   {
     nextTrack();
   }
-  else if (buttonState_ && button_ == kio::Device::Button::GroupA)
+  else if (buttonState_ && button_ == Device::Button::GroupA)
   {
     changeTrack(0);
   }
-  else if (buttonState_ && button_ == kio::Device::Button::GroupB)
+  else if (buttonState_ && button_ == Device::Button::GroupB)
   {
     changeTrack(1);
   }
-  else if (buttonState_ && button_ == kio::Device::Button::GroupC)
+  else if (buttonState_ && button_ == Device::Button::GroupC)
   {
     changeTrack(2);
   }
-  else if (button_ == kio::Device::Button::Play && buttonState_)
+  else if ((button_ == Device::Button::Play || button_ == Device::Button::Sync) && buttonState_)
   {
     togglePlay();
   }
-  else if (button_ == kio::Device::Button::Control && buttonState_)
+  else if (button_ == Device::Button::Control && buttonState_)
   {
     setScreenPage(getScreenPage() == Euklid::ScreenPage::Configuration
                                   ? Euklid::ScreenPage::Sequencer
                                   : Euklid::ScreenPage::Configuration);
+  }
+  else if(button_ >= Device::Button::Pad1 && button_ <= Device::Button::Pad16 && buttonState_)
+  {
+    uint8_t padIndex = static_cast<uint8_t>(button_) - static_cast<uint8_t>(Device::Button::Pad1 );
+    m_sequences[m_currentTrack].toggleStep(padIndex);
+    m_update = true;
   }
   updateGUI();
 }
@@ -245,7 +251,7 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPressed_)
+void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 {
   static auto lastEvent = std::chrono::system_clock::now();
   auto now = std::chrono::system_clock::now();
@@ -279,7 +285,7 @@ void Euklid::padChanged(kio::Device::Pad pad_, uint16_t value_, bool shiftPresse
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::keyChanged(kio::Device::Key key_, uint16_t value_, bool shiftPressed_)
+void Euklid::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 {
   static auto lastEvent = std::chrono::system_clock::now();
   auto now = std::chrono::system_clock::now();
@@ -450,22 +456,22 @@ void Euklid::updateGroupLeds()
   switch (m_currentTrack)
   {
   case 0:
-    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Black);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
+    getDevice(0)->setLed(Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
+    getDevice(0)->setLed(Device::Button::GroupB, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::GroupC, kEuklidColor_Black);
     break;
   case 1:
-    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Black);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
+    getDevice(0)->setLed(Device::Button::GroupA, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
+    getDevice(0)->setLed(Device::Button::GroupC, kEuklidColor_Black);
     break;
   case 2:
-    getDevice(0)->setLed(kio::Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
-    getDevice(0)->setLed(kio::Device::Button::GroupA, kEuklidColor_Black);
-    getDevice(0)->setLed(kio::Device::Button::GroupB, kEuklidColor_Black);
-    getDevice(0)->setLed(kio::Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
+    getDevice(0)->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
+    getDevice(0)->setLed(Device::Button::GroupA, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::GroupB, kEuklidColor_Black);
+    getDevice(0)->setLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
     break;
   }
 }
@@ -481,8 +487,8 @@ void Euklid::updatePads()
     uint16_t pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, k = m_rotates[t]; i < 16; i++, k++)
     {
-      kio::Device::Pad pad = getPad(i);
-      kio::Device::Key key = static_cast<kio::Device::Key>(i);
+      Device::Pad pad = getPad(i);
+      Device::Key key = static_cast<Device::Key>(i);
 
       if (m_currentTrack == t)
       {
@@ -537,10 +543,10 @@ void Euklid::drawConfigurationPage()
   getDevice(0)->getGraphicDisplay(0)->printStr(10, 12, std::to_string(m_bpm).c_str());
   getDevice(0)->getGraphicDisplay(0)->printStr(59, 12, std::to_string(m_shuffle).c_str());
 
-  getDevice(0)->setLed(kio::Device::Button::F1, 0);
-  getDevice(0)->setLed(kio::Device::Button::F2, 0);
-  getDevice(0)->setLed(kio::Device::Button::F3, 0);
-  getDevice(0)->setLed(kio::Device::Button::Control, 255);
+  getDevice(0)->setLed(Device::Button::F1, 0);
+  getDevice(0)->setLed(Device::Button::F2, 0);
+  getDevice(0)->setLed(Device::Button::F3, 0);
+  getDevice(0)->setLed(Device::Button::Control, 255);
   
   
   
@@ -548,16 +554,16 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(41, 0, 52, 20, kio::Canvas::Color::Invert,
-                                                  kio::Canvas::Color::Invert);
-      getDevice(0)->setLed(kio::Device::Button::F2, 255);
+      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(41, 0, 52, 20, Canvas::Color::Invert,
+                                                  Canvas::Color::Invert);
+      getDevice(0)->setLed(Device::Button::F2, 255);
       break;
     }
     case EncoderState::Speed:
     {
-      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 0, 40, 20, kio::Canvas::Color::Invert,
-                                                  kio::Canvas::Color::Invert);
-      getDevice(0)->setLed(kio::Device::Button::F1, 255);
+      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 0, 40, 20, Canvas::Color::Invert,
+                                                  Canvas::Color::Invert);
+      getDevice(0)->setLed(Device::Button::F1, 255);
       break;
     }
     default:
@@ -585,37 +591,37 @@ void Euklid::drawSequencerPage()
         15 + (12 * i),
         7,
         7,
-        kio::Canvas::Color::White
+        Canvas::Color::White
       );
     }
   }
 
-  getDevice(0)->setLed(kio::Device::Button::F1, 0);
-  getDevice(0)->setLed(kio::Device::Button::F2, 0);
-  getDevice(0)->setLed(kio::Device::Button::F3, 0);
-  getDevice(0)->setLed(kio::Device::Button::Control, 0);
+  getDevice(0)->setLed(Device::Button::F1, 0);
+  getDevice(0)->setLed(Device::Button::F2, 0);
+  getDevice(0)->setLed(Device::Button::F3, 0);
+  getDevice(0)->setLed(Device::Button::Control, 0);
 
   switch (m_encoderState)
   {
     case EncoderState::Pulses:
     {
-      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(43, 0, 42, 10, kio::Canvas::Color::Invert,
-                                                  kio::Canvas::Color::Invert);
-        getDevice(0)->setLed(kio::Device::Button::F2, 255);
+      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(43, 0, 42, 10, Canvas::Color::Invert,
+                                                  Canvas::Color::Invert);
+        getDevice(0)->setLed(Device::Button::F2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
-      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(86, 0, 40, 10, kio::Canvas::Color::Invert,
-                                                  kio::Canvas::Color::Invert);
-      getDevice(0)->setLed(kio::Device::Button::F3, 255);
+      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(86, 0, 40, 10, Canvas::Color::Invert,
+                                                  Canvas::Color::Invert);
+      getDevice(0)->setLed(Device::Button::F3, 255);
       break;
     }
     case EncoderState::Length:
     {
-      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 0, 42, 10, kio::Canvas::Color::Invert,
-                                                  kio::Canvas::Color::Invert);
-      getDevice(0)->setLed(kio::Device::Button::F1, 255);
+      getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 0, 42, 10, Canvas::Color::Invert,
+                                                  Canvas::Color::Invert);
+      getDevice(0)->setLed(Device::Button::F1, 255);
       break;
     }
     default:
@@ -632,12 +638,12 @@ void Euklid::drawSequencerPage()
       if (pulses & (1 << i))
       {
         getDevice(0)->getGraphicDisplay(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7,
-                                                           7, kio::Canvas::Color::White,
-                                                           kio::Canvas::Color::White);
+                                                           7, Canvas::Color::White,
+                                                           Canvas::Color::White);
       }
     }
     getDevice(0)->getGraphicDisplay(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5,
-                                                 kio::Canvas::Color::Invert);
+                                                 Canvas::Color::Invert);
   }
 }
 
@@ -696,12 +702,12 @@ void Euklid::togglePlay()
   m_play = !m_play;
   if (m_play)
   {
-    getDevice(0)->setLed(kio::Device::Button::Play, 255);
+    getDevice(0)->setLed(Device::Button::Play, 255);
     m_clockFuture = std::async(std::launch::async, std::bind(&Euklid::play, this));
   }
   else
   {
-    getDevice(0)->setLed(kio::Device::Button::Play, 0);
+    getDevice(0)->setLed(Device::Button::Play, 0);
     m_clockFuture.get();
     for (uint8_t t = 0; t < kEuklidNumTracks; t++)
     {
@@ -778,51 +784,51 @@ uint8_t Euklid::getEncoderValue(
 
 //--------------------------------------------------------------------------------------------------
 
-kio::Device::Pad Euklid::getPad(uint8_t padIndex_)
+Device::Pad Euklid::getPad(uint8_t padIndex_)
 {
   switch (padIndex_)
   {
-    case 0:  return kio::Device::Pad::Pad13;
-    case 1:  return kio::Device::Pad::Pad14;
-    case 2:  return kio::Device::Pad::Pad15;
-    case 3:  return kio::Device::Pad::Pad16;
-    case 4:  return kio::Device::Pad::Pad9;
-    case 5:  return kio::Device::Pad::Pad10;
-    case 6:  return kio::Device::Pad::Pad11;
-    case 7:  return kio::Device::Pad::Pad12;
-    case 8:  return kio::Device::Pad::Pad5;
-    case 9:  return kio::Device::Pad::Pad6;
-    case 10: return kio::Device::Pad::Pad7;
-    case 11: return kio::Device::Pad::Pad8;
-    case 12: return kio::Device::Pad::Pad1;
-    case 13: return kio::Device::Pad::Pad2;
-    case 14: return kio::Device::Pad::Pad3;
-    case 15: return kio::Device::Pad::Pad4;
+    case 0:  return Device::Pad::Pad13;
+    case 1:  return Device::Pad::Pad14;
+    case 2:  return Device::Pad::Pad15;
+    case 3:  return Device::Pad::Pad16;
+    case 4:  return Device::Pad::Pad9;
+    case 5:  return Device::Pad::Pad10;
+    case 6:  return Device::Pad::Pad11;
+    case 7:  return Device::Pad::Pad12;
+    case 8:  return Device::Pad::Pad5;
+    case 9:  return Device::Pad::Pad6;
+    case 10: return Device::Pad::Pad7;
+    case 11: return Device::Pad::Pad8;
+    case 12: return Device::Pad::Pad1;
+    case 13: return Device::Pad::Pad2;
+    case 14: return Device::Pad::Pad3;
+    case 15: return Device::Pad::Pad4;
   }
-  return kio::Device::Pad::Unknown;
+  return Device::Pad::Unknown;
 }
 //--------------------------------------------------------------------------------------------------
 
-uint8_t Euklid::getPadIndex(kio::Device::Pad pad_)
+uint8_t Euklid::getPadIndex(Device::Pad pad_)
 {
   switch (pad_)
   {
-    case kio::Device::Pad::Pad13: return 0;
-    case kio::Device::Pad::Pad14: return 1;
-    case kio::Device::Pad::Pad15: return 2;
-    case kio::Device::Pad::Pad16: return 3;
-    case kio::Device::Pad::Pad9:  return 4;
-    case kio::Device::Pad::Pad10: return 5;
-    case kio::Device::Pad::Pad11: return 6;
-    case kio::Device::Pad::Pad12: return 7;
-    case kio::Device::Pad::Pad5:  return 8;
-    case kio::Device::Pad::Pad6:  return 9;
-    case kio::Device::Pad::Pad7:  return 10;
-    case kio::Device::Pad::Pad8:  return 11;
-    case kio::Device::Pad::Pad1:  return 12;
-    case kio::Device::Pad::Pad2:  return 13;
-    case kio::Device::Pad::Pad3:  return 14;
-    case kio::Device::Pad::Pad4:  return 15;
+    case Device::Pad::Pad13: return 0;
+    case Device::Pad::Pad14: return 1;
+    case Device::Pad::Pad15: return 2;
+    case Device::Pad::Pad16: return 3;
+    case Device::Pad::Pad9:  return 4;
+    case Device::Pad::Pad10: return 5;
+    case Device::Pad::Pad11: return 6;
+    case Device::Pad::Pad12: return 7;
+    case Device::Pad::Pad5:  return 8;
+    case Device::Pad::Pad6:  return 9;
+    case Device::Pad::Pad7:  return 10;
+    case Device::Pad::Pad8:  return 11;
+    case Device::Pad::Pad1:  return 12;
+    case Device::Pad::Pad2:  return 13;
+    case Device::Pad::Pad3:  return 14;
+    case Device::Pad::Pad4:  return 15;
     default: return 0;
   }
   return 0;

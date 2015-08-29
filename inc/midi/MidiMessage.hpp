@@ -56,6 +56,19 @@ public:
   
   }
   
+  MidiNote(uint8_t note_)
+  {
+    m_octave = static_cast<int8_t>(M_MIDI_BYTE(note_) / 12) - 2;
+    m_note = static_cast<Name>(note_%12);
+  }
+  
+  bool operator==(const MidiNote& other_) const
+  {
+    return (m_note == other_.m_note) && (m_octave == m_octave);
+  }
+
+  bool operator!=(const MidiNote& other_) const { return !(operator==(other_)); }
+  
   void setNote(Name note_){ m_note = note_; }
   
   uint8_t value()
@@ -197,7 +210,7 @@ public:
   : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_ )})
   {}
 
-  uint8_t getNote() const { return data()[1]; }
+  MidiNote getNote() const { return MidiNote(data()[1]); }
 
   uint8_t getVelocity() const { return data()[2]; }
 
@@ -213,7 +226,7 @@ public:
     : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_) })
   {}
 
-  uint8_t getNote() const { return data()[1]; }
+  MidiNote getNote() const { return MidiNote(data()[1]); }
 
   uint8_t getVelocity() const { return data()[2]; }
 

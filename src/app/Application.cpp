@@ -38,6 +38,8 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
   m_collKnownDevices.emplace_back(0x17CC, 0x1110); // Mikro MK1
   m_collKnownDevices.emplace_back(0x17CC, 0x1200); // Mikro MK2
 
+  m_collKnownDevices.emplace_back(0x17CC, 0x1120); // Traktor F1 MK2
+
 }
 
 //--------------------------------------------------------------------------------------------------

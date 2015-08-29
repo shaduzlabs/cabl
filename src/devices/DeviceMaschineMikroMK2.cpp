@@ -434,7 +434,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isRGBLed(Led led_)
+bool DeviceMaschineMikroMK2::isRGBLed(Led led_) const noexcept
 {
   if (Led::Group == led_ || Led::Pad1  == led_ || Led::Pad2  == led_ || Led::Pad3  == led_ ||
       Led::Pad4  == led_ || Led::Pad5  == led_ || Led::Pad6  == led_ || Led::Pad7  == led_ ||

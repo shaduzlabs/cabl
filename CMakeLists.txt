@@ -215,7 +215,8 @@ set(
     inc/devices/DeviceMaschineMK2.h
     inc/devices/DeviceMaschineMikroMK1.h
     inc/devices/DeviceMaschineMikroMK2.h
-)
+    inc/devices/DeviceTraktorF1MK2.h
+  )
 
 set( 
   inc_gfx_displays_INCLUDES  
@@ -224,6 +225,7 @@ set(
     inc/gfx/displays/GDisplayMaschineMK1.h
     inc/gfx/displays/GDisplayMaschineMK2.h
     inc/gfx/displays/LCDDisplayKompleteKontrol.h
+    inc/gfx/displays/LCDDisplay7Segments.h
 )
 
 set( 
@@ -341,6 +343,7 @@ set(
     src/devices/DeviceMaschineMK1.cpp
     src/devices/DeviceMaschineMK2.cpp
     src/devices/DeviceMaschineMikroMK2.cpp
+    src/devices/DeviceTraktorF1MK2.cpp
 )
 
 set( 
@@ -349,11 +352,13 @@ set(
     src/gfx/displays/GDisplayMaschineMK1.cpp
     src/gfx/displays/GDisplayMaschineMK2.cpp
     src/gfx/displays/LCDDisplayKompleteKontrol.cpp
+    src/gfx/displays/LCDDisplay7Segments.cpp
 )
 
 set( 
   src_gfx_fonts_data_SRCS
     src/gfx/fonts/data/FONT_16-seg.h
+    src/gfx/fonts/data/FONT_7-seg.h
     src/gfx/fonts/data/FONT_big.h
     src/gfx/fonts/data/FONT_normal.h
     src/gfx/fonts/data/FONT_small.h

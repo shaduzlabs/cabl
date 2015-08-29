@@ -118,6 +118,17 @@ public:
     TouchEncoder8,
     TouchEncoderMain,
     
+    //Traktor F1
+    Size,
+    Type,
+    Reverse,
+    Capture,
+    Quant,
+    Sync,
+    Pad1, Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
+    Pad9, Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
+    Stop1, Stop2, Stop3, Stop4,
+    
     Unknown,
   };
 
@@ -176,11 +187,22 @@ public:
     Unknown,
   };
   
+  enum class Potentiometer : uint8_t
+  {
+    CenterDetented1, CenterDetented2, CenterDetented3, CenterDetented4,
+    CenterDetented5, CenterDetented6, CenterDetented7, CenterDetented8,
+    Fader1,  Fader2,  Fader3,  Fader4,  Fader5,  Fader6,  Fader7,  Fader8,
+    Fader9,  Fader10, Fader11, Fader12, Fader13, Fader14, Fader15, Fader16,
+    Unknown,
+  };
+  
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
   using tCbKeyChanged = std::function<void(Key pad_, uint16_t val_, bool shiftKey_)>;
-  
+  using tCbPotentiometerChanged
+    = std::function<void(Potentiometer pad_, uint16_t val_, bool shiftKey_)>;
+
   enum class Type
   {
     Unknown,
@@ -232,6 +254,11 @@ public:
 
   void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_){ m_cbKeyChanged = cbKeyChanged_;}
 
+  void setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_)
+  { 
+    m_cbPotentiometerChanged = cbPotentiometerChanged_;
+  }
+
   DeviceHandle* getDeviceHandle(){ return m_pDeviceHandle.get(); }
   
 protected:
@@ -267,12 +294,21 @@ protected:
     }
   }
   
+  void potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_)
+  {
+    if(m_cbPotentiometerChanged)
+    {
+      m_cbPotentiometerChanged(potentiometer_,value_,shiftPressed_);
+    }
+  }
+  
 private:
 
-  tCbButtonChanged    m_cbButtonChanged;
-  tCbEncoderChanged   m_cbEncoderChanged;
-  tCbPadChanged       m_cbPadChanged;
-  tCbKeyChanged       m_cbKeyChanged;
+  tCbButtonChanged              m_cbButtonChanged;
+  tCbEncoderChanged             m_cbEncoderChanged;
+  tCbPadChanged                 m_cbPadChanged;
+  tCbKeyChanged                 m_cbKeyChanged;
+  tCbPotentiometerChanged       m_cbPotentiometerChanged;
   
   tPtr<DeviceHandle>  m_pDeviceHandle;
 };

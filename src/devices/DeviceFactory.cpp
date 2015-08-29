@@ -16,6 +16,8 @@
 #include "devices/DeviceMaschineMK2.h"
 #include "devices/DeviceMaschineMikroMK2.h"
 
+#include "devices/DeviceTraktorF1MK2.h"
+
 //--------------------------------------------------------------------------------------------------
 
 namespace
@@ -30,6 +32,8 @@ static const unsigned kProduct_MaschineMK1          = 0x0808;
 static const unsigned kProduct_MaschineMK2          = 0x1140;
 static const unsigned kProduct_MaschineMikroMK1     = 0x1110;
 static const unsigned kProduct_MaschineMikroMK2     = 0x1200;
+
+static const unsigned kProduct_TraktorKontrolF1MK2  = 0x1120;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -81,8 +85,14 @@ Device* DeviceFactory::getDevice(
     {
       return new DeviceMaschineMikroMK2(std::move(pDeviceHandle_));
     }
+    case kProduct_TraktorKontrolF1MK2:
+    {
+      return new DeviceTraktorF1MK2(std::move(pDeviceHandle_));
+    }
     default:
+    {
       return nullptr;
+    }
   }
   return nullptr;
 }

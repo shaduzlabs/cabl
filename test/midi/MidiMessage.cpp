@@ -36,7 +36,8 @@ public:
   void noteOff(tPtr<NoteOff> msg)
   {
     CHECK(msg->getType() == MidiMessage::Type::NoteOff);
-    CHECK(0x61 == msg->getNote());
+    MidiNote note(MidiNote::Name::CSharp, 6);
+    CHECK(note == msg->getNote());
     CHECK(0x41 == msg->getVelocity());
     CHECK(3    == msg->data().size());
   }
@@ -44,7 +45,8 @@ public:
   void noteOn(tPtr<NoteOn> msg)
   {
     CHECK(msg->getType() == MidiMessage::Type::NoteOn);
-    CHECK(0x62 == msg->getNote());
+    MidiNote note(MidiNote::Name::D, 6);
+    CHECK(note == msg->getNote());
     CHECK(0x42 == msg->getVelocity());
     CHECK(3    == msg->data().size());
   }
