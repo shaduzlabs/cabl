@@ -40,9 +40,8 @@ namespace kio
       -------
      |       |
    E |       | C
-     |       |
+     |   D   |
       -------
-         D
 */
 
 enum class DeviceTraktorF1MK2::Led : uint16_t
@@ -205,18 +204,14 @@ bool DeviceTraktorF1MK2::tick()
 
   if (state == 0)
   {
-    success = sendDisplayData();
+    success = sendLedsAndDisplay();
   }
-  else if(state == 1)
-  {
-    success = sendLeds();
-  }
-  else if (state == 2)
+  else if (state == 1)
   {
     success = read();
   }
 
-  if (++state >= 3)
+  if (++state >= 2)
   {
     state = 0;
   }
@@ -233,18 +228,21 @@ void sl::kio::DeviceTraktorF1MK2::init()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::sendDisplayData()
+bool DeviceTraktorF1MK2::sendLedsAndDisplay()
 {
-  bool result = true;
-  
-
-  return result;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool DeviceTraktorF1MK2::sendLeds()
-{
+  if(m_lcdDisplay.isDirty() || true)
+  {
+    const tRawData& displayData = m_lcdDisplay.getData();
+    for(size_t i = 0; i < displayData.size(); i++)
+    {
+      for(uint8_t j = 0; j < 8; j++)
+      {
+        uint8_t displayIndex = (displayData.size()-1 - i);
+        m_leds[(displayIndex*8)+j] = (((1 << j) & displayData[i] ) > 0) ? 0x7f : 0x00;
+      }
+    }
+    m_isDirtyLeds = true;
+  }
   if (m_isDirtyLeds)
   {
     if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], kF1MK2_nLeds), kF1MK2_epOut))

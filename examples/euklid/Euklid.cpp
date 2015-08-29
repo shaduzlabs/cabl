@@ -139,7 +139,7 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
       setEncoderState(Euklid::EncoderState::Rotate);
     }
   }
-  else if (buttonState_ && button_ == Device::Button::Group)
+  else if (buttonState_ && (button_ == Device::Button::Group || button_ == Device::Button::Browse))
   {
     changeTrack();
   }
@@ -338,6 +338,17 @@ void Euklid::play()
   while (m_play)
   {
     m_update = true;
+    uint16_t delay = m_delayEven;
+    if (m_quarterNote % 2 > 0)
+    {
+      delay = m_delayOdd;
+    }
+
+    if (++m_quarterNote > 3)
+    {
+      m_quarterNote = 0;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     for (uint8_t i = 0; i < kEuklidNumTracks; i++)
     {
       MidiNote note(MidiNote::Name::C, 2);
@@ -359,17 +370,6 @@ void Euklid::play()
       }
     }
     
-    uint16_t delay = m_delayEven;
-    if (m_quarterNote % 2 > 0)
-    {
-      delay = m_delayOdd;
-    }
-
-    if (++m_quarterNote > 3)
-    {
-      m_quarterNote = 0;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   }
 }
 
@@ -387,6 +387,8 @@ void Euklid::updateGUI()
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(0, 52, 28, 6, s_colorWhite, s_colorWhite);
   getDevice(0)->getGraphicDisplay(0)->drawFilledRect(100, 52, 28, 6, s_colorWhite, s_colorWhite);
   
+   getDevice(0)->getLCDDisplay(0)->setText("AB", 0);
+  /*
 
   getDevice(0)->getLCDDisplay(0)->setText(strTrackName, 1);
   getDevice(0)->getLCDDisplay(0)->setText("{EUKLID}", 2,s_alignCenter);
@@ -430,7 +432,7 @@ void Euklid::updateGUI()
   getDevice(0)->getLCDDisplay(5)->setText("Shuffle", 1, s_alignCenter);
   getDevice(0)->getLCDDisplay(5)->setValue(static_cast<float>(m_shuffle) / 100, 0);
   getDevice(0)->getLCDDisplay(5)->setText(static_cast<int>(m_shuffle), 2, s_alignCenter);
-  
+  */
 //  getDevice(0)->getLCDDisplay(3)->setText(m_rotates[m_currentTrack], 2);
   
   switch (m_screenPage)
@@ -500,7 +502,7 @@ void Euklid::updatePads()
         }
         else if (pulses & (1 << i))
         {
-          if (pos == (k % m_lengths[t]))
+          if (pos == (k % m_lengths[t]) && m_play)
           {
             getDevice(0)->setLed(pad, kEuklidColor_Track_CurrentStep[m_currentTrack]);
             getDevice(0)->setLed(key, kEuklidColor_Track_CurrentStep[m_currentTrack]);
@@ -513,7 +515,7 @@ void Euklid::updatePads()
         }
         else
         {
-          if (pos == (k % m_lengths[t]))
+          if (pos == (k % m_lengths[t]) && m_play)
           {
             getDevice(0)->setLed(pad, kEuklidColor_Step_Empty_Current);
             getDevice(0)->setLed(key, kEuklidColor_Step_Empty_Current);
@@ -714,6 +716,7 @@ void Euklid::togglePlay()
       m_sequences[t].reset();
     }
     m_quarterNote = 0;
+    m_update = true;
   }
 }
 

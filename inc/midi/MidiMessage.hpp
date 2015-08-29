@@ -26,9 +26,19 @@ namespace midi
 //--------------------------------------------------------------------------------------------------
 
 /**
+* @defgroup Midi MIDI
+* @{
+*/
+
+/**
+* @defgroup Basics Basics
+* @ingroup Midi
+* @{
+*/
+
+/**
   \class MidiNote
   \brief Class representing a single midi note
-
 */
 
 class MidiNote
@@ -82,35 +92,41 @@ private:
 };
 
 
+/**
+  \class MidiMessage
+  \brief 
+
+  Full MIDI messages specification: http://www.midi.org/techspecs/midimessages.php
+*/
 class MidiMessage
 {
 public:
 
   enum class Type : uint8_t 
   {
-    NoteOff = 0x80,
-    NoteOn = 0x90,
-    PolyPressure = 0xA0,
-    ControlChange = 0xB0,
-    ProgramChange = 0xC0,
-    ChannelPressure = 0xD0,
-    PitchBend = 0xE0,
-    Sysex = 0xF0,
-    MTC = 0xF1,
-    SongPosition = 0xF2,
-    SongSelect = 0xF3,
-    Reserved_0 = 0xF4, // reserved/unsupported
-    Reserved_1 = 0xF5, // reserved/unsupported
-    TuneRequest = 0xF6,
-    SysexEnd = 0xF7,
-    TimingClock = 0xF8,
-    Reserved_2 = 0xF9, // reserved/unsupported
-    Start = 0xFA,
-    Continue = 0xFB,
-    Stop = 0xFC,
-    Reserved_3 = 0xFD, // reserved/unsupported
-    ActiveSensing = 0xFE,
-    Reset = 0xFF,
+    NoteOff         = 0x80, //!<  Sent when a note is released (ended)
+    NoteOn          = 0x90, //!<  Sent when a note is depressed (start)
+    PolyPressure    = 0xA0, //!<  Most often sent by pressing down on the key after it "bottoms out"
+    ControlChange   = 0xB0, //!<  Sent when a controller value changes
+    ProgramChange   = 0xC0, //!<  Sent when the patch number changes
+    ChannelPressure = 0xD0, //!<  The highest pressure value of all the current depressed keys
+    PitchBend       = 0xE0, //!<  Indicates a change in the pitch bender
+    Sysex           = 0xF0, //!<  System Exclusive
+    MTC             = 0xF1, //!<  MIDI Time Code Quarter Frame
+    SongPosition    = 0xF2, //!<  Song Position Pointer
+    SongSelect      = 0xF3, //!<  Song Select
+    Reserved_0      = 0xF4, //!<  Undefined(Reserved)
+    Reserved_1      = 0xF5, //!<  Undefined(Reserved)
+    TuneRequest     = 0xF6, //!<  Tune Request
+    SysexEnd        = 0xF7, //!<  Terminates a System Exclusive dump
+    TimingClock     = 0xF8, //!<  Timing Clock
+    Reserved_2      = 0xF9, //!<  Undefined(Reserved)
+    Start           = 0xFA, //!<  Start the current sequence playing
+    Continue        = 0xFB, //!<  Continue at the point the sequence was Stopped
+    Stop            = 0xFC, //!<  Stop the current sequence
+    Reserved_3      = 0xFD, //!<  Undefined(Reserved)
+    ActiveSensing   = 0xFE, //!<  Active Sensing
+    Reset           = 0xFF, //!<  Reset all receivers in the system to power-up status
   };
 
   enum class Channel : uint8_t
@@ -200,7 +216,20 @@ private:
   tRawData  m_data;
 };
 
+/** @} */ // End of group Basics
+
 //--------------------------------------------------------------------------------------------------
+
+/**
+* @defgroup ChannelMessages Channel messages
+* @ingroup Midi
+* @{
+*/
+
+/**
+  \class NoteOff
+  \brief A NoteOff MIDI message
+*/
 
 class NoteOff : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOff>
 {
@@ -218,6 +247,11 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
+/**
+  \class NoteOn
+  \brief A NoteOn MIDI message
+*/
+
 class NoteOn : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOn>
 {
 public:
@@ -234,6 +268,11 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
+/**
+  \class PolyPressure
+  \brief A PolyPressure MIDI message
+*/
+
 class PolyPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::PolyPressure>
 {
 public:
@@ -248,6 +287,11 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+
+/**
+  \class ControlChange
+  \brief A ControlChange MIDI message
+*/
 
 class ControlChange : public midi::MidiMessageBase<midi::MidiMessage::Type::ControlChange>
 {
@@ -265,6 +309,10 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
+/**
+  \class ProgramChange
+  \brief A ProgramChange MIDI message
+*/
 
 class ProgramChange : public midi::MidiMessageBase<midi::MidiMessage::Type::ProgramChange>
 {
@@ -280,6 +328,10 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
+/**
+  \class ChannelPressure
+  \brief A ChannelPressure MIDI message
+*/
 
 class ChannelPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::ChannelPressure>
 {
@@ -294,6 +346,11 @@ public:
 };
 
 //--------------------------------------------------------------------------------------------------
+
+/**
+  \class PitchBend
+  \brief A PitchBend MIDI message
+*/
 
 class PitchBend : public midi::MidiMessageBase<midi::MidiMessage::Type::PitchBend>
 {
@@ -313,7 +370,20 @@ public:
   }
 };
 
+/** @} */ // End of group ChannelMessages
+
 //--------------------------------------------------------------------------------------------------
+
+/**
+* @defgroup SystemMessages System messages
+* @ingroup Midi
+* @{
+*/
+
+/**
+  \class SysEx
+  \brief A SysEx MIDI message
+*/
 
 class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::Sysex>
 {
@@ -347,7 +417,20 @@ private:
   
 };
 
+/** @} */ // End of group SystemMessages
+
 //--------------------------------------------------------------------------------------------------
+
+/**
+* @defgroup Utilities Utilities
+* @ingroup Midi
+* @{
+*/
+
+/**
+  \class MidiMessageListener
+  \brief A general purpose MIDI message listener class
+*/
 
 class MidiMessageListener
 {
@@ -555,7 +638,9 @@ private:
   tCbChannelPressure  m_cbChannelPressure;
   tCbPitchBend        m_cbPitchBend;
 };
-
+/** @} */ // End of group Utilities
+/** @} */ // End of group Midi
+  
 //--------------------------------------------------------------------------------------------------
 
 #undef M_MIDI_BYTE

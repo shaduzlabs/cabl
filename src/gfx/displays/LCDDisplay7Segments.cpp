@@ -64,12 +64,12 @@ bool LCDDisplay7Segments::isDirtyRow(uint8_t row_) const
 void LCDDisplay7Segments::setCharacter(uint8_t col_, uint8_t row_, char c_)
 {
   uint8_t charNum = static_cast<uint8_t>(c_);
-  if(row_>0 || col_ > getNumberOfCharsPerRow() || charNum < 45 || charNum > 70)
+  if(row_>0 || col_ > getNumberOfCharsPerRow() || charNum < 45 || charNum > 90)
   {
     return;
   }
   setDirty(true);
-  data()[col_] = kLCDDisplay7S_FontData[charNum];
+  data()[col_] = kLCDDisplay7S_FontData[charNum-45];
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -83,11 +83,12 @@ void LCDDisplay7Segments::setText(const std::string& string_, uint8_t row_, Alig
   setDirty(true);
 
   std::string strAligned = alignText(string_, align_);
+  std::transform(strAligned.begin(), strAligned.end(),strAligned.begin(), ::toupper);
 
   for(size_t i = 0; i < std::min<size_t>(strAligned.length(),getNumberOfCharsPerRow());i++)
   {
     const uint8_t& character = strAligned.at(i);
-    data()[i] = (character < 45 && character > 70) ? 0x00 : kLCDDisplay7S_FontData[character];
+    data()[i] = (character < 45 && character > 90) ? 0x00 : kLCDDisplay7S_FontData[character-45];
   }
 }
 

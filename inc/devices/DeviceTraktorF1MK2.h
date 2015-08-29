@@ -46,8 +46,7 @@ private:
   static constexpr uint8_t kF1MK2_nPotentiometers = 8;
 
   void init() override;
-  bool sendDisplayData();
-  bool sendLeds();
+  bool sendLedsAndDisplay();
   bool read();
   
   void processButtons( const Transfer& );
