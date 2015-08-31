@@ -460,6 +460,11 @@ public:
 
   static void process(double timeStamp_, std::vector<unsigned char> *pMessage_, void *pUserData_)
   {
+  	if(nullptr == pMessage_ || nullptr == pUserData_)
+  	{
+      return;
+  	}
+  	
     MidiMessageListener* pSelf = static_cast<MidiMessageListener*>(pUserData_);
     pSelf->process({pMessage_->begin(),pMessage_->end()});
   }
@@ -469,10 +474,10 @@ public:
     tPtr<MidiMessage> message = parseMidiMessage(data_);
     if (message)
     {
-  #define M_CHANNEL_CB(idMsg)       \
-        case MidiMessage::Type::idMsg: \
+#define M_CHANNEL_CB(idMsg)       \
+      case MidiMessage::Type::idMsg: \
           cb##idMsg(tPtr<idMsg>(static_cast<idMsg*>(message.release()))); \
-          break;
+        break;
       switch (message->getType())
       {
         M_CHANNEL_CB(NoteOff);
@@ -482,11 +487,11 @@ public:
         M_CHANNEL_CB(ProgramChange);
         M_CHANNEL_CB(ChannelPressure);
         M_CHANNEL_CB(PitchBend);
-        default:
-          break;
+      default:
+        break;
       }
-  #undef M_CHANNEL_MSG_2
-  #undef M_CHANNEL_MSG_3
+#undef M_CHANNEL_MSG_2
+#undef M_CHANNEL_MSG_3
     }
   }
 
@@ -584,11 +589,11 @@ private:
       return nullptr;
     }
     uint8_t status = data_[0];
-    if ((status  < 0x80) || 
-        (status == 0xF4) || 
-        (status == 0xF5) || 
-        (status == 0xF9) || 
-        (status == 0xFD))
+    if ((status  < 0x80) ||
+      (status == 0xF4) ||
+      (status == 0xF5) ||
+      (status == 0xF9) ||
+      (status == 0xFD))
     {
       return nullptr;
     }
@@ -597,12 +602,12 @@ private:
       MidiMessage::Type type = static_cast<MidiMessage::Type>(status & 0xF0);
       MidiMessage::Channel channel = static_cast<MidiMessage::Channel>(status & 0x0F);
 
-  #define M_CHANNEL_MSG_2(idMsg)     \
-    case MidiMessage::Type::idMsg:   \
-      return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
-  #define M_CHANNEL_MSG_3(idMsg)     \
-    case MidiMessage::Type::idMsg:   \
-      return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
+#define M_CHANNEL_MSG_2(idMsg)     \
+  case MidiMessage::Type::idMsg:   \
+    return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
+#define M_CHANNEL_MSG_3(idMsg)     \
+  case MidiMessage::Type::idMsg:   \
+    return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
 
       switch (type)
       {
@@ -613,31 +618,31 @@ private:
         M_CHANNEL_MSG_2(ProgramChange);
         M_CHANNEL_MSG_2(ChannelPressure);
         M_CHANNEL_MSG_3(PitchBend);
-        default:
-          return nullptr;
+      default:
+        return nullptr;
       }
-  #undef M_CHANNEL_MSG_2
-  #undef M_CHANNEL_MSG_3
+#undef M_CHANNEL_MSG_2
+#undef M_CHANNEL_MSG_3
     }
     else
     {
       MidiMessage::Type type = static_cast<MidiMessage::Type>(status);
       if(type == MidiMessage::Type::Reserved_0 ||
-         type == MidiMessage::Type::Reserved_1 ||
-         type == MidiMessage::Type::Reserved_2 ||
-         type == MidiMessage::Type::Reserved_3
-      )
+        type == MidiMessage::Type::Reserved_1 ||
+        type == MidiMessage::Type::Reserved_2 ||
+        type == MidiMessage::Type::Reserved_3
+        )
       {
         return nullptr;
       }
       switch (type)
       {
-        case MidiMessage::Type::Sysex:
-        {
-          return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
-        }
-        default:
-          return nullptr;
+      case MidiMessage::Type::Sysex:
+      {
+        return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
+      }
+      default:
+        return nullptr;
       }
     }
 

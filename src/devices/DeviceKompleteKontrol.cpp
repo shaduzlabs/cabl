@@ -736,7 +736,7 @@ void DeviceKompleteKontrol::midiInCallback(
   void *userData_
 )
 {
-  sl::kio::DeviceKompleteKontrol* pSelf = (sl::kio::DeviceKompleteKontrol*)userData_;
+  sl::kio::DeviceKompleteKontrol* pSelf = static_cast<sl::kio::DeviceKompleteKontrol*>(userData_);
   if((pMessage_->at(0)&0xf0) == 0x90)
   {
     pSelf->keyChanged(
