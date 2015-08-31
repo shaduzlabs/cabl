@@ -9,7 +9,7 @@
 	url = https://github.com/thestk/rtmidi.git
 [submodule "submodules/oscpack"]
 	path = submodules/oscpack
-	url = https://github.com/gardaud/oscpack.git
+	url = https://github.com/MariadeAnton/oscpack.git
 [submodule "submodules/catch"]
 	path = submodules/catch
 	url = https://github.com/philsquared/Catch.git
