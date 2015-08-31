@@ -5,9 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DeviceHandleMAX3421E.h"
-#include <iostream>
-#include <iomanip>
+#include "comm/drivers/MAX3421E/DeviceHandleMAX3421E.h"
 
 namespace
 {

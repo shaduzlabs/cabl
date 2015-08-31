@@ -743,6 +743,8 @@ void Canvas::setDefaultFont( FontType font_ )
 
 void Canvas::toString()
 {
+//!\todo remove this function!
+/*
   printf("\n");
   
   printf("+");
@@ -768,6 +770,7 @@ void Canvas::toString()
   for( int col = 0; col < m_width; col++ )
     printf("-");
   printf("+\n");
+  */
 }
 //--------------------------------------------------------------------------------------------------
 

@@ -1,11 +1,14 @@
 #!/bin/bash
-rm -f arduino/kompletIO.zip
-mkdir -p arduino/kompletIO
-cd src
-find . -not -path '*/\.*' -type f -exec bash -c 'file=${1#./}; cp "$file" "../arduino/kompletIO/${file//\//_}"' _ '{}' \;
-cd ..
-cp -r support/arduino/* arduino/kompletIO/.
+rm -f arduino/k-IO.zip
+rm -rf arduino/k-IO/*
+mkdir -p arduino/k-IO
+cp -r inc/* arduino/k-IO/
+cp -r src/* arduino/k-IO/
+cp -r support/arduino/k-IO.h arduino/k-IO/k-IO.h
+rm -rf arduino/k-IO/app
+rm -rf arduino/k-IO/comm/drivers/HIDAPI
+rm -rf arduino/k-IO/comm/drivers/LibUSB
 cd arduino
-zip -9 -r kompletIO.zip kompletIO
-rm -rf kompletIO
+find . -type f -name *.cpp -print0 | xargs -0 -I%%% mv %%% k-IO/
+zip -9 -r k-IO.zip k-IO
 cd ..

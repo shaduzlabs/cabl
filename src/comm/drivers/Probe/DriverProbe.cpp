@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DriverProbe.h"
-#include "DeviceHandleProbe.h"
+#include "comm/drivers/Probe/DriverProbe.h"
+#include "comm/drivers/Probe/DeviceHandleProbe.h"
 
 namespace sl
 {

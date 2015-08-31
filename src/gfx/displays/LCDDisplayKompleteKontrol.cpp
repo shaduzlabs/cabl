@@ -19,7 +19,7 @@ namespace
   static const uint8_t kLCDKK_numDotsPerRow = 7;
   static const uint16_t kLCDDisplayKK_FontData[] =
   {
-#include "../fonts/data/FONT_16-seg.h"
+#include "gfx/fonts/data/FONT_16-seg.h"
   };
 }
     

@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DriverMAX3421E.h"
-#include "DeviceHandleMAX3421E.h"
+#include "comm/drivers/MAX3421E/DriverMAX3421E.h"
+#include "comm/drivers/MAX3421E/DeviceHandleMAX3421E.h"
 
 namespace sl
 {

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <Usb.h>
+
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
@@ -28,8 +30,12 @@ public:
 
   Driver::tCollDeviceDescriptor enumerate() override;
   tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
- 
- };
+
+private:
+
+  USBHost                 m_usb;
+
+};
   
 //--------------------------------------------------------------------------------------------------
 

@@ -332,20 +332,20 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         {
       //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
-          }
         }
       }
-
-    // Now process the encoder data
-    uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
-    if (m_encoderValue != currentEncoderValue)
-    {
-      bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
-        ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-          && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-        encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
-      m_encoderValue = currentEncoderValue;
     }
+  }
+
+  // Now process the encoder data
+  uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
+  if (m_encoderValue != currentEncoderValue)
+  {
+    bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
+      ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
+        && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
+      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    m_encoderValue = currentEncoderValue;
   }
 }
 

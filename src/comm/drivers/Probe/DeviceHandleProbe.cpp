@@ -5,10 +5,12 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DeviceHandleProbe.h"
+#include "comm/drivers/Probe/DeviceHandleProbe.h"
 
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
 #include <iostream>
 #include <iomanip>
+#endif
 
 namespace
 {
@@ -57,6 +59,7 @@ bool DeviceHandleProbe::read(Transfer& transfer_, uint8_t endpoint_)
 
 bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_) const
 {
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::cout << "Packet #" << s_numPacketW << " (" << transfer_.size() << " bytes) -> endpoint "
             << static_cast<uint32_t>(endpoint_) << ":" << std::endl;
 
@@ -70,7 +73,7 @@ bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_) cons
   std::cout << std::endl << std::endl;
 
   s_numPacketW++;
-
+#endif
   return true;
 }
 

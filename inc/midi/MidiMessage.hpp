@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <algorithm>
 #include <functional>
 #include <vector>
 
@@ -150,10 +149,15 @@ public:
     Undefined,
   };
 
+  //! Constructor
+  /*!
+   \param type_  The MidiMessage type
+   */
   MidiMessage(Type type_)
     : m_type(type_)
   {}
 
+  
   virtual const tRawData& data() const = 0;
   Type getType() const { return m_type; }
 
@@ -176,6 +180,10 @@ class MidiMessageBase : public midi::MidiMessage
 {
 public:
   
+  //! Constructor
+  /*!
+   \param data_ The raw message data
+  */
   MidiMessageBase(tRawData data_)
     : midi::MidiMessage(MsgType)
     , m_data( data_ )
@@ -183,6 +191,11 @@ public:
 
   }
   
+  //! Constructor
+  /*!
+   \param channel_  The MIDI channel
+   \param data_     The raw message data
+  */
   MidiMessageBase(MidiMessage::Channel channel_, tRawData data_)
     : midi::MidiMessage(MsgType)
     , m_data{static_cast<uint8_t>((static_cast<uint8_t>(channel_)|static_cast<uint8_t>(getType())))}
@@ -458,7 +471,7 @@ public:
     {
   #define M_CHANNEL_CB(idMsg)       \
         case MidiMessage::Type::idMsg: \
-          cb##idMsg(tPtr<idMsg>(dynamic_cast<idMsg*>(message.release()))); \
+          cb##idMsg(tPtr<idMsg>(static_cast<idMsg*>(message.release()))); \
           break;
       switch (message->getType())
       {

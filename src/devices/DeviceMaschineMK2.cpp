@@ -6,6 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/DeviceMaschineMK2.h"
+
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
@@ -13,10 +14,6 @@
 
 #include "gfx/LCDDisplay.h"
 #include "gfx/displays/GDisplayDummy.h"
-
-//!\todo delete debug includes
-#include <iostream>
-#include <iomanip>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -245,10 +242,12 @@ void DeviceMaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
 {
+#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   if(m_pMidiout)
   {
     m_pMidiout->sendMessage(&midiMsg_);
   }
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -18,7 +18,7 @@ namespace
 {
   static const uint8_t kLCDDisplay7S_FontData[] =
   {
-#include "../fonts/data/FONT_7-seg.h"
+#include "gfx/fonts/data/FONT_7-seg.h"
   };
 }
 

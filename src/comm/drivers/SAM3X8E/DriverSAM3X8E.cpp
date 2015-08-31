@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DriverSAM3X8E.h"
-#include "DeviceHandleSAM3X8E.h"
+#include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
+#include "comm/drivers/SAM3X8E/DeviceHandleSAM3X8E.h"
 
 namespace sl
 {

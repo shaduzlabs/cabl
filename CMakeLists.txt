@@ -395,9 +395,7 @@ source_group("src\\comm"             FILES ${src_comm_SRCS})
 
 source_group("src\\comm\\drivers\\HIDAPI"    FILES ${src_comm_drivers_HIDAPI_SRCS})
 source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRCS})
-source_group("src\\comm\\drivers\\MAX3421E"  FILES ${src_comm_drivers_MAX3421E_SRCS})
 source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS})
-source_group("src\\comm\\drivers\\SAM3X8E"   FILES ${src_comm_drivers_SAM3X8E_SRCS})
 
 source_group("src\\devices"          FILES ${src_devices_SRCS})
 source_group("src\\gfx"              FILES ${src_gfx_SRCS})
@@ -413,9 +411,7 @@ set(
     ${src_app_SRCS}
     ${src_comm_drivers_HIDAPI_SRCS}
     ${src_comm_drivers_LibUSB_SRCS}
-    ${src_comm_drivers_MAX3421E_SRCS}
     ${src_comm_drivers_Probe_SRCS}
-    ${src_comm_drivers_SAM3X8E_SRCS}
     ${src_comm_SRCS}
     ${src_devices_SRCS}
     ${src_gfx_displays_SRCS}
