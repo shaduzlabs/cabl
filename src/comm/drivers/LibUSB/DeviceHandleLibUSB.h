@@ -24,9 +24,7 @@ class DeviceHandleLibUSB : public DeviceHandleImpl
 {
 public:
 
-  using tDeviceHandle = struct ::libusb_device_handle;
-
-  DeviceHandleLibUSB(tDeviceHandle*);
+  DeviceHandleLibUSB(libusb_device_handle*);
   ~DeviceHandleLibUSB();
 
   void disconnect() override;
@@ -42,10 +40,10 @@ private:
   static void __stdcall cbTransfer(libusb_transfer*); //!\todo #define WINAPI      __stdcall
 
   tRawData                        m_inputBuffer;
-  tDeviceHandle*                  m_pCurrentDevice;
+  libusb_device_handle*           m_pCurrentDevice;
   DeviceHandleImpl::tCbRead       m_cbRead;
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // kio

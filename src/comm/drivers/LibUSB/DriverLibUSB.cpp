@@ -67,7 +67,7 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
   libusb_device **devices;
   ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
   
-  tDeviceHandle* pHandle = nullptr;
+  libusb_device_handle* pHandle = nullptr;
   for( int i=0; i<nDevices; ++i )
   {
     libusb_device *device = devices[i];
@@ -119,7 +119,7 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
   libusb_device **devices;
   ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
   
-  tDeviceHandle* pCurrentDevice = nullptr;
+  libusb_device_handle* pCurrentDevice = nullptr;
   for( int i=0; i<nDevices; ++i )
   {
     libusb_device *device = devices[i];
@@ -169,7 +169,7 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect( const DeviceDescriptor& device_ )
 
 //--------------------------------------------------------------------------------------------------
 
-std::string DriverLibUSB::getStringDescriptor(tDeviceHandle * pHandle_, uint8_t uDescriptor)
+std::string DriverLibUSB::getStringDescriptor(libusb_device_handle * pHandle_, uint8_t uDescriptor)
 {
   if (uDescriptor != 0)
   {

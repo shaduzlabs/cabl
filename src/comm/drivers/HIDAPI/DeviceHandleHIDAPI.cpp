@@ -21,8 +21,8 @@ namespace kio
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceHandleHIDAPI::DeviceHandleHIDAPI(tDeviceHandle* pDeviceHandle)
-  : m_pCurrentDevice(pDeviceHandle)
+DeviceHandleHIDAPI::DeviceHandleHIDAPI(hid_device* pCurrentDevice_)
+  : m_pCurrentDevice(pCurrentDevice_)
 {
   m_inputBuffer.resize(kHIDAPIInputBufferSize);
 }
@@ -50,7 +50,7 @@ void DeviceHandleHIDAPI::disconnect()
 bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t)
 {
   int nBytesRead = hid_read(m_pCurrentDevice, m_inputBuffer.data(), kHIDAPIInputBufferSize);
-  
+
   //!\todo check when hid_read returns 0 (no data available to read) and do not return error!
   if(nBytesRead ==0)
   {

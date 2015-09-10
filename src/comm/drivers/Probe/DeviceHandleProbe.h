@@ -21,9 +21,7 @@ class DeviceHandleProbe : public DeviceHandleImpl
 {
 public:
 
-  using tDeviceHandle = void;
-
-  DeviceHandleProbe(tDeviceHandle*);
+  DeviceHandleProbe();
   ~DeviceHandleProbe();
   
   void disconnect() override;

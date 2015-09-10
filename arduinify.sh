@@ -1,14 +1,14 @@
 #!/bin/bash
-rm -f artifacts/arduino/k-IO.zip
-rm -rf artifacts/arduino/k-IO/*
-mkdir -p artifacts/arduino/k-IO
-cp -r inc/* artifacts/arduino/k-IO/
-cp -r src/* artifacts/arduino/k-IO/
-cp -r support/arduino/k-IO.h artifacts/arduino/k-IO/k-IO.h
-rm -rf artifacts/arduino/k-IO/app
-rm -rf artifacts/arduino/k-IO/comm/drivers/HIDAPI
-rm -rf artifacts/arduino/k-IO/comm/drivers/LibUSB
-cd artifacts/arduino
-find . -type f -name *.cpp -print0 | xargs -0 -I%%% mv %%% k-IO/
-zip -9 -r k-IO.zip k-IO
-cd ..
+set -x
+rm -f $1/$2/k-IO.zip
+rm -rf $1/$2/k-IO/*
+mkdir -p $1/$2/k-IO
+cp -r $1/inc/* $1/$2/k-IO/
+cp -r $1/src/* $1/$2/k-IO/
+cp $1/support/arduino/k-IO.h $1/$2/k-IO/k-IO.h
+cp $1/support/arduino/stl-arduino.h $1/$2/k-IO/util/stl-arduino.h
+rm -rf $1/$2/k-IO/app
+rm -rf $1/$2/k-IO/comm/drivers/HIDAPI
+rm -rf $1/$2/k-IO/comm/drivers/LibUSB
+find $1/$2/k-IO -type f -name *.cpp -print0 | xargs -0 -I%%% mv %%% $1/$2/k-IO/
+zip -9 -r $1/$2/k-IO.zip $1/$2/k-IO

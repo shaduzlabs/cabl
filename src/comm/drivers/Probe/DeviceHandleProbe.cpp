@@ -29,7 +29,7 @@ uint32_t DeviceHandleProbe::s_numPacketW;
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceHandleProbe::DeviceHandleProbe(tDeviceHandle*)
+DeviceHandleProbe::DeviceHandleProbe()
 {
   m_inputBuffer.resize(kProbeInputBufferSize);
 }

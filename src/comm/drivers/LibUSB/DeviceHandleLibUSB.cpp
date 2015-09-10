@@ -18,11 +18,11 @@ namespace sl
 {
 namespace kio
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
-DeviceHandleLibUSB::DeviceHandleLibUSB(tDeviceHandle* pDeviceHandle)
-  : m_pCurrentDevice(pDeviceHandle)
+DeviceHandleLibUSB::DeviceHandleLibUSB(libusb_device_handle* pCurrentDevice_)
+  : m_pCurrentDevice(pCurrentDevice_)
 {
   m_inputBuffer.resize(kLibUSBInputBufferSize);
 }
@@ -44,9 +44,9 @@ void DeviceHandleLibUSB::disconnect()
     m_pCurrentDevice = nullptr;
   }
 }
-  
+
 //--------------------------------------------------------------------------------------------------
-  
+
 bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
 {
   int nBytesRead = 0;
@@ -58,18 +58,18 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
     &nBytesRead,                      // N. of bytes actually read
     kLibUSBReadTimeout                // Timeout
   );
-  
+
   if( ( LIBUSB_SUCCESS == result ) && ( nBytesRead > 0 ) )
   {
     transfer_.setData( m_inputBuffer.data(), nBytesRead );
     return transfer_;
   }
-  
+
   return false;
 }
-  
+
 //--------------------------------------------------------------------------------------------------
-  
+
 bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
 {
   int nBytesWritten = 0;
@@ -90,7 +90,7 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) c
     }
     return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
   }
-  
+
   return false;
 }
 
@@ -127,8 +127,8 @@ void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 {
   DeviceHandleLibUSB* pSelf = static_cast<DeviceHandleLibUSB*>(pTransfer_->user_data);
   if(
-    pSelf->m_cbRead && 
-    pTransfer_->status == LIBUSB_TRANSFER_COMPLETED && 
+    pSelf->m_cbRead &&
+    pTransfer_->status == LIBUSB_TRANSFER_COMPLETED &&
     pTransfer_->actual_length > 0
   )
   {
@@ -140,7 +140,7 @@ void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
     pSelf->readAsyncImpl(pTransfer_->endpoint);
   }
 }
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // kio

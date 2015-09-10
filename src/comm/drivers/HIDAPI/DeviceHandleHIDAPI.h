@@ -16,29 +16,27 @@ namespace sl
 {
 namespace kio
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 class DeviceHandleHIDAPI : public DeviceHandleImpl
 {
 public:
- 
-  using tDeviceHandle = hid_device;
-  
-  DeviceHandleHIDAPI(tDeviceHandle*);
+
+  DeviceHandleHIDAPI(hid_device*);
   ~DeviceHandleHIDAPI();
-  
+
   void disconnect() override;
 
   bool read( Transfer&, uint8_t ) override;
   bool write( const Transfer& , uint8_t) const override;
-  
+
 private:
-  
+
   tRawData                        m_inputBuffer;
-  tDeviceHandle*                  m_pCurrentDevice;
+  hid_device*                     m_pCurrentDevice;
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // kio

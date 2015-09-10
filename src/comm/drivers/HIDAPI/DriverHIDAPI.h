@@ -21,8 +21,6 @@ class DriverHIDAPI : public DriverImpl
 {
 public:
   
-  using tDeviceHandle = hid_device;  
-  
   DriverHIDAPI();
   ~DriverHIDAPI() override;
   

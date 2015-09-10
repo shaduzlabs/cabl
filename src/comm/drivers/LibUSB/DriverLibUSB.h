@@ -18,29 +18,27 @@ namespace sl
 {
 namespace kio
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 class DriverLibUSB : public DriverImpl
 {
 public:
 
-  using tDeviceHandle   = struct ::libusb_device_handle; 
-  
   DriverLibUSB();
   ~DriverLibUSB() override;
-  
+
   Driver::tCollDeviceDescriptor enumerate() override;
   tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
 
 private:
 
-  std::string getStringDescriptor(tDeviceHandle*, uint8_t);
+  std::string getStringDescriptor(libusb_device_handle*, uint8_t);
   bool                            m_usbThreadRunning;
   std::thread                     m_usbThread;
   libusb_context*                 m_pContext;
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // kio

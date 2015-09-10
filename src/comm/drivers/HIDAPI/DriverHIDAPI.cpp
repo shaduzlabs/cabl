@@ -77,7 +77,7 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
   std::string serialNumber(device_.getSerialNumber());
   std::wstring wSerialNumber(serialNumber.begin(), serialNumber.end());
 
-  tDeviceHandle* pCurrentDevice = hid_open(
+  hid_device* pCurrentDevice = hid_open(
     device_.getVendorId(), 
     device_.getProductId(), 
     wSerialNumber.c_str()

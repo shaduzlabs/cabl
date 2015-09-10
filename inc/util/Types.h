@@ -14,7 +14,11 @@
 
 #ifndef WIN32
 #define __stdcall
-#endif
+#endif // WIN32
+
+#if ARDUINO
+#include "stl-arduino.h"
+#endif // ARDUINO
 
 namespace sl
 {
@@ -25,10 +29,10 @@ namespace kio
 
   template<typename T>
   using tPtr       = std::unique_ptr<T>;
-  
+
   using tRawData   = std::vector<uint8_t>;
   using tCollFlags = std::vector<bool>;
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // kio

@@ -8,9 +8,11 @@
 #include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
 #include <cmath>
-#include <algorithm>
 #include <string>
 #include <stdint.h>
+#ifndef ARDUINO
+#include <algorithm>
+#endif
 
 #include "util/Log.h"
 
@@ -141,7 +143,7 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align
   
   if(row_==0)
   {
-    uint8_t valInterval = static_cast<uint8_t>(std::round(val*9.0));
+    uint8_t valInterval = static_cast<uint8_t>(round(val*9.0));
     data()[ 0] = 0x04 | (valInterval>0? 0x03 : 0x00); // 1st bar + surrounding block (3rd bit)
     data()[ 2] = valInterval>1? 0x03 : 0x00;
     data()[ 4] = valInterval>2? 0x03 : 0x00;
@@ -154,7 +156,7 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align
   }
   else
   {
-    uint8_t valInterval = static_cast<uint8_t>(std::round(val*8.0));
+    uint8_t valInterval = static_cast<uint8_t>(round(val*8.0));
     for(uint8_t i = 0; i<8;i++)
     {
       if(valInterval>i)

@@ -8,9 +8,11 @@
 #include "gfx/displays/LCDDisplay7Segments.h"
 
 #include <cmath>
-#include <algorithm>
 #include <string>
 #include <stdint.h>
+#ifndef ARDUINO
+#include <algorithm>
+#endif
 
 #include "util/Log.h"
 
