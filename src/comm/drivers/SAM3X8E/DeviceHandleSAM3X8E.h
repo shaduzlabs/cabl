@@ -11,6 +11,7 @@
 #include "comm/DeviceHandleImpl.h"
 
 #include <Usb.h>
+#include <confdescparser.h>
 
 namespace sl
 {
@@ -19,10 +20,9 @@ namespace kio
 
 //--------------------------------------------------------------------------------------------------
 
-class DeviceHandleSAM3XE : public DeviceHandleImpl
+class DeviceHandleSAM3XE : public DeviceHandleImpl, public USBDeviceConfig
 {
 public:
-
   DeviceHandleSAM3XE(std::shared_ptr<USBHost> pUsb_, uint32_t deviceAddress_);
   ~DeviceHandleSAM3XE();
 
@@ -32,22 +32,43 @@ public:
   bool write(const Transfer&, uint8_t) const override;
 
 private:
+  static constexpr uint8_t kDHSAM3X8E_maxEndpoints = 5;
 
-  static constexpr uint8_t kDHSAM3X8E_maxEndpoints = 255;
+  uint32_t Init(uint32_t parent, uint32_t port, uint32_t lowspeed) override;
 
-  bool isReady() { return m_ready; };
+  uint32_t Release() override;
 
-  std::shared_ptr<USBHost>  m_pUsb;
-  uint32_t                  m_deviceAddress;
+  uint32_t Poll() override
+  {
+    return 0;
+  }
 
-  tRawData                  m_inputBuffer;
-  bool                      m_ready;
+  uint32_t GetAddress() override
+  {
+    return m_deviceAddress;
+  };
 
-  uint32_t                  m_confNumber;
-  uint32_t                  m_nextPollTime;
-  uint32_t                  m_numOfEndpoints;
-  EpInfo                    m_epInfo[kDHSAM3X8E_maxEndpoints];
+  bool isReady()
+  {
+    return m_ready;
+  };
 
+  void EndpointXtract(uint32_t conf,
+    uint32_t iface,
+    uint32_t alt,
+    uint32_t proto,
+    const USB_ENDPOINT_DESCRIPTOR* ep) override;
+
+  std::shared_ptr<USBHost> m_pUsb;
+  uint32_t m_deviceAddress;
+
+  tRawData m_inputBuffer;
+  bool m_ready;
+
+  uint32_t m_confNumber;
+  uint32_t m_nextPollTime;
+  uint32_t m_numOfEndpoints;
+  EpInfo m_epInfo[kDHSAM3X8E_maxEndpoints];
 };
 
 //--------------------------------------------------------------------------------------------------
