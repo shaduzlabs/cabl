@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DeviceMaschineMK1.h"
+#include "devices/ni/MaschineMK1.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
@@ -38,10 +38,12 @@ namespace sl
 {
 namespace kio
 {
-  
+namespace devices
+{
+
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMK1::Led : uint8_t
+enum class MaschineMK1::Led : uint8_t
 {
   Pad4,
   Pad3,
@@ -110,7 +112,7 @@ enum class DeviceMaschineMK1::Led : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMK1::Button : uint8_t
+enum class MaschineMK1::Button : uint8_t
 {
   Mute,
   Solo,
@@ -162,7 +164,7 @@ enum class DeviceMaschineMK1::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMK1::Encoder : uint8_t
+enum class MaschineMK1::Encoder : uint8_t
 {
   Encoder8,
   Encoder4,
@@ -179,7 +181,7 @@ enum class DeviceMaschineMK1::Encoder : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK1::DeviceMaschineMK1(tPtr<DeviceHandle> pDeviceHandle_)
+MaschineMK1::MaschineMK1(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
   , m_encodersInitialized(false)
 {
@@ -188,21 +190,21 @@ DeviceMaschineMK1::DeviceMaschineMK1(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
   
-DeviceMaschineMK1::~DeviceMaschineMK1()
+MaschineMK1::~MaschineMK1()
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
+void MaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -210,7 +212,7 @@ void DeviceMaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::sendMidiMsg(tRawData midiMsg_)
+void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 {
   uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
   uint8_t lengthL = midiMsg_.size() & 0xFF;
@@ -223,7 +225,7 @@ void DeviceMaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
+GDisplay* MaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -236,7 +238,7 @@ GDisplay* DeviceMaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* DeviceMaschineMK1::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* MaschineMK1::getLCDDisplay(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -245,7 +247,7 @@ LCDDisplay* DeviceMaschineMK1::getLCDDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK1::tick()
+bool MaschineMK1::tick()
 {
   static int state = 0;
   bool success = true;
@@ -273,7 +275,7 @@ bool DeviceMaschineMK1::tick()
   if (!success)
   {
     std::string strStepName(state == 0 ? "sendFrame" : (state == 1 ? "read" : "sendLeds"));
-    M_LOG("[DeviceMaschineMK1] tick: error in step #" << state << " (" << strStepName << ")");
+    M_LOG("[MaschineMK1] tick: error in step #" << state << " (" << strStepName << ")");
   }
 
   if (++state >= 3)
@@ -285,7 +287,7 @@ bool DeviceMaschineMK1::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::init()
+void MaschineMK1::init()
 {
   // Displays
   for( int i=0; i< kMASMK1_nDisplays; i++ )
@@ -305,7 +307,7 @@ void DeviceMaschineMK1::init()
 
   getDeviceHandle()->readAsync(
     kMASMK1_epInputButtonsAndDials,
-    std::bind(&DeviceMaschineMK1::cbRead,
+    std::bind(&MaschineMK1::cbRead,
     this,
     std::placeholders::_1)
   );
@@ -318,7 +320,7 @@ void DeviceMaschineMK1::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
+void MaschineMK1::initDisplay( uint8_t displayIndex_ )
 {
   if( displayIndex_ > 1 )
   {
@@ -372,7 +374,7 @@ void DeviceMaschineMK1::initDisplay( uint8_t displayIndex_ )
 
 //--------------------------------------------------------------------------------------------------
   
-bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
+bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
 {
   if( displayIndex_ > 1 )
   {
@@ -432,13 +434,13 @@ bool DeviceMaschineMK1::sendFrame( uint8_t displayIndex_ )
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK1::sendLeds()
+bool MaschineMK1::sendLeds()
 {
   if( m_isDirtyLedGroup0)
   {
     if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
     {
-      M_LOG("[DeviceMaschineMK1] sendLeds: error writing first block of leds");
+      M_LOG("[MaschineMK1] sendLeds: error writing first block of leds");
       return false;
     }
     m_isDirtyLedGroup0 = false;
@@ -448,7 +450,7 @@ bool DeviceMaschineMK1::sendLeds()
   {
     if(!getDeviceHandle()->write( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
     {
-      M_LOG("[DeviceMaschineMK1] sendLeds: error writing second block of leds");
+      M_LOG("[MaschineMK1] sendLeds: error writing second block of leds");
       return false;
     }
     m_isDirtyLedGroup1 = false;
@@ -458,13 +460,13 @@ bool DeviceMaschineMK1::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK1::read()
+bool MaschineMK1::read()
 {
 
   Transfer input;
   if( !getDeviceHandle()->read( input, kMASMK1_epInputPads ) )
   {
-    M_LOG("[DeviceMaschineMK1] read: ERROR");
+    M_LOG("[MaschineMK1] read: ERROR");
     return false;
   }
   processPads(input);
@@ -473,7 +475,7 @@ bool DeviceMaschineMK1::read()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::processPads(const Transfer& input_)
+void MaschineMK1::processPads(const Transfer& input_)
 {
   for (int i = 1; i < kMASMK1_padDataSize-1; i += 2)
   {
@@ -522,7 +524,7 @@ void DeviceMaschineMK1::processPads(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::processButtons(const Transfer& input_)
+void MaschineMK1::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
@@ -558,7 +560,7 @@ void DeviceMaschineMK1::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::processEncoders(const Transfer& input_)
+void MaschineMK1::processEncoders(const Transfer& input_)
 {
 /*
   if ((input_.getData()[6] & 0x80) == 0)
@@ -597,7 +599,7 @@ void DeviceMaschineMK1::processEncoders(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
+void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -621,7 +623,7 @@ void DeviceMaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK1::Led DeviceMaschineMK1::getLed( Device::Button btn_ ) const noexcept
+MaschineMK1::Led MaschineMK1::getLed( Device::Button btn_ ) const noexcept
 {
 #define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
 
@@ -680,7 +682,7 @@ DeviceMaschineMK1::Led DeviceMaschineMK1::getLed( Device::Button btn_ ) const no
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK1::Led DeviceMaschineMK1::getLed(Device::Pad pad_) const noexcept
+MaschineMK1::Led MaschineMK1::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -715,7 +717,7 @@ DeviceMaschineMK1::Led DeviceMaschineMK1::getLed(Device::Pad pad_) const noexcep
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button DeviceMaschineMK1::getDeviceButton(Button btn_) const noexcept
+Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -776,7 +778,7 @@ Device::Button DeviceMaschineMK1::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder DeviceMaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
+Device::Encoder MaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
 {
 #define M_ENCODER_CASE(idEncoder) \
   case Encoder::idEncoder:     \
@@ -806,7 +808,7 @@ Device::Encoder DeviceMaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-void sl::kio::DeviceMaschineMK1::cbRead(Transfer input_)
+void MaschineMK1::cbRead(Transfer input_)
 {
   if(input_[0] == 0x02)
   {
@@ -818,14 +820,14 @@ void sl::kio::DeviceMaschineMK1::cbRead(Transfer input_)
   }
   else if (input_[0] == 0x06)
   {
-    M_LOG("[DeviceMaschineMK1] read: received MIDI message");
+    M_LOG("[MaschineMK1] read: received MIDI message");
     //!\todo Add MIDI in parsing
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK1::isButtonPressed(Button button_) const noexcept
+bool MaschineMK1::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -833,7 +835,7 @@ bool DeviceMaschineMK1::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool MaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
@@ -841,5 +843,6 @@ bool DeviceMaschineMK1::isButtonPressed(const Transfer& transfer_, Button button
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

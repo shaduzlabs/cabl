@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Device.h"
+#include "devices/Device.h"
 #include "gfx/displays/GDisplayDummy.h"
 #include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
@@ -15,16 +15,18 @@ namespace sl
 {
 namespace kio
 {
+namespace devices
+{
   
 //--------------------------------------------------------------------------------------------------
     
-class DeviceKompleteKontrol : public Device
+class KompleteKontrol : public Device
 {
  
 public:
   
-  DeviceKompleteKontrol(tPtr<DeviceHandle>, uint8_t numKeys_);
-  ~DeviceKompleteKontrol() override;
+  KompleteKontrol(tPtr<DeviceHandle>, uint8_t numKeys_);
+  ~KompleteKontrol() override;
   
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Key, const util::LedColor&) override;
@@ -88,6 +90,7 @@ private:
 };
   
 //--------------------------------------------------------------------------------------------------
-  
+
+} // devices
 } // kio
 } // sl

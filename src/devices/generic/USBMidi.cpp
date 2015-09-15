@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/generic/USBMidi.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
@@ -23,9 +23,8 @@
 
 namespace
 {
-static const uint8_t kMikroMK2_epDisplay = 0x08;
-static const uint8_t kMikroMK2_epOut = 0x01;
-static const uint8_t kMikroMK2_epInput = 0x84;
+static const uint8_t kPush_epOut = 0x01;
+static const uint8_t kPush_epInput = 0x81;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -34,10 +33,12 @@ namespace sl
 {
 namespace kio
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMikroMK2::Led : uint8_t
+enum class USBMidi::Led : uint8_t
 {
   F1,
   F2,
@@ -91,7 +92,7 @@ enum class DeviceMaschineMikroMK2::Led : uint8_t
 //--------------------------------------------------------------------------------------------------
 
 
-enum class DeviceMaschineMikroMK2::Button : uint8_t
+enum class USBMidi::Button : uint8_t
 {
   Shift,
   Erase,
@@ -131,74 +132,80 @@ enum class DeviceMaschineMikroMK2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::DeviceMaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
+USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
   , m_isDirtyLeds(false)
 {
- m_buttons.resize(kMikroMK2_buttonsDataSize);
- m_leds.resize(kMikroMK2_ledsDataSize);
+ m_buttons.resize(kPush_buttonsDataSize);
+ m_leds.resize(kPush_ledsDataSize);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::~DeviceMaschineMikroMK2()
+USBMidi::~USBMidi()
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void USBMidi::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void USBMidi::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
+void USBMidi::sendMidiMsg(tRawData midiMsg_)
 {
- //!\todo Use MaschineMikroMK2 virtual midi port
+ //!\todo Use Push virtual midi port
 }
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMikroMK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* USBMidi::getGraphicDisplay(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
-  if (displayIndex_ > 0)
-  {
-    return &s_dummyDisplay;
-  }
-
-  return &m_display;
+  return &s_dummyDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* DeviceMaschineMikroMK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* USBMidi::getLCDDisplay(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
-  return &s_dummyLCDDisplay;
+  if (displayIndex_ > kPush_nDisplays)
+  {
+    return &s_dummyLCDDisplay;
+  }
+
+  return &m_displays[displayIndex_];
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::tick()
+bool USBMidi::tick()
 {
   static int state = 0;
   bool success = false;
 
   //!\todo enable once display dirty flag is properly set
-  if (state == 0 && m_display.isDirty())
+  if (state == 0 && (
+       m_displays[0].isDirty() ||
+       m_displays[1].isDirty() ||
+       m_displays[2].isDirty() ||
+       m_displays[3].isDirty()
+      )
+   )
   {
-    success = sendFrame();
+    success = sendDisplayData();
   }
 
   else if (state == 1)
@@ -220,11 +227,10 @@ bool DeviceMaschineMikroMK2::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::init()
+void USBMidi::init()
 {
   // Display
   initDisplay();
-  m_display.white();
 
   // Leds
   m_isDirtyLeds = true;
@@ -232,7 +238,7 @@ void DeviceMaschineMikroMK2::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::initDisplay() const
+void USBMidi::initDisplay() const
 {
   //!\todo set backlight
   return;
@@ -240,30 +246,41 @@ void DeviceMaschineMikroMK2::initDisplay() const
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::sendFrame()
+bool USBMidi::sendDisplayData()
 {
-  uint8_t yOffset = 0;
-  for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
+  bool result = true;
+  
+  for(uint8_t row = 0; row < m_displays[0].getNumberOfRows(); row++)
   {
-    const uint8_t* ptr = m_display.getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(
-      Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-      kMikroMK2_epDisplay)
-    )
+    uint8_t rowByte = 0x18 + row;
+    uint8_t nCharsPerRow = m_displays[0].getNumberOfCharsPerRow();
+    tRawData firstPacket(64);
+    tRawData secondPacket(40);
+    for(uint8_t i = 0; i < kPush_nDisplays; i++)
     {
-      return false;
+      std::copy_n( m_displays[i].getData().data() + (row*nCharsPerRow),
+                   nCharsPerRow,
+                   &firstPacket[i*nCharsPerRow]
+      );
+    }
+    if(!getDeviceHandle()->write(
+      Transfer({ 0x04, 0xF0, 0x47, 0x7F, 0x04, 0x15, rowByte, 0x00, 0x04, 0x45 }, firstPacket ),
+      kPush_epOut
+    ))
+    {
+      result = false;
     }
   }
-  return true;
+  
+  return result;
 }
-
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::sendLeds()
+bool USBMidi::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
+    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kPush_epOut))
     {
       return false;
     }
@@ -274,12 +291,12 @@ bool DeviceMaschineMikroMK2::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::read()
+bool USBMidi::read()
 {
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMikroMK2_epInput))
+    if (!getDeviceHandle()->read(input, kPush_epInput))
     {
       return false;
     }
@@ -307,13 +324,13 @@ bool DeviceMaschineMikroMK2::read()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
+void USBMidi::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
-  for (int i = 0; i < kMikroMK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
+  for (int i = 0; i < kPush_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
   {
     for (int k = 0; k < 8; k++)
     {
@@ -330,7 +347,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
         changedButton = getDeviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-      //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
+      //    std::copy(&input_[1],&input_[kPush_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
       }
@@ -338,7 +355,7 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
   }
 
   // Now process the encoder data
-  uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
+  uint8_t currentEncoderValue = input_.getData()[kPush_buttonsDataSize];
   if (m_encoderValue != currentEncoderValue)
   {
     bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
@@ -351,10 +368,10 @@ void DeviceMaschineMikroMK2::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
+void USBMidi::processPads(const Transfer& input_)
 {
   //!\todo process pad data
-  for (int i = 1; i <= kMikroMK2_padDataSize; i += 2)
+  for (int i = 1; i <= kPush_padDataSize; i += 2)
   {
     uint16_t l = input_[i];
     uint16_t h = input_[i + 1];
@@ -400,7 +417,7 @@ void DeviceMaschineMikroMK2::processPads(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
+void USBMidi::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -434,7 +451,7 @@ void DeviceMaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isRGBLed(Led led_) const noexcept
+bool USBMidi::isRGBLed(Led led_) const noexcept
 {
   if (Led::Group == led_ || Led::Pad1  == led_ || Led::Pad2  == led_ || Led::Pad3  == led_ ||
       Led::Pad4  == led_ || Led::Pad5  == led_ || Led::Pad6  == led_ || Led::Pad7  == led_ ||
@@ -451,7 +468,7 @@ bool DeviceMaschineMikroMK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) const noexcept
+USBMidi::Led USBMidi::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -498,7 +515,7 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Button btn_) 
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
+USBMidi::Led USBMidi::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -533,7 +550,7 @@ DeviceMaschineMikroMK2::Led DeviceMaschineMikroMK2::getLed(Device::Pad pad_) con
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
+Device::Button USBMidi::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -581,7 +598,7 @@ Device::Button DeviceMaschineMikroMK2::getDeviceButton(Button btn_) const noexce
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
+bool USBMidi::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -589,7 +606,7 @@ bool DeviceMaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMikroMK2::isButtonPressed(
+bool USBMidi::isButtonPressed(
   const Transfer& transfer_, 
   Button button_
 ) const noexcept
@@ -600,5 +617,6 @@ bool DeviceMaschineMikroMK2::isButtonPressed(
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

@@ -210,13 +210,27 @@ set(
   inc_devices_INCLUDES
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
-    inc/devices/DeviceKompleteKontrol.h
-    inc/devices/DeviceMaschineMK1.h
-    inc/devices/DeviceMaschineMK2.h
-    inc/devices/DeviceMaschineMikroMK1.h
-    inc/devices/DeviceMaschineMikroMK2.h
-    inc/devices/DeviceTraktorF1MK2.h
-  )
+)
+
+set(
+  inc_devices_ableton_INCLUDES
+    inc/devices/ableton/Push.h
+)
+
+set(
+  inc_devices_generic_INCLUDES
+    inc/devices/generic/USBMidi.h
+)
+
+set(
+  inc_devices_ni_INCLUDES
+    inc/devices/ni/KompleteKontrol.h
+    inc/devices/ni/MaschineMK1.h
+    inc/devices/ni/MaschineMK2.h
+    inc/devices/ni/MaschineMikroMK1.h
+    inc/devices/ni/MaschineMikroMK2.h
+    inc/devices/ni/TraktorF1MK2.h
+)
 
 set(
   inc_gfx_displays_INCLUDES
@@ -224,8 +238,9 @@ set(
     inc/gfx/displays/GDisplayMaschineMikro.h
     inc/gfx/displays/GDisplayMaschineMK1.h
     inc/gfx/displays/GDisplayMaschineMK2.h
-    inc/gfx/displays/LCDDisplayKompleteKontrol.h
     inc/gfx/displays/LCDDisplay7Segments.h
+    inc/gfx/displays/LCDDisplayGeneric.h
+    inc/gfx/displays/LCDDisplayKompleteKontrol.h
 )
 
 set(
@@ -260,6 +275,9 @@ set(
 source_group("inc\\app"              FILES ${inc_app_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
+source_group("inc\\devices\\ableton" FILES ${inc_devices_ableton_INCLUDES})
+source_group("inc\\devices\\generic" FILES ${inc_devices_generic_INCLUDES})
+source_group("inc\\devices\\ni"      FILES ${inc_devices_ni_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
 source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
 source_group("inc\\midi"             FILES ${inc_midi_INCLUDES})
@@ -271,6 +289,9 @@ set (
     ${inc_app_INCLUDES}
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
+    ${inc_devices_ableton_INCLUDES}
+    ${inc_devices_generic_INCLUDES}
+    ${inc_devices_ni_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
     ${inc_gfx_INCLUDES}
     ${inc_midi_INCLUDES}
@@ -339,11 +360,25 @@ set(
 set(
   src_devices_SRCS
     src/devices/DeviceFactory.cpp
-    src/devices/DeviceKompleteKontrol.cpp
-    src/devices/DeviceMaschineMK1.cpp
-    src/devices/DeviceMaschineMK2.cpp
-    src/devices/DeviceMaschineMikroMK2.cpp
-    src/devices/DeviceTraktorF1MK2.cpp
+)
+
+set(
+  src_devices_ableton_SRCS
+    src/devices/ableton/Push.cpp
+)
+
+set(
+  src_devices_generic_SRCS
+    src/devices/generic/USBMidi.cpp
+)
+
+set(
+  src_devices_ni_SRCS
+    src/devices/ni/KompleteKontrol.cpp
+    src/devices/ni/MaschineMK1.cpp
+    src/devices/ni/MaschineMK2.cpp
+    src/devices/ni/MaschineMikroMK2.cpp
+    src/devices/ni/TraktorF1MK2.cpp
 )
 
 set(
@@ -351,8 +386,9 @@ set(
     src/gfx/displays/GDisplayMaschineMikro.cpp
     src/gfx/displays/GDisplayMaschineMK1.cpp
     src/gfx/displays/GDisplayMaschineMK2.cpp
-    src/gfx/displays/LCDDisplayKompleteKontrol.cpp
     src/gfx/displays/LCDDisplay7Segments.cpp
+    src/gfx/displays/LCDDisplayGeneric.cpp
+    src/gfx/displays/LCDDisplayKompleteKontrol.cpp
 )
 
 set(
@@ -398,6 +434,9 @@ source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRC
 source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS})
 
 source_group("src\\devices"          FILES ${src_devices_SRCS})
+source_group("src\\devices\\ableton" FILES ${src_devices_ableton_SRCS})
+source_group("src\\devices\\generic" FILES ${src_devices_generic_SRCS})
+source_group("src\\devices\\ni"      FILES ${src_devices_ni_SRCS})
 source_group("src\\gfx"              FILES ${src_gfx_SRCS})
 source_group("src\\gfx\\displays"    FILES ${src_gfx_displays_SRCS})
 source_group("src\\gfx\\fonts"       FILES ${src_gfx_fonts_SRCS})
@@ -414,6 +453,9 @@ set(
     ${src_comm_drivers_Probe_SRCS}
     ${src_comm_SRCS}
     ${src_devices_SRCS}
+    ${src_devices_ableton_SRCS}
+    ${src_devices_generic_SRCS}
+    ${src_devices_ni_SRCS}
     ${src_gfx_displays_SRCS}
     ${src_gfx_fonts_SRCS}
     ${src_gfx_fonts_data_SRCS}

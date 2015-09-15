@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DeviceMaschineMK2.h"
+#include "devices/ni/MaschineMK2.h"
 
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
@@ -31,9 +31,11 @@ namespace sl
 {
 namespace kio
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
-enum class DeviceMaschineMK2::Led : uint8_t{
+enum class MaschineMK2::Led : uint8_t{
   Control,
   Step,
   Browse,
@@ -109,7 +111,7 @@ enum class DeviceMaschineMK2::Led : uint8_t{
 
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceMaschineMK2::Button : uint8_t{
+enum class MaschineMK2::Button : uint8_t{
   DisplayButton1,
   DisplayButton2,
   DisplayButton3,
@@ -177,7 +179,7 @@ enum class DeviceMaschineMK2::Button : uint8_t{
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
+MaschineMK2::MaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
   , m_isDirtyPadLeds(false)
   , m_isDirtyGroupLeds(false)
@@ -207,7 +209,7 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
     }
     catch (RtMidiError &error) 
     {
-      M_LOG("[DeviceMaschineMK2] RtMidiError: " << error.getMessage());
+      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
     }
   }
   if(!m_pMidiout->isPortOpen())
@@ -219,28 +221,28 @@ DeviceMaschineMK2::DeviceMaschineMK2(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK2::~DeviceMaschineMK2()
+MaschineMK2::~MaschineMK2()
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void MaschineMK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
+void MaschineMK2::sendMidiMsg(tRawData midiMsg_)
 {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   if(m_pMidiout)
@@ -252,7 +254,7 @@ void DeviceMaschineMK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceMaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* MaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -265,7 +267,7 @@ GDisplay* DeviceMaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* DeviceMaschineMK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* MaschineMK2::getLCDDisplay(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -274,7 +276,7 @@ LCDDisplay* DeviceMaschineMK2::getLCDDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::tick()
+bool MaschineMK2::tick()
 {
   static int state = 0;
   bool success = false;
@@ -313,7 +315,7 @@ bool DeviceMaschineMK2::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::init()
+void MaschineMK2::init()
 {
   // Display
   initDisplay();
@@ -328,7 +330,7 @@ void DeviceMaschineMK2::init()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::initDisplay() const
+void MaschineMK2::initDisplay() const
 {
   //!\todo set backlight
   return;
@@ -336,7 +338,7 @@ void DeviceMaschineMK2::initDisplay() const
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
+bool MaschineMK2::sendFrame(uint8_t displayIndex_)
 {
   if (displayIndex_ > 1)
   {
@@ -363,7 +365,7 @@ bool DeviceMaschineMK2::sendFrame(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::sendLeds()
+bool MaschineMK2::sendLeds()
 {
   if (m_isDirtyButtonLeds)
   {
@@ -394,7 +396,7 @@ bool DeviceMaschineMK2::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::read()
+bool MaschineMK2::read()
 {
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
@@ -418,7 +420,7 @@ bool DeviceMaschineMK2::read()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::processButtons(const Transfer& input_)
+void MaschineMK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
@@ -485,7 +487,7 @@ void DeviceMaschineMK2::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::processPads(const Transfer& input_)
+void MaschineMK2::processPads(const Transfer& input_)
 {
   //!\todo process pad data
   for (int i = 1; i < kMASMK2_padDataSize; i += 2)
@@ -534,7 +536,7 @@ void DeviceMaschineMK2::processPads(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
+void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
   static const uint8_t kFirstPadIndex = static_cast<uint8_t>(Led::Pad13);
   uint8_t ledIndex = static_cast<uint8_t>(led_);
@@ -600,7 +602,7 @@ void DeviceMaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::isRGBLed(Led led_) const noexcept
+bool MaschineMK2::isRGBLed(Led led_) const noexcept
 {
 
   if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ ||
@@ -617,7 +619,7 @@ bool DeviceMaschineMK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Button btn_) const noexcept
+MaschineMK2::Led MaschineMK2::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -684,7 +686,7 @@ DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Button btn_) const noex
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Pad pad_) const noexcept
+MaschineMK2::Led MaschineMK2::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -719,7 +721,7 @@ DeviceMaschineMK2::Led DeviceMaschineMK2::getLed(Device::Pad pad_) const noexcep
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button DeviceMaschineMK2::getDeviceButton(Button btn_) const noexcept
+Device::Button MaschineMK2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -788,7 +790,7 @@ Device::Button DeviceMaschineMK2::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::isButtonPressed(Button button_) const noexcept
+bool MaschineMK2::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -796,7 +798,7 @@ bool DeviceMaschineMK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceMaschineMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool MaschineMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
@@ -804,5 +806,6 @@ bool DeviceMaschineMK2::isButtonPressed(const Transfer& transfer_, Button button
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

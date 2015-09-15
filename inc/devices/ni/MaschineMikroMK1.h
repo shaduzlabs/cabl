@@ -13,20 +13,23 @@ namespace sl
 {
 namespace kio
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
 
-class DeviceMaschineMikroMK1 : public Device
+class MaschineMikroMK1 : public Device
 {
   
 public:
   
-  DeviceMaschineMikroMK1();
-  ~DeviceMaschineMikroMK1() override;
+  MaschineMikroMK1();
+  ~MaschineMikroMK1() override;
   
 };
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

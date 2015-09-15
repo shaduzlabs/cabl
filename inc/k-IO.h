@@ -10,9 +10,12 @@
 #include "app/Application.h"
 
 #include "devices/DeviceFactory.h"
-#include "devices/DeviceMaschineMK1.h"
-#include "devices/DeviceMaschineMK2.h"
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/ableton/Push.h"
+#include "devices/ni/KompleteKontrol.h"
+#include "devices/ni/MaschineMK1.h"
+#include "devices/ni/MaschineMK2.h"
+#include "devices/ni/MaschineMikroMK2.h"
+#include "devices/ni/TraktorF1MK2.h"
 
 #include "util/Version.h"
 

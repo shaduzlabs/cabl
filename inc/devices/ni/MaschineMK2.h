@@ -7,23 +7,25 @@
 
 #pragma once
 
-#include "Device.h"
+#include "devices/Device.h"
 #include "gfx/displays/GDisplayMaschineMK2.h"
 
 namespace sl
 {
 namespace kio
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
 
-class DeviceMaschineMK2 : public Device
+class MaschineMK2 : public Device
 {
  
 public:
   
-  DeviceMaschineMK2(tPtr<DeviceHandle>);
-  ~DeviceMaschineMK2() override;
+  MaschineMK2(tPtr<DeviceHandle>);
+  ~MaschineMK2() override;
   
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Pad, const util::LedColor&) override;
@@ -94,6 +96,7 @@ private:
 };
 
 //--------------------------------------------------------------------------------------------------
-  
+
+} // devices
 } // kio
 } // sl

@@ -10,8 +10,8 @@
 #include <sstream>
 
 #include <gfx/LCDDisplay.h>
-#include <devices/DeviceMaschineMK1.h>
-#include <devices/DeviceMaschineMikroMK2.h>
+#include <devices/ni/MaschineMK1.h>
+#include <devices/ni/MaschineMikroMK2.h>
 
 namespace
 {

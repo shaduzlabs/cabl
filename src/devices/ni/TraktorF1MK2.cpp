@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DeviceTraktorF1MK2.h"
+#include "devices/ni/TraktorF1MK2.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
@@ -28,6 +28,8 @@ namespace sl
 {
 namespace kio
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ namespace kio
       -------
 */
 
-enum class DeviceTraktorF1MK2::Led : uint16_t
+enum class TraktorF1MK2::Led : uint16_t
 {
   Display2_segDP,
   Display2_SegG,
@@ -100,7 +102,7 @@ enum class DeviceTraktorF1MK2::Led : uint16_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class DeviceTraktorF1MK2::Button : uint8_t
+enum class TraktorF1MK2::Button : uint8_t
 {
   Pad8,
   Pad7,
@@ -140,7 +142,7 @@ enum class DeviceTraktorF1MK2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceTraktorF1MK2::DeviceTraktorF1MK2(tPtr<DeviceHandle> pDeviceHandle_)
+TraktorF1MK2::TraktorF1MK2(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
   , m_lcdDisplay(2)
   , m_isDirtyLeds(true)
@@ -151,41 +153,41 @@ DeviceTraktorF1MK2::DeviceTraktorF1MK2(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceTraktorF1MK2::~DeviceTraktorF1MK2()
+TraktorF1MK2::~TraktorF1MK2()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceTraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceTraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceTraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
+void TraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
 {
  //!\todo Use KompleteKontrol hardware midi port
 }
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* DeviceTraktorF1MK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* TraktorF1MK2::getGraphicDisplay(uint8_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* DeviceTraktorF1MK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* TraktorF1MK2::getLCDDisplay(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0,0);
   if (displayIndex_ > 0)
@@ -197,7 +199,7 @@ LCDDisplay* DeviceTraktorF1MK2::getLCDDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::tick()
+bool TraktorF1MK2::tick()
 {
   static int state = 0;
   bool success = false;
@@ -221,14 +223,14 @@ bool DeviceTraktorF1MK2::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void sl::kio::DeviceTraktorF1MK2::init()
+void TraktorF1MK2::init()
 {
   getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kF1MK2_epOut);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::sendLedsAndDisplay()
+bool TraktorF1MK2::sendLedsAndDisplay()
 {
   if(m_lcdDisplay.isDirty() || true)
   {
@@ -256,7 +258,7 @@ bool DeviceTraktorF1MK2::sendLedsAndDisplay()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::read()
+bool TraktorF1MK2::read()
 {
   Transfer input;
 
@@ -274,7 +276,7 @@ bool DeviceTraktorF1MK2::read()
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceTraktorF1MK2::processButtons(const Transfer& input_)
+void TraktorF1MK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
@@ -330,7 +332,7 @@ void DeviceTraktorF1MK2::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceTraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
+void TraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint16_t ledIndex = static_cast<uint16_t>(led_);
 
@@ -364,7 +366,7 @@ void DeviceTraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::isRGBLed(Led led_) const noexcept
+bool TraktorF1MK2::isRGBLed(Led led_) const noexcept
 {
   if (led_ >= Led::Pad13 && led_ <= Led::Pad4)
   {
@@ -376,7 +378,7 @@ bool DeviceTraktorF1MK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceTraktorF1MK2::Led DeviceTraktorF1MK2::getLed(Device::Button btn_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -423,7 +425,7 @@ DeviceTraktorF1MK2::Led DeviceTraktorF1MK2::getLed(Device::Button btn_) const no
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceTraktorF1MK2::Led DeviceTraktorF1MK2::getLed(Device::Pad pad_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -458,7 +460,7 @@ DeviceTraktorF1MK2::Led DeviceTraktorF1MK2::getLed(Device::Pad pad_) const noexc
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button DeviceTraktorF1MK2::getDeviceButton(Button btn_) const noexcept
+Device::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -510,7 +512,7 @@ Device::Button DeviceTraktorF1MK2::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::isButtonPressed(Button button_) const noexcept
+bool TraktorF1MK2::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -518,7 +520,7 @@ bool DeviceTraktorF1MK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceTraktorF1MK2::isButtonPressed(
+bool TraktorF1MK2::isButtonPressed(
   const Transfer& transfer_, 
   Button button_
 ) const noexcept
@@ -529,5 +531,6 @@ bool DeviceTraktorF1MK2::isButtonPressed(
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

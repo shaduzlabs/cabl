@@ -25,6 +25,9 @@ namespace kio
 class GDisplay;
 class LCDDisplay;
 
+namespace devices
+{
+
 class Device
 {
 
@@ -315,5 +318,6 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
+} // devices
 } // kio
 } // sl

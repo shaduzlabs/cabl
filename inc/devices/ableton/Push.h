@@ -7,28 +7,29 @@
 
 #pragma once
 
-#include "Device.h"
-#include "gfx/displays/GDisplayDummy.h"
-#include "gfx/displays/LCDDisplay7Segments.h"
+#include "devices/Device.h"
+#include "gfx/displays/LCDDisplayGeneric.h"
 
 namespace sl
 {
 namespace kio
 {
-  
+namespace devices
+{
+
 //--------------------------------------------------------------------------------------------------
-    
-class DeviceTraktorF1MK2 : public Device
+
+class Push : public Device
 {
  
 public:
   
-  DeviceTraktorF1MK2(tPtr<DeviceHandle>);
-  ~DeviceTraktorF1MK2() override;
+  Push(tPtr<DeviceHandle>);
+  ~Push() override;
   
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Pad, const util::LedColor&) override;
-  
+
   void sendMidiMsg(tRawData) override;
   
   GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
@@ -38,18 +39,28 @@ public:
 
 private:
 
-  enum class Led    : uint16_t;
+  enum class Led    : uint8_t;
   enum class Button : uint8_t;
+ 
+  static constexpr uint8_t kPush_nDisplays         = 4;
+  static constexpr uint8_t kPush_nButtons          = 45;
+  static constexpr uint8_t kPush_ledsDataSize      = 78;
+  static constexpr uint8_t kPush_buttonsDataSize   = 5;
+  static constexpr uint8_t kPush_padDataSize       = 64;
+  static constexpr uint8_t kPush_nPads             = 16;
+  static constexpr uint8_t kPush_padsBufferSize    = 16;
 
-  static constexpr uint8_t kF1MK2_nButtons = 27;
-  static constexpr uint8_t kF1MK2_buttonsDataSize = 5;
-  static constexpr uint8_t kF1MK2_nPotentiometers = 8;
+  using tBuffer = util::CircularBuffer<uint16_t, kPush_padsBufferSize>;
 
   void init() override;
-  bool sendLedsAndDisplay();
+
+  void initDisplay() const;
+  bool sendDisplayData();
+  bool sendLeds();
   bool read();
   
   void processButtons( const Transfer& );
+  void processPads( const Transfer& );
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
@@ -59,22 +70,23 @@ private:
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+
+  LCDDisplayGeneric        m_displays[kPush_nDisplays];
   
-  GDisplayDummy               m_displayDummy;
-  LCDDisplay7Segments         m_lcdDisplay;
-
-  tRawData                    m_leds;
-
-  tRawData                    m_buttons;
-  bool                        m_buttonStates[kF1MK2_nButtons];
-  uint16_t                    m_potentiometersValues[kF1MK2_nPotentiometers];
-  uint8_t                     m_encoderValue;
-
-  bool                        m_isDirtyLeds;
+  tRawData              m_leds;
+  tRawData              m_buttons;
+  bool                  m_buttonStates[kPush_nButtons];
+  uint8_t               m_encoderValue;
+  
+  tBuffer               m_padsRawData[ kPush_nPads ];
+  uint16_t              m_padsAvgData[ kPush_nPads ];
+  
+  bool                  m_isDirtyLeds;
 
 };
   
 //--------------------------------------------------------------------------------------------------
-  
+
+} // devices
 } // kio
 } // sl

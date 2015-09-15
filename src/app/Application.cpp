@@ -11,8 +11,8 @@
 #include <iostream>
 
 #include "k-io.h"
-#include "devices/DeviceMaschineMK1.h"
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/ni/MaschineMK1.h"
+#include "devices/ni/MaschineMikroMK2.h"
 
 namespace
 {
@@ -138,11 +138,11 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
     {
       m_collDevices.emplace_back(DeviceFactory::getDevice(d,std::move(pDeviceHandle)));
  
-//      m_collDevices.emplace_back(new DeviceMaschineMK2(std::move(pDeviceHandle)));
+//      m_collDevices.emplace_back(new MaschineMK2(std::move(pDeviceHandle)));
       m_collDevices[0]->init();
       m_connected = true;
       /*
-      tPtr<Device> unsupportedDevice(new DeviceMaschineMK1(std::move(pDeviceHandle)));
+      tPtr<Device> unsupportedDevice(new MaschineMK1(std::move(pDeviceHandle)));
       unsupportedDevice->init();
       unsupportedDevice->tick();
 
