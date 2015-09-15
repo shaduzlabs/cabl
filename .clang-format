@@ -1,8 +1,10 @@
 ---
-Language:        Cpp
+Language: Cpp
 AccessModifierOffset: -2
-ConstructorInitializerIndentWidth: 2
+AlignAfterOpenBracket: false
+AlignConsecutiveAssignments: true
 AlignEscapedNewlinesLeft: true
+AlignOperands: true
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: false
@@ -14,19 +16,25 @@ AlwaysBreakBeforeMultilineStrings: false
 BreakBeforeBinaryOperators: true
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
+BinPackArguments: false
 BinPackParameters: false
-ColumnLimit:     100
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+BreakBeforeBraces: Allman
+ColumnLimit: 100
+CommentPragmas: '^!'
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+Cpp11BracedListStyle: true
 DerivePointerAlignment: false
+DisableFormat: false
 ExperimentalAutoDetectBinPacking: false
 IndentCaseLabels: true
-IndentWrappedFunctionNames: false
 IndentFunctionDeclarationAfterType: false
-MaxEmptyLinesToKeep: 2
+IndentWrappedFunctionNames: false
+IndentWidth: 2
 KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
 PenaltyBreakString: 1000
@@ -34,23 +42,15 @@ PenaltyBreakFirstLessLess: 120
 PenaltyExcessCharacter: 100
 PenaltyReturnTypeOnItsOwnLine: 600
 PointerAlignment: Left
-SpacesBeforeTrailingComments: 1
-Cpp11BracedListStyle: true
-Standard:        Cpp11
-IndentWidth:     2
-TabWidth:        2
-UseTab:          Never
-BreakBeforeBraces: Allman
-SpacesInParentheses: false
-SpacesInAngles:  false
-SpaceInEmptyParentheses: false
-SpacesInCStyleCastParentheses: false
-SpacesInContainerLiterals: true
 SpaceBeforeAssignmentOperators: true
-ContinuationIndentWidth: 2
-CommentPragmas:  '^!'
-ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 SpaceBeforeParens: ControlStatements
-DisableFormat:   false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles:  false
+SpacesInContainerLiterals: true
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+Standard: Cpp11
+TabWidth: 2
+UseTab: Never
 ...
-
