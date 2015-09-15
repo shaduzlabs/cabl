@@ -25,6 +25,7 @@ namespace
 {
 static const uint8_t kPush_epOut = 0x01;
 static const uint8_t kPush_epInput = 0x81;
+static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -249,13 +250,13 @@ void Push::initDisplay() const
 bool Push::sendDisplayData()
 {
   bool result = true;
+  tRawData sysexHeader{kPush_manufacturerId, 0x7F, 0x15, 0x18, 0x00, 0x45, 0x00 };
   
   for(uint8_t row = 0; row < m_displays[0].getNumberOfRows(); row++)
   {
-    uint8_t rowByte = 0x18 + row;
+    sysexHeader[3] = 0x18 + row;
     uint8_t nCharsPerRow = m_displays[0].getNumberOfCharsPerRow();
-    tRawData firstPacket(64);
-    tRawData secondPacket(40);
+    tRawData data(m_displays[0].getNumberOfCharsPerRow() * kPush_nDisplays);
     for(uint8_t i = 0; i < kPush_nDisplays; i++)
     {
       std::copy_n( m_displays[i].getData().data() + (row*nCharsPerRow),
@@ -263,13 +264,7 @@ bool Push::sendDisplayData()
                    &firstPacket[i*nCharsPerRow]
       );
     }
-    if(!getDeviceHandle()->write(
-      Transfer({ 0x04, 0xF0, 0x47, 0x7F, 0x04, 0x15, rowByte, 0x00, 0x04, 0x45 }, firstPacket ),
-      kPush_epOut
-    ))
-    {
-      result = false;
-    }
+    result = sendSysex({sysexHeader,data});    
   }
   
   return result;

@@ -8,6 +8,7 @@
 #pragma once
 
 #include "devices/Device.h"
+#include "devices/generic/USBMidi.h"
 #include "gfx/displays/LCDDisplayGeneric.h"
 
 namespace sl
@@ -19,7 +20,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class Push : public Device
+class Push : public USBMidi, public Device
 {
  
 public:

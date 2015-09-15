@@ -73,7 +73,7 @@ public:
   
   bool operator==(const MidiNote& other_) const
   {
-    return (m_note == other_.m_note) && (m_octave == m_octave);
+    return (m_note == other_.m_note) && (m_octave == other_.m_octave);
   }
 
   bool operator!=(const MidiNote& other_) const { return !(operator==(other_)); }
@@ -184,11 +184,23 @@ public:
   /*!
    \param data_ The raw message data
   */
-  MidiMessageBase(tRawData data_)
+  MidiMessageBase(const tRawData& data_)
     : midi::MidiMessage(MsgType)
-    , m_data( data_ )
+    , m_data(std::move(data_))
   {
 
+  }
+  
+  //! Constructor
+  /*!
+   \param header_ The raw message header
+   \param data_   The raw message data
+  */
+  MidiMessageBase(const tRawData& header_, const tRawData& data_)
+    : midi::MidiMessage(MsgType)
+    , m_data(header_)
+  {
+    m_data.insert(m_data.end(), data_.begin(), data_.end());
   }
   
   //! Constructor
@@ -196,7 +208,7 @@ public:
    \param channel_  The MIDI channel
    \param data_     The raw message data
   */
-  MidiMessageBase(MidiMessage::Channel channel_, tRawData data_)
+  MidiMessageBase(MidiMessage::Channel channel_, const tRawData& data_)
     : midi::MidiMessage(MsgType)
     , m_data{static_cast<uint8_t>((static_cast<uint8_t>(channel_)|static_cast<uint8_t>(getType())))}
   {
@@ -402,16 +414,35 @@ class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::Sysex>
 {
 public:
 
-  SysEx(tRawData data_)
+  SysEx(const tRawData& data_)
     : MidiMessageBase(data_)
   {
     
   }
 
+  SysEx(uint8_t manufacturerId, const tRawData& data_)
+    : MidiMessageBase({manufacturerId},data_)
+  {
+    
+  }
+
+  SysEx(uint8_t manufacturerIdHi, uint8_t manufacturerIdLo, const tRawData& data_)
+    : MidiMessageBase({0, manufacturerIdHi, manufacturerIdLo},data_)
+  {
+    
+  }
+  
+  SysEx(const tRawData& header_, const tRawData& data_)
+    : MidiMessageBase(header_,data_)
+  {
+    
+  }
+  
   tRawData getHeader() const
   {
     return tRawData(data().begin()+1,data().begin()+1+getManufacturerIdLength());
   }
+  
   
   tRawData getPayload() const
   {
