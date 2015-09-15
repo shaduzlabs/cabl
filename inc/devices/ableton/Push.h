@@ -20,7 +20,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class Push : public USBMidi, public Device
+class Push : public USBMidi
 {
  
 public:

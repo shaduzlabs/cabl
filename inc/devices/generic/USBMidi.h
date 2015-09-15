@@ -21,12 +21,14 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class USBMidi : public midi::MidiMessageListener
+class USBMidi : public midi::MidiMessageListener, public Device
 {
  
 public:
   
-  bool sendSysex(const midi::SysEx&) const;
+  USBMidi(tPtr<DeviceHandle>);
+  
+  bool sendSysex(const midi::SysEx&);
 
 private:
 

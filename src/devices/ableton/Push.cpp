@@ -134,7 +134,7 @@ enum class Push::Button : uint8_t
 //--------------------------------------------------------------------------------------------------
 
 Push::Push(tPtr<DeviceHandle> pDeviceHandle_)
-  : Device(std::move(pDeviceHandle_))
+  : USBMidi(std::move(pDeviceHandle_))
   , m_isDirtyLeds(false)
 {
  m_buttons.resize(kPush_buttonsDataSize);
@@ -261,7 +261,7 @@ bool Push::sendDisplayData()
     {
       std::copy_n( m_displays[i].getData().data() + (row*nCharsPerRow),
                    nCharsPerRow,
-                   &firstPacket[i*nCharsPerRow]
+                   &data[i*nCharsPerRow]
       );
     }
     result = sendSysex({sysexHeader,data});    

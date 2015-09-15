@@ -17,15 +17,23 @@ namespace kio
 namespace devices
 {
 
+
 //--------------------------------------------------------------------------------------------------
 
-bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_) const
+USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
+  : Device(std::move(pDeviceHandle_))
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 {
 
   tRawData message(4);
   uint8_t nCable = 0;
   unsigned msgIndex = 0;
-  uint8_t rc;
   int bytesToSend = sysexMessage_.data().size();
 
   while(bytesToSend > 0)
@@ -66,12 +74,11 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_) const
       }
     }
     
-    rc = pUsb->outTransfer(bAddress, epInfo[epDataOutIndex].epAddr, 4, buf);
-    if(rc != 0)
-     break;
+    if(!getDeviceHandle()->write(Transfer(message), 0x02))
+    {
+      return false;
+    }
   }
-//  return(rc);
-  
   return true;
 }
 
