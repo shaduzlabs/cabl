@@ -17,6 +17,7 @@ namespace kio
 namespace devices
 {
 
+// USBMidi specs: http://www.usb.org/developers/docs/devclass_docs/midi10.pdf
 
 //--------------------------------------------------------------------------------------------------
 
