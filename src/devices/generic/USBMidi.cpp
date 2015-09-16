@@ -10,6 +10,8 @@
 
 //--------------------------------------------------------------------------------------------------
 
+using namespace std::placeholders;
+
 namespace sl
 {
 namespace kio
@@ -23,6 +25,61 @@ namespace devices
 
 USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
+{
+  setCallbackNoteOff(std::bind(&USBMidi::onNoteOff, this, _1));
+  setCallbackNoteOn(std::bind(&USBMidi::onNoteOn, this, _1));
+  setCallbackPolyPressure(std::bind(&USBMidi::onPolyPressure, this, _1));
+  setCallbackControlChangee(std::bind(&USBMidi::onControlChange, this, _1));
+  setCallbackProgramChange(std::bind(&USBMidi::onProgramChange, this, _1));
+  setCallbackChannelPressure(std::bind(&USBMidi::onChannelPressure, this, _1));
+  setCallbackPitchBend(std::bind(&USBMidi::onPitchBend, this, _1));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onNoteOff(tPtr<NoteOff> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onNoteOn(tPtr<NoteOn> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onPolyPressure(tPtr<PolyPressure> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onControlChange(tPtr<ControlChange> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onProgramChange(tPtr<ProgramChange> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onChannelPressure(tPtr<ChannelPressure> msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onPitchBend(tPtr<PitchBend> msg_)
 {
 
 }

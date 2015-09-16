@@ -16,6 +16,9 @@ namespace sl
 {
 namespace kio
 {
+
+using namespace midi;
+
 namespace devices
 {
 
@@ -28,7 +31,15 @@ public:
   
   USBMidi(tPtr<DeviceHandle>);
   
-  bool sendSysex(const midi::SysEx&);
+  void onNoteOff(tPtr<NoteOff> msg);
+  void onNoteOn(tPtr<NoteOn> msg);
+  void onPolyPressure(tPtr<PolyPressure> msg);
+  void onControlChange(tPtr<ControlChange> msg);
+  void onProgramChange(tPtr<ProgramChange> msg);
+  void onChannelPressure(tPtr<ChannelPressure> msg);
+  void onPitchBend(tPtr<PitchBend> msg);
+  
+  bool sendSysex(const SysEx&);
 
 private:
 
