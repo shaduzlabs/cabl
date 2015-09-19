@@ -49,14 +49,19 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
       strSerialNumber = std::string(wSerialNumber.begin(), wSerialNumber.end());
     }
 
+    std::string strProductName;
+    if(devices->product_string !=nullptr)
+    {
+      std::wstring wProductName(devices->product_string);
+      strProductName = std::string(wProductName.begin(), wProductName.end());
+    }
     DeviceDescriptor deviceDescriptor(
       devices->vendor_id,
       devices->product_id,
       strSerialNumber,
       true
     );
-    M_LOG("[HIDAPI] enumerate: found " << devices->product_string  
-       << " with S/N = " << strSerialNumber);
+    M_LOG("[HIDAPI] enumerate: found " << strProductName << " with S/N = " << strSerialNumber);
 
     collDeviceDescriptor.push_back(deviceDescriptor);
 		devices = devices->next;
