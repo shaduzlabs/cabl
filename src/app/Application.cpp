@@ -40,7 +40,7 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 
   m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1120); //Traktor F1 MK2
 
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::MIDI, 0x0045, 0x1120); //Ableton Push
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::MIDI, 0x0045, 0x1500); //Ableton Push
 
 }
 
