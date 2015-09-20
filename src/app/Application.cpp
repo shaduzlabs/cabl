@@ -40,7 +40,7 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 
   m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1120); //Traktor F1 MK2
 
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::MIDI, 0x0045, 0x1500); //Ableton Push
+  m_collKnownDevices.emplace_back("Ableton Push Live Port", DeviceDescriptor::Type::MIDI, 0x0047, 0x1500); //Ableton Push
 
 }
 
@@ -98,16 +98,17 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
   M_LOG("[Application] enumerateDevices: " << devicesList.size() 
      << " known devices found via HIDAPI");
   
+  unsigned nFoundMidi = 0;
   for (const auto& deviceDescriptor : getDriver(Driver::Type::MIDI)->enumerate())
   {
     if (!isKnownDevice(deviceDescriptor))
     {
       continue; // not a Native Instruments USB device
     }
+    nFoundMidi++;
     devicesList.push_back(deviceDescriptor);
   }
-  M_LOG("[Application] enumerateDevices: " << devicesList.size() 
-     << " known devices found via MIDI");
+  M_LOG("[Application] enumerateDevices: " << nFoundMidi << " known devices found via MIDI");
 
   Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif

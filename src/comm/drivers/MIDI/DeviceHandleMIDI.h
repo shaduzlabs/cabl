@@ -24,7 +24,7 @@ class DeviceHandleMIDI : public DeviceHandleImpl
 {
 public:
 
-  DeviceHandleMIDI(RtMidiIn, RtMidiOut);
+  DeviceHandleMIDI(const DeviceDescriptor&);
   ~DeviceHandleMIDI();
 
   void disconnect() override;

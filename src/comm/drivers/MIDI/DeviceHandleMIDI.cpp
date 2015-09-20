@@ -19,10 +19,10 @@ namespace kio
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceHandleMIDI::DeviceHandleMIDI(RtMidiIn midiIn_, RtMidiOut midiOut_)
-  : m_midiIn(std::move(midiIn_))
-  , m_midiOut(std::move(midiOut_))
+DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& device_)
 {
+  m_midiIn.openPort(device_.getPortIdIn(), device_.getName());
+  m_midiOut.openPort(device_.getPortIdOut(), device_.getName());
   m_inputBuffer.resize(kMIDIInputBufferSize);
 }
 

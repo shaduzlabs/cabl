@@ -26,7 +26,7 @@ namespace
 
 //--------------------------------------------------------------------------------------------------
 
-static const unsigned kVendor_Ableton               = 0x0045; // Akai Vendor Id
+static const unsigned kVendor_Ableton               = 0x0047; // Akai Vendor Id
 static const unsigned kProduct_Push                 = 0x1500;
 
 //--------------------------------------------------------------------------------------------------

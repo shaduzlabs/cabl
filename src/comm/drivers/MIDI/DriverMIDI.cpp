@@ -144,20 +144,15 @@ tPtr<DeviceHandleImpl> DriverMIDI::connect( const DeviceDescriptor& device_ )
   M_LOG("[DriverMIDI] connecting to " << device_.getName()  << ":"
                                   << device_.getVendorId() << ":"
                                   << device_.getProductId() );
-  RtMidiIn midiIn;
-  RtMidiOut midiOut;
-
   try
   {
-    midiIn.openPort(device_.getPortIdIn(), device_.getName());
-    midiOut.openPort(device_.getPortIdOut(), device_.getName());
+    return tPtr<DeviceHandleImpl>(new DeviceHandleMIDI(device_));
   }
   catch (RtMidiError &error)
   {
     M_LOG("[DriverMIDI] RtMidiError: " << error.getMessage());
     return nullptr;
   }
-  return tPtr<DeviceHandleImpl>(new DeviceHandleMIDI(std::move(midiIn),std::move(midiOut)));
 }
   
 //--------------------------------------------------------------------------------------------------
