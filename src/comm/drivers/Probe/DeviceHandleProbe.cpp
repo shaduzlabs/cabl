@@ -57,7 +57,7 @@ bool DeviceHandleProbe::read(Transfer& transfer_, uint8_t endpoint_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_)
 {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::cout << "Packet #" << s_numPacketW << " (" << transfer_.size() << " bytes) -> endpoint "

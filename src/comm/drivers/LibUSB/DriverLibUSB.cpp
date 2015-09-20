@@ -79,8 +79,8 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
     libusb_get_device_descriptor(device, &descriptor);
     std::string strSerialNum = getStringDescriptor(pHandle, descriptor.iSerialNumber);
 
-#ifndef NDEBUG
     std::string strProd = getStringDescriptor(pHandle, descriptor.iProduct);
+#ifndef NDEBUG
     std::string strManuf = getStringDescriptor(pHandle, descriptor.iManufacturer);
 
     if (strSerialNum.empty())
@@ -95,10 +95,11 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
 #endif
     libusb_close(pHandle);
     DeviceDescriptor deviceDescriptor(
+      strProd,
+      DeviceDescriptor::Type::USB,
       descriptor.idVendor,
       descriptor.idProduct,
-      strSerialNum,
-      false
+      strSerialNum
     );
     collDeviceDescriptor.push_back(deviceDescriptor);
   }

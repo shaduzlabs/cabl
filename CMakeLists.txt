@@ -16,7 +16,7 @@ set(DEBUG_SUFFIX          "_d")
 # The version number.
 set (k-IO_VERSION_MAJOR 0)
 set (k-IO_VERSION_MINOR 9)
-set (k-IO_VERSION_MICRO 1)
+set (k-IO_VERSION_MICRO 2)
 set( k-IO_VERSION_STRING ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO})
 
 enable_testing()
@@ -333,6 +333,14 @@ set(
 )
 
 set(
+  src_comm_drivers_MIDI_SRCS
+    src/comm/drivers/MIDI/DriverMIDI.cpp
+    src/comm/drivers/MIDI/DriverMIDI.h
+    src/comm/drivers/MIDI/DeviceHandleMIDI.cpp
+    src/comm/drivers/MIDI/DeviceHandleMIDI.h
+)
+
+set(
   src_comm_drivers_Probe_SRCS
     src/comm/drivers/Probe/DriverProbe.cpp
     src/comm/drivers/Probe/DriverProbe.h
@@ -431,17 +439,21 @@ source_group("src\\comm"             FILES ${src_comm_SRCS})
 
 source_group("src\\comm\\drivers\\HIDAPI"    FILES ${src_comm_drivers_HIDAPI_SRCS})
 source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRCS})
+source_group("src\\comm\\drivers\\MIDI"      FILES ${src_comm_drivers_MIDI_SRCS})
 source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS})
 
 source_group("src\\devices"          FILES ${src_devices_SRCS})
 source_group("src\\devices\\ableton" FILES ${src_devices_ableton_SRCS})
 source_group("src\\devices\\generic" FILES ${src_devices_generic_SRCS})
 source_group("src\\devices\\ni"      FILES ${src_devices_ni_SRCS})
+
 source_group("src\\gfx"              FILES ${src_gfx_SRCS})
 source_group("src\\gfx\\displays"    FILES ${src_gfx_displays_SRCS})
 source_group("src\\gfx\\fonts"       FILES ${src_gfx_fonts_SRCS})
 source_group("src\\gfx\\fonts\\data" FILES ${src_gfx_fonts_data_SRCS})
+
 source_group("src\\util"             FILES ${src_util_SRCS})
+
 source_group("src"                   FILES ${src_SRCS})
 
 set(
@@ -450,6 +462,7 @@ set(
     ${src_app_SRCS}
     ${src_comm_drivers_HIDAPI_SRCS}
     ${src_comm_drivers_LibUSB_SRCS}
+    ${src_comm_drivers_MIDI_SRCS}
     ${src_comm_drivers_Probe_SRCS}
     ${src_comm_SRCS}
     ${src_devices_SRCS}
@@ -499,6 +512,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
   target_link_libraries( k-IO PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
+
+  target_link_libraries( k-IOStatic PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
+  target_link_libraries( k-IOStatic PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)

@@ -67,7 +67,7 @@ bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t) const
+bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t)
 {
   if (transfer_)
   {

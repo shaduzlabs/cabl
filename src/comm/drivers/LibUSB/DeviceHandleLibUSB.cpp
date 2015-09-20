@@ -70,7 +70,7 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ ) const
+bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ )
 {
   int nBytesWritten = 0;
   if( transfer_ == true )

@@ -23,44 +23,68 @@ public:
   using tProductId = uint16_t;
   using tSerialNumber = std::string;
   
+  enum class Type
+  {
+    USB,
+    HID,
+    MIDI
+  };
+  
   DeviceDescriptor(
+    std::string name_,
+    Type type_,
     tVendorId vendorId_,
     tProductId productId_,
     tSerialNumber serialNumber_="",
-    bool isHid_ = false
+    unsigned portIdIn_ = 0,
+    unsigned portIdOut_ = 0
   )
-    :m_vendorId(vendorId_)
+    :m_name(name_)
+    ,m_type(type_)
+    ,m_vendorId(vendorId_)
     ,m_productId(productId_)
     ,m_serialNumber(serialNumber_)
-    ,m_isHid(isHid_)
+    ,m_portIdIn(portIdIn_)
+    ,m_portIdOut(portIdOut_)
   { }
   
+  const std::string& getName() const{ return m_name; }
+  Type getType() const { return m_type; }
   tVendorId getVendorId() const{ return m_vendorId; }
   tProductId getProductId() const{ return m_productId; }
-  tSerialNumber getSerialNumber() const{ return m_serialNumber; }
-  bool isHID() const { return m_isHid; }
+  unsigned getPortIdIn() const { return m_portIdIn; }
+  unsigned getPortIdOut() const { return m_portIdOut; }
+  const tSerialNumber& getSerialNumber() const{ return m_serialNumber; }
 
   bool operator==(const DeviceDescriptor& other_) const
   {
-    return (m_vendorId == other_.m_vendorId)         &&
+    return (m_name == other_.m_name)                 &&
+//           (m_type == other_.m_type)               &&
+           (m_vendorId == other_.m_vendorId)         &&
            (m_productId == other_.m_productId)       &&
-           (m_serialNumber == other_.m_serialNumber) ;//&&
-//           (m_isHid == other_.m_isHid);
+           (m_serialNumber == other_.m_serialNumber) &&
+           (m_portIdIn == other_.m_portIdIn)         &&
+           (m_portIdOut == other_.m_portIdOut);
   }
 
   bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }
   
   bool isSameProduct(const DeviceDescriptor& other_) const
   {
-    return (m_vendorId == other_.m_vendorId) && (m_productId == other_.m_productId);
+    return (m_name == other_.m_name)           &&
+           (m_vendorId == other_.m_vendorId)   &&
+           (m_productId == other_.m_productId);
   }
   
 private:
 
-  tVendorId m_vendorId;
-  tProductId m_productId;
-  tSerialNumber m_serialNumber;
-  bool m_isHid = false;
+  std::string     m_name;
+  Type            m_type;
+  tVendorId       m_vendorId;
+  tProductId      m_productId;
+  tSerialNumber   m_serialNumber;
+  unsigned        m_portIdIn;
+  unsigned        m_portIdOut;
 };
 
 //--------------------------------------------------------------------------------------------------

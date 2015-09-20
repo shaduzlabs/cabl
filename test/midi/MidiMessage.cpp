@@ -80,6 +80,7 @@ public:
     CHECK(0x66 == msg_->getPressure());
     CHECK(2    == msg_->data().size());
   }
+  
   void pitchBend(tPtr<PitchBend> msg_)
   {
     CHECK(msg_->getType() == MidiMessage::Type::PitchBend);

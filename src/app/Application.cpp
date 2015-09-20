@@ -29,16 +29,18 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 {
   M_LOG( "k-IO Version " << Lib::getVersion());
 
-  m_collKnownDevices.emplace_back(0x17CC, 0x1340); // KK S25
-  m_collKnownDevices.emplace_back(0x17CC, 0x1350); // KK S49
-  m_collKnownDevices.emplace_back(0x17CC, 0x1360); // KK S61
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1340); //KK S25
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1350); //KK S49
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1360); //KK S61
 
-  m_collKnownDevices.emplace_back(0x17CC, 0x0808); // MK1
-  m_collKnownDevices.emplace_back(0x17CC, 0x1140); // MK2
-  m_collKnownDevices.emplace_back(0x17CC, 0x1110); // Mikro MK1
-  m_collKnownDevices.emplace_back(0x17CC, 0x1200); // Mikro MK2
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::USB, 0x17CC, 0x0808); //MK1
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1140); //MK2
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1110); //Mikro MK1
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1200); //Mikro MK2
 
-  m_collKnownDevices.emplace_back(0x17CC, 0x1120); // Traktor F1 MK2
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1120); //Traktor F1 MK2
+
+  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::MIDI, 0x0045, 0x1120); //Ableton Push
 
 }
 
@@ -95,6 +97,17 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
   }
   M_LOG("[Application] enumerateDevices: " << devicesList.size() 
      << " known devices found via HIDAPI");
+  
+  for (const auto& deviceDescriptor : getDriver(Driver::Type::MIDI)->enumerate())
+  {
+    if (!isKnownDevice(deviceDescriptor))
+    {
+      continue; // not a Native Instruments USB device
+    }
+    devicesList.push_back(deviceDescriptor);
+  }
+  M_LOG("[Application] enumerateDevices: " << devicesList.size() 
+     << " known devices found via MIDI");
 
   Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif
@@ -125,9 +138,28 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
   for (const auto& d : devicesList_)
   {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-    Driver::Type tDriver = d.isHID() ? Driver::Type::HIDAPI : Driver::Type::LibUSB;
+    Driver::Type driverType;
+    switch(d.getType())
+    {
+      case DeviceDescriptor::Type::HID:
+      {
+        driverType = Driver::Type::HIDAPI;
+        break;
+      }
+      case DeviceDescriptor::Type::MIDI:
+      {
+        driverType = Driver::Type::MIDI;
+        break;
+      }
+      case DeviceDescriptor::Type::USB:
+      default:
+      {
+        driverType = Driver::Type::LibUSB;
+        break;
+      }
+    }
 #endif
-    tPtr<DeviceHandle> pDeviceHandle = getDriver(tDriver)->connect(d);
+    tPtr<DeviceHandle> pDeviceHandle = getDriver(driverType)->connect(d);
 
     if(isSupportedDevice(d) && pDeviceHandle)
     {

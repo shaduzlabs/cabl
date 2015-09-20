@@ -10,7 +10,7 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
-#include <libusb.h>
+#include <RtMidi.h>
 
 
 namespace sl
@@ -20,12 +20,12 @@ namespace kio
 
 //--------------------------------------------------------------------------------------------------
 
-class DeviceHandleLibUSB : public DeviceHandleImpl
+class DeviceHandleMIDI : public DeviceHandleImpl
 {
 public:
 
-  DeviceHandleLibUSB(libusb_device_handle*);
-  ~DeviceHandleLibUSB();
+  DeviceHandleMIDI(RtMidiIn, RtMidiOut);
+  ~DeviceHandleMIDI();
 
   void disconnect() override;
 
@@ -34,14 +34,19 @@ public:
 
   void readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead) override;
 
+  static void onMidiMessage(
+    double timeStamp_,
+    std::vector<unsigned char> *pMessage_,
+    void *pUserData_
+  );
+
 private:
 
-  void readAsyncImpl(uint8_t endpoint_);
-  static void __stdcall cbTransfer(libusb_transfer*); //!\todo #define WINAPI      __stdcall
-
   tRawData                        m_inputBuffer;
-  libusb_device_handle*           m_pCurrentDevice;
   
+  RtMidiIn                        m_midiIn;
+  RtMidiOut                       m_midiOut;
+ 
   DeviceHandleImpl::tCbRead       m_cbRead;
 };
 

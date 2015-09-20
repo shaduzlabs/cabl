@@ -43,6 +43,7 @@ public:
     LibUSB,
     SAM3X8E,
     MAX3421E,
+    MIDI,
   };
 
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;

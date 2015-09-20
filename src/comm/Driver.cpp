@@ -18,6 +18,7 @@
 #else
 #include "comm/drivers/HIDAPI/DriverHIDAPI.h"
 #include "comm/drivers/LibUSB/DriverLibUSB.h"
+#include "comm/drivers/MIDI/DriverMIDI.h"
 #endif
 
 namespace sl
@@ -43,6 +44,9 @@ Driver::Driver( Type type_ )
       break;
     case Type::LibUSB:
       m_pImpl.reset( new DriverLibUSB );
+      break;
+    case Type::MIDI:
+      m_pImpl.reset( new DriverMIDI );
       break;
 #endif
     case Type::Probe:

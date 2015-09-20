@@ -32,7 +32,7 @@ public:
   void disconnect();
 
   bool read(Transfer&, uint8_t);
-  bool write(const Transfer&, uint8_t) const;
+  bool write(const Transfer&, uint8_t);
 
   void readAsync(uint8_t, DeviceHandleImpl::tCbRead);
 

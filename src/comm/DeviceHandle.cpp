@@ -37,7 +37,7 @@ bool DeviceHandle::read( Transfer& transfer_, uint8_t endpoint_ )
   
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_ ) const
+bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_ )
 {
   return m_pImpl->write( transfer_, endpoint_ );
 }

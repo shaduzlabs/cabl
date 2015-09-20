@@ -56,10 +56,11 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
       strProductName = std::string(wProductName.begin(), wProductName.end());
     }
     DeviceDescriptor deviceDescriptor(
+      strProductName,
+      DeviceDescriptor::Type::HID,
       devices->vendor_id,
       devices->product_id,
-      strSerialNumber,
-      true
+      strSerialNumber
     );
     M_LOG("[HIDAPI] enumerate: found " << strProductName << " with S/N = " << strSerialNumber);
 

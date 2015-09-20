@@ -110,14 +110,14 @@ public:
     ProgramChange   = 0xC0, //!<  Sent when the patch number changes
     ChannelPressure = 0xD0, //!<  The highest pressure value of all the current depressed keys
     PitchBend       = 0xE0, //!<  Indicates a change in the pitch bender
-    Sysex           = 0xF0, //!<  System Exclusive
+    SysEx           = 0xF0, //!<  System Exclusive
     MTC             = 0xF1, //!<  MIDI Time Code Quarter Frame
     SongPosition    = 0xF2, //!<  Song Position Pointer
     SongSelect      = 0xF3, //!<  Song Select
     Reserved_0      = 0xF4, //!<  Undefined(Reserved)
     Reserved_1      = 0xF5, //!<  Undefined(Reserved)
     TuneRequest     = 0xF6, //!<  Tune Request
-    SysexEnd        = 0xF7, //!<  Terminates a System Exclusive dump
+    SysExEnd        = 0xF7, //!<  Terminates a System Exclusive dump
     TimingClock     = 0xF8, //!<  Timing Clock
     Reserved_2      = 0xF9, //!<  Undefined(Reserved)
     Start           = 0xFA, //!<  Start the current sequence playing
@@ -184,7 +184,7 @@ public:
   /*!
    \param data_ The raw message data
   */
-  MidiMessageBase(const tRawData& data_)
+  MidiMessageBase(tRawData data_)
     : midi::MidiMessage(MsgType)
     , m_data(std::move(data_))
   {
@@ -221,7 +221,7 @@ public:
 
   MidiMessage::Channel getChannel() const 
   { 
-    return (m_data.size() == 0 || getType()<MidiMessage::Type::Sysex)
+    return (m_data.size() == 0 || getType()<MidiMessage::Type::SysEx)
       ? MidiMessage::Channel::Undefined
       : static_cast<MidiMessage::Channel>(m_data[0] & 0x0F);
   }
@@ -410,7 +410,7 @@ public:
   \brief A SysEx MIDI message
 */
 
-class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::Sysex>
+class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::SysEx>
 {
 public:
 
@@ -451,6 +451,12 @@ public:
     
     return tRawData(data().begin()+headerLength,data().begin()+headerLength+payloadLength);
   }
+  
+  bool isUniversal() const
+  {
+    return (data()[1] == 0x7E || data()[1] == 0x7F);
+  }
+
 
 private:
 
@@ -487,7 +493,7 @@ public:
   using tCbProgramChange    = std::function<void(tPtr<ProgramChange>)>;
   using tCbChannelPressure  = std::function<void(tPtr<ChannelPressure>)>;
   using tCbPitchBend        = std::function<void(tPtr<PitchBend>)>;
-
+  using tCbSysEx            = std::function<void(tPtr<SysEx>)>;
 
   static void process(double timeStamp_, std::vector<unsigned char> *pMessage_, void *pUserData_)
   {
@@ -505,24 +511,35 @@ public:
     tPtr<MidiMessage> message = parseMidiMessage(data_);
     if (message)
     {
-#define M_CHANNEL_CB(idMsg)       \
-      case MidiMessage::Type::idMsg: \
-          cb##idMsg(tPtr<idMsg>(static_cast<idMsg*>(message.release()))); \
-        break;
+    
+#define M_MESSAGE_CB(idMsg)       \
+        case MidiMessage::Type::idMsg:                      \
+        {                                                   \
+          idMsg* tmp = dynamic_cast<idMsg*>(message.get()); \
+          tPtr<idMsg> derivedPointer;                       \
+          if(tmp != nullptr)                                \
+          {                                                 \
+              message.release();                            \
+              derivedPointer.reset(tmp);                    \
+              cb##idMsg(std::move(derivedPointer));         \
+          }                                                 \
+          break;                                            \
+        }
+      
       switch (message->getType())
       {
-        M_CHANNEL_CB(NoteOff);
-        M_CHANNEL_CB(NoteOn);
-        M_CHANNEL_CB(PolyPressure);
-        M_CHANNEL_CB(ControlChange);
-        M_CHANNEL_CB(ProgramChange);
-        M_CHANNEL_CB(ChannelPressure);
-        M_CHANNEL_CB(PitchBend);
+        M_MESSAGE_CB(NoteOff);
+        M_MESSAGE_CB(NoteOn);
+        M_MESSAGE_CB(PolyPressure);
+        M_MESSAGE_CB(ControlChange);
+        M_MESSAGE_CB(ProgramChange);
+        M_MESSAGE_CB(ChannelPressure);
+        M_MESSAGE_CB(PitchBend);
+        M_MESSAGE_CB(SysEx);
       default:
         break;
       }
-#undef M_CHANNEL_MSG_2
-#undef M_CHANNEL_MSG_3
+#undef M_MESSAGE_CB
     }
   }
 
@@ -553,6 +570,8 @@ public:
   }
 
   void setCallbackPitchBend(tCbPitchBend cbPitchBend_) { m_cbPitchBend = cbPitchBend_; }
+
+  void setCallbackSysEx(tCbSysEx cbSysEx_) { m_cbSysEx = cbSysEx_; }
 
   void cbNoteOff(tPtr<NoteOff> msg_)
   { 
@@ -607,6 +626,14 @@ public:
     if(m_cbPitchBend)
     {
       m_cbPitchBend(std::move(msg_));
+    }
+  }
+  
+  void cbSysEx(tPtr<SysEx> msg_)
+  {
+    if(m_cbSysEx)
+    {
+      m_cbSysEx(std::move(msg_));
     }
   }
 
@@ -668,7 +695,7 @@ private:
       }
       switch (type)
       {
-      case MidiMessage::Type::Sysex:
+      case MidiMessage::Type::SysEx:
       {
         return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
       }
@@ -686,6 +713,7 @@ private:
   tCbProgramChange    m_cbProgramChange;
   tCbChannelPressure  m_cbChannelPressure;
   tCbPitchBend        m_cbPitchBend;
+  tCbSysEx            m_cbSysEx;
 };
 /** @} */ // End of group Utilities
 /** @} */ // End of group Midi

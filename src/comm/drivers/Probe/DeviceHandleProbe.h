@@ -27,7 +27,7 @@ public:
   void disconnect() override;
 
   bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
+  bool write(const Transfer&, uint8_t) override;
 
 private:
 
