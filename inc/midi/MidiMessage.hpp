@@ -10,17 +10,18 @@
 #include <functional>
 #include <vector>
 
-#include "util/Types.h"
-
 namespace sl
 {
-using namespace kio;
+
 namespace midi
 {
+
+using tRawData = std::vector<uint8_t>;
 
 //--------------------------------------------------------------------------------------------------
 
 #define M_MIDI_BYTE(data) static_cast<uint8_t>(0x7F&data)
+#define M_UINT8(data) static_cast<uint8_t>(data)
 
 //--------------------------------------------------------------------------------------------------
 
@@ -82,7 +83,7 @@ public:
   
   uint8_t value()
   {
-    return static_cast<uint8_t>((m_octave+1)*12 + static_cast<uint8_t>(m_note));
+    return M_UINT8((m_octave+1)*12 + M_UINT8(m_note));
   }
   
 private:
@@ -161,8 +162,13 @@ public:
   virtual const tRawData& data() const = 0;
   Type getType() const { return m_type; }
 
-private:
+protected:
 
+  virtual tRawData& _data() = 0;
+
+private:
+   
+  friend class MidiMessageListener;
   Type  m_type;
 
 };
@@ -210,7 +216,7 @@ public:
   */
   MidiMessageBase(MidiMessage::Channel channel_, const tRawData& data_)
     : midi::MidiMessage(MsgType)
-    , m_data{static_cast<uint8_t>((static_cast<uint8_t>(channel_)|static_cast<uint8_t>(getType())))}
+    , m_data{M_UINT8((M_UINT8(channel_)|M_UINT8(getType())))}
   {
     m_data.insert(m_data.end(), data_.begin(), data_.end());
   }
@@ -236,8 +242,13 @@ public:
   {
     return !(operator == (other_));
   }
-private:
 
+protected:
+
+  virtual tRawData& _data() override { return m_data; }
+  
+private:
+  
   tRawData  m_data;
 };
 
@@ -260,6 +271,10 @@ class NoteOff : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOff>
 {
 public:
 
+  NoteOff(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+
   NoteOff(MidiMessage::Channel channel_, uint8_t note_, uint8_t velocity_)
   : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_ )})
   {}
@@ -281,6 +296,10 @@ class NoteOn : public midi::MidiMessageBase<midi::MidiMessage::Type::NoteOn>
 {
 public:
 
+  NoteOn(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   NoteOn(MidiMessage::Channel channel_, uint8_t note_, uint8_t velocity_)
     : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(velocity_) })
   {}
@@ -302,6 +321,10 @@ class PolyPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::PolyP
 {
 public:
 
+  PolyPressure(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   PolyPressure(MidiMessage::Channel channel_, uint8_t note_, uint8_t pressure_)
     : MidiMessageBase(channel_, { M_MIDI_BYTE(note_), M_MIDI_BYTE(pressure_) })
   {}
@@ -322,6 +345,10 @@ class ControlChange : public midi::MidiMessageBase<midi::MidiMessage::Type::Cont
 {
 public:
 
+  ControlChange(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   ControlChange(MidiMessage::Channel channel_, uint8_t control_, uint8_t value_)
     : MidiMessageBase(channel_, { M_MIDI_BYTE(control_), M_MIDI_BYTE(value_) })
   {}
@@ -343,6 +370,10 @@ class ProgramChange : public midi::MidiMessageBase<midi::MidiMessage::Type::Prog
 {
 public:
 
+  ProgramChange(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   ProgramChange(MidiMessage::Channel channel_, uint8_t program_)
     : MidiMessageBase(channel_, {M_MIDI_BYTE(program_)})
   {}
@@ -362,6 +393,10 @@ class ChannelPressure : public midi::MidiMessageBase<midi::MidiMessage::Type::Ch
 {
 public:
 
+  ChannelPressure(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   ChannelPressure(MidiMessage::Channel channel_, uint8_t pressure_)
     : MidiMessageBase(channel_, {M_MIDI_BYTE(pressure_)})
   {}
@@ -381,6 +416,10 @@ class PitchBend : public midi::MidiMessageBase<midi::MidiMessage::Type::PitchBen
 {
 public:
 
+  PitchBend(tRawData data_)
+  : MidiMessageBase(std::move(data_))
+  {}
+  
   PitchBend(MidiMessage::Channel channel_, uint8_t pitchL_, uint8_t pitchH_)
     : MidiMessageBase(channel_, { M_MIDI_BYTE(pitchL_), M_MIDI_BYTE(pitchH_) })
   {}
@@ -414,33 +453,32 @@ class SysEx : public midi::MidiMessageBase<midi::MidiMessage::Type::SysEx>
 {
 public:
 
-  SysEx(const tRawData& data_)
-    : MidiMessageBase(data_)
+  SysEx(tRawData data_)
+    : MidiMessageBase(std::move(data_))
   {
-    
-  }
-
-  SysEx(uint8_t manufacturerId, const tRawData& data_)
-    : MidiMessageBase({manufacturerId},data_)
-  {
-    
-  }
-
-  SysEx(uint8_t manufacturerIdHi, uint8_t manufacturerIdLo, const tRawData& data_)
-    : MidiMessageBase({0, manufacturerIdHi, manufacturerIdLo},data_)
-  {
-    
+    checkAndSetStartAndStopBytes();
   }
   
   SysEx(const tRawData& header_, const tRawData& data_)
     : MidiMessageBase(header_,data_)
   {
-    
+    checkAndSetStartAndStopBytes();
   }
+  
+  SysEx(uint8_t manufacturerId, const tRawData& data_)
+    : SysEx({0xF0, manufacturerId},data_)
+  {
+  }
+
+  SysEx(uint8_t manufacturerIdHi, uint8_t manufacturerIdLo, const tRawData& data_)
+    : SysEx({0xF0, 0, manufacturerIdHi, manufacturerIdLo},data_)
+  {
+  }
+
   
   tRawData getHeader() const
   {
-    return tRawData(data().begin()+1,data().begin()+1+getManufacturerIdLength());
+    return tRawData(data().begin()+1,data().begin()+1+getHeaderLength());
   }
   
   
@@ -451,18 +489,190 @@ public:
     
     return tRawData(data().begin()+headerLength,data().begin()+headerLength+payloadLength);
   }
-  
-  bool isUniversal() const
+
+  virtual size_t getHeaderLength() const
   {
-    return (data()[1] == 0x7E || data()[1] == 0x7F);
+    return getManufacturerIdLength();
   }
-
-
+  
 private:
 
   size_t getManufacturerIdLength() const
   {
     return (data()[1] == 0) ? 3 : 1;
+  }
+  
+  void checkAndSetStartAndStopBytes()
+  {
+    if(_data().front() != 0xF0)
+    {
+      _data().insert(data().begin(),0xF0);
+    }
+    if(_data().back() != 0xF7)
+    {
+      _data().push_back(0xF7);
+    }
+  }
+  
+};
+
+//--------------------------------------------------------------------------------------------------
+
+/**
+  \class USysExNonRT
+  \brief An Universal SysEx Non-RealTime MIDI message
+*/
+
+class USysExNonRT : public SysEx
+{
+public:
+
+  enum class MessageId{
+    SampleDumpHeader          = 0x01, //!<
+    SampleDumpData            = 0x02, //!<
+    SampleDumpRequest         = 0x03, //!<
+    MIDITimeCode              = 0x04, //!<
+    SampleDumpExtensions      = 0x05, //!<
+    GeneralInformation        = 0x06, //!<
+    FileDump                  = 0x07, //!<
+    MIDITuning                = 0x08, //!<
+    GeneralMIDI               = 0x09, //!<
+    DownloadableSounds        = 0x0A, //!<
+    FileReferenceMessage      = 0x0B, //!<
+    MIDIVisualControl         = 0x0C, //!<
+
+    GenericHandshakingEOF     = 0x7B, //!<
+    GenericHandshakingWait    = 0x7C, //!<
+    GenericHandshakingCancel  = 0x7D, //!<
+    GenericHandshakingNAK     = 0x7E, //!<
+    GenericHandshakingACK     = 0x7F, //!<
+
+    Unknown,                          //!< Unknown
+  };
+  
+  USysExNonRT(tRawData data_)
+    : SysEx(std::move(data_))
+  {
+  }
+  
+  USysExNonRT(const tRawData& header_, const tRawData& data_)
+    : SysEx(header_,data_)
+  {
+  }
+  
+  USysExNonRT(MessageId msgId_,const tRawData& data_)
+    : SysEx({0xF0, 0x7E, 0x00, M_UINT8(msgId_)}, data_)
+  {
+
+  }
+  
+  uint8_t getTargetDevice() const
+  {
+    return data()[2];
+  }
+  
+  MessageId getMessageId() const
+  {
+    uint8_t m = data()[3];
+    if((m > M_UINT8(MessageId::MIDIVisualControl) && m < M_UINT8(MessageId::GenericHandshakingEOF))
+       || m > M_UINT8(MessageId::GenericHandshakingACK))
+    {
+      return MessageId::Unknown;
+    }
+    return static_cast<MessageId>(m);
+  }
+    
+  uint8_t getSubId2() const
+  {
+    return getHeaderLength() == 4 ? data()[4] : 0;
+  }
+  
+private:
+
+  size_t getHeaderLength() const override
+  {
+    uint8_t m = data()[3];
+    if(m<= M_UINT8(MessageId::SampleDumpRequest) ||
+       (m >= M_UINT8(MessageId::GenericHandshakingEOF) && m <= M_UINT8(MessageId::GenericHandshakingACK))
+    )
+    {
+      return 3;
+    }
+    return 4;
+  }
+  
+};
+
+//--------------------------------------------------------------------------------------------------
+
+/**
+  \class USysExRT
+  \brief An Universal SysEx RealTime MIDI message
+*/
+
+class USysExRT : public SysEx
+{
+public:
+
+  enum class MessageId : uint8_t{
+    MIDITimeCode                 = 0x01, //!<
+    MIDIShowControl              = 0x02, //!<
+    NotationInformation          = 0x03, //!<
+    DeviceControl                = 0x04, //!<
+    RealTimeMTCCueing            = 0x05, //!<
+    MIDIMachineControlCommands   = 0x06, //!<
+    MIDIMachineControlResponses  = 0x07, //!<
+    MIDITuning                   = 0x08, //!<
+    ControllerDestinationSetting = 0x09, //!<
+    KeyBasedInstrumentControl    = 0x0A, //!<
+    ScalablePoliphonyMIP         = 0x0B, //!<
+    MobilePhoneControlMessage    = 0x0C, //!<
+    Unknown                              //!<
+  };
+  
+  USysExRT(tRawData data_)
+    : SysEx(std::move(data_))
+  {
+    
+  }
+  
+  USysExRT(const tRawData& header_, const tRawData& data_)
+    : SysEx(header_,data_)
+  {
+    
+  }
+    
+  USysExRT(MessageId msgId_,const tRawData& data_)
+    : SysEx({0xF0, 0x7F, 0x00, M_UINT8(msgId_)}, data_)
+  {
+
+  }
+  
+  uint8_t getTargetDevice() const
+  {
+    return data()[2];
+  }
+  
+  MessageId getMessageId() const
+  {
+    uint8_t m = data()[3];
+    if(m > M_UINT8(MessageId::MobilePhoneControlMessage))
+    {
+      return MessageId::Unknown;
+    }
+    return static_cast<MessageId>(m);
+  }
+  
+  uint8_t getSubId2() const
+  {
+    return data()[4];
+  }
+  
+private:
+
+  size_t getHeaderLength() const override
+  {
+    return 4;
   }
   
 };
@@ -486,15 +696,6 @@ class MidiMessageListener
 {
 public:
 
-  using tCbNoteOff          = std::function<void(tPtr<NoteOff>)>;
-  using tCbNoteOn           = std::function<void(tPtr<NoteOn>)>;
-  using tCbPolyPressure     = std::function<void(tPtr<PolyPressure>)>;
-  using tCbControlChange    = std::function<void(tPtr<ControlChange>)>;
-  using tCbProgramChange    = std::function<void(tPtr<ProgramChange>)>;
-  using tCbChannelPressure  = std::function<void(tPtr<ChannelPressure>)>;
-  using tCbPitchBend        = std::function<void(tPtr<PitchBend>)>;
-  using tCbSysEx            = std::function<void(tPtr<SysEx>)>;
-
   static void process(double timeStamp_, std::vector<unsigned char> *pMessage_, void *pUserData_)
   {
   	if(nullptr == pMessage_ || nullptr == pUserData_)
@@ -508,21 +709,14 @@ public:
 
   void process(const tRawData& data_)
   {
-    tPtr<MidiMessage> message = parseMidiMessage(data_);
+    std::unique_ptr<MidiMessage> message = parseMidiMessage(data_);
     if (message)
     {
     
-#define M_MESSAGE_CB(idMsg)       \
+#define M_MESSAGE_CB(idMsg)                                 \
         case MidiMessage::Type::idMsg:                      \
         {                                                   \
-          idMsg* tmp = dynamic_cast<idMsg*>(message.get()); \
-          tPtr<idMsg> derivedPointer;                       \
-          if(tmp != nullptr)                                \
-          {                                                 \
-              message.release();                            \
-              derivedPointer.reset(tmp);                    \
-              cb##idMsg(std::move(derivedPointer));         \
-          }                                                 \
+          on##idMsg(std::move(message->_data()));           \
           break;                                            \
         }
       
@@ -535,7 +729,22 @@ public:
         M_MESSAGE_CB(ProgramChange);
         M_MESSAGE_CB(ChannelPressure);
         M_MESSAGE_CB(PitchBend);
-        M_MESSAGE_CB(SysEx);
+        case MidiMessage::Type::SysEx:
+        {
+          if(message->data()[1] == 0x7E)
+          {
+            onUSysExNonRT(std::move(message->_data()));
+          }
+          else if(message->data()[1] == 0x7F)
+          {
+            onUSysExRT(std::move(message->_data()));
+          }
+          else
+          {
+            onSysEx(std::move(message->_data()));
+          }
+          break;
+        }
       default:
         break;
       }
@@ -545,101 +754,27 @@ public:
 
   virtual ~MidiMessageListener() {}
 
-  void setCallbackNoteOff(tCbNoteOff cbNoteOff_) { m_cbNoteOff = cbNoteOff_; }
+  virtual void onNoteOff(NoteOff msg_) const { }
 
-  void setCallbackNoteOn(tCbNoteOn cbNoteOn_) { m_cbNoteOn = cbNoteOn_; }
+  virtual void onNoteOn(NoteOn msg_) const { }
 
-  void setCallbackPolyPressure(tCbPolyPressure cbPolyPressure_)
-  { 
-    m_cbPolyPressure = cbPolyPressure_;
-  }
+  virtual void onPolyPressure(PolyPressure msg_) const { }
 
-  void setCallbackControlChangee(tCbControlChange cbControlChange_)
-  {
-    m_cbControlChange = cbControlChange_;
-  }
+  virtual void onControlChange(ControlChange msg_) const { }
 
-  void setCallbackProgramChange(tCbProgramChange cbProgramChange_)
-  {
-    m_cbProgramChange = cbProgramChange_;
-  }
+  virtual void onProgramChange(ProgramChange msg_) const { }
 
-  void setCallbackChannelPressure(tCbChannelPressure cbChannelPressure_)
-  {
-    m_cbChannelPressure = cbChannelPressure_;
-  }
+  virtual void onChannelPressure(ChannelPressure msg_) const { }
 
-  void setCallbackPitchBend(tCbPitchBend cbPitchBend_) { m_cbPitchBend = cbPitchBend_; }
-
-  void setCallbackSysEx(tCbSysEx cbSysEx_) { m_cbSysEx = cbSysEx_; }
-
-  void cbNoteOff(tPtr<NoteOff> msg_)
-  { 
-    if(m_cbNoteOff)
-    { 
-      m_cbNoteOff(std::move(msg_)); 
-    } 
-  }
-
-  void cbNoteOn(tPtr<NoteOn> msg_)
-  {
-    if(m_cbNoteOn)
-    {
-      m_cbNoteOn(std::move(msg_));
-    }
-  }
-
-  void cbPolyPressure(tPtr<PolyPressure> msg_)
-  {
-    if(m_cbPolyPressure)
-    {
-      m_cbPolyPressure(std::move(msg_));
-    }
-  }
-
-  void cbControlChange(tPtr<ControlChange> msg_)
-  {
-    if(m_cbControlChange)
-    {
-      m_cbControlChange(std::move(msg_));
-    }
-  }
-
-  void cbProgramChange(tPtr<ProgramChange> msg_)
-  {
-    if(m_cbProgramChange)
-    {
-      m_cbProgramChange(std::move(msg_));
-    }
-  }
-
-  void cbChannelPressure(tPtr<ChannelPressure> msg_)
-  {
-    if(m_cbChannelPressure)
-    {
-      m_cbChannelPressure(std::move(msg_));
-    }
-  }
-
-  void cbPitchBend(tPtr<PitchBend> msg_)
-  {
-    if(m_cbPitchBend)
-    {
-      m_cbPitchBend(std::move(msg_));
-    }
-  }
+  virtual void onPitchBend(PitchBend msg_) const { }
   
-  void cbSysEx(tPtr<SysEx> msg_)
-  {
-    if(m_cbSysEx)
-    {
-      m_cbSysEx(std::move(msg_));
-    }
-  }
+  virtual void onSysEx(SysEx msg_) const { }
+  virtual void onUSysExNonRT(USysExNonRT msg_) const { }
+  virtual void onUSysExRT(USysExRT msg_) const { }
 
 private:
 
-  tPtr<MidiMessage> parseMidiMessage(const tRawData& data_)
+  std::unique_ptr<MidiMessage> parseMidiMessage(const tRawData& data_)
   {
     size_t length = data_.size();
     if (length < 1)
@@ -662,10 +797,10 @@ private:
 
 #define M_CHANNEL_MSG_2(idMsg)     \
   case MidiMessage::Type::idMsg:   \
-    return length > 1 ? tPtr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
+    return length > 1 ? std::unique_ptr<idMsg>(new idMsg(channel, data_[1])) : nullptr;
 #define M_CHANNEL_MSG_3(idMsg)     \
   case MidiMessage::Type::idMsg:   \
-    return length > 2 ? tPtr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
+    return length > 2 ? std::unique_ptr<idMsg>(new idMsg(channel, data_[1], data_[2])) : nullptr;
 
       switch (type)
       {
@@ -697,7 +832,12 @@ private:
       {
       case MidiMessage::Type::SysEx:
       {
-        return length > 2 ? tPtr<SysEx>(new SysEx(data_)) : nullptr;
+        if((length > 2 && data_[1] <  0x7E) ||
+           (length > 4 && data_[1] == 0x7E) ||
+           (length > 5 && data_[1] == 0x7F)  )
+        {
+          return std::unique_ptr<SysEx>(new SysEx(data_));
+        }
       }
       default:
         return nullptr;
@@ -705,15 +845,6 @@ private:
     }
 
   }
-
-  tCbNoteOff          m_cbNoteOff;
-  tCbNoteOn           m_cbNoteOn;
-  tCbPolyPressure     m_cbPolyPressure;
-  tCbControlChange    m_cbControlChange;
-  tCbProgramChange    m_cbProgramChange;
-  tCbChannelPressure  m_cbChannelPressure;
-  tCbPitchBend        m_cbPitchBend;
-  tCbSysEx            m_cbSysEx;
 };
 /** @} */ // End of group Utilities
 /** @} */ // End of group Midi
@@ -721,6 +852,7 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 #undef M_MIDI_BYTE
+#undef M_UINT8
 
 } // midi
 } // sl

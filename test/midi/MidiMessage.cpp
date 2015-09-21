@@ -22,70 +22,60 @@ namespace test
 class TestMidiListenerCallbacks : public MidiMessageListener
 {
 public:
-  TestMidiListenerCallbacks()
-  {
-    setCallbackNoteOff(std::bind(&TestMidiListenerCallbacks::noteOff, this, _1));
-    setCallbackNoteOn(std::bind(&TestMidiListenerCallbacks::noteOn, this, _1));
-    setCallbackPolyPressure(std::bind(&TestMidiListenerCallbacks::polyPressure, this, _1));
-    setCallbackControlChangee(std::bind(&TestMidiListenerCallbacks::controlChange, this, _1));
-    setCallbackProgramChange(std::bind(&TestMidiListenerCallbacks::programChange, this, _1));
-    setCallbackChannelPressure(std::bind(&TestMidiListenerCallbacks::channelPressure, this, _1));
-    setCallbackPitchBend(std::bind(&TestMidiListenerCallbacks::pitchBend, this, _1));
-  }
 
-  void noteOff(tPtr<NoteOff> msg_)
+  void onNoteOff(NoteOff msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::NoteOff);
+    CHECK(msg_.getType() == MidiMessage::Type::NoteOff);
     MidiNote note(MidiNote::Name::CSharp, 6);
-    CHECK(note == msg_->getNote());
-    CHECK(0x41 == msg_->getVelocity());
-    CHECK(3    == msg_->data().size());
+    CHECK(note == msg_.getNote());
+    CHECK(0x41 == msg_.getVelocity());
+    CHECK(3    == msg_.data().size());
   }
 
-  void noteOn(tPtr<NoteOn> msg_)
+  void onNoteOn(NoteOn msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::NoteOn);
+    CHECK(msg_.getType() == MidiMessage::Type::NoteOn);
     MidiNote note(MidiNote::Name::D, 6);
-    CHECK(note == msg_->getNote());
-    CHECK(0x42 == msg_->getVelocity());
-    CHECK(3    == msg_->data().size());
+    CHECK(note == msg_.getNote());
+    CHECK(0x42 == msg_.getVelocity());
+    CHECK(3    == msg_.data().size());
   }
 
-  void polyPressure(tPtr<PolyPressure> msg_)
+  void onPolyPressure(PolyPressure msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::PolyPressure);
-    CHECK(0x63 == msg_->getNote());
-    CHECK(0x43 == msg_->getPressure());
-    CHECK(3   == msg_->data().size());
+    CHECK(msg_.getType() == MidiMessage::Type::PolyPressure);
+    CHECK(0x63 == msg_.getNote());
+    CHECK(0x43 == msg_.getPressure());
+    CHECK(3   == msg_.data().size());
   }
 
-  void controlChange(tPtr<ControlChange> msg_)
+  void onControlChange(ControlChange msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::ControlChange);
-    CHECK(0x64 == msg_->getControl());
-    CHECK(0x44 == msg_->getValue());
-    CHECK(3   == msg_->data().size());
+    CHECK(msg_.getType() == MidiMessage::Type::ControlChange);
+    CHECK(0x64 == msg_.getControl());
+    CHECK(0x44 == msg_.getValue());
+    CHECK(3   == msg_.data().size());
   }
 
-  void programChange(tPtr<ProgramChange> msg_)
+  void onProgramChange(ProgramChange msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::ProgramChange);
-    CHECK(0x65 == msg_->getProgram());
-    CHECK(2    == msg_->data().size());
+    CHECK(msg_.getType() == MidiMessage::Type::ProgramChange);
+    CHECK(0x65 == msg_.getProgram());
+    CHECK(2    == msg_.data().size());
   }
 
-  void channelPressure(tPtr<ChannelPressure> msg_)
+  void onChannelPressure(ChannelPressure msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::ChannelPressure);
-    CHECK(0x66 == msg_->getPressure());
-    CHECK(2    == msg_->data().size());
+    CHECK(msg_.getType() == MidiMessage::Type::ChannelPressure);
+    CHECK(0x66 == msg_.getPressure());
+    CHECK(2    == msg_.data().size());
   }
   
-  void pitchBend(tPtr<PitchBend> msg_)
+  void onPitchBend(PitchBend msg_) const override
   {
-    CHECK(msg_->getType() == MidiMessage::Type::PitchBend);
-    CHECK(0x8FF == msg_->getPitch());
-    CHECK(3     == msg_->data().size());
+    CHECK(msg_.getType() == MidiMessage::Type::PitchBend);
+    CHECK(0x8FF == msg_.getPitch());
+    CHECK(3     == msg_.data().size());
   }
 };
 

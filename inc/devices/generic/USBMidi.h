@@ -31,13 +31,13 @@ public:
   
   USBMidi(tPtr<DeviceHandle>);
   
-  void onNoteOff(tPtr<NoteOff> msg);
-  void onNoteOn(tPtr<NoteOn> msg);
-  void onPolyPressure(tPtr<PolyPressure> msg);
-  void onControlChange(tPtr<ControlChange> msg);
-  void onProgramChange(tPtr<ProgramChange> msg);
-  void onChannelPressure(tPtr<ChannelPressure> msg);
-  void onPitchBend(tPtr<PitchBend> msg);
+  void onNoteOff(NoteOff msg) const override;
+  void onNoteOn(NoteOn msg) const override;
+  void onPolyPressure(PolyPressure msg) const override;
+  void onControlChange(ControlChange msg) const override;
+  void onProgramChange(ProgramChange msg) const override;
+  void onChannelPressure(ChannelPressure msg) const override;
+  void onPitchBend(PitchBend msg) const override;
   
   bool sendSysex(const SysEx&);
 

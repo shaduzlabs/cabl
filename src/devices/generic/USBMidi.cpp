@@ -26,60 +26,54 @@ namespace devices
 USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
 {
-  setCallbackNoteOff(std::bind(&USBMidi::onNoteOff, this, _1));
-  setCallbackNoteOn(std::bind(&USBMidi::onNoteOn, this, _1));
-  setCallbackPolyPressure(std::bind(&USBMidi::onPolyPressure, this, _1));
-  setCallbackControlChangee(std::bind(&USBMidi::onControlChange, this, _1));
-  setCallbackProgramChange(std::bind(&USBMidi::onProgramChange, this, _1));
-  setCallbackChannelPressure(std::bind(&USBMidi::onChannelPressure, this, _1));
-  setCallbackPitchBend(std::bind(&USBMidi::onPitchBend, this, _1));
+
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onNoteOff(tPtr<NoteOff> msg_)
+void USBMidi::onNoteOff(NoteOff msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onNoteOn(tPtr<NoteOn> msg_)
+void USBMidi::onNoteOn(NoteOn msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onPolyPressure(tPtr<PolyPressure> msg_)
+void USBMidi::onPolyPressure(PolyPressure msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onControlChange(tPtr<ControlChange> msg_)
+void USBMidi::onControlChange(ControlChange msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onProgramChange(tPtr<ProgramChange> msg_)
+void USBMidi::onProgramChange(ProgramChange msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onChannelPressure(tPtr<ChannelPressure> msg_)
+void USBMidi::onChannelPressure(ChannelPressure msg_) const
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onPitchBend(tPtr<PitchBend> msg_)
+void USBMidi::onPitchBend(PitchBend msg_) const
 {
 
 }
