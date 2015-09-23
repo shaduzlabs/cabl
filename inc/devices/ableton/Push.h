@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <map>
+
 #include "devices/Device.h"
 #include "devices/generic/USBMidi.h"
 #include "gfx/displays/LCDDisplayGeneric.h"
@@ -72,6 +74,8 @@ private:
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
+  uint8_t getColorIndex(const util::LedColor&);
+  
   LCDDisplayGeneric        m_displays[kPush_nDisplays];
   
   tRawData              m_leds;
@@ -83,6 +87,8 @@ private:
   uint16_t              m_padsAvgData[ kPush_nPads ];
   
   bool                  m_isDirtyLeds;
+  
+  std::map<util::RGBColor,uint8_t>  m_colorsCache;
 
 };
   

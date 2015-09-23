@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Functions.h"
+#include "RGBColor.h"
 
 namespace sl
 {
@@ -24,21 +25,30 @@ public:
     , m_blue(mono_)
     , m_mono(mono_)
   {}
-  
+
   LedColor(uint8_t red_, uint8_t green_, uint8_t blue_)
     : m_red(red_)
     , m_green(green_)
     , m_blue(blue_)
     , m_mono(util::max<uint8_t>( red_, green_, blue_ )) // Max decomposition: take the highest value
   {}
-  
+
   LedColor(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_)
     : m_red( red_ )
     , m_green( green_ )
     , m_blue( blue_ )
     , m_mono( mono_ )
   {}
- 
+
+  RGBColor getRGBColor() const
+  {
+    return {
+      static_cast<uint8_t>(m_red),
+      static_cast<uint8_t>(m_green),
+      static_cast<uint8_t>(m_blue)
+    };
+  }
+  
   unsigned getRed  () const { return m_red;   }
   unsigned getGreen() const { return m_green; }
   unsigned getBlue () const { return m_blue;  }

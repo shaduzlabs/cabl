@@ -263,6 +263,7 @@ set(
     inc/util/LedColor.h
     inc/util/Log.h
     inc/util/Macros.h
+    inc/util/RGBColor.h
     inc/util/Types.h
     inc/util/Version.h
 )

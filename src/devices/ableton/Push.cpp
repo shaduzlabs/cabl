@@ -15,6 +15,8 @@
 #include "gfx/LCDDisplay.h"
 #include "gfx/displays/GDisplayDummy.h"
 
+#include <cmath>
+
 //!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
@@ -26,6 +28,31 @@ namespace
 static const uint8_t kPush_epOut = 0x01;
 static const uint8_t kPush_epInput = 0x81;
 static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
+
+static const std::vector<sl::util::RGBColor> kPush_colors =  {{  0,  0,  0}, { 30, 30, 30},
+  {127,127,127}, {255,255,255}, {255, 76, 76}, {255,  0,  0}, { 89,  0,  0}, { 25,  0,  0},
+  {255,189,108}, {255, 84,  0}, { 89, 29,  0}, { 39, 27,  0}, {255,255, 76}, {255,255,  0},
+  { 89, 89,  0}, { 25, 25,  0}, {136,255, 76}, { 84,255,  0}, { 29, 89,  0}, { 20, 43,  0},
+  { 76,255, 76}, {  0,255,  0}, {  0, 89,  0}, {  0, 25,  0}, { 76,255, 94}, {  0,255, 25},
+  {  0, 89, 13}, {  0, 25,  2}, { 76,255,136}, {  0,255, 85}, {  0, 89, 29}, {  0, 31, 18},
+  { 76,255,183}, {  0,255,153}, {  0, 89, 53}, {  0, 25, 18}, { 76,195,255}, {  0,169,255},
+  {  0, 65, 82}, {  0, 16, 25}, { 76,136,255}, {  0, 85,255}, {  0, 29, 89}, {  0,  8, 25},
+  { 76, 76,255}, {  0,  0,255}, {  0,  0, 89}, {  0,  0, 25}, {135, 76,255}, { 84,  0,255},
+  { 25,  0,100}, { 15,  0, 48}, {255, 76,255}, {255,  0,255}, { 89,  0, 89}, { 25,  0, 25},
+  {255, 76,135}, {255,  0, 84}, { 89,  0, 29}, { 34,  0, 19}, {255, 21,  0}, {153, 53,  0},
+  {121, 81,  0}, { 67,100,  0}, {  3, 57,  0}, {  0, 87, 53}, {  0, 84,127}, {  0,  0,255},
+  {  0, 69, 79}, { 37,  0,204}, {127,127,127}, { 32, 32, 32}, {255,  0,  0}, {189,255, 45},
+  {175,237,  6}, {100,255,  9}, { 16,139,  0}, {  0,255,135}, {  0,169,255}, {  0, 42,255},
+  { 63,  0,255}, {122,  0,255}, {178, 26,125}, { 64, 33,  0}, {255, 74,  0}, {136,225,  6},
+  {114,255, 21}, {  0,255,  0}, { 59,255, 38}, { 89,255,113}, { 56,255,204}, { 91,138,255},
+  { 49, 81,198}, {135,127,233}, {211, 29,255}, {255,  0, 93}, {255,127,  0}, {185,176,  0},
+  {144,255,  0}, {131, 93,  7}, { 57, 43,  0}, { 20, 76, 16}, { 13, 80, 56}, { 21, 21, 42},
+  { 22, 32, 90}, {105, 60, 28}, {168,  0, 10}, {222, 81, 61}, {216,106, 28}, {255,225, 38},
+  {158,225, 47}, {103,181, 15}, { 30, 30, 48}, {220,255,107}, {128,255,189}, {154,153,255},
+  {142,102,255}, { 64, 64, 64}, {117,117,117}, {224,255,255}, {160,  0,  0}, { 53,  0,  0},
+  { 26,208,  0}, {  7, 66,  0}, {185,176,  0}, { 63, 49,  0}, {179, 95,  0}, { 75, 21,  2}};
+
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -41,51 +68,79 @@ namespace devices
 
 enum class Push::Led : uint8_t
 {
-  F1,
-  F2,
-  F3,
-  Control,
-  Nav,
-  BrowseLeft,
-  BrowseRight,
-  Main,
-  Group, GroupR = Group, GroupG, GroupB,
-  Browse,
-  Sampling,
-  NoteRepeat,
-  Restart,
-  TransportLeft,
-  TransportRight,
-  Grid,
-  Play,
-  Rec,
-  Erase,
-  Shift,
-  Scene,
-  Pattern,
-  PadMode,
-  View,
-  Duplicate,
-  Select,
-  Solo,
-  Mute,
+  TapTempo      =   3,
+  Metronome     =   9,
+  B1R1          =  20, // [RG]
+  B2R1          =  21, // [RG]
+  B3R1          =  22, // [RG]
+  B4R1          =  23, // [RG]
+  B5R1          =  24, // [RG]
+  B6R1          =  25, // [RG]
+  B7R1          =  26, // [RG]
+  B8R1          =  27, // [RG]
+  Master        =  28,
+  Stop          =  29,
+  Grid1_4       =  36, // [RG]
+  Grid1_4T      =  37, // [RG]
+  Grid1_8       =  38, // [RG]
+  Grid1_8T      =  39, // [RG]
+  Grid1_16      =  40, // [RG]
+  Grid1_16T     =  41, // [RG]
+  Grid1_32      =  42, // [RG]
+  Grid1_32T     =  43, // [RG]
+  Left          =  44,
+  Right         =  45,
+  Up            =  46,
+  Down          =  47,
+  Select        =  48,
+  Shift         =  49,
+  Note          =  50,
+  Session       =  51,
+  AddEffect     =  52,
+  AddTrack      =  53,
+  OctaveDown    =  54,
+  OctaveUp      =  55,
+  Repeat        =  56,
+  Accent        =  57,
+  Scales        =  58,
+  User          =  59,
+  Solo          =  61,
+  Mute          =  60,
+  In            =  62,
+  Out           =  63,
+  Play          =  85,
+  Record        =  86,
+  New           =  87,
+  Duplicate     =  88,
+  Automation    =  89,
+  FixedLength   =  90,
+  B1R2          = 102, // [RGB]
+  B2R2          = 103, // [RGB]
+  B3R2          = 104, // [RGB]
+  B4R2          = 105, // [RGB]
+  B5R2          = 106, // [RGB]
+  B6R2          = 107, // [RGB]
+  B7R2          = 108, // [RGB]
+  B8R2          = 109, // [RGB]
+  Device        = 110,
+  Browse        = 111,
+  Track         = 112,
+  Clip          = 113,
+  Volume        = 114,
+  PanSend       = 115,
+  Quantize      = 116,
+  Double        = 117,
+  Delete        = 118,
+  Undo          = 119,
   
-  Pad13, Pad13R = Pad13, Pad13G, Pad13B,
-  Pad14, Pad14R = Pad14, Pad14G, Pad14B,
-  Pad15, Pad15R = Pad15, Pad15G, Pad15B,
-  Pad16, Pad16R = Pad16, Pad16G, Pad16B,
-  Pad9,  Pad9R  = Pad9,  Pad9G,  Pad9B,
-  Pad10, Pad10R = Pad10, Pad10G, Pad10B,
-  Pad11, Pad11R = Pad11, Pad11G, Pad11B,
-  Pad12, Pad12R = Pad12, Pad12G, Pad12H,
-  Pad5,  Pad5R  = Pad5,  Pad5G,  Pad5B,
-  Pad6,  Pad6R  = Pad6,  Pad6G,  Pad6B,
-  Pad7,  Pad7R  = Pad7,  Pad7G,  Pad7B,
-  Pad8,  Pad8R  = Pad8,  Pad8G,  Pad8B,
-  Pad1,  Pad1R  = Pad1,  Pad1G,  Pad1B,
-  Pad2,  Pad2R  = Pad2,  Pad2G,  Pad2B,
-  Pad3,  Pad3R  = Pad3,  Pad3G,  Pad3B,
-  Pad4,  Pad4R  = Pad4,  Pad4G,  Pad4B,
+  Pad1,  Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
+  Pad9,  Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16, 
+  Pad17, Pad18, Pad19, Pad20, Pad21, Pad22, Pad23, Pad24, 
+  Pad25, Pad26, Pad27, Pad28, Pad29, Pad30, Pad31, Pad32, 
+  Pad33, Pad34, Pad35, Pad36, Pad37, Pad38, Pad39, Pad40, 
+  Pad41, Pad42, Pad43, Pad44, Pad45, Pad46, Pad47, Pad48, 
+  Pad49, Pad50, Pad51, Pad52, Pad53, Pad54, Pad55, Pad56, 
+  Pad57, Pad58, Pad59, Pad60, Pad61, Pad62, Pad63, Pad64,
 
   Unknown,
 };
@@ -95,39 +150,83 @@ enum class Push::Led : uint8_t
 
 enum class Push::Button : uint8_t
 {
-  Shift,
-  Erase,
-  Rec,
-  Play,
-  Grid,
-  TransportRight,
-  TransportLeft,
-  Restart,
+  TapTempo      =   3,
+  Metronome     =   9,
+  B1R1          =  20,
+  B2R1          =  21,
+  B3R1          =  22,
+  B4R1          =  23,
+  B5R1          =  24,
+  B6R1          =  25,
+  B7R1          =  26,
+  B8R1          =  27,
+  Master        =  28,
+  Stop          =  29,
+  Grid1_4       =  36,
+  Grid1_4T      =  37,
+  Grid1_8       =  38,
+  Grid1_8T      =  39,
+  Grid1_16      =  40,
+  Grid1_16T     =  41,
+  Grid1_32      =  42,
+  Grid1_32T     =  43,
+  Left          =  44,
+  Right         =  45,
+  Up            =  46,
+  Down          =  47,
+  Select        =  48,
+  Shift         =  49,
+  Note          =  50,
+  Session       =  51,
+  AddEffect     =  52,
+  AddTrack      =  53,
+  OctaveDown    =  54,
+  OctaveUp      =  55,
+  Repeat        =  56,
+  Accent        =  57,
+  Scales        =  58,
+  User          =  59,
+  Solo          =  61,
+  Mute          =  60,
+  In            =  62,
+  Out           =  63,
+  Play          =  85,
+  Record        =  86,
+  New           =  87,
+  Duplicate     =  88,
+  Automation    =  89,
+  FixedLength   =  90,
+  B1R2          = 102,
+  B2R2          = 103,
+  B3R2          = 104,
+  B4R2          = 105,
+  B5R2          = 106,
+  B6R2          = 107,
+  B7R2          = 108,
+  B8R2          = 109,
+  Device        = 110,
+  Browse        = 111,
+  Track         = 112,
+  Clip          = 113,
+  Volume        = 114,
+  PanSend       = 115,
+  Quantize      = 116,
+  Double        = 117,
+  Delete        = 118,
+  Undo          = 119,
 
-  MainEncoder = 11,
-  NoteRepeat,
-  Sampling,
-  Browse,
-  Group,
-
-  Main,
-  BrowseRight,
-  BrowseLeft,
-  Nav,
-  Control,
-  F3,
-  F2,
-  F1,
-
-  Mute,
-  Solo,
-  Select,
-  Duplicate,
-  View,
-  PadMode,
-  Pattern,
-  Scene,
-
+  Encoder1 = 128,
+  Encoder2,
+  Encoder3,
+  Encoder4,
+  Encoder5,
+  Encoder6,
+  Encoder7,
+  Encoder8,
+  Encoder9,
+  MainEncoder1,
+  MainEncoder2,
+  
   None,
 };
 
@@ -423,16 +522,11 @@ void Push::setLedImpl(Led led_, const util::LedColor& color_)
 
   if (isRGBLed(led_))
   {
-    uint8_t currentR = m_leds[ledIndex];
-    uint8_t currentG = m_leds[ledIndex + 1];
-    uint8_t currentB = m_leds[ledIndex + 2];
+    uint8_t currentValue = m_leds[ledIndex];
 
-    m_leds[ledIndex] = color_.getRed();
-    m_leds[ledIndex + 1] = color_.getGreen();
-    m_leds[ledIndex + 2] = color_.getBlue();
+    m_leds[ledIndex] =
 
-    m_isDirtyLeds = m_isDirtyLeds ||
-     (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+    m_isDirtyLeds = m_isDirtyLeds || currentValue != m_leds[ledIndex];
   }
   else
   {
@@ -608,6 +702,37 @@ bool Push::isButtonPressed(
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+uint8_t Push::getColorIndex(const util::LedColor& color_)
+{
+  util::RGBColor ledColor(color_.getRGBColor());
+  
+  auto it = m_colorsCache.find(ledColor);
+  if(it != m_colorsCache.end())
+  {
+    return it->second;
+  }
+
+  uint8_t colorIndex = 0;
+  double minDistance = std::numeric_limits<double>::max();
+  for(uint8_t i = 0; i < kPush_colors.size(); i++)
+  {
+    double currentDistance = ledColor.distance(kPush_colors[i]);
+    if(currentDistance < minDistance)
+    {
+      colorIndex = i;
+      minDistance = currentDistance;
+    }
+    if(minDistance == 0)
+    {
+      break;
+    }
+  }
+  m_colorsCache.emplace(std::move(ledColor), colorIndex);
+  return colorIndex;
 }
 
 //--------------------------------------------------------------------------------------------------
