@@ -31,49 +31,68 @@ USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onNoteOff(NoteOff msg_) const
+void USBMidi::onNoteOff(NoteOff msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onNoteOn(NoteOn msg_) const
+void USBMidi::onNoteOn(NoteOn msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onPolyPressure(PolyPressure msg_) const
+void USBMidi::onPolyPressure(PolyPressure msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onControlChange(ControlChange msg_) const
+void USBMidi::onControlChange(ControlChange msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onProgramChange(ProgramChange msg_) const
+void USBMidi::onProgramChange(ProgramChange msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onChannelPressure(ChannelPressure msg_) const
+void USBMidi::onChannelPressure(ChannelPressure msg_)
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onPitchBend(PitchBend msg_) const
+void USBMidi::onPitchBend(PitchBend msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onSysEx(SysEx msg_)
+{
+
+}
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onUSysExRT(sl::midi::USysExRT msg_)
+{
+
+}
+//--------------------------------------------------------------------------------------------------
+
+void USBMidi::onUSysExNonRT(sl::midi::USysExNonRT msg_)
 {
 
 }

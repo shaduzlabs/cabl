@@ -38,7 +38,10 @@ public:
   void onProgramChange(ProgramChange msg) override;
   void onChannelPressure(ChannelPressure msg) override;
   void onPitchBend(PitchBend msg) override;
-  
+  void onSysEx(SysEx msg_) override;
+  void onUSysExRT(USysExRT msg_) override;
+  void onUSysExNonRT(USysExNonRT msg_) override;
+
   bool sendSysex(const SysEx&);
 
 private:

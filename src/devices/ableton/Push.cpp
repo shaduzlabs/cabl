@@ -70,14 +70,14 @@ enum class Push::Led : uint8_t
 {
   TapTempo      =   3,
   Metronome     =   9,
-  B1R1          =  20, // [RG]
-  B2R1          =  21, // [RG]
-  B3R1          =  22, // [RG]
-  B4R1          =  23, // [RG]
-  B5R1          =  24, // [RG]
-  B6R1          =  25, // [RG]
-  B7R1          =  26, // [RG]
-  B8R1          =  27, // [RG]
+  Btn1Row1      =  20, // [RG]
+  Btn2Row1      =  21, // [RG]
+  Btn3Row1      =  22, // [RG]
+  Btn4Row1      =  23, // [RG]
+  Btn5Row1      =  24, // [RG]
+  Btn6Row1      =  25, // [RG]
+  Btn7Row1      =  26, // [RG]
+  Btn8Row1      =  27, // [RG]
   Master        =  28,
   Stop          =  29,
   Grid1_4       =  36, // [RG]
@@ -114,14 +114,14 @@ enum class Push::Led : uint8_t
   Duplicate     =  88,
   Automation    =  89,
   FixedLength   =  90,
-  B1R2          = 102, // [RGB]
-  B2R2          = 103, // [RGB]
-  B3R2          = 104, // [RGB]
-  B4R2          = 105, // [RGB]
-  B5R2          = 106, // [RGB]
-  B6R2          = 107, // [RGB]
-  B7R2          = 108, // [RGB]
-  B8R2          = 109, // [RGB]
+  Btn1Row2      = 102, // [RGB]
+  Btn2Row2      = 103, // [RGB]
+  Btn3Row2      = 104, // [RGB]
+  Btn4Row2      = 105, // [RGB]
+  Btn5Row2      = 106, // [RGB]
+  Btn6Row2      = 107, // [RGB]
+  Btn7Row2      = 108, // [RGB]
+  Btn8Row2      = 109, // [RGB]
   Device        = 110,
   Browse        = 111,
   Track         = 112,
@@ -152,14 +152,14 @@ enum class Push::Button : uint8_t
 {
   TapTempo      =   3,
   Metronome     =   9,
-  B1R1          =  20,
-  B2R1          =  21,
-  B3R1          =  22,
-  B4R1          =  23,
-  B5R1          =  24,
-  B6R1          =  25,
-  B7R1          =  26,
-  B8R1          =  27,
+  Btn1Row1      =  20,
+  Btn2Row1      =  21,
+  Btn3Row1      =  22,
+  Btn4Row1      =  23,
+  Btn5Row1      =  24,
+  Btn6Row1      =  25,
+  Btn7Row1      =  26,
+  Btn8Row1      =  27,
   Master        =  28,
   Stop          =  29,
   Grid1_4       =  36,
@@ -196,14 +196,14 @@ enum class Push::Button : uint8_t
   Duplicate     =  88,
   Automation    =  89,
   FixedLength   =  90,
-  B1R2          = 102,
-  B2R2          = 103,
-  B3R2          = 104,
-  B4R2          = 105,
-  B5R2          = 106,
-  B6R2          = 107,
-  B7R2          = 108,
-  B8R2          = 109,
+  Btn1Row2      = 102,
+  Btn2Row2      = 103,
+  Btn3Row2      = 104,
+  Btn4Row2      = 105,
+  Btn5Row2      = 106,
+  Btn6Row2      = 107,
+  Btn7Row2      = 108,
+  Btn8Row2      = 109,
   Device        = 110,
   Browse        = 111,
   Track         = 112,
@@ -542,13 +542,11 @@ void Push::setLedImpl(Led led_, const util::LedColor& color_)
 
 bool Push::isRGBLed(Led led_) const noexcept
 {
-  if (Led::Group == led_ || Led::Pad1  == led_ || Led::Pad2  == led_ || Led::Pad3  == led_ ||
-      Led::Pad4  == led_ || Led::Pad5  == led_ || Led::Pad6  == led_ || Led::Pad7  == led_ ||
-      Led::Pad8  == led_ || Led::Pad9  == led_ || Led::Pad10 == led_ || Led::Pad11 == led_ ||
-      Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_ || Led::Pad15 == led_ || 
-      Led::Pad16 == led_
-  )
+  if (Led::Undo       < led_ || Led::Btn1Row2  == led_ || Led::Btn2Row2  == led_ ||
+      Led::Btn3Row2  == led_ || Led::Btn4Row2  == led_ || Led::Btn5Row2  == led_ ||
+      Led::Btn6Row2  == led_ || Led::Btn7Row2  == led_ || Led::Btn8Row2  == led_  )
   {
+    //\todo handle RG leds
     return true;
   }
 
@@ -606,35 +604,14 @@ Push::Led Push::getLed(Device::Button btn_) const noexcept
 
 Push::Led Push::getLed(Device::Pad pad_) const noexcept
 {
-#define M_PAD_CASE(idPad)     \
-  case Device::Pad::idPad: \
-    return Led::idPad
-
-  switch (pad_)
+  uint8_t pad = static_cast<unsigned>(pad_);
+  unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
+  if(pad < 64)
   {
-    M_PAD_CASE(Pad13);
-    M_PAD_CASE(Pad14);
-    M_PAD_CASE(Pad15);
-    M_PAD_CASE(Pad16);
-    M_PAD_CASE(Pad9);
-    M_PAD_CASE(Pad10);
-    M_PAD_CASE(Pad11);
-    M_PAD_CASE(Pad12);
-    M_PAD_CASE(Pad5);
-    M_PAD_CASE(Pad6);
-    M_PAD_CASE(Pad7);
-    M_PAD_CASE(Pad8);
-    M_PAD_CASE(Pad1);
-    M_PAD_CASE(Pad2);
-    M_PAD_CASE(Pad3);
-    M_PAD_CASE(Pad4);
-    default:
-    {
-      return Led::Unknown;
-    }
+    return static_cast<Led>(index);
   }
-
-#undef M_PAD_CASE
+  
+  return Led::Unknown;
 }
 
 //--------------------------------------------------------------------------------------------------
