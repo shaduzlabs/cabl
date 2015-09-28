@@ -12,8 +12,8 @@
 
 #include <thread>
 
-#include "midi/MidiMessage.hpp"
 #include <RtMidi.h>
+#include <unMIDIfy.hpp>
 
 namespace sl
 {

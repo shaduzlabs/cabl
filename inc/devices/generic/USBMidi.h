@@ -10,7 +10,7 @@
 #include "devices/Device.h"
 #include "gfx/displays/LCDDisplayGeneric.h"
 
-#include "midi/MidiMessage.hpp"
+#include <unMIDIfy.hpp>
 
 namespace sl
 {
@@ -24,20 +24,20 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class USBMidi : public midi::MidiMessageListener, public Device
+class USBMidi : public midi::Unmidifier, public Device
 {
  
 public:
   
   USBMidi(tPtr<DeviceHandle>);
   
-  void onNoteOff(NoteOff msg) const override;
-  void onNoteOn(NoteOn msg) const override;
-  void onPolyPressure(PolyPressure msg) const override;
-  void onControlChange(ControlChange msg) const override;
-  void onProgramChange(ProgramChange msg) const override;
-  void onChannelPressure(ChannelPressure msg) const override;
-  void onPitchBend(PitchBend msg) const override;
+  void onNoteOff(NoteOff msg) override;
+  void onNoteOn(NoteOn msg) override;
+  void onPolyPressure(PolyPressure msg) override;
+  void onControlChange(ControlChange msg) override;
+  void onProgramChange(ProgramChange msg) override;
+  void onChannelPressure(ChannelPressure msg) override;
+  void onPitchBend(PitchBend msg) override;
   
   bool sendSysex(const SysEx&);
 

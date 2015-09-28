@@ -13,3 +13,6 @@
 [submodule "submodules/catch"]
 	path = submodules/catch
 	url = https://github.com/philsquared/Catch.git
+[submodule "submodules/unmidify"]
+	path = submodules/unmidify
+	url = https://shaduzlabs@bitbucket.org/shaduzlabs/unmidify.git

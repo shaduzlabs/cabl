@@ -252,11 +252,6 @@ set(
 )
 
 set(
-  inc_midi_INCLUDES
-    inc/midi/MidiMessage.hpp
-)
-
-set(
   inc_util_INCLUDES
     inc/util/CircularBuffer.h
     inc/util/Functions.h
@@ -281,7 +276,6 @@ source_group("inc\\devices\\generic" FILES ${inc_devices_generic_INCLUDES})
 source_group("inc\\devices\\ni"      FILES ${inc_devices_ni_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
 source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
-source_group("inc\\midi"             FILES ${inc_midi_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
@@ -295,7 +289,6 @@ set (
     ${inc_devices_ni_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
     ${inc_gfx_INCLUDES}
-    ${inc_midi_INCLUDES}
     ${inc_util_INCLUDES}
     ${inc_INCLUDES}
     ${VERSION_RESOURCES}
@@ -480,7 +473,8 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src ${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${RTMIDI_INCLUDE_DIR})
+include_directories(inc src submodules/unmidify/include ${RTMIDI_INCLUDE_DIR})
+include_directories(${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
 
 set(
   k-IO_ALL

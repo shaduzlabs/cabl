@@ -12,7 +12,7 @@
 #include "comm/Driver.h"
 #include "devices/Device.h"
 
-#include "midi/MidiMessage.hpp"
+#include <unMIDIfy.hpp>
 
 namespace sl
 {
