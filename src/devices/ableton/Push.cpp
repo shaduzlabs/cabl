@@ -88,10 +88,10 @@ enum class Push::Led : uint8_t
   Grid1_16T     =  41, // [RG]
   Grid1_32      =  42, // [RG]
   Grid1_32T     =  43, // [RG]
-  Left          =  44,
-  Right         =  45,
-  Up            =  46,
-  Down          =  47,
+  NavigateLeft  =  44,
+  NavigateRight =  45,
+  NavigateUp    =  46,
+  NavigateDown  =  47,
   Select        =  48,
   Shift         =  49,
   Note          =  50,
@@ -109,7 +109,7 @@ enum class Push::Led : uint8_t
   In            =  62,
   Out           =  63,
   Play          =  85,
-  Record        =  86,
+  Rec           =  86,
   New           =  87,
   Duplicate     =  88,
   Automation    =  89,
@@ -170,10 +170,10 @@ enum class Push::Button : uint8_t
   Grid1_16T     =  41,
   Grid1_32      =  42,
   Grid1_32T     =  43,
-  Left          =  44,
-  Right         =  45,
-  Up            =  46,
-  Down          =  47,
+  NavigateLeft  =  44,
+  NavigateRight =  45,
+  NavigateUp    =  46,
+  NavigateDown  =  47,
   Select        =  48,
   Shift         =  49,
   Note          =  50,
@@ -191,7 +191,7 @@ enum class Push::Button : uint8_t
   In            =  62,
   Out           =  63,
   Play          =  85,
-  Record        =  86,
+  Rec           =  86,
   New           =  87,
   Duplicate     =  88,
   Automation    =  89,
@@ -215,17 +215,17 @@ enum class Push::Button : uint8_t
   Delete        = 118,
   Undo          = 119,
 
-  Encoder1 = 128,
-  Encoder2,
-  Encoder3,
-  Encoder4,
-  Encoder5,
-  Encoder6,
-  Encoder7,
-  Encoder8,
-  Encoder9,
-  MainEncoder1,
-  MainEncoder2,
+  TouchEncoder1 = 128,
+  TouchEncoder2,
+  TouchEncoder3,
+  TouchEncoder4,
+  TouchEncoder5,
+  TouchEncoder6,
+  TouchEncoder7,
+  TouchEncoder8,
+  TouchEncoder9,
+  TouchEncoderMain,
+  TouchEncoderMain2,
   
   None,
 };
@@ -563,34 +563,70 @@ Push::Led Push::getLed(Device::Button btn_) const noexcept
 
   switch (btn_)
   {
-    M_LED_CASE(F1);
-    M_LED_CASE(F2);
-    M_LED_CASE(F3);
-    M_LED_CASE(Control);
-    M_LED_CASE(Nav);
-    M_LED_CASE(BrowseLeft);
-    M_LED_CASE(BrowseRight);
-    M_LED_CASE(Main);
-    M_LED_CASE(Group);
-    M_LED_CASE(Browse);
-    M_LED_CASE(Sampling);
-    M_LED_CASE(NoteRepeat);
-    M_LED_CASE(Restart);
-    M_LED_CASE(TransportLeft);
-    M_LED_CASE(TransportRight);
-    M_LED_CASE(Grid);
-    M_LED_CASE(Play);
-    M_LED_CASE(Rec);
-    M_LED_CASE(Erase);
-    M_LED_CASE(Shift);
-    M_LED_CASE(Scene);
-    M_LED_CASE(Pattern);
-    M_LED_CASE(PadMode);
-    M_LED_CASE(View);
-    M_LED_CASE(Duplicate);
+    M_LED_CASE(TapTempo);
+    M_LED_CASE(Metronome);
+    M_LED_CASE(Btn1Row1);
+    M_LED_CASE(Btn2Row1);
+    M_LED_CASE(Btn3Row1);
+    M_LED_CASE(Btn4Row1);
+    M_LED_CASE(Btn5Row1);
+    M_LED_CASE(Btn6Row1);
+    M_LED_CASE(Btn7Row1);
+    M_LED_CASE(Btn8Row1);
+    M_LED_CASE(Master);
+    M_LED_CASE(Stop);
+    M_LED_CASE(Grid1_4);
+    M_LED_CASE(Grid1_4T);
+    M_LED_CASE(Grid1_8);
+    M_LED_CASE(Grid1_8T);
+    M_LED_CASE(Grid1_16);
+    M_LED_CASE(Grid1_16T);
+    M_LED_CASE(Grid1_32);
+    M_LED_CASE(Grid1_32T);
+    M_LED_CASE(NavigateLeft);
+    M_LED_CASE(NavigateRight);
+    M_LED_CASE(NavigateUp);
+    M_LED_CASE(NavigateDown);
     M_LED_CASE(Select);
+    M_LED_CASE(Shift);
+    M_LED_CASE(Note);
+    M_LED_CASE(Session);
+    M_LED_CASE(AddEffect);
+    M_LED_CASE(AddTrack);
+    M_LED_CASE(OctaveDown);
+    M_LED_CASE(OctaveUp);
+    M_LED_CASE(Repeat);
+    M_LED_CASE(Accent);
+    M_LED_CASE(Scales);
+    M_LED_CASE(User);
     M_LED_CASE(Solo);
     M_LED_CASE(Mute);
+    M_LED_CASE(In);
+    M_LED_CASE(Out);
+    M_LED_CASE(Play);
+    M_LED_CASE(Rec);
+    M_LED_CASE(New);
+    M_LED_CASE(Duplicate);
+    M_LED_CASE(Automation);
+    M_LED_CASE(FixedLength);
+    M_LED_CASE(Btn1Row2);
+    M_LED_CASE(Btn2Row2);
+    M_LED_CASE(Btn3Row2);
+    M_LED_CASE(Btn4Row2);
+    M_LED_CASE(Btn5Row2);
+    M_LED_CASE(Btn6Row2);
+    M_LED_CASE(Btn7Row2);
+    M_LED_CASE(Btn8Row2);
+    M_LED_CASE(Device);
+    M_LED_CASE(Browse);
+    M_LED_CASE(Track);
+    M_LED_CASE(Clip);
+    M_LED_CASE(Volume);
+    M_LED_CASE(PanSend);
+    M_LED_CASE(Quantize);
+    M_LED_CASE(Double);
+    M_LED_CASE(Delete);
+    M_LED_CASE(Undo);
     default:
     {
       return Led::Unknown;
@@ -624,35 +660,81 @@ Device::Button Push::getDeviceButton(Button btn_) const noexcept
 
   switch (btn_)
   {
-    M_BTN_CASE(F1);
-    M_BTN_CASE(F2);
-    M_BTN_CASE(F3);
-    M_BTN_CASE(Control);
-    M_BTN_CASE(Nav);
-    M_BTN_CASE(BrowseLeft);
-    M_BTN_CASE(BrowseRight);
-    M_BTN_CASE(Main);
-    M_BTN_CASE(Group);
-    M_BTN_CASE(Browse);
-    M_BTN_CASE(Sampling);
-    M_BTN_CASE(NoteRepeat);
-    M_BTN_CASE(Restart);
-    M_BTN_CASE(TransportLeft);
-    M_BTN_CASE(TransportRight);
-    M_BTN_CASE(Grid);
-    M_BTN_CASE(Play);
-    M_BTN_CASE(Rec);
-    M_BTN_CASE(Erase);
-    M_BTN_CASE(Shift);
-    M_BTN_CASE(Scene);
-    M_BTN_CASE(Pattern);
-    M_BTN_CASE(PadMode);
-    M_BTN_CASE(View);
-    M_BTN_CASE(Duplicate);
+    M_BTN_CASE(TapTempo);
+    M_BTN_CASE(Metronome);
+    M_BTN_CASE(Btn1Row1);
+    M_BTN_CASE(Btn2Row1);
+    M_BTN_CASE(Btn3Row1);
+    M_BTN_CASE(Btn4Row1);
+    M_BTN_CASE(Btn5Row1);
+    M_BTN_CASE(Btn6Row1);
+    M_BTN_CASE(Btn7Row1);
+    M_BTN_CASE(Btn8Row1);
+    M_BTN_CASE(Master);
+    M_BTN_CASE(Stop);
+    M_BTN_CASE(Grid1_4);
+    M_BTN_CASE(Grid1_4T);
+    M_BTN_CASE(Grid1_8);
+    M_BTN_CASE(Grid1_8T);
+    M_BTN_CASE(Grid1_16);
+    M_BTN_CASE(Grid1_16T);
+    M_BTN_CASE(Grid1_32);
+    M_BTN_CASE(Grid1_32T);
+    M_BTN_CASE(NavigateLeft);
+    M_BTN_CASE(NavigateRight);
+    M_BTN_CASE(NavigateUp);
+    M_BTN_CASE(NavigateDown);
     M_BTN_CASE(Select);
+    M_BTN_CASE(Shift);
+    M_BTN_CASE(Note);
+    M_BTN_CASE(Session);
+    M_BTN_CASE(AddEffect);
+    M_BTN_CASE(AddTrack);
+    M_BTN_CASE(OctaveDown);
+    M_BTN_CASE(OctaveUp);
+    M_BTN_CASE(Repeat);
+    M_BTN_CASE(Accent);
+    M_BTN_CASE(Scales);
+    M_BTN_CASE(User);
     M_BTN_CASE(Solo);
     M_BTN_CASE(Mute);
-    M_BTN_CASE(MainEncoder);
+    M_BTN_CASE(In);
+    M_BTN_CASE(Out);
+    M_BTN_CASE(Play);
+    M_BTN_CASE(Rec);
+    M_BTN_CASE(New);
+    M_BTN_CASE(Duplicate);
+    M_BTN_CASE(Automation);
+    M_BTN_CASE(FixedLength);
+    M_BTN_CASE(Btn1Row2);
+    M_BTN_CASE(Btn2Row2);
+    M_BTN_CASE(Btn3Row2);
+    M_BTN_CASE(Btn4Row2);
+    M_BTN_CASE(Btn5Row2);
+    M_BTN_CASE(Btn6Row2);
+    M_BTN_CASE(Btn7Row2);
+    M_BTN_CASE(Btn8Row2);
+    M_BTN_CASE(Device);
+    M_BTN_CASE(Browse);
+    M_BTN_CASE(Track);
+    M_BTN_CASE(Clip);
+    M_BTN_CASE(Volume);
+    M_BTN_CASE(PanSend);
+    M_BTN_CASE(Quantize);
+    M_BTN_CASE(Double);
+    M_BTN_CASE(Delete);
+    M_BTN_CASE(Undo);
+    M_BTN_CASE(TouchEncoder1);
+    M_BTN_CASE(TouchEncoder2);
+    M_BTN_CASE(TouchEncoder3);
+    M_BTN_CASE(TouchEncoder4);
+    M_BTN_CASE(TouchEncoder5);
+    M_BTN_CASE(TouchEncoder6);
+    M_BTN_CASE(TouchEncoder7);
+    M_BTN_CASE(TouchEncoder8);
+    M_BTN_CASE(TouchEncoder9);
+    M_BTN_CASE(TouchEncoderMain);
+    M_BTN_CASE(TouchEncoderMain2);
     default:
     {
       return Device::Button::Unknown;

@@ -48,7 +48,7 @@ private:
   static constexpr uint8_t kPush_nDisplays         = 4;
   static constexpr uint8_t kPush_nButtons          = 45;
   static constexpr uint8_t kPush_ledsDataSize      = 78;
-  static constexpr uint8_t kPush_buttonsDataSize   = 5;
+  static constexpr uint8_t kPush_buttonsDataSize   = 138;
   static constexpr uint8_t kPush_padDataSize       = 64;
   static constexpr uint8_t kPush_nPads             = 16;
   static constexpr uint8_t kPush_padsBufferSize    = 16;
@@ -80,7 +80,7 @@ private:
   
   tRawData              m_leds;
   tRawData              m_buttons;
-  bool                  m_buttonStates[kPush_nButtons];
+  bool                  m_buttonStates[kPush_buttonsDataSize];
   uint8_t               m_encoderValue;
   
   tBuffer               m_padsRawData[ kPush_nPads ];

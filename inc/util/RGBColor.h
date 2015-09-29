@@ -32,6 +32,21 @@ public:
       pow(((m_blue  - other_.m_blue ) * 0.114), 2.0)
     );
   }
+  
+  bool operator==(const RGBColor& other_) const
+  {
+    return (m_red == other_.m_red) && (m_green == other_.m_green) && (m_blue == other_.m_blue);
+  }
+
+  bool operator!=(const RGBColor& other_) const
+  {
+    return !(operator==(other_));
+  }
+
+  bool operator<(const RGBColor& other_) const
+  {
+    return (m_red < other_.m_red) && (m_green < other_.m_green) && (m_blue < other_.m_blue);
+  }  
 
 private:
   uint8_t m_red;
