@@ -31,77 +31,15 @@ USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
 
-void USBMidi::onNoteOff(NoteOff msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onNoteOn(NoteOn msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onPolyPressure(PolyPressure msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onControlChange(ControlChange msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onProgramChange(ProgramChange msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onChannelPressure(ChannelPressure msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onPitchBend(PitchBend msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onSysEx(SysEx msg_)
-{
-
-}
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onUSysExRT(sl::midi::USysExRT msg_)
-{
-
-}
-//--------------------------------------------------------------------------------------------------
-
-void USBMidi::onUSysExNonRT(sl::midi::USysExNonRT msg_)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 {
-
+#if !ARDUINO
+  if(getDeviceHandle()->write(Transfer(sysexMessage_.data()), 0))
+  {
+    return true;
+  }
+  return false;
+#else
   tRawData message(4);
   uint8_t nCable = 0;
   unsigned msgIndex = 0;
@@ -151,6 +89,7 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
     }
   }
   return true;
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------

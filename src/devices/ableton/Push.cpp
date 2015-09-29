@@ -293,35 +293,19 @@ LCDDisplay* Push::getLCDDisplay(uint8_t displayIndex_)
 
 bool Push::tick()
 {
-  static int state = 0;
   bool success = false;
 
-  //!\todo enable once display dirty flag is properly set
-  if (state == 0 && (
-       m_displays[0].isDirty() ||
-       m_displays[1].isDirty() ||
-       m_displays[2].isDirty() ||
-       m_displays[3].isDirty()
-      )
-   )
+  if(m_displays[0].isDirty() || m_displays[1].isDirty() ||
+     m_displays[2].isDirty() || m_displays[3].isDirty()  )
   {
     success = sendDisplayData();
   }
-
-  else if (state == 1)
+  
+  if (m_isDirtyLeds)
   {
-    success = sendLeds();
+    success |= sendLeds();
   }
-  else if (state == 2)
-  {
-    success = read();
-  }
-
-  if (++state >= 3)
-  {
-    state = 0;
-  }
-
+  
   return success;
 }
 
@@ -340,7 +324,7 @@ void Push::init()
 
 void Push::initDisplay() const
 {
-  //!\todo set backlight
+  //!\todo set backlight?
   return;
 }
 
@@ -368,6 +352,7 @@ bool Push::sendDisplayData()
   
   return result;
 }
+
 //--------------------------------------------------------------------------------------------------
 
 bool Push::sendLeds()
@@ -792,6 +777,74 @@ uint8_t Push::getColorIndex(const util::LedColor& color_)
   }
   m_colorsCache.emplace(std::move(ledColor), colorIndex);
   return colorIndex;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onNoteOff(NoteOff msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onNoteOn(NoteOn msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onPolyPressure(PolyPressure msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onControlChange(ControlChange msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onProgramChange(ProgramChange msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onChannelPressure(ChannelPressure msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onPitchBend(PitchBend msg_)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::onSysEx(SysEx msg_)
+{
+
+}
+//--------------------------------------------------------------------------------------------------
+
+void Push::onUSysExRT(sl::midi::USysExRT msg_)
+{
+
+}
+//--------------------------------------------------------------------------------------------------
+
+void Push::onUSysExNonRT(sl::midi::USysExNonRT msg_)
+{
+
 }
 
 //--------------------------------------------------------------------------------------------------
