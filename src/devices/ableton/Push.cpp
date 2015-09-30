@@ -26,7 +26,6 @@
 namespace
 {
 static const uint8_t kPush_epOut = 0x01;
-static const uint8_t kPush_epInput = 0x81;
 static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 static const std::vector<sl::util::RGBColor> kPush_colors =  {{  0,  0,  0}, { 30, 30, 30},
@@ -147,7 +146,6 @@ enum class Push::Led : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-
 enum class Push::Button : uint8_t
 {
   TapTempo      =   3,
@@ -232,11 +230,29 @@ enum class Push::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
+enum class Push::Encoder : uint8_t
+{
+  Main     = 14,
+  Main2    = 15,
+  Encoder1 = 71,
+  Encoder2 = 72,
+  Encoder3 = 73,
+  Encoder4 = 74,
+  Encoder5 = 75,
+  Encoder6 = 76,
+  Encoder7 = 77,
+  Encoder8 = 78,
+  Encoder9 = 79,
+  
+  Unknown,
+};
+
+//--------------------------------------------------------------------------------------------------
+
 Push::Push(tPtr<DeviceHandle> pDeviceHandle_)
   : USBMidi(std::move(pDeviceHandle_))
   , m_isDirtyLeds(false)
 {
- m_buttons.resize(kPush_buttonsDataSize);
  m_leds.resize(kPush_ledsDataSize);
 }
 
@@ -370,83 +386,6 @@ bool Push::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Push::read()
-{
-  Transfer input;
-  for (uint8_t n = 0; n < 32; n++)
-  {
-    if (!getDeviceHandle()->read(input, kPush_epInput))
-    {
-      return false;
-    }
-    else if (input && input[0] == 0x01)
-    {
-      processButtons(input);
-      break;
-    }
-    else if (input && input[0] == 0x20 && n % 8 == 0) // Too many pad messages, need to skip some...
-    {
-      processPads(input);
-    }
-/*
-        std::cout << std::setfill('0') << std::internal;
-
-        for( int i = 0; i < input.getSize(); i++ )
-        {
-          std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
-        }
-
-        std::cout << std::endl << std::endl;*/
-  }
-  return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Push::processButtons(const Transfer& input_)
-{
-  bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  Device::Button changedButton(Device::Button::Unknown);
-  bool buttonPressed(false);
-
-  for (int i = 0; i < kPush_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
-  {
-    for (int k = 0; k < 8; k++)
-    {
-      uint8_t btn = (i * 8) + k;
-      Button currentButton(static_cast<Button>(btn));
-      if (currentButton == Button::Shift)
-      {
-        continue;
-      }
-      buttonPressed = isButtonPressed(input_, currentButton);
-      if (buttonPressed != m_buttonStates[btn])
-      {
-        m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
-        if (changedButton != Device::Button::Unknown)
-        {
-      //    std::copy(&input_[1],&input_[kPush_buttonsDataSize],m_buttons.begin());
-          buttonChanged(changedButton, buttonPressed, shiftPressed);
-        }
-      }
-    }
-  }
-
-  // Now process the encoder data
-  uint8_t currentEncoderValue = input_.getData()[kPush_buttonsDataSize];
-  if (m_encoderValue != currentEncoderValue)
-  {
-    bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
-      ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-        && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
-    m_encoderValue = currentEncoderValue;
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Push::processPads(const Transfer& input_)
 {
   //!\todo process pad data
@@ -489,7 +428,7 @@ void Push::processPads(const Transfer& input_)
 
     if (m_padsAvgData[pad] > 1000)
     {
-      padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      padChanged(btn, m_padsAvgData[pad], m_shiftPressed);
     }    
   }
 }
@@ -731,21 +670,32 @@ Device::Button Push::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool Push::isButtonPressed(Button button_) const noexcept
+Device::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
 {
-  uint8_t buttonPos = static_cast<uint8_t>(button_);
-  return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
-}
+#define M_ENC_CASE(idEnc) \
+  case Encoder::idEnc:     \
+    return Device::Encoder::idEnc
 
-//--------------------------------------------------------------------------------------------------
+  switch (enc_)
+  {
+    M_ENC_CASE(Encoder1);
+    M_ENC_CASE(Encoder2);
+    M_ENC_CASE(Encoder3);
+    M_ENC_CASE(Encoder4);
+    M_ENC_CASE(Encoder5);
+    M_ENC_CASE(Encoder6);
+    M_ENC_CASE(Encoder7);
+    M_ENC_CASE(Encoder8);
+    M_ENC_CASE(Encoder9);
+    M_ENC_CASE(Main);
+    M_ENC_CASE(Main2);
+    default:
+    {
+      return Device::Encoder::Unknown;
+    }
+  }
 
-bool Push::isButtonPressed(
-  const Transfer& transfer_, 
-  Button button_
-) const noexcept
-{
-  uint8_t buttonPos = static_cast<uint8_t>(button_);
-  return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
+#undef M_ENC_CASE
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -804,7 +754,24 @@ void Push::onPolyPressure(PolyPressure msg_)
 
 void Push::onControlChange(ControlChange msg_)
 {
-
+  uint8_t cc = msg_.getControl();
+  uint8_t value = msg_.getValue();
+  
+  Device::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
+  if(changedEncoder!=Device::Encoder::Unknown)
+  {
+    encoderChanged(changedEncoder, value < 64,  m_shiftPressed);
+  }
+  else
+  {
+    Device::Button changedButton = getDeviceButton(static_cast<Button>(cc));
+    if(changedButton == Device::Button::Shift)
+    {
+      m_shiftPressed = false;
+      return;
+    }
+    buttonChanged(changedButton, value>0, m_shiftPressed);
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

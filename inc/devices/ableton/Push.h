@@ -44,6 +44,7 @@ private:
 
   enum class Led    : uint8_t;
   enum class Button : uint8_t;
+  enum class Encoder: uint8_t;
  
   static constexpr uint8_t kPush_nDisplays         = 4;
   static constexpr uint8_t kPush_nButtons          = 45;
@@ -60,9 +61,7 @@ private:
   void initDisplay() const;
   bool sendDisplayData();
   bool sendLeds();
-  bool read();
   
-  void processButtons( const Transfer& );
   void processPads( const Transfer& );
   
   void setLedImpl(Led, const util::LedColor&);
@@ -70,9 +69,8 @@ private:
   Led getLed(Device::Button) const noexcept;
   Led getLed(Device::Pad) const noexcept;
 
-  Device::Button getDeviceButton( Button btn_ ) const noexcept;
-  bool isButtonPressed( Button button ) const noexcept;
-  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+  Device::Button getDeviceButton(Button) const noexcept;
+  Device::Encoder getDeviceEncoder(Encoder) const noexcept;
 
   uint8_t getColorIndex(const util::LedColor&);
   
@@ -90,9 +88,7 @@ private:
   LCDDisplayGeneric        m_displays[kPush_nDisplays];
   
   tRawData              m_leds;
-  tRawData              m_buttons;
-  bool                  m_buttonStates[kPush_buttonsDataSize];
-  uint8_t               m_encoderValue;
+  bool                  m_shiftPressed;
   
   tBuffer               m_padsRawData[ kPush_nPads ];
   uint16_t              m_padsAvgData[ kPush_nPads ];

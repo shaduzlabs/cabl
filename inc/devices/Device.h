@@ -190,6 +190,7 @@ public:
     Main,
     Volume = Main,
     Tempo,
+    Main2 = Tempo,
     Swing,
     Encoder1, 
     Encoder2,
@@ -199,6 +200,7 @@ public:
     Encoder6,
     Encoder7,
     Encoder8,
+    Encoder9,
     Unknown,
   };
 
