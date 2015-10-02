@@ -49,7 +49,7 @@ public:
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
 
   Driver(Type type_);
-  ~Driver();
+  virtual ~Driver();
 
   tCollDeviceDescriptor enumerate();
   tPtr<DeviceHandle> connect(const DeviceDescriptor&);

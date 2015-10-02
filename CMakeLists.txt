@@ -9,6 +9,9 @@ cmake_minimum_required (VERSION 2.8.0)
 
 project (k-IO)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
+include(sl-main)
+
 set(LIBRARY_FILE_NAME     "k-io")
 set(LIBRARY_FOLDER_NAME   "k-io")
 set(DEBUG_SUFFIX          "_d")
@@ -19,16 +22,21 @@ set (k-IO_VERSION_MINOR 9)
 set (k-IO_VERSION_MICRO 2)
 set( k-IO_VERSION_STRING ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO})
 
-enable_testing()
+if(CMAKE_PROJECT_NAME STREQUAL k-IO)
+  set(IS_K-IO TRUE)
+else()
+  set(IS_K-IO FALSE)
+endif()
+
+option(K-IO_TEST      "Build k-IO tests"     ${IS_K-IO})
+option(K-IO_DOCS      "Build k-IO docs"      ${IS_K-IO})
+option(K-IO_EXAMPLES  "Build k-IO examples"  ${IS_K-IO})
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/inc/k-io-config.h.in"
   "${PROJECT_BINARY_DIR}/k-io-config.h"
 )
 include_directories("${PROJECT_BINARY_DIR}")
-
-# C++14: set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
@@ -48,148 +56,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-
-# Libraries -------------------------------------------------------------------------------------- #
-
-set(VERSION_RESOURCES "")
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  find_package(hidapi REQUIRED)
-  find_package(libusb REQUIRED)
-
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/support/windows/cmake")
-  include(GenerateProductVersion)
-  generateProductVersion(
-     VERSION_RESOURCES
-     NAME k-IO
-     VERSION_MAJOR ${k-IO_VERSION_MAJOR}
-     VERSION_MINOR ${k-IO_VERSION_MINOR}
-     VERSION_PATCH ${k-IO_VERSION_MICRO}
-     COMPANY_NAME  "Vincenzo Pacella"
-  )
-
-  set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
-  set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
-
-  set(
-    lib_hidapi_LIBRARY
-      submodules/hidapi/hidapi/hidapi.h
-      submodules/hidapi/windows/hid.c
-  )
-
-  set(
-    lib_libusb_LIBRARY
-      submodules/libusb/msvc/config.h
-      submodules/libusb/libusb/core.c
-      submodules/libusb/libusb/descriptor.c
-      submodules/libusb/libusb/hotplug.c
-      submodules/libusb/libusb/io.c
-      submodules/libusb/libusb/os/poll_windows.c
-      submodules/libusb/libusb/strerror.c
-      submodules/libusb/libusb/sync.c
-      submodules/libusb/libusb/os/threads_windows.c
-      submodules/libusb/libusb/os/windows_usb.c
-  )
-
-  source_group("src"           FILES ${lib_hidapi_LIBRARY})
-  source_group("src"           FILES ${lib_libusb_LIBRARY})
-
-  add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
-  set_target_properties(
-    hidapi
-    PROPERTIES
-      OUTPUT_NAME         "hidapi"
-      OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
-  )
-
-  add_library( libusb STATIC ${lib_libusb_LIBRARY} )
-  set_target_properties(
-    libusb
-    PROPERTIES
-      OUTPUT_NAME         "libusb"
-      OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
-  )
-  target_include_directories( libusb PRIVATE "submodules/libusb/msvc/" )
-
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
- set(HIDAPI_INCLUDE_DIR "submodules/hidapi/hidapi/")
- set(LibUSB_INCLUDE_DIRS "submodules/libusb/libusb/" "submodules/libusb/libusb/os/" )
-
-  set(
-    lib_hidapi_LIBRARY
-      submodules/hidapi/hidapi/hidapi.h
-      submodules/hidapi/mac/hid.c
-  )
-
-  set(
-    lib_libusb_LIBRARY
-      submodules/libusb/Xcode/config.h
-      submodules/libusb/libusb/core.c
-      submodules/libusb/libusb/descriptor.c
-      submodules/libusb/libusb/hotplug.c
-      submodules/libusb/libusb/io.c
-      submodules/libusb/libusb/os/poll_posix.c
-      submodules/libusb/libusb/strerror.c
-      submodules/libusb/libusb/sync.c
-      submodules/libusb/libusb/os/threads_posix.c
-      submodules/libusb/libusb/os/darwin_usb.c
-  )
-
-  source_group("src"           FILES ${lib_hidapi_LIBRARY})
-  source_group("src"           FILES ${lib_libusb_LIBRARY})
-
-  add_library( hidapi STATIC ${lib_hidapi_LIBRARY} )
-  set_target_properties(
-    hidapi
-    PROPERTIES
-      OUTPUT_NAME         "hidapi"
-      OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
-  )
-
-  add_library( libusb STATIC ${lib_libusb_LIBRARY} )
-  set_target_properties(
-    libusb
-    PROPERTIES
-      OUTPUT_NAME         "libusb"
-      OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
-  )
-  target_include_directories( libusb PRIVATE "submodules/libusb/Xcode/" )
-
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-
-# RtMidi ----------------------------------------------------------------------------------------- #
-
-set(RTMIDI_INCLUDE_DIR "submodules/rtmidi/")
-set(
-  lib_rtmidi_LIBRARY
-    submodules/rtmidi/RtMidi.h
-    submodules/rtmidi/RtMidi.cpp
-)
-source_group("src"  FILES  ${lib_rtmidi_LIBRARY})
-add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
-
-set_target_properties(
-  rtmidi
-  PROPERTIES
-    OUTPUT_NAME         "rtmidi"
-    OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
-)
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-set_target_properties(
-  rtmidi
-  PROPERTIES
-    COMPILE_DEFINITIONS __MACOSX_CORE__
-)
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
+addHIDAPI()
+addLibUSB()
+addRtMidi()
+addCatch()
+addUnmidify()
 
 # Includes --------------------------------------------------------------------------------------- #
 
@@ -567,45 +438,48 @@ add_custom_target( CreateArduinoLibrary
 endif(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # Unit tests ------------------------------------------------------------------------------------- #
-
-add_subdirectory(test)
-
+if(K-IO_TEST)
+  add_subdirectory(test)
+endif()
 
 # Documentation (doxygen) ------------------------------------------------------------------------ #
 
-option(BUILD_DOCS "Create and install the HTML based API documentation (requires Doxygen)" ON)
-if(BUILD_DOCS)
+if(K-IO_DOCS)
   find_package(Doxygen)
+
   if(NOT DOXYGEN_FOUND)
+
     message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+
+  else()
+
+    set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/doxygen/Doxyfile.in )
+    set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                          )
+
+    set( doxy_project_name    ${PROJECT_NAME}                                         )
+    set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                               )
+    set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                              )
+    set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                         )
+
+    set( doxy_html_root       ${PROJECT_SOURCE_DIR}/support/doxygen                   )
+
+    set( doxy_project_version "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
+
+    configure_file( ${doxyfile_in} ${doxyfile} @ONLY )
+
+    add_custom_target(
+      doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+
   endif()
-
-  set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/doxygen/Doxyfile.in )
-  set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                          )
-
-  set( doxy_project_name    ${PROJECT_NAME}                                         )
-  set( doxy_input_folder    ${PROJECT_SOURCE_DIR}/inc                               )
-  set( doxy_output_root     ${PROJECT_SOURCE_DIR}/docs                              )
-  set( doxy_readme_md       ${PROJECT_SOURCE_DIR}/README.md                         )
-
-  set( doxy_html_root       ${PROJECT_SOURCE_DIR}/support/doxygen                   )
-
-  set( doxy_project_version "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
-
-
-  configure_file( ${doxyfile_in} ${doxyfile} @ONLY )
-
-  add_custom_target(
-    doc
-      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMENT "Generating API documentation with Doxygen"
-      VERBATIM
-  )
-
 endif()
 
 
 # Examples --------------------------------------------------------------------------------------- #
-
-add_subdirectory(examples)
+if(K-IO_EXAMPLES)
+  add_subdirectory(examples)
+endif()
