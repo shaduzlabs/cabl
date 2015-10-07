@@ -7,7 +7,6 @@
 
 if( CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang" )
   foreach(flag_var CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
-    set(${flag_var} "${${flag_var}} -fvisibility=hidden -fvisibility-inlines-hidden")
     set(${flag_var} "${${flag_var}} -fcolor-diagnostics")
   endforeach()
 

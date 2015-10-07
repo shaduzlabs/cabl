@@ -9,7 +9,7 @@
 #  Unit tests                                                                                      #
 # ------------------------------------------------------------------------------------------------ #
 
-include_directories( ${PROJECT_SOURCE_DIR}/submodules/catch/include )
+include_directories( ${CATCH_INCLUDE_DIR} )
 
 project(unit-tests)
 

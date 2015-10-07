@@ -9,7 +9,7 @@ cmake_minimum_required (VERSION 2.8.0)
 
 project (k-IO)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 include(sl-main)
 
 set(LIBRARY_FILE_NAME     "k-io")
@@ -22,7 +22,7 @@ set (k-IO_VERSION_MINOR 9)
 set (k-IO_VERSION_MICRO 2)
 set( k-IO_VERSION_STRING ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO})
 
-if(CMAKE_PROJECT_NAME STREQUAL k-IO)
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   set(IS_K-IO TRUE)
 else()
   set(IS_K-IO FALSE)
@@ -37,9 +37,6 @@ configure_file (
   "${PROJECT_BINARY_DIR}/k-io-config.h"
 )
 include_directories("${PROJECT_BINARY_DIR}")
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
-
 
 # OSX specific ----------------------------------------------------------------------------------- #
 
@@ -56,10 +53,17 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-addHIDAPI()
-addLibUSB()
-addRtMidi()
-addCatch()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  addHIDAPI()
+  addLibUSB()
+  addRtMidi()
+else()
+  include(FindHIDAPI)
+  include(FindLibUSB)
+  include(FindRtMidi)
+endif()
+
 addUnmidify()
 
 # Includes --------------------------------------------------------------------------------------- #
@@ -345,7 +349,7 @@ set(
 # All platforms ---------------------------------------------------------------------------------- #
 
 include_directories(inc src submodules/unmidify/include ${RTMIDI_INCLUDE_DIR})
-include_directories(${LibUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR})
+include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${UNMIDIFY_INCLUDE_DIR})
 
 set(
   k-IO_ALL
@@ -372,33 +376,14 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 
-# OS X specific ---------------------------------------------------------------------------------- #
+# OS X and Linux --------------------------------------------------------------------------------- #
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  target_link_libraries( k-IO PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
-  target_link_libraries( k-IO PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
+  target_link_libraries( k-IO PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY} ${RTMIDI_LINKER_FLAGS})
 
-  target_link_libraries( k-IOStatic PUBLIC libusb hidapi "-framework CoreFoundation" "-framework IOKit")
-  target_link_libraries( k-IOStatic PUBLIC rtmidi objc "-framework CoreAudio" "-framework CoreMidi")
-
-  install (TARGETS    k-IO             DESTINATION lib)
-  install (TARGETS    k-IOStatic       DESTINATION lib)
-  install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-
-
-# Linux specific --------------------------------------------------------------------------------- #
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-  target_link_libraries( k-IO ${LibUSB_LIBRARIES} ${HIDAPI_LIBRARY} pthread rtmidi)
+  target_link_libraries( k-IOStatic PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY})
+  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LINKER_FLAGS})
 
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
@@ -409,7 +394,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
 
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif()
 
 
 # Windows specific ------------------------------------------------------------------------------- #
@@ -430,21 +415,22 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # Arduino/Teensy specific ------------------------------------------------------------------------ #
 
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${IS_K-IO} AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 add_custom_target( CreateArduinoLibrary
   command ${CMAKE_SOURCE_DIR}/arduinify.sh ${CMAKE_SOURCE_DIR} artifacts/arduino &&
      cp ${PROJECT_BINARY_DIR}/k-io-config.h ${CMAKE_SOURCE_DIR}/artifacts/arduino/k-IO/k-io-config.h
 )
-endif(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+endif()
 
 # Unit tests ------------------------------------------------------------------------------------- #
-if(K-IO_TEST)
+if(${K-IO_TEST})
+  addCatch()
   add_subdirectory(test)
 endif()
 
 # Documentation (doxygen) ------------------------------------------------------------------------ #
 
-if(K-IO_DOCS)
+if(${K-IO_DOCS})
   find_package(Doxygen)
 
   if(NOT DOXYGEN_FOUND)
