@@ -385,6 +385,11 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries( k-IOStatic PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY})
   target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LINKER_FLAGS})
 
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries( k-IO PUBLIC pthread)
+    target_link_libraries( k-IOStatic PUBLIC pthread)
+  endif()
+
   install (TARGETS    k-IO             DESTINATION lib)
   install (TARGETS    k-IOStatic       DESTINATION lib)
   install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
