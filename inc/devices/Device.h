@@ -267,14 +267,9 @@ public:
     MaschineMikroMk2,
   };
   
-  Device(tPtr<DeviceHandle> pDeviceHandle_)
-    : m_pDeviceHandle(std::move(pDeviceHandle_))
-  {
-  }
-
-  virtual ~Device()
-  {
-  }
+  Device(tPtr<DeviceHandle> pDeviceHandle_);
+  
+  virtual ~Device();
 
 //  virtual bool connect() = 0;
 
@@ -314,7 +309,7 @@ public:
     m_cbPotentiometerChanged = cbPotentiometerChanged_;
   }
 
-  DeviceHandle* getDeviceHandle(){ return m_pDeviceHandle.get(); }
+  DeviceHandle* getDeviceHandle();
   
 protected:
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)

@@ -5,47 +5,40 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#pragma once
-
-#include <cstdint>
-#include <functional>
-
-#include "util/Types.h"
+#include "devices/Device.h"
+#include "comm/DeviceHandle.h"
 
 namespace sl
 {
 namespace kio
 {
-
-//--------------------------------------------------------------------------------------------------
-
-class Transfer;
-class DeviceHandleImpl;
-
-//--------------------------------------------------------------------------------------------------
-
-class DeviceHandle
+namespace devices
 {
 
-public:
+//--------------------------------------------------------------------------------------------------
 
-  using tCbRead = std::function<void(Transfer)>;
+Device::Device(tPtr<DeviceHandle> pDeviceHandle_)
+  : m_pDeviceHandle(std::move(pDeviceHandle_))
+{
+
+}
   
-  DeviceHandle(tPtr<DeviceHandleImpl>);
-  ~DeviceHandle();
-  
-  void disconnect();
+//--------------------------------------------------------------------------------------------------
 
-  bool read(Transfer&, uint8_t);
-  bool write(const Transfer&, uint8_t);
+Device::~Device()
+{
 
-  void readAsync(uint8_t, tCbRead);
-
-private:
-  tPtr<DeviceHandleImpl> m_pImpl;
-};
+}
 
 //--------------------------------------------------------------------------------------------------
 
+DeviceHandle* Device::getDeviceHandle()
+{
+  return m_pDeviceHandle.get();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+} // devices
 } // kio
 } // sl

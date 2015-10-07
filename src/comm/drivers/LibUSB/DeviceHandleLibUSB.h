@@ -32,7 +32,7 @@ public:
   bool read(Transfer&, uint8_t) override;
   bool write(const Transfer&, uint8_t) override;
 
-  void readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead) override;
+  void readAsync(uint8_t endpoint_, DeviceHandle::tCbRead) override;
 
 private:
 
@@ -42,7 +42,7 @@ private:
   tRawData                        m_inputBuffer;
   libusb_device_handle*           m_pCurrentDevice;
   
-  DeviceHandleImpl::tCbRead       m_cbRead;
+  DeviceHandle::tCbRead           m_cbRead;
 };
 
 //--------------------------------------------------------------------------------------------------

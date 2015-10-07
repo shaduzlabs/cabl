@@ -23,6 +23,13 @@ DeviceHandle::DeviceHandle( tPtr<DeviceHandleImpl> pDeviceHandle_ )
 
 //--------------------------------------------------------------------------------------------------
 
+DeviceHandle::~DeviceHandle()
+{
+  disconnect();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void DeviceHandle::disconnect()
 {
   m_pImpl->disconnect();
@@ -44,7 +51,7 @@ bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_ )
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceHandle::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead cbRead_)
+void DeviceHandle::readAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
 {
   m_pImpl->readAsync(endpoint_, cbRead_);
 }

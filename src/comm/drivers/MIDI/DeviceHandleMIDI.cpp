@@ -59,7 +59,7 @@ bool DeviceHandleMIDI::write( const Transfer& transfer_, uint8_t /* endpoint_ */
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceHandleMIDI::readAsync(uint8_t /* endpoint_ */, DeviceHandleImpl::tCbRead cbRead_)
+void DeviceHandleMIDI::readAsync(uint8_t /* endpoint_ */, DeviceHandle::tCbRead cbRead_)
 {
   m_cbRead = cbRead_;
   m_midiIn.setCallback(&DeviceHandleMIDI::onMidiMessage, this);

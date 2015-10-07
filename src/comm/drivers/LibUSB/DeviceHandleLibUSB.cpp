@@ -96,7 +96,7 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ )
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceHandleLibUSB::readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead cbRead_)
+void DeviceHandleLibUSB::readAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
 {
   m_cbRead = cbRead_;
   readAsyncImpl(endpoint_);

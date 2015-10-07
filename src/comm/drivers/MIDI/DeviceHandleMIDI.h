@@ -32,7 +32,7 @@ public:
   bool read(Transfer&, uint8_t) override;
   bool write(const Transfer&, uint8_t) override;
 
-  void readAsync(uint8_t endpoint_, DeviceHandleImpl::tCbRead) override;
+  void readAsync(uint8_t endpoint_, DeviceHandle::tCbRead) override;
 
   static void onMidiMessage(
     double timeStamp_,
@@ -47,7 +47,7 @@ private:
   RtMidiIn                        m_midiIn;
   RtMidiOut                       m_midiOut;
  
-  DeviceHandleImpl::tCbRead       m_cbRead;
+  DeviceHandle::tCbRead           m_cbRead;
 };
 
 //--------------------------------------------------------------------------------------------------

@@ -236,6 +236,7 @@ set(
 
 set(
   src_devices_SRCS
+    src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
 )
 

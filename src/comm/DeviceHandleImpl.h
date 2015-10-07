@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <functional>
+#include "comm/DeviceHandle.h"
 
 namespace sl
 {
@@ -25,8 +25,6 @@ class DeviceHandleImpl
 
 public:
 
-  using tCbRead = std::function<void(Transfer)>;
-
   virtual ~DeviceHandleImpl(){}
 
   virtual void disconnect() = 0;
@@ -34,7 +32,7 @@ public:
   virtual bool read( Transfer&, uint8_t ) = 0;
   virtual bool write( const Transfer&, uint8_t ) = 0;
 
-  virtual void readAsync(uint8_t, tCbRead) {}
+  virtual void readAsync(uint8_t, DeviceHandle::tCbRead) {}
 };
   
 //--------------------------------------------------------------------------------------------------
