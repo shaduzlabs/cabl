@@ -54,7 +54,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(NOT ${IS_K-IO} OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   addHIDAPI()
   addLibUSB()
   addRtMidi()
@@ -381,29 +381,34 @@ set_target_properties(
 
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  target_link_libraries( k-IO PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY} ${RTMIDI_LINKER_FLAGS})
+  target_link_libraries( k-IO PUBLIC libusb hidapi rtmidi)
+  target_link_libraries( k-IOStatic PUBLIC libusb hidapi rtmidi)
+#  target_link_libraries( k-IO PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY} ${RTMIDI_LINKER_FLAGS})
 
-  target_link_libraries( k-IOStatic PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY})
-  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LINKER_FLAGS})
+#  target_link_libraries( k-IOStatic PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY})
+#  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LINKER_FLAGS})
 
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     target_link_libraries( k-IO PUBLIC pthread)
     target_link_libraries( k-IOStatic PUBLIC pthread)
   endif()
 
-  install (TARGETS    k-IO             DESTINATION lib)
-  install (TARGETS    k-IOStatic       DESTINATION lib)
-  install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-  
-  install (
-    FILES        ${PROJECT_BINARY_DIR}/k-io-config.h
-    DESTINATION  "include/${LIBRARY_FOLDER_NAME}"
-  )
+  if(${IS_K-IO})
+
+    install (TARGETS    k-IO             DESTINATION lib)
+    install (TARGETS    k-IOStatic       DESTINATION lib)
+    install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+
+    install (
+      FILES        ${PROJECT_BINARY_DIR}/k-io-config.h
+      DESTINATION  "include/${LIBRARY_FOLDER_NAME}"
+    )
+  endif()
   
 endif()
 

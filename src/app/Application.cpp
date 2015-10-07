@@ -11,8 +11,6 @@
 #include <iostream>
 
 #include "k-io.h"
-#include "devices/ni/MaschineMK1.h"
-#include "devices/ni/MaschineMikroMK2.h"
 
 namespace
 {

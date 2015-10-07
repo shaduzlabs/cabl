@@ -26,6 +26,10 @@ function (addRtMidi)
     )
     source_group("src"  FILES  ${lib_rtmidi_LIBRARY})
     add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
+    if(APPLE)
+      target_link_libraries(rtmidi PUBLIC "-framework CoreFoundation" "-framework IOKit")
+      target_link_libraries(rtmidi PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)
+    endif()
 
     set_target_properties(
       rtmidi
@@ -61,6 +65,21 @@ endfunction()
 
 
 # ------------------------------------------------------------------------------------------------ #
+#  MPL                                                                                             #
+# ------------------------------------------------------------------------------------------------ #
+function (addMPL)
+  if(DEFINED MPL_INCLUDE_DIR)
+    message(STATUS "Catch is already available")
+  else()
+    checkout_external_project(mpl https://github.com/rabauke/mpl.git master)
+    set(MPL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl PARENT_SCOPE)
+    set(MPL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl)
+    message(STATUS "MPL path: ${MPL_INCLUDE_DIR}")
+  endif()
+endfunction()
+
+
+# ------------------------------------------------------------------------------------------------ #
 #  unMIDIfy                                                                                        #
 # ------------------------------------------------------------------------------------------------ #
 function (addUnmidify)
@@ -79,7 +98,7 @@ endfunction()
 #  LibUSB                                                                                          #
 # ------------------------------------------------------------------------------------------------ #
 function (addLibUSB)
-  if(DEFINED LIBUSB_INCLUDE_DIR)
+  if(DEFINED LIBUSB_INCLUDE_DIRS)
     message(STATUS "libUSB is already available")
   else()
     checkout_external_project(libusb https://github.com/libusb/libusb.git master)
