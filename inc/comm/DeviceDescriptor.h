@@ -71,8 +71,7 @@ public:
   
   bool isSameProduct(const DeviceDescriptor& other_) const
   {
-    return (m_name == other_.m_name)           &&
-           (m_vendorId == other_.m_vendorId)   &&
+    return (m_vendorId == other_.m_vendorId)   &&
            (m_productId == other_.m_productId);
   }
   

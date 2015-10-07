@@ -399,7 +399,12 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
   install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-
+  
+  install (
+    FILES        ${PROJECT_BINARY_DIR}/k-io-config.h
+    DESTINATION  "include/${LIBRARY_FOLDER_NAME}"
+  )
+  
 endif()
 
 
