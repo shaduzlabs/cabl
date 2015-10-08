@@ -82,8 +82,8 @@ private:
   bool                m_buttonStates[kMASMK2_nButtons];
   uint16_t            m_encoderValues[kMASMK2_nEncoders];
   
-  tBuffer             m_padsRawData[ kMASMK2_nPads ];
-  uint16_t            m_padsAvgData[ kMASMK2_nPads ];
+  uint16_t                    m_padsData[ kMASMK2_nPads ];
+  std::bitset<kMASMK2_nPads>  m_padsStatus;
   
   bool                m_isDirtyPadLeds;
   bool                m_isDirtyGroupLeds;

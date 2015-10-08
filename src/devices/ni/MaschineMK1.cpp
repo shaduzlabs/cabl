@@ -24,12 +24,12 @@
 
 namespace
 {
-  static const uint8_t  kMASMK1_epDisplay               = 0x08;
-  static const uint8_t  kMASMK1_epOut                   = 0x01;
-  static const uint8_t  kMASMK1_epInputPads             = 0x84;
-  static const uint8_t  kMASMK1_epInputButtonsAndDials  = 0x81;
-  
-  static const uint8_t  kMASMK1_defaultDisplaysBacklight      = 0x5C;
+  static const uint8_t  kMASMK1_epDisplay                = 0x08;
+  static const uint8_t  kMASMK1_epOut                    = 0x01;
+  static const uint8_t  kMASMK1_epInputPads              = 0x84;
+  static const uint8_t  kMASMK1_epInputButtonsAndDials   = 0x81;  
+  static const uint8_t  kMASMK1_defaultDisplaysBacklight = 0x5C;
+  static const unsigned kMASMK1_padThreshold             =  200;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -483,8 +483,7 @@ void MaschineMK1::processPads(const Transfer& input_)
     uint16_t l = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
 
-    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
-    m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
+    m_padsData[pad] = (((h & 0x0F) << 8) | l);
 
     Device::Pad btn(Device::Pad::Unknown);
 
@@ -515,9 +514,17 @@ void MaschineMK1::processPads(const Transfer& input_)
 
 #undef M_PAD_CASE
 
-    if (m_padsAvgData[pad] > 1000)
+    if (m_padsData[pad] > kMASMK1_padThreshold)
     {
-      padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      m_padsStatus[pad] = true;
+      padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+    }
+    else{
+      if(m_padsStatus[pad])
+      {
+        m_padsStatus[pad] = false;
+        padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      }
     }
   }
 }

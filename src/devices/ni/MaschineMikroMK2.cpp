@@ -23,10 +23,10 @@
 
 namespace
 {
-static const uint8_t kMikroMK2_epDisplay = 0x08;
-static const uint8_t kMikroMK2_epOut = 0x01;
-static const uint8_t kMikroMK2_epInput = 0x84;
-static const unsigned kMikroMK2_padThreshold = 250;
+static const uint8_t  kMikroMK2_epDisplay     = 0x08;
+static const uint8_t  kMikroMK2_epOut         = 0x01;
+static const uint8_t  kMikroMK2_epInput       = 0x84;
+static const unsigned kMikroMK2_padThreshold  =  200;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -136,6 +136,7 @@ enum class MaschineMikroMK2::Button : uint8_t
 
 MaschineMikroMK2::MaschineMikroMK2(tPtr<DeviceHandle> pDeviceHandle_)
   : Device(std::move(pDeviceHandle_))
+  , m_padsStatus(0)
   , m_isDirtyLeds(false)
 {
  m_buttons.resize(kMikroMK2_buttonsDataSize);
@@ -362,8 +363,7 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
     uint16_t l = input_[i];
     uint16_t h = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
-    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
-    m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
+    m_padsData[pad] = (((h & 0x0F) << 8) | l);
 
     Device::Pad btn(Device::Pad::Unknown);
 
@@ -394,10 +394,18 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
 
 #undef M_PAD_CASE
 
-    if (m_padsAvgData[pad] > kMikroMK2_padThreshold)
+    if (m_padsData[pad] > kMikroMK2_padThreshold)
     {
-      padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
-    }    
+      m_padsStatus[pad] = true;
+      padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+    }
+    else{
+      if(m_padsStatus[pad])
+      {
+        m_padsStatus[pad] = false;
+        padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      }
+    }
   }
 }
 

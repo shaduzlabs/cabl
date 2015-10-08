@@ -77,8 +77,8 @@ private:
   bool                  m_buttonStates[kMikroMK2_nButtons];
   uint8_t               m_encoderValue;
   
-  tBuffer               m_padsRawData[ kMikroMK2_nPads ];
-  uint16_t              m_padsAvgData[ kMikroMK2_nPads ];
+  uint16_t                      m_padsData[ kMikroMK2_nPads ];
+  std::bitset<kMikroMK2_nPads>  m_padsStatus;
   
   bool                  m_isDirtyLeds;
 
