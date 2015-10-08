@@ -30,6 +30,10 @@ public:
      */
     GDisplayMaschineMikro();
 
+    void white() override;
+
+    void black() override;
+    
 protected:
 
     //! Set a pixel

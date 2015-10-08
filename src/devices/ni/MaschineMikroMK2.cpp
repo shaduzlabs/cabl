@@ -26,6 +26,7 @@ namespace
 static const uint8_t kMikroMK2_epDisplay = 0x08;
 static const uint8_t kMikroMK2_epOut = 0x01;
 static const uint8_t kMikroMK2_epInput = 0x84;
+static const unsigned kMikroMK2_padThreshold = 250;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -393,7 +394,7 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
 
 #undef M_PAD_CASE
 
-    if (m_padsAvgData[pad] > 1000)
+    if (m_padsAvgData[pad] > kMikroMK2_padThreshold)
     {
       padChanged(btn, m_padsAvgData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }    

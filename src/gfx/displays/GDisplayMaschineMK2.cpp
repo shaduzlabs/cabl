@@ -42,6 +42,22 @@ GDisplayMaschineMK2::GDisplayMaschineMK2()
 
 //--------------------------------------------------------------------------------------------------
 
+void GDisplayMaschineMK2::white()
+{
+  fillPattern(0x0);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK2::black()
+{
+  fillPattern(0xFF);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
   if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )

@@ -30,6 +30,10 @@ public:
      */
     GDisplayMaschineMK2();
 
+    void white() override;
+
+    void black() override;
+    
 protected:
 
     //! Set a pixel

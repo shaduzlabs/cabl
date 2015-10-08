@@ -44,39 +44,53 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 
 //--------------------------------------------------------------------------------------------------
 
+Application::~Application()
+{
+  if (m_kioThread.joinable())
+  {
+    m_kioThread.join();
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Application::run()
 {
   m_appStopped = false;
-
-  while(!m_appStopped)
+  m_kioThread = std::thread([this]()
   {
-    // get the list of devices
-    m_connected = false;
-    if (connect(enumerateDevices())) // found known devices
+    while(!m_appStopped)
     {
-      m_connected = true;
-      initHardware();
-      unsigned nErrors = 0;
-      while (m_connected)
+      // get the list of devices
+      m_connected = false;
+      if (connect(enumerateDevices())) // found known devices
       {
-        if(!tick())
+        m_connected = true;
+        initHardware();
+        unsigned nErrors = 0;
+        while (m_connected)
         {
-          nErrors++;
-          if(nErrors>=m_maxConsecutiveErrors)
+          if(!tick())
           {
-            m_connected = false;
-            m_collDevices.clear();
-            M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
+            nErrors++;
+            if(nErrors>=m_maxConsecutiveErrors)
+            {
+       //       m_connected = false;
+       //       m_collDevices.clear();
+      //        M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
+            }
+          }
+          else
+          {
+         //   nErrors--;
           }
         }
-        else
-        {
-       //   nErrors--;
-        }
       }
+      std::this_thread::sleep_for(std::chrono::seconds(kAppSleepBeforeNextDeviceSearch));
     }
-    std::this_thread::sleep_for(std::chrono::seconds(kAppSleepBeforeNextDeviceSearch));
-  }
+
+  });
+  
 }
 
 //--------------------------------------------------------------------------------------------------

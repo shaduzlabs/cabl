@@ -42,6 +42,22 @@ GDisplayMaschineMikro::GDisplayMaschineMikro()
 
 //--------------------------------------------------------------------------------------------------
 
+void GDisplayMaschineMikro::white()
+{
+  fillPattern(0x0);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMikro::black()
+{
+  fillPattern(0xFF);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void GDisplayMaschineMikro::setPixelImpl(
   uint16_t x_, 
   uint16_t y_, 

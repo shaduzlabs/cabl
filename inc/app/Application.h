@@ -8,6 +8,7 @@
 #pragma once
 
 #include <map>
+#include <thread>
 
 #include "comm/Driver.h"
 #include "devices/Device.h"
@@ -28,6 +29,7 @@ public:
   using tCollDevices = std::vector<tPtr<Device>>;
   using tCollDrivers = std::map<Driver::Type, tPtr<Driver>>;
   Application(const Driver::tCollDeviceDescriptor&);
+  virtual ~Application();
 
   virtual bool tick() = 0;
   virtual bool initHardware() = 0;
@@ -53,9 +55,10 @@ private:
   bool isKnownDevice(const DeviceDescriptor&) const;
   bool isSupportedDevice(const DeviceDescriptor&) const;
 
-  bool m_appStopped;
-  bool m_connected;
-
+  bool        m_appStopped;
+  bool        m_connected;
+  std::thread m_kioThread;
+  
   unsigned                      m_maxConsecutiveErrors;
   
   Driver::tCollDeviceDescriptor m_collKnownDevices;
