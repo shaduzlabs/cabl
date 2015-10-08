@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <bitset>
+
 #include "devices/Device.h"
 #include "gfx/displays/GDisplayMaschineMK1.h"
 #include "comm/Transfer.h"
