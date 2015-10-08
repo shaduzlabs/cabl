@@ -54,9 +54,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
-if(NOT ${IS_K-IO} OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-#  addHIDAPI()
-#  addLibUSB()
+if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  addHIDAPI()
+  addLibUSB()
   addRtMidi()
 else()
   include(FindHIDAPI)
