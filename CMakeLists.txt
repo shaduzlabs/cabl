@@ -55,8 +55,8 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 
 if(NOT ${IS_K-IO} OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  addHIDAPI()
-  addLibUSB()
+#  addHIDAPI()
+#  addLibUSB()
   addRtMidi()
 else()
   include(FindHIDAPI)
@@ -379,19 +379,19 @@ set_target_properties(
 
 # OS X and Linux --------------------------------------------------------------------------------- #
 
-if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  target_link_libraries( k-IO PUBLIC usb hidapi-libusb rtmidi pthread)
+  target_link_libraries( k-IOStatic PUBLIC hidapi-libusb usb-1.0 rtmidi pthread)
+  target_include_directories( k-IO PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+  target_include_directories( k-IOStatic PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+endif()
 
+if(APPLE)
   target_link_libraries( k-IO PUBLIC libusb hidapi rtmidi)
   target_link_libraries( k-IOStatic PUBLIC libusb hidapi rtmidi)
-#  target_link_libraries( k-IO PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY} ${RTMIDI_LINKER_FLAGS})
+endif()
 
-#  target_link_libraries( k-IOStatic PUBLIC ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARY})
-#  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LINKER_FLAGS})
-
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries( k-IO PUBLIC pthread)
-    target_link_libraries( k-IOStatic PUBLIC pthread)
-  endif()
+if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   if(${IS_K-IO})
 
@@ -409,7 +409,7 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       DESTINATION  "include/${LIBRARY_FOLDER_NAME}"
     )
   endif()
-  
+
 endif()
 
 
