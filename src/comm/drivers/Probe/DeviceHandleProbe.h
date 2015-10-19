@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
@@ -21,7 +23,6 @@ class DeviceHandleProbe : public DeviceHandleImpl
 {
 public:
 
-  DeviceHandleProbe();
   ~DeviceHandleProbe();
   
   void disconnect() override;
@@ -30,8 +31,6 @@ public:
   bool write(const Transfer&, uint8_t) override;
 
 private:
-
-  tRawData           m_inputBuffer;
 
   static uint32_t    s_numPacketR;
   static uint32_t    s_numPacketW;

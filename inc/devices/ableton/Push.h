@@ -51,18 +51,14 @@ private:
   static constexpr uint8_t kPush_ledsDataSize      = 78;
   static constexpr uint8_t kPush_buttonsDataSize   = 138;
   static constexpr uint8_t kPush_padDataSize       = 64;
-  static constexpr uint8_t kPush_nPads             = 16;
+  static constexpr uint8_t kPush_nPads             = 64;
   static constexpr uint8_t kPush_padsBufferSize    = 16;
-
-  using tBuffer = util::CircularBuffer<uint16_t, kPush_padsBufferSize>;
 
   void init() override;
 
   void initDisplay() const;
   bool sendDisplayData();
   bool sendLeds();
-  
-  void processPads( const Transfer& );
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
@@ -85,13 +81,10 @@ private:
   void onUSysExRT(USysExRT msg_) override;
   void onUSysExNonRT(USysExNonRT msg_) override;
   
-  LCDDisplayGeneric        m_displays[kPush_nDisplays];
+  LCDDisplayGeneric     m_displays[kPush_nDisplays];
   
   tRawData              m_leds;
   bool                  m_shiftPressed;
-  
-  tBuffer               m_padsRawData[ kPush_nPads ];
-  uint16_t              m_padsAvgData[ kPush_nPads ];
   
   bool                  m_isDirtyLeds;
   

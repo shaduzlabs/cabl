@@ -7,40 +7,40 @@
 
 #pragma once
 
-#include "app/ClientSingle.h"
-
-#include "devices/DeviceFactory.h"
-#include "devices/ableton/Push.h"
-#include "devices/ni/KompleteKontrol.h"
-#include "devices/ni/MaschineMK1.h"
-#include "devices/ni/MaschineMK2.h"
-#include "devices/ni/MaschineMikroMK2.h"
-#include "devices/ni/TraktorF1MK2.h"
-
-#include "util/Version.h"
-
-#include "k-io-config.h"
+#include <stdint.h>
 
 namespace sl
 {
-namespace kio
+namespace util
 {
 
 //--------------------------------------------------------------------------------------------------
 
-class Lib
+class Exception : public std::exception
 {
-
 public:
 
-  static std::string getVersion()
-  { 
-    return util::Version(KIO_VERSION_MAJOR, KIO_VERSION_MINOR, KIO_VERSION_MICRO); 
+  Exception(std::string errorMessage_)
+    : m_errorMessage(std::move(errorMessage_))
+  {}
+
+  const char* what() const noexcept override
+  {
+    return m_errorMessage.c_str();
   }
-  
+
+  const std::string& getMessage() const noexcept
+  {
+    return m_errorMessage;
+  }
+
+private:
+
+  std::string m_errorMessage;
+
 };
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace kio
-} // namespace sl
+} // util
+} // sl

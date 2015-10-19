@@ -51,8 +51,6 @@ private:
   static constexpr uint8_t kMikroMK2_nPads             = 16;
   static constexpr uint8_t kMikroMK2_padsBufferSize    = 16;
 
-  using tBuffer = util::CircularBuffer<uint16_t, kMikroMK2_padsBufferSize>;
-
   void init() override;
 
   void initDisplay() const;

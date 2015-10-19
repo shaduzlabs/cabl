@@ -741,39 +741,6 @@ void Canvas::setDefaultFont( FontType font_ )
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::toString()
-{
-//!\todo remove this function!
-/*
-  printf("\n");
-  
-  printf("+");
-  for( int col = 0; col < m_width; col++ )
-    printf("-");
-  printf("+\n");
-  
-  for( int row = 0; row < m_height; row++ )
-  {
-    printf("|");
-    for( int col = 0; col < m_width; col++ )
-    {
-      if( getPixel(col,row) == Color::Black )
-        printf(" ");
-      else
-        printf("0");
-    }
-    printf("|");
-    printf("\n");
-  }
-  
-  printf("+");
-  for( int col = 0; col < m_width; col++ )
-    printf("-");
-  printf("+\n");
-  */
-}
-//--------------------------------------------------------------------------------------------------
-
 #undef M_SWAP
 
 //--------------------------------------------------------------------------------------------------

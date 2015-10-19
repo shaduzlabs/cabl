@@ -23,36 +23,44 @@ namespace kio
 //--------------------------------------------------------------------------------------------------
 using namespace devices;
 
-class Application
+class ClientSingle
 {
 public:
-  using tCollDevices = std::vector<tPtr<Device>>;
-  using tCollDrivers = std::map<Driver::Type, tPtr<Driver>>;
-  Application(const Driver::tCollDeviceDescriptor&);
-  virtual ~Application();
+
+  using tDevicePtr = std::shared_ptr<Device>;
+  using tDriverPtr = std::shared_ptr<Driver>;
+  using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
+  
+  ClientSingle(const Driver::tCollDeviceDescriptor&);
+  virtual ~ClientSingle();
 
   virtual bool tick() = 0;
   virtual bool initHardware() = 0;
 
   void run();
   Driver::tCollDeviceDescriptor enumerateDevices();
-  bool connect(Driver::tCollDeviceDescriptor);
+  bool connect(const DeviceDescriptor&);
   
   void setMaxConsecutiveErrors(unsigned nErrors_){ m_maxConsecutiveErrors = nErrors_;}
 
 protected:
+  
   void setConnected(bool connected_)
   {
     m_connected = connected_;
   };
-  Device* getDevice(unsigned index)
+  
+  tDevicePtr getDevice(unsigned index)
   {
-    return m_collDevices[index].get();
+    return m_pDevice;
   }
-  Driver* getDriver(Driver::Type);
   
 private:
+
+  tDriverPtr getDriver(Driver::Type);
+
   bool isKnownDevice(const DeviceDescriptor&) const;
+
   bool isSupportedDevice(const DeviceDescriptor&) const;
 
   bool        m_appStopped;
@@ -64,7 +72,7 @@ private:
   Driver::tCollDeviceDescriptor m_collKnownDevices;
   Driver::tCollDeviceDescriptor m_collSupportedDevices;
 
-  tCollDevices m_collDevices;
+  tDevicePtr   m_pDevice;
   tCollDrivers m_collDrivers;
 };
 

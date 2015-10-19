@@ -26,7 +26,7 @@ class DriverImpl
 
 public:
   
-  virtual ~DriverImpl(){}
+  virtual ~DriverImpl() = default;
 
   virtual Driver::tCollDeviceDescriptor  enumerate() = 0;
   virtual tPtr<DeviceHandleImpl>         connect( const DeviceDescriptor& ) = 0;

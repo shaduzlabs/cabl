@@ -53,8 +53,6 @@ private:
   static constexpr uint8_t kMASMK2_padsBufferSize    = 16;
   static constexpr uint8_t kMASMK2_nEncoders         = 9;
 
-  using tBuffer = util::CircularBuffer<uint16_t, kMASMK2_padsBufferSize>;
-
   void init() override;
 
   void initDisplay() const;

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
@@ -31,10 +33,12 @@ public:
   bool read( Transfer&, uint8_t ) override;
   bool write( const Transfer& , uint8_t) override;
 
+  static constexpr unsigned kInputBufferSize{512};
+  
 private:
 
-  tRawData                        m_inputBuffer;
-  hid_device*                     m_pCurrentDevice;
+  std::array<uint8_t, kInputBufferSize> m_inputBuffer;
+  hid_device*                           m_pCurrentDevice;
 };
 
 //--------------------------------------------------------------------------------------------------

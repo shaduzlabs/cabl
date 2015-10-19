@@ -7,11 +7,6 @@
 
 #include "DeviceHandleMIDI.h"
 
-namespace
-{
-  uint16_t kMIDIInputBufferSize = 512;  // Size of the LIBUSB input buffer
-}
-
 namespace sl
 {
 namespace kio
@@ -21,9 +16,15 @@ namespace kio
 
 DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& device_)
 {
-  m_midiIn.openPort(device_.getPortIdIn(), device_.getName());
-  m_midiOut.openPort(device_.getPortIdOut(), device_.getName());
-  m_inputBuffer.resize(kMIDIInputBufferSize);
+  try
+  {
+    m_midiIn.openPort(device_.getPortIdIn(), device_.getName());
+    m_midiOut.openPort(device_.getPortIdOut(), device_.getName());
+  }
+  catch (RtMidiError e)
+  {
+  
+  }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -37,8 +38,15 @@ DeviceHandleMIDI::~DeviceHandleMIDI()
 
 void DeviceHandleMIDI::disconnect()
 {
-  m_midiIn.closePort();
-  m_midiOut.closePort();
+  try
+  {
+    m_midiIn.closePort();
+    m_midiOut.closePort();
+  }
+  catch (RtMidiError e)
+  {
+  
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

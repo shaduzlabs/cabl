@@ -6,6 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #pragma once
+
 #include <string>
 
 namespace sl
@@ -22,7 +23,7 @@ public:
     , m_vMinor( vMinor_ )
     , m_vMicro( vMicro_ )
   {}
- 
+
   operator bool() const{ return ( m_vMajor + m_vMinor + m_vMicro ) > 0; }
 
   unsigned getMajor() const { return m_vMajor; }

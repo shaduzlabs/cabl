@@ -63,7 +63,7 @@ public:
   {}
   
   //! Destructor
-  virtual ~LCDDisplay(){}
+  virtual ~LCDDisplay() = default;
   
   virtual void clear() {}
   

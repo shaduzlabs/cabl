@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "app/Application.h"
+#include "app/ClientSingle.h"
 
 #include <algorithm>
 #include <thread> //remove and use a custom sleep function!
@@ -23,7 +23,7 @@ namespace sl
 namespace kio
 {
 
-Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
+ClientSingle::ClientSingle(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
   : m_collSupportedDevices(collSupportedDevices_)
 {
   M_LOG("k-IO Version " << Lib::getVersion());
@@ -46,7 +46,7 @@ Application::Application(const Driver::tCollDeviceDescriptor& collSupportedDevic
 
 //--------------------------------------------------------------------------------------------------
 
-Application::~Application()
+ClientSingle::~ClientSingle()
 {
   if (m_kioThread.joinable())
   {
@@ -56,7 +56,7 @@ Application::~Application()
 
 //--------------------------------------------------------------------------------------------------
 
-void Application::run()
+void ClientSingle::run()
 {
   m_appStopped = false;
   m_kioThread  = std::thread([this]()
@@ -65,7 +65,7 @@ void Application::run()
       {
         // get the list of devices
         m_connected = false;
-        if (connect(enumerateDevices())) // found known devices
+        if (connect(enumerateDevices()[0])) // found known devices
         {
           m_connected = true;
           initHardware();
@@ -96,7 +96,7 @@ void Application::run()
 
 //--------------------------------------------------------------------------------------------------
 
-Driver::tCollDeviceDescriptor Application::enumerateDevices()
+Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
 {
   Driver::tCollDeviceDescriptor devicesList;
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
@@ -143,76 +143,73 @@ Driver::tCollDeviceDescriptor Application::enumerateDevices()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
+bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
 {
   m_connected = false;
-  if (devicesList_.empty())
+  if (!deviceDescriptor_)
   {
     return false;
   }
-  for (const auto& d : devicesList_)
-  {
+
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-    Driver::Type driverType;
-    switch (d.getType())
+  Driver::Type driverType;
+  switch (deviceDescriptor_.getType())
+  {
+    case DeviceDescriptor::Type::HID:
     {
-      case DeviceDescriptor::Type::HID:
-      {
-        driverType = Driver::Type::HIDAPI;
-        break;
-      }
-      case DeviceDescriptor::Type::MIDI:
-      {
-        driverType = Driver::Type::MIDI;
-        break;
-      }
-      case DeviceDescriptor::Type::USB:
-      default:
-      {
-        driverType = Driver::Type::LibUSB;
-        break;
-      }
+      driverType = Driver::Type::HIDAPI;
+      break;
     }
+    case DeviceDescriptor::Type::MIDI:
+    {
+      driverType = Driver::Type::MIDI;
+      break;
+    }
+    case DeviceDescriptor::Type::USB:
+    default:
+    {
+      driverType = Driver::Type::LibUSB;
+      break;
+    }
+  }
 #endif
-    tPtr<DeviceHandle> pDeviceHandle = getDriver(driverType)->connect(d);
+  auto deviceHandle = getDriver(driverType)->connect(deviceDescriptor_);
 
-    if (isSupportedDevice(d) && pDeviceHandle)
-    {
-      m_collDevices.emplace_back(DeviceFactory::getDevice(d, std::move(pDeviceHandle)));
-      m_connected = true;
-    }
-    else
-    {
-      m_collDevices.emplace_back(DeviceFactory::getDevice(d, std::move(pDeviceHandle)));
+  if (isSupportedDevice(deviceDescriptor_) && deviceHandle)
+  {
+    m_pDevice.reset(DeviceFactory::getDevice(deviceDescriptor_, std::move(deviceHandle)));
+    m_connected = true;
+  }
+  else
+  {
+    m_pDevice.reset(DeviceFactory::getDevice(deviceDescriptor_, std::move(deviceHandle)));
+    m_pDevice->init();
+    //      m_collDevices.emplace_back(new MaschineMK2(std::move(pDeviceHandle)));
+    m_connected = true;
+    /*
+    tPtr<Device> unsupportedDevice(new MaschineMK1(std::move(pDeviceHandle)));
+    unsupportedDevice->init();
+    unsupportedDevice->tick();
 
-      //      m_collDevices.emplace_back(new MaschineMK2(std::move(pDeviceHandle)));
-      m_collDevices[0]->init();
-      m_connected = true;
-      /*
-      tPtr<Device> unsupportedDevice(new MaschineMK1(std::move(pDeviceHandle)));
-      unsupportedDevice->init();
-      unsupportedDevice->tick();
+    unsupportedDevice->getGraphicDisplay(0)->black();
+    unsupportedDevice->getGraphicDisplay(0)->printStr(
+      0,
+      0,
+      "Unsupported device!",
+      kio::Canvas::tFont::BIG,
+      kio::Canvas::tColor::INVERT
+    );
+    unsupportedDevice->getGraphicDisplay(1)->printStr(
+      12,
+      44,
+      "Unsupported device!",
+      kio::Canvas::tFont::BIG,
+      kio::Canvas::tColor::INVERT
+    );
 
-      unsupportedDevice->getGraphicDisplay(0)->black();
-      unsupportedDevice->getGraphicDisplay(0)->printStr(
-        0,
-        0,
-        "Unsupported device!",
-        kio::Canvas::tFont::BIG,
-        kio::Canvas::tColor::INVERT
-      );
-      unsupportedDevice->getGraphicDisplay(1)->printStr(
-        12,
-        44,
-        "Unsupported device!",
-        kio::Canvas::tFont::BIG,
-        kio::Canvas::tColor::INVERT
-      );
-
-      unsupportedDevice->tick();
-      */
-      // Device is known but unsupported by the current Application
-    }
+    unsupportedDevice->tick();
+    */
+    // Device is known but unsupported by the current Application
   }
 
   return m_connected;
@@ -220,19 +217,19 @@ bool Application::connect(Driver::tCollDeviceDescriptor devicesList_)
 
 //--------------------------------------------------------------------------------------------------
 
-Driver* Application::getDriver(Driver::Type tDriver_)
+ClientSingle::tDriverPtr ClientSingle::getDriver(Driver::Type tDriver_)
 {
   if (m_collDrivers.find(tDriver_) == m_collDrivers.end())
   {
-    m_collDrivers.emplace(tDriver_, std::move(tPtr<Driver>(new Driver(tDriver_))));
+    m_collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
   }
 
-  return m_collDrivers[tDriver_].get();
+  return m_collDrivers[tDriver_];
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Application::isKnownDevice(const DeviceDescriptor& device_) const
+bool ClientSingle::isKnownDevice(const DeviceDescriptor& device_) const
 {
   for (const auto& d : m_collKnownDevices)
   {
@@ -246,7 +243,7 @@ bool Application::isKnownDevice(const DeviceDescriptor& device_) const
 
 //--------------------------------------------------------------------------------------------------
 
-bool Application::isSupportedDevice(const DeviceDescriptor& device_) const
+bool ClientSingle::isSupportedDevice(const DeviceDescriptor& device_) const
 {
   for (const auto& d : m_collSupportedDevices)
   {

@@ -46,7 +46,7 @@ using namespace std::placeholders;
 //--------------------------------------------------------------------------------------------------
 
 Euklid::Euklid()
-  : Application({DeviceDescriptor("", DeviceDescriptor::Type::HID, 0x17cc, 0x1200)})
+  : ClientSingle({DeviceDescriptor("", DeviceDescriptor::Type::HID, 0x17cc, 0x1200)})
   , m_encoderState(EncoderState::Length)
   , m_screenPage(ScreenPage::Sequencer)
   , m_play(false)

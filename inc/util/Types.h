@@ -10,8 +10,6 @@
 #include <memory>
 #include <vector>
 
-#include "util/CircularBuffer.h"
-
 #ifndef WIN32
 #define __stdcall
 #endif // WIN32

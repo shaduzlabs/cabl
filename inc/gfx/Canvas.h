@@ -386,9 +386,6 @@ public:
    \return         The Canvas height in pixels
    */
   uint16_t getHeight() const noexcept { return m_height; }
-      
-  //! Print a string representation of the Canvas (space if value of the pixel is 0, '0' otherwise)
-  virtual void toString();
   
   /** @} */ // End of group Utility
   

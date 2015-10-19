@@ -27,7 +27,8 @@ public:
   {
     USB,
     HID,
-    MIDI
+    MIDI,
+    Unknown,
   };
   
   DeviceDescriptor(
@@ -69,6 +70,8 @@ public:
 
   bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }
   
+  operator bool() const{ return ( m_type != Type::Unknown ); }
+  
   bool isSameProduct(const DeviceDescriptor& other_) const
   {
     return (m_vendorId == other_.m_vendorId)   &&
@@ -78,7 +81,7 @@ public:
 private:
 
   std::string     m_name;
-  Type            m_type;
+  Type            m_type{Type::Unknown};
   tVendorId       m_vendorId;
   tProductId      m_productId;
   tSerialNumber   m_serialNumber;

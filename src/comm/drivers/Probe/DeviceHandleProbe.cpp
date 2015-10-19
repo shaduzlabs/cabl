@@ -12,11 +12,6 @@
 #include <iomanip>
 #endif
 
-namespace
-{
-  uint16_t kProbeInputBufferSize = 512; // Size of the TEST input buffer
-}
-
 namespace sl
 {
 namespace kio
@@ -26,13 +21,6 @@ namespace kio
 
 uint32_t DeviceHandleProbe::s_numPacketR;
 uint32_t DeviceHandleProbe::s_numPacketW;
-
-//--------------------------------------------------------------------------------------------------
-
-DeviceHandleProbe::DeviceHandleProbe()
-{
-  m_inputBuffer.resize(kProbeInputBufferSize);
-}
 
 //--------------------------------------------------------------------------------------------------
 

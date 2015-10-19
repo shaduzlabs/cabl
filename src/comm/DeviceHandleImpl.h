@@ -25,7 +25,7 @@ class DeviceHandleImpl
 
 public:
 
-  virtual ~DeviceHandleImpl(){}
+  virtual ~DeviceHandleImpl() = default;
 
   virtual void disconnect() = 0;
 

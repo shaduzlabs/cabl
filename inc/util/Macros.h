@@ -7,9 +7,9 @@
 
 #pragma once
 
-/* 
-   Binary constant generator macro By Tom Torfs
-   All macro's evaluate to compile-time constants 
+/*
+   Binary constant generator macro by Tom Torfs
+   All macro's evaluate to compile-time constants
 */
 
 /* Helper macros */

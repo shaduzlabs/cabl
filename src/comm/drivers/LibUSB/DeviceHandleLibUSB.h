@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
@@ -34,15 +36,17 @@ public:
 
   void readAsync(uint8_t endpoint_, DeviceHandle::tCbRead) override;
 
+  static constexpr unsigned kInputBufferSize{512};
+  
 private:
 
   void readAsyncImpl(uint8_t endpoint_);
-  static void __stdcall cbTransfer(libusb_transfer*); //!\todo #define WINAPI      __stdcall
+  static void __stdcall cbTransfer(libusb_transfer*);
 
-  tRawData                        m_inputBuffer;
-  libusb_device_handle*           m_pCurrentDevice;
+  std::array<uint8_t, kInputBufferSize> m_inputBuffer;
+  libusb_device_handle*                 m_pCurrentDevice;
   
-  DeviceHandle::tCbRead           m_cbRead;
+  DeviceHandle::tCbRead                 m_cbRead;
 };
 
 //--------------------------------------------------------------------------------------------------

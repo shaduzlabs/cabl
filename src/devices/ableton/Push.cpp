@@ -544,55 +544,6 @@ bool Push::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::processPads(const Transfer& input_)
-{
-  //!\todo process pad data
-  for (int i = 1; i <= kPush_padDataSize; i += 2)
-  {
-    uint16_t l  = input_[i];
-    uint16_t h  = input_[i + 1];
-    uint8_t pad = (h & 0xF0) >> 4;
-    m_padsRawData[pad].write(((h & 0x0F) << 8) | l);
-    m_padsAvgData[pad] = (((h & 0x0F) << 8) | l);
-
-    Device::Pad btn(Device::Pad::Unknown);
-
-#define M_PAD_CASE(value, pad) \
-  case value:                  \
-    btn = Device::Pad::pad;    \
-    break
-
-    switch (pad)
-    {
-      M_PAD_CASE(0, Pad13);
-      M_PAD_CASE(1, Pad14);
-      M_PAD_CASE(2, Pad15);
-      M_PAD_CASE(3, Pad16);
-      M_PAD_CASE(4, Pad9);
-      M_PAD_CASE(5, Pad10);
-      M_PAD_CASE(6, Pad11);
-      M_PAD_CASE(7, Pad12);
-      M_PAD_CASE(8, Pad5);
-      M_PAD_CASE(9, Pad6);
-      M_PAD_CASE(10, Pad7);
-      M_PAD_CASE(11, Pad8);
-      M_PAD_CASE(12, Pad1);
-      M_PAD_CASE(13, Pad2);
-      M_PAD_CASE(14, Pad3);
-      M_PAD_CASE(15, Pad4);
-    }
-
-#undef M_PAD_CASE
-
-    if (m_padsAvgData[pad] > 1000)
-    {
-      padChanged(btn, m_padsAvgData[pad], m_shiftPressed);
-    }
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Push::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);

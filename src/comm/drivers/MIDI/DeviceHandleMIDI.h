@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
@@ -41,8 +43,6 @@ public:
   );
 
 private:
-
-  tRawData                        m_inputBuffer;
   
   RtMidiIn                        m_midiIn;
   RtMidiOut                       m_midiOut;

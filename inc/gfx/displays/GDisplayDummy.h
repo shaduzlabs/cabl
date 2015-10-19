@@ -110,8 +110,6 @@ public:
 
   const uint8_t* getPtr(uint16_t) const override { return nullptr; }
 
-  void toString() override {}
-
 protected:
 
   void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override {}

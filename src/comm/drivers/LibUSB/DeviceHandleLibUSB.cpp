@@ -9,8 +9,7 @@
 
 namespace
 {
-  uint16_t kLibUSBInputBufferSize = 512;  // Size of the LIBUSB input buffer
-  uint16_t kLibUSBReadTimeout =  2;       // Timeout of a input bulk transfer (0 = NO timeout)
+  uint16_t kLibUSBReadTimeout =  2;       // Timeout of a input bulk transfer  (0 = NO timeout)
   uint16_t kLibUSBWriteTimeout = 50;      // Timeout of a output bulk transfer (0 = NO timeout)
 }
 
@@ -24,7 +23,6 @@ namespace kio
 DeviceHandleLibUSB::DeviceHandleLibUSB(libusb_device_handle* pCurrentDevice_)
   : m_pCurrentDevice(pCurrentDevice_)
 {
-  m_inputBuffer.resize(kLibUSBInputBufferSize);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -54,7 +52,7 @@ bool DeviceHandleLibUSB::read( Transfer& transfer_, uint8_t endpoint_ )
     m_pCurrentDevice,                 // Device handle
     endpoint_,                        // Endpoint
     m_inputBuffer.data(),             // Data pointer
-    kLibUSBInputBufferSize,           // Size of data
+    kInputBufferSize,                 // Size of data
     &nBytesRead,                      // N. of bytes actually read
     kLibUSBReadTimeout                // Timeout
   );
@@ -112,7 +110,7 @@ void DeviceHandleLibUSB::readAsyncImpl(uint8_t endpoint_)
     m_pCurrentDevice,
     endpoint_,
     m_inputBuffer.data(),
-    kLibUSBInputBufferSize,
+    kInputBufferSize,
     cbTransfer,
     this,
     kLibUSBReadTimeout

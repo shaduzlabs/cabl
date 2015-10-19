@@ -7,9 +7,6 @@
 
 #pragma once
 
-#ifndef SL_UTIL_H
-#define SL_UTIL_H
-
 #include <stdint.h>
 
 namespace sl
@@ -20,7 +17,7 @@ namespace util
   uint32_t randomRange ( uint32_t min_, uint32_t max_ );
 
   uint8_t reverseByte( uint8_t );
-  
+
 //--------------------------------------------------------------------------------------------------
 
   template<typename T>
@@ -38,7 +35,5 @@ namespace util
     return ( max > z ) ? max : z;
   }
 
-} // UTIL
-} // SL
-
-#endif
+} // util
+} // sl

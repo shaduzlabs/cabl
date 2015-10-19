@@ -22,7 +22,7 @@ namespace sl
 
 using namespace kio;
 
-class Euklid : public Application
+class Euklid : public ClientSingle
 {
 public:
 

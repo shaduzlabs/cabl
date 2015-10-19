@@ -53,15 +53,14 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-
-if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   addHIDAPI()
   addLibUSB()
   addRtMidi()
 else()
-  include(FindHIDAPI)
-  include(FindLibUSB)
-  include(FindRtMidi)
+  find_package(hidapi)
+  find_package(libusb)
+  find_package(rtmidi)
 endif()
 
 addUnmidify()
@@ -70,7 +69,7 @@ addUnmidify()
 
 set(
   inc_app_INCLUDES
-    inc/app/Application.h
+    inc/app/ClientSingle.h
 )
 
 set(
@@ -128,7 +127,7 @@ set(
 
 set(
   inc_util_INCLUDES
-    inc/util/CircularBuffer.h
+    inc/util/Exception.h
     inc/util/Functions.h
     inc/util/LedColor.h
     inc/util/Log.h
@@ -174,7 +173,7 @@ set (
 
 set(
   src_app_SRCS
-    src/app/Application.cpp
+    src/app/ClientSingle.cpp
 )
 
 set(
@@ -293,7 +292,6 @@ set(
 
 set(
   src_util_SRCS
-    src/util/CircularBuffer.cpp
     src/util/Functions.cpp
     src/util/Version.cpp
 )
@@ -387,8 +385,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 if(APPLE)
-  target_link_libraries( k-IO PUBLIC libusb hidapi rtmidi)
-  target_link_libraries( k-IOStatic PUBLIC libusb hidapi rtmidi)
+  target_link_libraries( k-IO PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+#  message(FATAL_ERROR "paths ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES}")
+
 endif()
 
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -423,8 +423,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
       EXCLUDE_FROM_ALL            TRUE
       EXCLUDE_FROM_DEFAULT_BUILD  TRUE
   )
-  target_link_libraries( k-IO        rtmidi libusb hidapi setupapi.lib)
-  target_link_libraries( k-IOStatic  rtmidi libusb hidapi setupapi.lib)
+  target_link_libraries( k-IO        ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
+  target_link_libraries( k-IOStatic  ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
