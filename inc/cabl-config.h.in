@@ -5,6 +5,6 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#define KIO_VERSION_MAJOR @k-IO_VERSION_MAJOR@
-#define KIO_VERSION_MINOR @k-IO_VERSION_MINOR@
-#define KIO_VERSION_MICRO @k-IO_VERSION_MICRO@
+#define CABL_VERSION_MAJOR @CABL_VERSION_MAJOR@
+#define CABL_VERSION_MINOR @CABL_VERSION_MINOR@
+#define CABL_VERSION_MICRO @CABL_VERSION_MICRO@

@@ -17,7 +17,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ private:
 
   bool        m_appStopped;
   bool        m_connected;
-  std::thread m_kioThread;
+  std::thread m_cablThread;
   
   unsigned                      m_maxConsecutiveErrors;
   
@@ -78,5 +78,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

@@ -14,7 +14,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 class FontNormal : public FontBase<FontNormal> // CRTP
@@ -48,7 +48,7 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl
 
 #endif // SL_FONT_NORMAL_H

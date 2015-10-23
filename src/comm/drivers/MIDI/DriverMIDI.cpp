@@ -15,7 +15,7 @@ using namespace std::placeholders;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 using namespace midi;
@@ -157,5 +157,5 @@ tPtr<DeviceHandleImpl> DriverMIDI::connect( const DeviceDescriptor& device_ )
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

@@ -19,7 +19,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 class GDisplay;
@@ -366,5 +366,5 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

@@ -16,58 +16,62 @@
 #include <syslog.h>
 #include <string.h>
 #else
-#define syslog(a,b) std::cout<<b<<std::endl;
+#define syslog(a, b) std::cout << b << std::endl;
 #endif
 
-#include <k-io.h>
+#include <cabl.h>
 #include "Euklid.h"
 
 
 using namespace sl;
-using namespace sl::kio;
+using namespace sl::cabl;
 
 //--------------------------------------------------------------------------------------------------
 
 static void daemonize()
 {
 #ifdef __linux__
- /* Our process ID and Session ID */
+  /* Our process ID and Session ID */
   pid_t pid, sid;
 
   /* Fork off the parent process */
   pid = fork();
-  if (pid < 0) {
+  if (pid < 0)
+  {
     exit(EXIT_FAILURE);
   }
   /* If we got a good PID, then we can exit the parent process. */
-  if (pid > 0) {
+  if (pid > 0)
+  {
     exit(EXIT_SUCCESS);
   }
 
   /* Change the file mode mask */
   umask(0);
-            
-  /* Open any logs here */        
-  openlog ("k-io_daemon", LOG_PID, LOG_DAEMON);
+
+  /* Open any logs here */
+  openlog("cabl_daemon", LOG_PID, LOG_DAEMON);
 
   /* Create a new SID for the child process */
   sid = setsid();
-  if (sid < 0) {
+  if (sid < 0)
+  {
     /* Log the failure */
-    syslog (LOG_ERR, "[k-io] ERROR: Failed to create a new session");
+    syslog(LOG_ERR, "[cabl] ERROR: Failed to create a new session");
     exit(EXIT_FAILURE);
   }
 
   /* Change the current working directory */
-  if ((chdir("/")) < 0) {
-    syslog (LOG_ERR, "[k-io] ERROR: Failed to change the working directory");
+  if ((chdir("/")) < 0)
+  {
+    syslog(LOG_ERR, "[cabl] ERROR: Failed to change the working directory");
     exit(EXIT_FAILURE);
   }
 
   /* Close out the open file descriptors */
-  for (int fd = sysconf(_SC_OPEN_MAX); fd>0; fd--)
+  for (int fd = sysconf(_SC_OPEN_MAX); fd > 0; fd--)
   {
-    close (fd);
+    close(fd);
   }
 #endif
 }
@@ -86,18 +90,18 @@ int main(int argc, const char* argv[])
   {
     if(!euklid.connect())
     {
-      syslog (LOG_ERR, "[k-io] ERROR: could not connect to device.");
+      syslog (LOG_ERR, "[cabl] ERROR: could not connect to device.");
       std::this_thread::sleep_for(std::chrono::seconds(5));
     }
     else
     {
-      syslog (LOG_NOTICE, "[k-io] device connected");
+      syslog (LOG_NOTICE, "[cabl] device connected");
       while(euklid.tick());
-      syslog (LOG_NOTICE, "[k-io] device disconnected");
+      syslog (LOG_NOTICE, "[cabl] device disconnected");
     }
   }
 */
-  syslog (LOG_NOTICE, "[k-io] terminated");
+  syslog(LOG_NOTICE, "[cabl] terminated");
   return 0;
 }
 

@@ -14,7 +14,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 class DriverHIDAPI : public DriverImpl
@@ -31,5 +31,5 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

@@ -10,7 +10,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -40,5 +40,5 @@ DeviceHandle* Device::getDeviceHandle()
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

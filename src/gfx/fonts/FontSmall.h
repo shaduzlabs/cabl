@@ -14,7 +14,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 class FontSmall : public FontBase<FontSmall> // CRTP
@@ -48,7 +48,7 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl
 
 #endif // SL_FONT_SMALL_H

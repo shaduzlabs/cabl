@@ -50,4 +50,4 @@ set_target_properties(
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
-target_link_libraries(${PROJECT_NAME} k-IOStatic)
+target_link_libraries(${PROJECT_NAME} cabl-static)

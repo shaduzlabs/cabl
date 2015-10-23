@@ -15,7 +15,7 @@ namespace
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -141,5 +141,5 @@ void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

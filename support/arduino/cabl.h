@@ -20,7 +20,7 @@
 
 #include "util/Version.h"
 
-//#include "k-io-config.h"
+//#include "cabl-config.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@
 /*
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -55,12 +55,12 @@ public:
 
   static std::string getVersion()
   {
-    return util::Version(KIO_VERSION_MAJOR, KIO_VERSION_MINOR, KIO_VERSION_MICRO);
+    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
   }
 
 };
 //--------------------------------------------------------------------------------------------------
 
-} // namespace kio
+} // cabl
 } // namespace sl
 */

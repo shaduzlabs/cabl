@@ -14,7 +14,7 @@ using namespace std::placeholders;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -95,5 +95,5 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

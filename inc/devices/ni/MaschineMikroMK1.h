@@ -11,7 +11,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -31,5 +31,5 @@ public:
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

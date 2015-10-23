@@ -13,7 +13,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 class LCDDisplay
 {
@@ -177,5 +177,5 @@ private:
   
 //--------------------------------------------------------------------------------------------------
   
-} // kio
+} // cabl
 } // sl

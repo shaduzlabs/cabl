@@ -24,7 +24,7 @@ namespace
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
   
 //--------------------------------------------------------------------------------------------------
@@ -113,5 +113,5 @@ GDisplay::Color GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ ) 
  
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

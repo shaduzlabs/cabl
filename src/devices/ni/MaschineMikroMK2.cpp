@@ -33,7 +33,7 @@ static const unsigned kMikroMK2_padThreshold  =  200;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -612,5 +612,5 @@ bool MaschineMikroMK2::isButtonPressed(
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

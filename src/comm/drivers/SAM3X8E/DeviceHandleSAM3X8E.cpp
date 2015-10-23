@@ -14,7 +14,7 @@ uint16_t kSAM3X8EInputBufferSize = 512; // Size of the input buffer
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -297,5 +297,5 @@ void DeviceHandleSAM3XE::EndpointXtract(uint32_t conf_,
 }
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

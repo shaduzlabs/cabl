@@ -26,7 +26,7 @@ namespace
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -532,5 +532,5 @@ bool TraktorF1MK2::isButtonPressed(
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

@@ -13,7 +13,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
   
 //--------------------------------------------------------------------------------------------------
@@ -192,5 +192,5 @@ std::string DriverLibUSB::getStringDescriptor(libusb_device_handle * pHandle_, u
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

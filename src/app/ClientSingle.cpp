@@ -11,7 +11,7 @@
 #include <thread> //remove and use a custom sleep function!
 #include <iostream>
 
-#include "k-io.h"
+#include "cabl.h"
 
 namespace
 {
@@ -20,13 +20,13 @@ unsigned kAppSleepBeforeNextDeviceSearch = 5; // seconds
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 ClientSingle::ClientSingle(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
   : m_collSupportedDevices(collSupportedDevices_)
 {
-  M_LOG("k-IO Version " << Lib::getVersion());
+  M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
 
   m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1340); // KK S25
   m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1350); // KK S49
@@ -48,9 +48,9 @@ ClientSingle::ClientSingle(const Driver::tCollDeviceDescriptor& collSupportedDev
 
 ClientSingle::~ClientSingle()
 {
-  if (m_kioThread.joinable())
+  if (m_cablThread.joinable())
   {
-    m_kioThread.join();
+    m_cablThread.join();
   }
 }
 
@@ -59,7 +59,7 @@ ClientSingle::~ClientSingle()
 void ClientSingle::run()
 {
   m_appStopped = false;
-  m_kioThread  = std::thread([this]()
+  m_cablThread = std::thread([this]()
     {
       while (!m_appStopped)
       {
@@ -196,15 +196,15 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
       0,
       0,
       "Unsupported device!",
-      kio::Canvas::tFont::BIG,
-      kio::Canvas::tColor::INVERT
+      namespace cabl::Canvas::tFont::BIG,
+      namespace cabl::Canvas::tColor::INVERT
     );
     unsupportedDevice->getGraphicDisplay(1)->printStr(
       12,
       44,
       "Unsupported device!",
-      kio::Canvas::tFont::BIG,
-      kio::Canvas::tColor::INVERT
+      namespace cabl::Canvas::tFont::BIG,
+      namespace cabl::Canvas::tColor::INVERT
     );
 
     unsupportedDevice->tick();
@@ -257,5 +257,5 @@ bool ClientSingle::isSupportedDevice(const DeviceDescriptor& device_) const
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

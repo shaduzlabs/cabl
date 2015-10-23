@@ -23,7 +23,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 Driver::Driver( Type type_ )
@@ -79,5 +79,5 @@ tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

@@ -28,7 +28,7 @@ static const uint8_t kKK_epInput = 0x84;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -1224,5 +1224,5 @@ void KompleteKontrol::midiInCallback(
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

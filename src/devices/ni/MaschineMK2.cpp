@@ -30,7 +30,7 @@ static const unsigned     kMASMK2_padThreshold = 200;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -815,5 +815,5 @@ bool MaschineMK2::isButtonPressed(const Transfer& transfer_, Button button_) con
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

@@ -14,7 +14,7 @@ namespace
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -53,5 +53,5 @@ bool DeviceHandleMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_) c
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

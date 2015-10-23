@@ -7,34 +7,34 @@
 
 cmake_minimum_required (VERSION 2.8.0)
 
-project (k-IO)
+project (cabl)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 include(sl-main)
 
-set(LIBRARY_FILE_NAME     "k-io")
-set(LIBRARY_FOLDER_NAME   "k-io")
+set(LIBRARY_FILE_NAME     "cabl")
+set(LIBRARY_FOLDER_NAME   "cabl")
 set(DEBUG_SUFFIX          "_d")
 
 # The version number.
-set (k-IO_VERSION_MAJOR 0)
-set (k-IO_VERSION_MINOR 9)
-set (k-IO_VERSION_MICRO 2)
-set( k-IO_VERSION_STRING ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO})
+set (CABL_VERSION_MAJOR 0)
+set (CABL_VERSION_MINOR 9)
+set (CABL_VERSION_MICRO 2)
+set( CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  set(IS_K-IO TRUE)
+  set(IS_CABL TRUE)
 else()
-  set(IS_K-IO FALSE)
+  set(IS_CABL FALSE)
 endif()
 
-option(K-IO_TEST      "Build k-IO tests"     ${IS_K-IO})
-option(K-IO_DOCS      "Build k-IO docs"      ${IS_K-IO})
-option(K-IO_EXAMPLES  "Build k-IO examples"  ${IS_K-IO})
+option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
+option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
+option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/inc/k-io-config.h.in"
-  "${PROJECT_BINARY_DIR}/k-io-config.h"
+  "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
+  "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -139,7 +139,7 @@ set(
 
 set(
   inc_INCLUDES
-    inc/k-io.h
+    inc/cabl.h
 )
 
 source_group("inc\\app"              FILES ${inc_app_INCLUDES})
@@ -154,7 +154,7 @@ source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
 set (
-  k-IO_INCLUDES
+  cabl_INCLUDES
     ${inc_app_INCLUDES}
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
@@ -298,7 +298,7 @@ set(
 
 set(
   src_SRCS
-    src/k-io.cpp
+    src/cabl.cpp
 )
 
 source_group("src\\app"              FILES ${src_app_SRCS})
@@ -325,7 +325,7 @@ source_group("src\\util"             FILES ${src_util_SRCS})
 source_group("src"                   FILES ${src_SRCS})
 
 set(
-  k-IO_SRCS
+  cabl_SRCS
     ${src_SRCS}
     ${src_app_SRCS}
     ${src_comm_drivers_HIDAPI_SRCS}
@@ -347,30 +347,30 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src submodules/unmidify/include ${RTMIDI_INCLUDE_DIR})
-include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIR} ${UNMIDIFY_INCLUDE_DIR})
+include_directories(inc src submodules/unmidify/include ${RTMIDI_INCLUDE_DIRS})
+include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIR})
 
 set(
-  k-IO_ALL
-    ${k-IO_INCLUDES}
-    ${k-IO_SRCS}
+  cabl_ALL
+    ${cabl_INCLUDES}
+    ${cabl_SRCS}
 )
 
-add_library( k-IO SHARED ${k-IO_ALL} )
+add_library( cabl SHARED ${cabl_ALL} )
 set_target_properties(
-  k-IO
+  cabl
   PROPERTIES
-    VERSION             "${k-IO_VERSION_STRING}"
-    SOVERSION           "${k-IO_VERSION_STRING}"
+    VERSION             "${CABL_VERSION_STRING}"
+    SOVERSION           "${CABL_VERSION_STRING}"
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 
-add_library( k-IOStatic STATIC ${k-IO_ALL} )
+add_library( cabl-static STATIC ${cabl_ALL} )
 set_target_properties(
-  k-IOStatic
+  cabl-static
   PROPERTIES
-    VERSION             "${k-IO_VERSION_STRING}"
+    VERSION             "${CABL_VERSION_STRING}"
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
@@ -378,25 +378,25 @@ set_target_properties(
 # OS X and Linux --------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  target_link_libraries( k-IO PUBLIC usb hidapi-libusb rtmidi pthread)
-  target_link_libraries( k-IOStatic PUBLIC hidapi-libusb usb-1.0 rtmidi pthread)
-  target_include_directories( k-IO PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
-  target_include_directories( k-IOStatic PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+  target_link_libraries( cabl PUBLIC usb hidapi-libusb rtmidi pthread)
+  target_link_libraries( cabl-static PUBLIC hidapi-libusb usb-1.0 rtmidi pthread)
+  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 endif()
 
 if(APPLE)
-  target_link_libraries( k-IO PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
-  target_link_libraries( k-IOStatic PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
 #  message(FATAL_ERROR "paths ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES}")
 
 endif()
 
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-  if(${IS_K-IO})
+  if(${IS_CABL})
 
-    install (TARGETS    k-IO             DESTINATION lib)
-    install (TARGETS    k-IOStatic       DESTINATION lib)
+    install (TARGETS    cabl             DESTINATION lib)
+    install (TARGETS    cabl-static       DESTINATION lib)
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -405,7 +405,7 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
 
     install (
-      FILES        ${PROJECT_BINARY_DIR}/k-io-config.h
+      FILES        ${PROJECT_BINARY_DIR}/cabl-config.h
       DESTINATION  "include/${LIBRARY_FOLDER_NAME}"
     )
   endif()
@@ -418,35 +418,35 @@ endif()
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   set_target_properties(
-    k-IO
+    cabl
     PROPERTIES
       EXCLUDE_FROM_ALL            TRUE
       EXCLUDE_FROM_DEFAULT_BUILD  TRUE
   )
-  target_link_libraries( k-IO        ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
-  target_link_libraries( k-IOStatic  ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
+  target_link_libraries( cabl        ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
+  target_link_libraries( cabl-static  ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 
 # Arduino/Teensy specific ------------------------------------------------------------------------ #
 
-if(${IS_K-IO} AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${IS_CABL} AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 add_custom_target( CreateArduinoLibrary
   command ${CMAKE_SOURCE_DIR}/arduinify.sh ${CMAKE_SOURCE_DIR} artifacts/arduino &&
-     cp ${PROJECT_BINARY_DIR}/k-io-config.h ${CMAKE_SOURCE_DIR}/artifacts/arduino/k-IO/k-io-config.h
+     cp ${PROJECT_BINARY_DIR}/cabl-config.h ${CMAKE_SOURCE_DIR}/artifacts/arduino/cabl/cabl-config.h
 )
 endif()
 
 # Unit tests ------------------------------------------------------------------------------------- #
-if(${K-IO_TEST})
+if(${CABL_TEST})
   addCatch()
   add_subdirectory(test)
 endif()
 
 # Documentation (doxygen) ------------------------------------------------------------------------ #
 
-if(${K-IO_DOCS})
+if(${CABL_DOCS})
   find_package(Doxygen)
 
   if(NOT DOXYGEN_FOUND)
@@ -465,7 +465,7 @@ if(${K-IO_DOCS})
 
     set( doxy_html_root       ${PROJECT_SOURCE_DIR}/support/doxygen                   )
 
-    set( doxy_project_version "v. ${k-IO_VERSION_MAJOR}.${k-IO_VERSION_MINOR}.${k-IO_VERSION_MICRO}")
+    set( doxy_project_version "v. ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
 
     configure_file( ${doxyfile_in} ${doxyfile} @ONLY )
 
@@ -482,6 +482,6 @@ endif()
 
 
 # Examples --------------------------------------------------------------------------------------- #
-if(K-IO_EXAMPLES)
+if(CABL_EXAMPLES)
   add_subdirectory(examples)
 endif()

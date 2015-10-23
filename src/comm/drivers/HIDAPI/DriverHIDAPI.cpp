@@ -12,7 +12,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -103,5 +103,5 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // cabl
 } // sl

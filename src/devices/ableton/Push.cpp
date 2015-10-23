@@ -163,7 +163,7 @@ static const std::vector<sl::util::RGBColor> kPush_colors = {{0, 0, 0},
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -920,5 +920,5 @@ void Push::onUSysExNonRT(sl::midi::USysExNonRT msg_)
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

@@ -14,7 +14,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 class FontBig : public FontBase<FontBig> // CRTP
@@ -48,7 +48,7 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-} // kio
+} // namespace cabl
 } // sl
 
 #endif // SL_FONT_BIG_H

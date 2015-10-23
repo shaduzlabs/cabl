@@ -10,7 +10,7 @@
 #include <future>
 #include <stdint.h>
 
-#include <k-io.h>
+#include <cabl.h>
 
 #include "Sequence.h"
 
@@ -20,7 +20,7 @@
 namespace sl
 {
 
-using namespace kio;
+using namespace cabl;
 
 class Euklid : public ClientSingle
 {

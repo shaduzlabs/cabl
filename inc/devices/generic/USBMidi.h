@@ -14,7 +14,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 
 using namespace midi;
@@ -52,5 +52,5 @@ private:
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

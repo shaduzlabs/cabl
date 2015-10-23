@@ -52,7 +52,7 @@ static const unsigned kProduct_TraktorKontrolF1MK2  = 0x1120;
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -121,5 +121,5 @@ Device* DeviceFactory::getDevice(
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

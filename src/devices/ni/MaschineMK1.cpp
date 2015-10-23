@@ -36,7 +36,7 @@ namespace
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
 namespace devices
 {
@@ -851,5 +851,5 @@ bool MaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) con
 //--------------------------------------------------------------------------------------------------
 
 } // devices
-} // kio
+} // cabl
 } // sl

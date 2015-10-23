@@ -12,7 +12,7 @@
 
 namespace sl
 {
-namespace kio
+namespace cabl
 {
   class Font;
   
@@ -148,5 +148,5 @@ namespace kio
   
 //--------------------------------------------------------------------------------------------------
   
-} // kio
+} // cabl
 } // sl

@@ -17,9 +17,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
      VERSION_RESOURCES
      NAME           ${PROJECT_NAME}
      ICON           "${CMAKE_CURRENT_SOURCE_DIR}/icon.ico"
-     VERSION_MAJOR  ${k-IO_VERSION_MAJOR}
-     VERSION_MINOR  ${k-IO_VERSION_MINOR}
-     VERSION_PATCH  ${k-IO_VERSION_MICRO}
+     VERSION_MAJOR  ${CABL_VERSION_MAJOR}
+     VERSION_MINOR  ${CABL_VERSION_MINOR}
+     VERSION_PATCH  ${CABL_VERSION_MICRO}
      COMPANY_NAME   "Vincenzo Pacella"
   ) 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -47,7 +47,7 @@ set_target_properties(
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} k-IOStatic)
+  target_link_libraries(${PROJECT_NAME} cabl-static)
 else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} k-IO)
+  target_link_libraries(${PROJECT_NAME} cabl-static)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
