@@ -17,7 +17,8 @@
 #include "devices/ni/MaschineMikroMK2.h"
 #include "devices/ni/TraktorF1MK2.h"
 
-#include "devices/ableton/Push.h"
+#include "devices/akai/Push.h"
+#include "devices/ableton/Push2.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -25,8 +26,13 @@ namespace
 {
 
 //--------------------------------------------------------------------------------------------------
+ 
+static const unsigned kVendor_Ableton               = 0x0047;
+static const unsigned kProduct_Push2                = 0x1500;
 
-static const unsigned kVendor_Ableton               = 0x0047; // Akai Vendor Id
+//--------------------------------------------------------------------------------------------------
+ 
+static const unsigned kVendor_Akai                  = 0x0047;
 static const unsigned kProduct_Push                 = 0x1500;
 
 //--------------------------------------------------------------------------------------------------
@@ -65,6 +71,7 @@ Device* DeviceFactory::getDevice(
 )
 {
   if(
+     (deviceDescriptor_.getVendorId()!=kVendor_Akai) &&
      (deviceDescriptor_.getVendorId()!=kVendor_Ableton) &&
      (deviceDescriptor_.getVendorId()!=kVendor_NativeInstruments)
   )

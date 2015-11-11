@@ -88,7 +88,12 @@ set(
 
 set(
   inc_devices_ableton_INCLUDES
-    inc/devices/ableton/Push.h
+    inc/devices/ableton/Push2.h
+)
+
+set(
+  inc_devices_akai_INCLUDES
+    inc/devices/akai/Push.h
 )
 
 set(
@@ -146,6 +151,7 @@ source_group("inc\\app"              FILES ${inc_app_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
 source_group("inc\\devices\\ableton" FILES ${inc_devices_ableton_INCLUDES})
+source_group("inc\\devices\\akai"    FILES ${inc_devices_akai_INCLUDES})
 source_group("inc\\devices\\generic" FILES ${inc_devices_generic_INCLUDES})
 source_group("inc\\devices\\ni"      FILES ${inc_devices_ni_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
@@ -159,6 +165,7 @@ set (
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
     ${inc_devices_ableton_INCLUDES}
+    ${inc_devices_akai_INCLUDES}
     ${inc_devices_generic_INCLUDES}
     ${inc_devices_ni_INCLUDES}
     ${inc_gfx_displays_INCLUDES}
@@ -241,7 +248,12 @@ set(
 
 set(
   src_devices_ableton_SRCS
-    src/devices/ableton/Push.cpp
+    src/devices/ableton/Push2.cpp
+)
+
+set(
+  src_devices_akai_SRCS
+    src/devices/akai/Push.cpp
 )
 
 set(
@@ -312,6 +324,7 @@ source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS
 
 source_group("src\\devices"          FILES ${src_devices_SRCS})
 source_group("src\\devices\\ableton" FILES ${src_devices_ableton_SRCS})
+source_group("src\\devices\\akai"    FILES ${src_devices_akai_SRCS})
 source_group("src\\devices\\generic" FILES ${src_devices_generic_SRCS})
 source_group("src\\devices\\ni"      FILES ${src_devices_ni_SRCS})
 
@@ -335,6 +348,7 @@ set(
     ${src_comm_SRCS}
     ${src_devices_SRCS}
     ${src_devices_ableton_SRCS}
+    ${src_devices_akai_SRCS}
     ${src_devices_generic_SRCS}
     ${src_devices_ni_SRCS}
     ${src_gfx_displays_SRCS}
