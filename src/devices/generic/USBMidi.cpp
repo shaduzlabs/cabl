@@ -24,7 +24,7 @@ namespace devices
 //--------------------------------------------------------------------------------------------------
 
 USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
-  : Device(std::move(pDeviceHandle_))
+  : Device<USBMidi>(std::move(pDeviceHandle_))
 {
 
 }

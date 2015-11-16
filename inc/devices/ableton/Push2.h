@@ -30,8 +30,8 @@ public:
   Push2(tPtr<DeviceHandle>);
   ~Push2() override;
 
-  void setLed(Device::Button, const util::LedColor&) override;
-  void setLed(Device::Pad, const util::LedColor&) override;
+  void setLed(DeviceBase::Button, const util::LedColor&) override;
+  void setLed(DeviceBase::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -62,11 +62,11 @@ private:
 
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(Device::Button) const noexcept;
-  Led getLed(Device::Pad) const noexcept;
+  Led getLed(DeviceBase::Button) const noexcept;
+  Led getLed(DeviceBase::Pad) const noexcept;
 
-  Device::Button getDeviceButton(Button) const noexcept;
-  Device::Encoder getDeviceEncoder(Encoder) const noexcept;
+  DeviceBase::Button getDeviceButton(Button) const noexcept;
+  DeviceBase::Encoder getDeviceEncoder(Encoder) const noexcept;
 
   uint8_t getColorIndex(const util::LedColor&);
 

@@ -24,7 +24,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class USBMidi : public midi::Unmidifier, public Device
+class USBMidi : public midi::Unmidifier, public Device<USBMidi>
 {
  
 public:

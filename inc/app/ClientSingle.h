@@ -27,7 +27,7 @@ class ClientSingle
 {
 public:
 
-  using tDevicePtr = std::shared_ptr<Device>;
+  using tDevicePtr = std::shared_ptr<DeviceBase>;
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
   

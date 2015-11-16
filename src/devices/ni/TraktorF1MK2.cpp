@@ -159,14 +159,14 @@ TraktorF1MK2::~TraktorF1MK2()
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(DeviceBase::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -279,7 +279,7 @@ bool TraktorF1MK2::read()
 void TraktorF1MK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  Device::Button changedButton(Device::Button::Unknown);
+  DeviceBase::Button changedButton(DeviceBase::Button::Unknown);
   bool buttonPressed(false);
 
   for (int i = 0; i < kF1MK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
@@ -297,7 +297,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       {
         m_buttonStates[btn] = buttonPressed;
         changedButton = getDeviceButton(currentButton);
-        if (changedButton != Device::Button::Unknown)
+        if (changedButton != DeviceBase::Button::Unknown)
         {
           buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
@@ -313,13 +313,13 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       ((m_encoderValue == 0xff) && (currentValue == 0x00)))
         && (!((m_encoderValue == 0x0) && (currentValue == 0xff)));
     m_encoderValue = currentValue;
-    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(DeviceBase::Encoder::Main, valueIncreased, shiftPressed);
   }
 
   for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize+1; potIndex < 8; i+=2, potIndex++)
   {
-    Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
-      static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
+    DeviceBase::Potentiometer potentiometer = static_cast<DeviceBase::Potentiometer>(
+      static_cast<uint8_t>(DeviceBase::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
     );
     uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
     if(m_potentiometersValues[potIndex] != value)
@@ -378,10 +378,10 @@ bool TraktorF1MK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case Device::Button::idLed: \
+  case DeviceBase::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -425,10 +425,10 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
-  case Device::Pad::idPad: \
+  case DeviceBase::Pad::idPad: \
     return Led::idPad
 
   switch (pad_)
@@ -460,11 +460,11 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
+DeviceBase::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return Device::Button::idBtn
+    return DeviceBase::Button::idBtn
 
   switch (btn_)
   {
@@ -503,7 +503,7 @@ Device::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
     
     default:
     {
-      return Device::Button::Unknown;
+      return DeviceBase::Button::Unknown;
     }
   }
 

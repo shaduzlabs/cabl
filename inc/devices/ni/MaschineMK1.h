@@ -22,7 +22,7 @@ namespace devices
  
 //--------------------------------------------------------------------------------------------------
 
-class MaschineMK1 : public Device
+class MaschineMK1 : public Device<MaschineMK1>
 {
    
 public:
@@ -30,8 +30,8 @@ public:
   MaschineMK1(tPtr<DeviceHandle>);
   ~MaschineMK1() override;
   
-  void setLed(Device::Button, const util::LedColor&) override;
-  void setLed(Device::Pad, const util::LedColor&) override;
+  void setLed(DeviceBase::Button, const util::LedColor&) override;
+  void setLed(DeviceBase::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -68,11 +68,11 @@ private:
   void processEncoders(const Transfer&);
 
   void setLedImpl(Led, const util::LedColor&);
-  Led getLed(Device::Button) const noexcept;
-  Led getLed(Device::Pad) const noexcept;
+  Led getLed(DeviceBase::Button) const noexcept;
+  Led getLed(DeviceBase::Pad) const noexcept;
 
-  Device::Button getDeviceButton(Button btn_) const noexcept;
-  Device::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
+  DeviceBase::Button getDeviceButton(Button btn_) const noexcept;
+  DeviceBase::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
   
   void cbRead(Transfer);
     

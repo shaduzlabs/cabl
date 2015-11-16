@@ -20,7 +20,7 @@ namespace devices
   
 //--------------------------------------------------------------------------------------------------
     
-class KompleteKontrol : public Device
+class KompleteKontrol : public Device<KompleteKontrol>
 {
  
 public:
@@ -28,8 +28,8 @@ public:
   KompleteKontrol(tPtr<DeviceHandle>, uint8_t numKeys_);
   ~KompleteKontrol() override;
   
-  void setLed(Device::Button, const util::LedColor&) override;
-  void setLed(Device::Key, const util::LedColor&) override;
+  void setLed(DeviceBase::Button, const util::LedColor&) override;
+  void setLed(DeviceBase::Key, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
   
@@ -57,10 +57,10 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(Device::Key) const noexcept;
-  Led getLed(Device::Button) const noexcept;
+  Led getLed(DeviceBase::Key) const noexcept;
+  Led getLed(DeviceBase::Button) const noexcept;
 
-  Device::Button getDeviceButton( Button btn_ ) const noexcept;
+  DeviceBase::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
   

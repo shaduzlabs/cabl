@@ -28,7 +28,7 @@ class LCDDisplay;
 namespace devices
 {
 
-class Device
+class DeviceBase
 {
 
 public:
@@ -267,9 +267,11 @@ public:
     MaschineMikroMk2,
   };
   
-  Device(tPtr<DeviceHandle> pDeviceHandle_);
+  DeviceBase(tPtr<DeviceHandle> pDeviceHandle_)
+    : m_pDeviceHandle(std::move(pDeviceHandle_))
+  {}
   
-  virtual ~Device();
+  virtual ~DeviceBase() = default;
 
 //  virtual bool connect() = 0;
 
@@ -309,7 +311,10 @@ public:
     m_cbPotentiometerChanged = cbPotentiometerChanged_;
   }
 
-  DeviceHandle* getDeviceHandle();
+  std::shared_ptr<DeviceHandle> getDeviceHandle()
+  {
+    return m_pDeviceHandle;
+  }
   
 protected:
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
@@ -354,13 +359,36 @@ protected:
   
 private:
 
-  tCbButtonChanged              m_cbButtonChanged;
-  tCbEncoderChanged             m_cbEncoderChanged;
-  tCbPadChanged                 m_cbPadChanged;
-  tCbKeyChanged                 m_cbKeyChanged;
-  tCbPotentiometerChanged       m_cbPotentiometerChanged;
+  tCbButtonChanged                m_cbButtonChanged;
+  tCbEncoderChanged               m_cbEncoderChanged;
+  tCbPadChanged                   m_cbPadChanged;
+  tCbKeyChanged                   m_cbKeyChanged;
+  tCbPotentiometerChanged         m_cbPotentiometerChanged;
   
-  tPtr<DeviceHandle>  m_pDeviceHandle;
+  std::shared_ptr<DeviceHandle>   m_pDeviceHandle;
+};
+
+//--------------------------------------------------------------------------------------------------
+
+template<typename TDevice>
+class Device : public DeviceBase
+{
+public:
+
+  static DeviceBase* create(tPtr<DeviceHandle> pDeviceHandle_)
+  {
+    return new TDevice(std::move(pDeviceHandle_));
+  }
+  
+  static const uint16_t MANUFACTURER_ID;
+  static const uint16_t DEVICE_ID;
+  
+protected:
+
+  Device(tPtr<DeviceHandle> pDeviceHandle_)
+    : DeviceBase(std::move(pDeviceHandle_))
+  {}
+
 };
 
 //--------------------------------------------------------------------------------------------------

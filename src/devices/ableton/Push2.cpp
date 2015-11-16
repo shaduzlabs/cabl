@@ -266,20 +266,20 @@ Push2::Push2(tPtr<DeviceHandle> pDeviceHandle_)
 
 //--------------------------------------------------------------------------------------------------
 
-Push2::~Push()
+Push2::~Push2()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLed(Device::Button btn_, const util::LedColor& color_)
+void Push2::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void Push2::setLed(DeviceBase::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -439,10 +439,10 @@ bool Push2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push2::Led Push2::getLed(Device::Button btn_) const noexcept
+Push2::Led Push2::getLed(DeviceBase::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case Device::Button::idLed: \
+  case DeviceBase::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -522,7 +522,7 @@ Push2::Led Push2::getLed(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push2::Led Push2::getLed(Device::Pad pad_) const noexcept
+Push2::Led Push2::getLed(DeviceBase::Pad pad_) const noexcept
 {
   uint8_t pad    = static_cast<unsigned>(pad_);
   unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
@@ -536,11 +536,11 @@ Push2::Led Push2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button Push2::getDeviceButton(Button btn_) const noexcept
+DeviceBase::Button Push2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return Device::Button::idBtn
+    return DeviceBase::Button::idBtn
 
   switch (btn_)
   {
@@ -621,7 +621,7 @@ Device::Button Push2::getDeviceButton(Button btn_) const noexcept
     M_BTN_CASE(TouchEncoderMain2);
     default:
     {
-      return Device::Button::Unknown;
+      return DeviceBase::Button::Unknown;
     }
   }
 
@@ -630,11 +630,11 @@ Device::Button Push2::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder Push2::getDeviceEncoder(Encoder enc_) const noexcept
+DeviceBase::Encoder Push2::getDeviceEncoder(Encoder enc_) const noexcept
 {
 #define M_ENC_CASE(idEnc) \
   case Encoder::idEnc:    \
-    return Device::Encoder::idEnc
+    return DeviceBase::Encoder::idEnc
 
   switch (enc_)
   {
@@ -651,7 +651,7 @@ Device::Encoder Push2::getDeviceEncoder(Encoder enc_) const noexcept
     M_ENC_CASE(Main2);
     default:
     {
-      return Device::Encoder::Unknown;
+      return DeviceBase::Encoder::Unknown;
     }
   }
 
@@ -714,15 +714,15 @@ void Push2::onControlChange(ControlChange msg_)
   uint8_t cc    = msg_.getControl();
   uint8_t value = msg_.getValue();
 
-  Device::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
-  if (changedEncoder != Device::Encoder::Unknown)
+  DeviceBase::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
+  if (changedEncoder != DeviceBase::Encoder::Unknown)
   {
     encoderChanged(changedEncoder, value < 64, m_shiftPressed);
   }
   else
   {
-    Device::Button changedButton = getDeviceButton(static_cast<Button>(cc));
-    if (changedButton == Device::Button::Shift)
+    DeviceBase::Button changedButton = getDeviceButton(static_cast<Button>(cc));
+    if (changedButton == DeviceBase::Button::Shift)
     {
       m_shiftPressed = false;
       return;

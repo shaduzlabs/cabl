@@ -7,8 +7,6 @@
 
 #include "devices/DeviceFactory.h"
 
-#include "devices/Device.h"
-
 #include "comm/DeviceDescriptor.h"
 
 #include "devices/ni/KompleteKontrol.h"
@@ -65,7 +63,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-Device* DeviceFactory::getDevice(
+DeviceBase* DeviceFactory::getDevice(
   const DeviceDescriptor& deviceDescriptor_, 
   tPtr<DeviceHandle> pDeviceHandle_
 )

@@ -10,7 +10,8 @@
 #include "app/ClientSingle.h"
 
 #include "devices/DeviceFactory.h"
-#include "devices/ableton/Push.h"
+#include "devices/ableton/Push2.h"
+#include "devices/akai/Push.h"
 #include "devices/ni/KompleteKontrol.h"
 #include "devices/ni/MaschineMK1.h"
 #include "devices/ni/MaschineMK2.h"

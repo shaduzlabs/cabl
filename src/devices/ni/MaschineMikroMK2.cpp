@@ -152,14 +152,14 @@ MaschineMikroMK2::~MaschineMikroMK2()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void MaschineMikroMK2::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void MaschineMikroMK2::setLed(DeviceBase::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -314,7 +314,7 @@ bool MaschineMikroMK2::read()
 void MaschineMikroMK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  Device::Button changedButton(Device::Button::Unknown);
+  DeviceBase::Button changedButton(DeviceBase::Button::Unknown);
   bool buttonPressed(false);
 
   for (int i = 0; i < kMikroMK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
@@ -332,7 +332,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
       {
         m_buttonStates[btn] = buttonPressed;
         changedButton = getDeviceButton(currentButton);
-        if (changedButton != Device::Button::Unknown)
+        if (changedButton != DeviceBase::Button::Unknown)
         {
       //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
@@ -348,7 +348,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
     bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
       ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
         && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+      encoderChanged(DeviceBase::Encoder::Main, valueIncreased, shiftPressed);
     m_encoderValue = currentEncoderValue;
   }
 }
@@ -365,11 +365,11 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
     uint8_t pad = (h & 0xF0) >> 4;
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
 
-    Device::Pad btn(Device::Pad::Unknown);
+    DeviceBase::Pad btn(DeviceBase::Pad::Unknown);
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Pad::pad; \
+    btn = DeviceBase::Pad::pad; \
     break
 
     switch (pad)
@@ -462,10 +462,10 @@ bool MaschineMikroMK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Button btn_) const noexcept
+MaschineMikroMK2::Led MaschineMikroMK2::getLed(DeviceBase::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case Device::Button::idLed: \
+  case DeviceBase::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -509,10 +509,10 @@ MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Button btn_) const noexce
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
+MaschineMikroMK2::Led MaschineMikroMK2::getLed(DeviceBase::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
-  case Device::Pad::idPad: \
+  case DeviceBase::Pad::idPad: \
     return Led::idPad
 
   switch (pad_)
@@ -544,11 +544,11 @@ MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button MaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
+DeviceBase::Button MaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return Device::Button::idBtn
+    return DeviceBase::Button::idBtn
 
   switch (btn_)
   {
@@ -583,7 +583,7 @@ Device::Button MaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
     M_BTN_CASE(MainEncoder);
     default:
     {
-      return Device::Button::Unknown;
+      return DeviceBase::Button::Unknown;
     }
   }
 

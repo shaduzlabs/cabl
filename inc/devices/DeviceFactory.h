@@ -26,7 +26,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class Device;
+class DeviceBase;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ class DeviceFactory
 {
 public:
 
-  static Device* getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
+  static DeviceBase* getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
 
 };
 

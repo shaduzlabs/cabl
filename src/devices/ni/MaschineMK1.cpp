@@ -197,14 +197,14 @@ MaschineMK1::~MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
+void MaschineMK1::setLed( DeviceBase::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK1::setLed( DeviceBase::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -485,11 +485,11 @@ void MaschineMK1::processPads(const Transfer& input_)
 
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
 
-    Device::Pad btn(Device::Pad::Unknown);
+    DeviceBase::Pad btn(DeviceBase::Pad::Unknown);
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Pad::pad; \
+    btn = DeviceBase::Pad::pad; \
     break
 
     switch (pad)
@@ -534,7 +534,7 @@ void MaschineMK1::processPads(const Transfer& input_)
 void MaschineMK1::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  Device::Button changedButton(Device::Button::Unknown);
+  DeviceBase::Button changedButton(DeviceBase::Button::Unknown);
   bool buttonPressed(false);
   if ((input_.getData()[6] & 0x40) == 0)
   {
@@ -555,7 +555,7 @@ void MaschineMK1::processButtons(const Transfer& input_)
       {
         m_buttonStates[btn] = buttonPressed;
         changedButton = getDeviceButton(currentButton);
-        if (changedButton != Device::Button::Unknown)
+        if (changedButton != DeviceBase::Button::Unknown)
         {
           //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
@@ -630,9 +630,9 @@ void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::getLed( Device::Button btn_ ) const noexcept
+MaschineMK1::Led MaschineMK1::getLed( DeviceBase::Button btn_ ) const noexcept
 {
-#define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
+#define M_LED_CASE(idLed) case DeviceBase::Button::idLed: return Led::idLed
 
   switch ( btn_ )
   {
@@ -689,10 +689,10 @@ MaschineMK1::Led MaschineMK1::getLed( Device::Button btn_ ) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::getLed(Device::Pad pad_) const noexcept
+MaschineMK1::Led MaschineMK1::getLed(DeviceBase::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
-  case Device::Pad::idPad: \
+  case DeviceBase::Pad::idPad: \
     return Led::idPad
 
   switch (pad_)
@@ -724,11 +724,11 @@ MaschineMK1::Led MaschineMK1::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
+DeviceBase::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return Device::Button::idBtn
+    return DeviceBase::Button::idBtn
 
   switch (btn_)
   {
@@ -776,7 +776,7 @@ Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
 
     default:
     {
-      return Device::Button::Unknown;
+      return DeviceBase::Button::Unknown;
     }
   }
 
@@ -785,11 +785,11 @@ Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder MaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
+DeviceBase::Encoder MaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
 {
 #define M_ENCODER_CASE(idEncoder) \
   case Encoder::idEncoder:     \
-    return Device::Encoder::idEncoder
+    return DeviceBase::Encoder::idEncoder
 
   switch (btn_)
   {
@@ -807,7 +807,7 @@ Device::Encoder MaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
 
     default:
     {
-      return Device::Encoder::Unknown;
+      return DeviceBase::Encoder::Unknown;
     }
   }
 #undef M_ENCODER_CASE
