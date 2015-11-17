@@ -65,7 +65,8 @@ void ClientSingle::run()
       {
         // get the list of devices
         m_connected = false;
-        if (connect(enumerateDevices()[0])) // found known devices
+        auto collDevices = enumerateDevices();
+        if (collDevices.size() > 0 && connect(collDevices[0])) // found known devices
         {
           m_connected = true;
           initHardware();
@@ -132,7 +133,7 @@ Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
         || (std::find(devicesList.begin(), devicesList.end(), deviceDescriptor)
              != devicesList.end()))
     {
-      continue; // not a Native Instruments USB device
+      continue; // unknown
     }
     devicesList.push_back(deviceDescriptor);
   }
