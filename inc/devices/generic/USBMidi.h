@@ -24,12 +24,10 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class USBMidi : public midi::Unmidifier, public Device<USBMidi>
+class USBMidi : public midi::Unmidifier, public Device
 {
  
 public:
-  
-  USBMidi(tPtr<DeviceHandle>);
   
   void onNoteOff(NoteOff msg) override {}
   void onNoteOn(NoteOn msg) override {}

@@ -21,16 +21,16 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class MaschineMK2 : public Device<MaschineMK2>
+class MaschineMK2 : public Device
 {
  
 public:
   
-  MaschineMK2(tPtr<DeviceHandle>);
+  MaschineMK2();
   ~MaschineMK2() override;
   
-  void setLed(DeviceBase::Button, const util::LedColor&) override;
-  void setLed(DeviceBase::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -65,10 +65,10 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(DeviceBase::Button) const noexcept;
-  Led getLed(DeviceBase::Pad) const noexcept;
+  Led getLed(Device::Button) const noexcept;
+  Led getLed(Device::Pad) const noexcept;
 
-  DeviceBase::Button getDeviceButton( Button btn_ ) const noexcept;
+  Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
@@ -92,8 +92,11 @@ private:
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   tPtr<RtMidiOut>     m_pMidiout;
 #endif
-
 };
+
+//--------------------------------------------------------------------------------------------------
+
+M_REGISTER_DEVICE_CLASS(MaschineMK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1140);
 
 //--------------------------------------------------------------------------------------------------
 

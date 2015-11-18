@@ -258,28 +258,21 @@ enum class Push::Encoder : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Push(tPtr<DeviceHandle> pDeviceHandle_)
-  : USBMidi(std::move(pDeviceHandle_)), m_isDirtyLeds(false)
-{
-  m_leds.resize(kPush_ledsDataSize);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Push::~Push()
+Push::Push()
+  : m_isDirtyLeds(false)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
+void Push::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setLed(DeviceBase::Pad pad_, const util::LedColor& color_)
+void Push::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -439,10 +432,10 @@ bool Push::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Led Push::getLed(DeviceBase::Button btn_) const noexcept
+Push::Led Push::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case DeviceBase::Button::idLed: \
+  case Device::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -522,7 +515,7 @@ Push::Led Push::getLed(DeviceBase::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Led Push::getLed(DeviceBase::Pad pad_) const noexcept
+Push::Led Push::getLed(Device::Pad pad_) const noexcept
 {
   uint8_t pad    = static_cast<unsigned>(pad_);
   unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
@@ -536,11 +529,11 @@ Push::Led Push::getLed(DeviceBase::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceBase::Button Push::getDeviceButton(Button btn_) const noexcept
+Device::Button Push::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return DeviceBase::Button::idBtn
+    return Device::Button::idBtn
 
   switch (btn_)
   {
@@ -621,7 +614,7 @@ DeviceBase::Button Push::getDeviceButton(Button btn_) const noexcept
     M_BTN_CASE(TouchEncoderMain2);
     default:
     {
-      return DeviceBase::Button::Unknown;
+      return Device::Button::Unknown;
     }
   }
 
@@ -630,11 +623,11 @@ DeviceBase::Button Push::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceBase::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
+Device::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
 {
 #define M_ENC_CASE(idEnc) \
   case Encoder::idEnc:    \
-    return DeviceBase::Encoder::idEnc
+    return Device::Encoder::idEnc
 
   switch (enc_)
   {
@@ -651,7 +644,7 @@ DeviceBase::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
     M_ENC_CASE(Main2);
     default:
     {
-      return DeviceBase::Encoder::Unknown;
+      return Device::Encoder::Unknown;
     }
   }
 
@@ -714,15 +707,15 @@ void Push::onControlChange(ControlChange msg_)
   uint8_t cc    = msg_.getControl();
   uint8_t value = msg_.getValue();
 
-  DeviceBase::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
-  if (changedEncoder != DeviceBase::Encoder::Unknown)
+  Device::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
+  if (changedEncoder != Device::Encoder::Unknown)
   {
     encoderChanged(changedEncoder, value < 64, m_shiftPressed);
   }
   else
   {
-    DeviceBase::Button changedButton = getDeviceButton(static_cast<Button>(cc));
-    if (changedButton == DeviceBase::Button::Shift)
+    Device::Button changedButton = getDeviceButton(static_cast<Button>(cc));
+    if (changedButton == Device::Button::Shift)
     {
       m_shiftPressed = false;
       return;

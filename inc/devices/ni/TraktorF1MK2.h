@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "devices/Device.h"
 #include "gfx/displays/GDisplayDummy.h"
 #include "gfx/displays/LCDDisplay7Segments.h"
@@ -20,16 +22,15 @@ namespace devices
   
 //--------------------------------------------------------------------------------------------------
     
-class TraktorF1MK2 : public Device<TraktorF1MK2>
+class TraktorF1MK2 : public Device
 {
  
 public:
   
-  TraktorF1MK2(tPtr<DeviceHandle>);
-  ~TraktorF1MK2() override;
+  TraktorF1MK2();
   
-  void setLed(DeviceBase::Button, const util::LedColor&) override;
-  void setLed(DeviceBase::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Pad, const util::LedColor&) override;
   
   void sendMidiMsg(tRawData) override;
   
@@ -46,6 +47,7 @@ private:
   static constexpr uint8_t kF1MK2_nButtons = 27;
   static constexpr uint8_t kF1MK2_buttonsDataSize = 5;
   static constexpr uint8_t kF1MK2_nPotentiometers = 8;
+  static constexpr uint8_t kF1MK2_nLeds = 80;
 
   void init() override;
   bool sendLedsAndDisplay();
@@ -55,27 +57,30 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(DeviceBase::Button) const noexcept;
-  Led getLed(DeviceBase::Pad) const noexcept;
+  Led getLed(Device::Button) const noexcept;
+  Led getLed(Device::Pad) const noexcept;
 
-  DeviceBase::Button getDeviceButton( Button btn_ ) const noexcept;
+  Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
   
   GDisplayDummy               m_displayDummy;
   LCDDisplay7Segments         m_lcdDisplay;
 
-  tRawData                    m_leds;
+  std::array<uint8_t, kF1MK2_buttonsDataSize>     m_buttons;
+  std::array<uint8_t, kF1MK2_nLeds>               m_leds;
 
-  tRawData                    m_buttons;
   bool                        m_buttonStates[kF1MK2_nButtons];
   uint16_t                    m_potentiometersValues[kF1MK2_nPotentiometers];
   uint8_t                     m_encoderValue;
 
-  bool                        m_isDirtyLeds;
-
+  bool                        m_isDirtyLeds;  
 };
-  
+
+//--------------------------------------------------------------------------------------------------
+
+M_REGISTER_DEVICE_CLASS(TraktorF1MK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1120);
+
 //--------------------------------------------------------------------------------------------------
 
 } // devices

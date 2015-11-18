@@ -9,6 +9,7 @@
 
 #include <bitset>
 
+#include "devices/DeviceFactory.h"
 #include "devices/Device.h"
 #include "gfx/displays/GDisplayMaschineMK1.h"
 #include "comm/Transfer.h"
@@ -22,16 +23,16 @@ namespace devices
  
 //--------------------------------------------------------------------------------------------------
 
-class MaschineMK1 : public Device<MaschineMK1>
+class MaschineMK1 : public Device
 {
    
 public:
   
-  MaschineMK1(tPtr<DeviceHandle>);
+  MaschineMK1();
   ~MaschineMK1() override;
   
-  void setLed(DeviceBase::Button, const util::LedColor&) override;
-  void setLed(DeviceBase::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -41,6 +42,7 @@ public:
   bool tick() override;
 
 private:
+
 
   enum class Led : uint8_t;
   enum class Button : uint8_t;
@@ -68,11 +70,11 @@ private:
   void processEncoders(const Transfer&);
 
   void setLedImpl(Led, const util::LedColor&);
-  Led getLed(DeviceBase::Button) const noexcept;
-  Led getLed(DeviceBase::Pad) const noexcept;
+  Led getLed(Device::Button) const noexcept;
+  Led getLed(Device::Pad) const noexcept;
 
-  DeviceBase::Button getDeviceButton(Button btn_) const noexcept;
-  DeviceBase::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
+  Device::Button getDeviceButton(Button btn_) const noexcept;
+  Device::Encoder getDeviceEncoder(Encoder btn_) const noexcept;
   
   void cbRead(Transfer);
     
@@ -93,6 +95,10 @@ private:
   bool                m_isDirtyLedGroup1;
   bool                m_encodersInitialized;
 };
+  
+//--------------------------------------------------------------------------------------------------
+
+M_REGISTER_DEVICE_CLASS(MaschineMK1, "", DeviceDescriptor::Type::USB, 0x17CC, 0x0808);
 
 //--------------------------------------------------------------------------------------------------
 

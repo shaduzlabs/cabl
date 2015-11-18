@@ -23,14 +23,6 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-USBMidi::USBMidi(tPtr<DeviceHandle> pDeviceHandle_)
-  : Device<USBMidi>(std::move(pDeviceHandle_))
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 {
 #if !ARDUINO

@@ -84,6 +84,7 @@ set(
   inc_devices_INCLUDES
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
+    inc/devices/DeviceRegistrar.h
 )
 
 set(
@@ -106,7 +107,6 @@ set(
     inc/devices/ni/KompleteKontrol.h
     inc/devices/ni/MaschineMK1.h
     inc/devices/ni/MaschineMK2.h
-    inc/devices/ni/MaschineMikroMK1.h
     inc/devices/ni/MaschineMikroMK2.h
     inc/devices/ni/TraktorF1MK2.h
 )

@@ -15,9 +15,6 @@
 
 namespace
 {
-  static const std::string  kF1MK2_midiPortName = "KOMPLETE KONTROL S";
-  static const uint8_t kF1MK2_nLeds = 80;
-
   static const uint8_t kF1MK2_epOut     = 0x02;
   static const uint8_t kF1MK2_epInput   = 0x84;
 }
@@ -142,31 +139,22 @@ enum class TraktorF1MK2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::TraktorF1MK2(tPtr<DeviceHandle> pDeviceHandle_)
-  : Device(std::move(pDeviceHandle_))
-  , m_lcdDisplay(2)
+TraktorF1MK2::TraktorF1MK2()
+  : m_lcdDisplay(2)
   , m_isDirtyLeds(true)
 {
- m_buttons.resize(kF1MK2_buttonsDataSize);
- m_leds.resize(kF1MK2_nLeds);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::~TraktorF1MK2()
-{
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void TraktorF1MK2::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLed(DeviceBase::Pad pad_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(getLed(pad_), color_);
 }
@@ -279,7 +267,7 @@ bool TraktorF1MK2::read()
 void TraktorF1MK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  DeviceBase::Button changedButton(DeviceBase::Button::Unknown);
+  Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
   for (int i = 0; i < kF1MK2_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
@@ -297,7 +285,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       {
         m_buttonStates[btn] = buttonPressed;
         changedButton = getDeviceButton(currentButton);
-        if (changedButton != DeviceBase::Button::Unknown)
+        if (changedButton != Device::Button::Unknown)
         {
           buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
@@ -313,13 +301,13 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       ((m_encoderValue == 0xff) && (currentValue == 0x00)))
         && (!((m_encoderValue == 0x0) && (currentValue == 0xff)));
     m_encoderValue = currentValue;
-    encoderChanged(DeviceBase::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
   for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize+1; potIndex < 8; i+=2, potIndex++)
   {
-    DeviceBase::Potentiometer potentiometer = static_cast<DeviceBase::Potentiometer>(
-      static_cast<uint8_t>(DeviceBase::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
+    Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
+      static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
     );
     uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
     if(m_potentiometersValues[potIndex] != value)
@@ -378,10 +366,10 @@ bool TraktorF1MK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Button btn_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case DeviceBase::Button::idLed: \
+  case Device::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -425,10 +413,10 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Pad pad_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
-  case DeviceBase::Pad::idPad: \
+  case Device::Pad::idPad: \
     return Led::idPad
 
   switch (pad_)
@@ -460,11 +448,11 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(DeviceBase::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceBase::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
+Device::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return DeviceBase::Button::idBtn
+    return Device::Button::idBtn
 
   switch (btn_)
   {
@@ -503,7 +491,7 @@ DeviceBase::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
     
     default:
     {
-      return DeviceBase::Button::Unknown;
+      return Device::Button::Unknown;
     }
   }
 

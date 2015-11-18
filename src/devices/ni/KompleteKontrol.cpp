@@ -35,7 +35,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-enum class KompleteKontrol::Led : uint16_t
+enum class KompleteKontrolBase::Led : uint16_t
 {
   Shift,
   Scale,
@@ -582,7 +582,7 @@ enum class KompleteKontrol::Led : uint16_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class KompleteKontrol::Button : uint8_t
+enum class KompleteKontrolBase::Button : uint8_t
 {
   MainEncoder,
   PresetUp,
@@ -627,11 +627,8 @@ enum class KompleteKontrol::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrol::KompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numKeys_)
-  : Device(std::move(pDeviceHandle_))
-  , m_numKeys(numKeys_)
-  , m_ledKeysDataSize(numKeys_ * 3)
-  , m_isDirtyLeds(true)
+KompleteKontrolBase::KompleteKontrolBase()
+  : m_isDirtyLeds(true)
   , m_isDirtyKeyLeds(true)
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   , m_pMidiOut(new RtMidiOut)
@@ -640,7 +637,6 @@ KompleteKontrol::KompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numK
 {
   m_buttons.resize(kKK_buttonsDataSize);
   m_leds.resize(kKK_ledsDataSize);
-  m_ledsKeys.resize(m_ledKeysDataSize);
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::string portName;
@@ -688,14 +684,14 @@ KompleteKontrol::KompleteKontrol(tPtr<DeviceHandle> pDeviceHandle_, uint8_t numK
   }
   else
   {
-    m_pMidiIn->setCallback(&KompleteKontrol::midiInCallback, this);
+    m_pMidiIn->setCallback(&KompleteKontrolBase::midiInCallback, this);
   }
 #endif
 }
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrol::~KompleteKontrol()
+KompleteKontrolBase::~KompleteKontrolBase()
 {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   m_pMidiOut->closePort();
@@ -705,35 +701,35 @@ KompleteKontrol::~KompleteKontrol()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::setLed(DeviceBase::Button btn_, const util::LedColor& color_)
+void KompleteKontrolBase::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(getLed(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::setLed(DeviceBase::Key key_, const util::LedColor& color_)
+void KompleteKontrolBase::setLed(Device::Key key_, const util::LedColor& color_)
 {
   setLedImpl(getLed(key_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::sendMidiMsg(tRawData midiMsg_)
+void KompleteKontrolBase::sendMidiMsg(tRawData midiMsg_)
 {
   //!\todo Use KompleteKontrol hardware midi port
 }
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* KompleteKontrol::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* KompleteKontrolBase::getGraphicDisplay(uint8_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* KompleteKontrol::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* KompleteKontrolBase::getLCDDisplay(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > 8)
@@ -745,7 +741,7 @@ LCDDisplay* KompleteKontrol::getLCDDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::tick()
+bool KompleteKontrolBase::tick()
 {
   static int state = 0;
   bool success     = false;
@@ -773,14 +769,14 @@ bool KompleteKontrol::tick()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::init()
+void KompleteKontrolBase::init()
 {
   getDeviceHandle()->write(Transfer({0xA0, 0x00, 0x00}), kKK_epOut);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::sendDisplayData()
+bool KompleteKontrolBase::sendDisplayData()
 {
   bool result = true;
 
@@ -807,7 +803,7 @@ bool KompleteKontrol::sendDisplayData()
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::sendLeds()
+bool KompleteKontrolBase::sendLeds()
 {
   if (m_isDirtyLeds)
   {
@@ -819,7 +815,7 @@ bool KompleteKontrol::sendLeds()
   }
   if (m_isDirtyKeyLeds)
   {
-    if (!getDeviceHandle()->write(Transfer({0x82}, &m_ledsKeys[0], m_ledKeysDataSize), kKK_epOut))
+    if (!getDeviceHandle()->write(Transfer({0x82}, getLedsKeysData(), getLedDataSize()), kKK_epOut))
     {
       return false;
     }
@@ -830,7 +826,7 @@ bool KompleteKontrol::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::read()
+bool KompleteKontrolBase::read()
 {
   Transfer input;
 
@@ -848,10 +844,10 @@ bool KompleteKontrol::read()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::processButtons(const Transfer& input_)
+void KompleteKontrolBase::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
-  DeviceBase::Button changedButton(DeviceBase::Button::Unknown);
+  Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
   for (int i = 0; i < kKK_buttonsDataSize - 1; i++) // Skip the last byte (encoder value)
@@ -869,7 +865,7 @@ void KompleteKontrol::processButtons(const Transfer& input_)
       {
         m_buttonStates[btn] = buttonPressed;
         changedButton = getDeviceButton(currentButton);
-        if (changedButton != DeviceBase::Button::Unknown)
+        if (changedButton != Device::Button::Unknown)
         {
           //    std::copy(&input_[1],&input_[kKK_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
@@ -886,13 +882,13 @@ void KompleteKontrol::processButtons(const Transfer& input_)
                             || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
                           && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
     m_encoderValues[0] = currentEncoderValue;
-    encoderChanged(DeviceBase::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
   for (uint8_t encIndex = 0, i = kKK_buttonsDataSize + 1; encIndex < 8; i += 2, encIndex++)
   {
-    DeviceBase::Encoder encoder
-      = static_cast<DeviceBase::Encoder>(static_cast<uint8_t>(DeviceBase::Encoder::Encoder1) + encIndex);
+    Device::Encoder encoder
+      = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
     uint16_t value  = (input_.getData()[i]) | (input_.getData()[i + 1] << 8);
     uint16_t hValue = input_.getData()[i + 1];
     if (m_encoderValues[encIndex + 1] != value)
@@ -911,7 +907,7 @@ void KompleteKontrol::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
+void KompleteKontrolBase::setLedImpl(Led led_, const util::LedColor& color_)
 {
   static const uint8_t kFirstKeyIndex = static_cast<uint16_t>(Led::Key1);
   uint16_t ledIndex                   = static_cast<uint16_t>(led_);
@@ -923,13 +919,13 @@ void KompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 
   if (isRGBLed(led_))
   {
-    uint8_t currentR = m_ledsKeys[ledIndex - kFirstKeyIndex];
-    uint8_t currentG = m_ledsKeys[ledIndex - kFirstKeyIndex + 1];
-    uint8_t currentB = m_ledsKeys[ledIndex - kFirstKeyIndex + 2];
+    uint8_t currentR = getLedsKeysData()[ledIndex - kFirstKeyIndex];
+    uint8_t currentG = getLedsKeysData()[ledIndex - kFirstKeyIndex + 1];
+    uint8_t currentB = getLedsKeysData()[ledIndex - kFirstKeyIndex + 2];
 
-    m_ledsKeys[ledIndex - kFirstKeyIndex]     = color_.getRed();
-    m_ledsKeys[ledIndex - kFirstKeyIndex + 1] = color_.getGreen();
-    m_ledsKeys[ledIndex - kFirstKeyIndex + 2] = color_.getBlue();
+    getLedsKeysData()[ledIndex - kFirstKeyIndex]     = color_.getRed();
+    getLedsKeysData()[ledIndex - kFirstKeyIndex + 1] = color_.getGreen();
+    getLedsKeysData()[ledIndex - kFirstKeyIndex + 2] = color_.getBlue();
 
     m_isDirtyKeyLeds
       = m_isDirtyKeyLeds || (currentR != color_.getRed() || currentG != color_.getGreen()
@@ -947,7 +943,7 @@ void KompleteKontrol::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::isRGBLed(Led led_) const noexcept
+bool KompleteKontrolBase::isRGBLed(Led led_) const noexcept
 {
   if (led_ >= Led::Key1)
   {
@@ -959,10 +955,10 @@ bool KompleteKontrol::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrol::Led KompleteKontrol::getLed(DeviceBase::Button btn_) const noexcept
+KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
-  case DeviceBase::Button::idLed: \
+  case Device::Button::idLed: \
     return Led::idLed
 
   switch (btn_)
@@ -999,14 +995,14 @@ KompleteKontrol::Led KompleteKontrol::getLed(DeviceBase::Button btn_) const noex
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrol::Led KompleteKontrol::getLed(DeviceBase::Key key_) const noexcept
+KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Key key_) const noexcept
 {
-  static const DeviceBase::Key kMaxKey = static_cast<DeviceBase::Key>(m_numKeys);
+  static const Device::Key kMaxKey = static_cast<Device::Key>(getNumKeys());
   if (key_ >= kMaxKey)
     return Led::Unknown;
 
 #define M_KEY_CASE(idKey)  \
-  case DeviceBase::Key::idKey: \
+  case Device::Key::idKey: \
     return Led::idKey
 
   switch (key_)
@@ -1150,11 +1146,11 @@ KompleteKontrol::Led KompleteKontrol::getLed(DeviceBase::Key key_) const noexcep
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceBase::Button KompleteKontrol::getDeviceButton(Button btn_) const noexcept
+Device::Button KompleteKontrolBase::getDeviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
-    return DeviceBase::Button::idBtn
+    return Device::Button::idBtn
 
   switch (btn_)
   {
@@ -1184,7 +1180,7 @@ DeviceBase::Button KompleteKontrol::getDeviceButton(Button btn_) const noexcept
     M_BTN_CASE(Ffw);
     default:
     {
-      return DeviceBase::Button::Unknown;
+      return Device::Button::Unknown;
     }
   }
 
@@ -1193,7 +1189,7 @@ DeviceBase::Button KompleteKontrol::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::isButtonPressed(Button button_) const noexcept
+bool KompleteKontrolBase::isButtonPressed(Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((m_buttons[buttonPos >> 3] & (1 << (buttonPos % 8))) != 0);
@@ -1201,7 +1197,7 @@ bool KompleteKontrol::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool KompleteKontrol::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
+bool KompleteKontrolBase::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);
@@ -1209,13 +1205,13 @@ bool KompleteKontrol::isButtonPressed(const Transfer& transfer_, Button button_)
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrol::midiInCallback(
+void KompleteKontrolBase::midiInCallback(
   double timeStamp_, std::vector<unsigned char>* pMessage_, void* userData_)
 {
-  KompleteKontrol* pSelf = static_cast<KompleteKontrol*>(userData_);
+  KompleteKontrolBase* pSelf = static_cast<KompleteKontrolBase*>(userData_);
   if ((pMessage_->at(0) & 0xf0) == 0x90)
   {
-    pSelf->keyChanged(static_cast<DeviceBase::Key>(pMessage_->at(1) - pSelf->m_firstOctave),
+    pSelf->keyChanged(static_cast<Device::Key>(pMessage_->at(1) - pSelf->m_firstOctave),
       pMessage_->at(2),
       pSelf->isButtonPressed(Button::Shift));
   }

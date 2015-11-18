@@ -178,15 +178,16 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
 
   if (isSupportedDevice(deviceDescriptor_) && deviceHandle)
   {
-    m_pDevice.reset(DeviceFactory::getDevice(deviceDescriptor_, std::move(deviceHandle)));
-    m_connected = true;
+    m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
+    m_pDevice->init();
+    m_connected = (m_pDevice != nullptr);
   }
   else
   {
-    m_pDevice.reset(DeviceFactory::getDevice(deviceDescriptor_, std::move(deviceHandle)));
+    m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
     m_pDevice->init();
     //      m_collDevices.emplace_back(new MaschineMK2(std::move(pDeviceHandle)));
-    m_connected = true;
+    m_connected = (m_pDevice != nullptr);
     /*
     tPtr<Device> unsupportedDevice(new MaschineMK1(std::move(pDeviceHandle)));
     unsupportedDevice->init();

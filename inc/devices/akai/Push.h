@@ -8,6 +8,7 @@
 #pragma once
 
 #include <map>
+#include <array>
 
 #include "devices/Device.h"
 #include "devices/generic/USBMidi.h"
@@ -27,11 +28,10 @@ class Push : public USBMidi
  
 public:
   
-  Push(tPtr<DeviceHandle>);
-  ~Push() override;
-  
-  void setLed(DeviceBase::Button, const util::LedColor&) override;
-  void setLed(DeviceBase::Pad, const util::LedColor&) override;
+  Push();
+
+  void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
   
@@ -62,11 +62,11 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(DeviceBase::Button) const noexcept;
-  Led getLed(DeviceBase::Pad) const noexcept;
+  Led getLed(Device::Button) const noexcept;
+  Led getLed(Device::Pad) const noexcept;
 
-  DeviceBase::Button getDeviceButton(Button) const noexcept;
-  DeviceBase::Encoder getDeviceEncoder(Encoder) const noexcept;
+  Device::Button getDeviceButton(Button) const noexcept;
+  Device::Encoder getDeviceEncoder(Encoder) const noexcept;
 
   uint8_t getColorIndex(const util::LedColor&);
   
@@ -83,14 +83,18 @@ private:
   
   LCDDisplayGeneric     m_displays[kPush_nDisplays];
   
-  tRawData              m_leds;
+  std::array<uint8_t, kPush_ledsDataSize>   m_leds;
+  
   bool                  m_shiftPressed;
   
   bool                  m_isDirtyLeds;
   
   std::map<util::RGBColor,uint8_t>  m_colorsCache;
-
 };
+  
+//--------------------------------------------------------------------------------------------------
+
+M_REGISTER_DEVICE_CLASS(Push,"Ableton Push Live Port", DeviceDescriptor::Type::MIDI, 0x0047, 0x1500);
   
 //--------------------------------------------------------------------------------------------------
 

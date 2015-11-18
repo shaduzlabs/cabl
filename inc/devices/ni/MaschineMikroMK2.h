@@ -8,8 +8,10 @@
 #pragma once
 
 #include <bitset>
+#include <array>
 
 #include "devices/Device.h"
+#include "devices/DeviceFactory.h"
 #include "gfx/displays/GDisplayMaschineMikro.h"
 
 namespace sl
@@ -21,16 +23,15 @@ namespace devices
   
 //--------------------------------------------------------------------------------------------------
 
-class MaschineMikroMK2 : public Device<MaschineMikroMK2>
+class MaschineMikroMK2 : public Device
 {
  
 public:
   
-  MaschineMikroMK2(tPtr<DeviceHandle>);
-  ~MaschineMikroMK2() override;
+  MaschineMikroMK2();
   
-  void setLed(DeviceBase::Button, const util::LedColor&) override;
-  void setLed(DeviceBase::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::LedColor&) override;
+  void setLed(Device::Pad, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
   
@@ -63,17 +64,18 @@ private:
   
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(DeviceBase::Button) const noexcept;
-  Led getLed(DeviceBase::Pad) const noexcept;
+  Led getLed(Device::Button) const noexcept;
+  Led getLed(Device::Pad) const noexcept;
 
-  DeviceBase::Button getDeviceButton( Button btn_ ) const noexcept;
+  Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
   GDisplayMaschineMikro m_display;
   
-  tRawData              m_leds;
-  tRawData              m_buttons;
+  std::array<uint8_t, kMikroMK2_ledsDataSize>               m_leds;
+  std::array<uint8_t, kMikroMK2_buttonsDataSize>            m_buttons;
+  
   bool                  m_buttonStates[kMikroMK2_nButtons];
   uint8_t               m_encoderValue;
   
@@ -83,7 +85,11 @@ private:
   bool                  m_isDirtyLeds;
 
 };
-  
+
+//--------------------------------------------------------------------------------------------------
+
+M_REGISTER_DEVICE_CLASS(MaschineMikroMK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1120);
+
 //--------------------------------------------------------------------------------------------------
 
 } // devices
