@@ -1,4 +1,4 @@
-# k-IO Library #
+# cabl Library #
 
 ...
 
@@ -7,5 +7,4 @@
 * Windows
 * OSX
 * Linux
-* Arduino (AVR, ARM)
-
+* Arduino (ARM)
