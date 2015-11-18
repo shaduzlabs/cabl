@@ -9,7 +9,7 @@
 #  Unit tests                                                                                      #
 # ------------------------------------------------------------------------------------------------ #
 
-include_directories( ${CATCH_INCLUDE_DIR} )
+include_directories( ${CATCH_INCLUDE_DIRS} )
 
 project(unit-tests)
 

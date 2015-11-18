@@ -63,7 +63,10 @@ else()
   find_package(rtmidi)
 endif()
 
+# Unmidify --------------------------------------------------------------------------------------- #
+
 addUnmidify()
+
 
 # Includes --------------------------------------------------------------------------------------- #
 
@@ -361,8 +364,8 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src submodules/unmidify/include ${RTMIDI_INCLUDE_DIRS})
-include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIR})
+include_directories(inc src ${RTMIDI_INCLUDE_DIRS})
+include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
 
 set(
   cabl_ALL

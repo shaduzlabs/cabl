@@ -46,10 +46,10 @@ public:
   bool initHardware() override;
   bool tick() override;
   
-  void buttonChanged(DeviceBase::Button button_, bool buttonState_, bool shiftState_);
-  void encoderChanged(DeviceBase::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
-  void padChanged(DeviceBase::Pad pad_, uint16_t value_, bool shiftPressed);
-  void keyChanged(DeviceBase::Key key_, uint16_t value_, bool shiftPressed);
+  void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
+  void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
+  void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
+  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed);
   
   
   void updateClock();
@@ -91,8 +91,8 @@ private:
     uint8_t minValue_,
     uint8_t maxValue_
   );
-  DeviceBase::Pad getPad(uint8_t padIndex_);
-  uint8_t getPadIndex(DeviceBase::Pad pad_);
+  Device::Pad getPad(uint8_t padIndex_);
+  uint8_t getPadIndex(Device::Pad pad_);
 
   Sequence<uint16_t> m_sequences[3];
 
