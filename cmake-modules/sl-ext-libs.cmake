@@ -11,18 +11,18 @@ include(sl-functions)
 #  RtMidi                                                                                          #
 # ------------------------------------------------------------------------------------------------ #
 function (addRtMidi)
-  if(DEFINED RTMIDI_INCLUDE_DIR)
+  if(DEFINED RTMIDI_INCLUDE_DIRS)
     message(STATUS "RtMidi is already available")
   else()
     checkout_external_project(rtmidi https://github.com/thestk/rtmidi.git master)
-    set(RTMIDI_INCLUDE_DIR ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi PARENT_SCOPE)
-    set(RTMIDI_INCLUDE_DIR ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi)
-    message(STATUS "RtMidi path: ${RTMIDI_INCLUDE_DIR}")
+    set(RTMIDI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi PARENT_SCOPE)
+    set(RTMIDI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi)
+    message(STATUS "RtMidi path: ${RTMIDI_INCLUDE_DIRS}")
 
     set(
       lib_rtmidi_LIBRARY
-        ${RTMIDI_INCLUDE_DIR}/RtMidi.h
-        ${RTMIDI_INCLUDE_DIR}/RtMidi.cpp
+        ${RTMIDI_INCLUDE_DIRS}/RtMidi.h
+        ${RTMIDI_INCLUDE_DIRS}/RtMidi.cpp
     )
     source_group("src"  FILES  ${lib_rtmidi_LIBRARY})
     add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
@@ -53,13 +53,13 @@ endfunction()
 #  Catch                                                                                           #
 # ------------------------------------------------------------------------------------------------ #
 function (addCatch)
-  if(DEFINED CATCH_INCLUDE_DIR)
+  if(DEFINED CATCH_INCLUDE_DIRS)
     message(STATUS "Catch is already available")
   else()
     checkout_external_project(catch https://github.com/philsquared/Catch.git master)
-    set(CATCH_INCLUDE_DIR ${CMAKE_BINARY_DIR}/catch/src/catch/include PARENT_SCOPE)
-    set(CATCH_INCLUDE_DIR ${CMAKE_BINARY_DIR}/catch/src/catch/include)
-    message(STATUS "Catch path: ${CATCH_INCLUDE_DIR}")
+    set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include PARENT_SCOPE)
+    set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include)
+    message(STATUS "Catch path: ${CATCH_INCLUDE_DIRS}")
   endif()
 endfunction()
 
@@ -68,13 +68,13 @@ endfunction()
 #  MPL                                                                                             #
 # ------------------------------------------------------------------------------------------------ #
 function (addMPL)
-  if(DEFINED MPL_INCLUDE_DIR)
+  if(DEFINED MPL_INCLUDE_DIRS)
     message(STATUS "Catch is already available")
   else()
     checkout_external_project(mpl https://github.com/rabauke/mpl.git master)
-    set(MPL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl PARENT_SCOPE)
-    set(MPL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl)
-    message(STATUS "MPL path: ${MPL_INCLUDE_DIR}")
+    set(MPL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl PARENT_SCOPE)
+    set(MPL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl)
+    message(STATUS "MPL path: ${MPL_INCLUDE_DIRS}")
   endif()
 endfunction()
 
@@ -83,13 +83,13 @@ endfunction()
 #  unMIDIfy                                                                                        #
 # ------------------------------------------------------------------------------------------------ #
 function (addUnmidify)
-  if(DEFINED UNMIDIFY_INCLUDE_DIR)
+  if(DEFINED UNMIDIFY_INCLUDE_DIRS)
     message(STATUS "Unmidify is already available")
   else()
     checkout_external_project(unmidify https://bitbucket.org/shaduzlabs/unmidify.git develop)
-    set(UNMIDIFY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include PARENT_SCOPE)
-    set(UNMIDIFY_INCLUDE_DIR ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include)
-    message(STATUS "Unmidify path: ${UNMIDIFY_INCLUDE_DIR}")
+    set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include PARENT_SCOPE)
+    set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include)
+    message(STATUS "Unmidify path: ${UNMIDIFY_INCLUDE_DIRS}")
   endif()
 endfunction()
 
@@ -172,13 +172,13 @@ endfunction()
 #  HIDAPI                                                                                          #
 # ------------------------------------------------------------------------------------------------ #
 function (addHIDAPI)
-  if(DEFINED HIDAPI_INCLUDE_DIR)
+  if(DEFINED HIDAPI_INCLUDE_DIRS)
     message(STATUS "HIDAPI is already available")
   else()
     checkout_external_project(hidapi https://github.com/signal11/hidapi.git master)
     set(HIDAPI_BASE_DIR ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/)
-    set(HIDAPI_INCLUDE_DIR ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi PARENT_SCOPE)
-    set(HIDAPI_INCLUDE_DIR ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi)
+    set(HIDAPI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi PARENT_SCOPE)
+    set(HIDAPI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi)
 
     message(STATUS "HIDAPI path: ${HIDAPI_BASE_DIR}")
 
@@ -211,7 +211,7 @@ function (addHIDAPI)
         OUTPUT_NAME         "hidapi"
         OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
     )
-    target_include_directories(hidapi PUBLIC ${HIDAPI_INCLUDE_DIR})
+    target_include_directories(hidapi PUBLIC ${HIDAPI_INCLUDE_DIRS})
 
   endif()
 endfunction()
