@@ -22,7 +22,7 @@ namespace sl
 
 using namespace cabl;
 
-class Euklid : public ClientSingle
+class Euklid
 {
 public:
 
@@ -42,9 +42,11 @@ public:
   };
 
   Euklid();
-
-  bool initHardware() override;
-  bool tick() override;
+  void run();
+  
+  void initHardware();
+  void tick();
+  void discoverAndConnect();
   
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
@@ -94,6 +96,8 @@ private:
   Device::Pad getPad(uint8_t padIndex_);
   uint8_t getPadIndex(Device::Pad pad_);
 
+  ClientSingle       m_client;
+  
   Sequence<uint16_t> m_sequences[3];
 
   std::future<void> m_clockFuture;
@@ -104,7 +108,7 @@ private:
   uint8_t m_pulses[3];
   uint8_t m_rotates[3];
 
-  bool m_play;
+  std::atomic<bool> m_play;
   uint8_t m_currentTrack;
 
   uint8_t m_bpm;
@@ -116,7 +120,7 @@ private:
   uint16_t  m_delayEven;
   uint16_t  m_delayOdd;
   
-  bool      m_update;
+  std::atomic<bool> m_update;
   
 };
 

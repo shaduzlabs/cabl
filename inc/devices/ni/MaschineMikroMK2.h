@@ -88,7 +88,7 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-M_REGISTER_DEVICE_CLASS(MaschineMikroMK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1120);
+M_REGISTER_DEVICE_CLASS(MaschineMikroMK2, "Maschine Mikro MK2", DeviceDescriptor::Type::HID, 0x17CC, 0x1200);
 
 //--------------------------------------------------------------------------------------------------
 

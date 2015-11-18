@@ -62,10 +62,10 @@ public:
     return (m_name == other_.m_name)                 &&
 //           (m_type == other_.m_type)               &&
            (m_vendorId == other_.m_vendorId)         &&
-           (m_productId == other_.m_productId)       &&
-           (m_serialNumber == other_.m_serialNumber) &&
-           (m_portIdIn == other_.m_portIdIn)         &&
-           (m_portIdOut == other_.m_portIdOut);
+           (m_productId == other_.m_productId)       ;
+//           (m_serialNumber == other_.m_serialNumber) &&
+//           (m_portIdIn == other_.m_portIdIn)         &&
+//           (m_portIdOut == other_.m_portIdOut);
   }
 
   bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }

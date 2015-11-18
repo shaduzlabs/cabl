@@ -23,7 +23,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 using namespace devices;
 
-class ClientSingle
+class ClientSingle final
 {
 public:
 
@@ -31,42 +31,44 @@ public:
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
   
-  ClientSingle(const Driver::tCollDeviceDescriptor&);
+  using tCbVoid = std::function<void(void)>;
+  
+  ClientSingle();
   virtual ~ClientSingle();
 
-  virtual bool tick() = 0;
-  virtual bool initHardware() = 0;
-
   void run();
-  Driver::tCollDeviceDescriptor enumerateDevices();
+  static Driver::tCollDeviceDescriptor enumerateDevices();
   bool connect(const DeviceDescriptor&);
-  
-  void setMaxConsecutiveErrors(unsigned nErrors_){ m_maxConsecutiveErrors = nErrors_;}
-
-protected:
-  
-  void setConnected(bool connected_)
+    
+  void setCallbacks(tCbVoid cbConnected_, tCbVoid cbTick_, tCbVoid cbDisconnected_)
   {
-    m_connected = connected_;
-  };
+    m_cbConnected = cbConnected_;
+    m_cbTick = cbTick_;
+    m_cbDisconnected = cbDisconnected_;
+  }
   
-  tDevicePtr getDevice(unsigned index)
+  tDevicePtr getDevice()
   {
     return m_pDevice;
   }
   
 private:
 
-  tDriverPtr getDriver(Driver::Type);
+  void onTick();
+  void onConnected();
+  void onDisconnected();
 
-  bool        m_appStopped;
-  bool        m_connected;
-  std::thread m_cablThread;
+  static tDriverPtr getDriver(Driver::Type);
+
+  tCbVoid             m_cbConnected;
+  tCbVoid             m_cbTick;
+  tCbVoid             m_cbDisconnected;
   
-  unsigned                      m_maxConsecutiveErrors;
+  std::atomic<bool>   m_clientStopped;
+  std::atomic<bool>   m_connected;
+  std::thread         m_cablThread;
   
-  tDevicePtr   m_pDevice;
-  tCollDrivers m_collDrivers;
+  tDevicePtr          m_pDevice;
 };
 
 //--------------------------------------------------------------------------------------------------

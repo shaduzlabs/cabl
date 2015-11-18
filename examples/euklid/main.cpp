@@ -83,7 +83,6 @@ int main(int argc, const char* argv[])
   daemonize();
 
   Euklid euklid;
-  euklid.setMaxConsecutiveErrors(5);
   euklid.run();
   /*
   while(true)

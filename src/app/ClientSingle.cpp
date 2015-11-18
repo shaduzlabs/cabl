@@ -15,7 +15,7 @@
 
 namespace
 {
-unsigned kAppSleepBeforeNextDeviceSearch = 10; // seconds
+static const unsigned kClientMaxConsecutiveErrors = 100;
 }
 
 namespace sl
@@ -23,7 +23,7 @@ namespace sl
 namespace cabl
 {
 
-ClientSingle::ClientSingle(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
+ClientSingle::ClientSingle()
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
 }
@@ -42,41 +42,53 @@ ClientSingle::~ClientSingle()
 
 void ClientSingle::run()
 {
-  m_appStopped = false;
-  m_cablThread = std::thread([this]()
+  m_clientStopped = false;
+  m_cablThread = std::thread(
+    [this]()
     {
-      while (!m_appStopped)
+      while (!m_clientStopped)
       {
-        // get the list of devices
+      
+        //\todo remove enumerateDevices call!
+/*
         m_connected = false;
         auto collDevices = enumerateDevices();
-        if (collDevices.size() > 0 && connect(collDevices[0])) // found known devices
+        if (collDevices.size() > 0) // found known devices
         {
-          m_connected = true;
-          initHardware();
+          connect(collDevices[0]);
+        }
+  */      
+        
+        if(m_connected)
+        {
+          onConnected();
           unsigned nErrors = 0;
           while (m_connected)
           {
-            if (!tick())
+            onTick();
+            if(!m_pDevice->tick())
             {
               nErrors++;
-              if (nErrors >= m_maxConsecutiveErrors)
+              if (nErrors >= kClientMaxConsecutiveErrors)
               {
-                //       m_connected = false;
-                //       m_collDevices.clear();
-                //        M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
+                m_connected = false;
+                M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
               }
             }
             else
             {
-              //   nErrors--;
+              nErrors = 0;
             }
           }
+          onDisconnected();
         }
-        std::this_thread::sleep_for(std::chrono::seconds(kAppSleepBeforeNextDeviceSearch));
+        else
+        {
+          std::this_thread::yield();
+        }
       }
-
-    });
+    }
+  );
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -172,14 +184,46 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
 
 //--------------------------------------------------------------------------------------------------
 
+void ClientSingle::onConnected()
+{
+  if(m_cbConnected)
+  {
+    m_cbConnected();
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::onTick()
+{
+  if(m_cbTick)
+  {
+    m_cbTick();
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::onDisconnected()
+{
+  if(m_cbDisconnected)
+  {
+    m_cbDisconnected();
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 ClientSingle::tDriverPtr ClientSingle::getDriver(Driver::Type tDriver_)
 {
-  if (m_collDrivers.find(tDriver_) == m_collDrivers.end())
+  static tCollDrivers collDrivers;
+
+  if (collDrivers.find(tDriver_) == collDrivers.end())
   {
-    m_collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
+    collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
   }
 
-  return m_collDrivers[tDriver_];
+  return collDrivers[tDriver_];
 }
 
 //--------------------------------------------------------------------------------------------------
