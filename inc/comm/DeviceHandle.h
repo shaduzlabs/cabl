@@ -28,12 +28,11 @@ class DeviceHandle
 {
 
 public:
-
   using tCbRead = std::function<void(Transfer)>;
-  
+
   DeviceHandle(tPtr<DeviceHandleImpl>);
   ~DeviceHandle();
-  
+
   void disconnect();
 
   bool read(Transfer&, uint8_t);

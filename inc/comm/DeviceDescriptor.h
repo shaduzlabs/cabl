@@ -72,10 +72,11 @@ public:
   
   bool operator<(const DeviceDescriptor& other_) const
   {
-    return (m_name < other_.m_name) ||
-           ((m_name == other_.m_name) && (m_type < other_.m_type)) ||
-           ((m_name == other_.m_name) && (m_type == other_.m_type) && (m_vendorId < other_.m_vendorId)) ||
-           ((m_name == other_.m_name) && (m_type == other_.m_type) && (m_vendorId == other_.m_vendorId) && (m_productId < other_.m_productId));
+    return (m_name < other_.m_name) || ((m_name == other_.m_name) && (m_type < other_.m_type))
+           || ((m_name == other_.m_name) && (m_type == other_.m_type)
+                && (m_vendorId < other_.m_vendorId))
+           || ((m_name == other_.m_name) && (m_type == other_.m_type)
+                && (m_vendorId == other_.m_vendorId) && (m_productId < other_.m_productId));
   }
   operator bool() const{ return ( m_type != Type::Unknown ); }
   
