@@ -10,5 +10,6 @@ cp $1/support/arduino/stl-arduino.h $1/$2/cabl/util/stl-arduino.h
 rm -rf $1/$2/cabl/app
 rm -rf $1/$2/cabl/comm/drivers/HIDAPI
 rm -rf $1/$2/cabl/comm/drivers/LibUSB
+rm -rf $1/$2/cabl/comm/drivers/MIDI
 find $1/$2/cabl -type f -name *.cpp -print0 | xargs -0 -I%%% mv %%% $1/$2/cabl/
 zip -9 -r $1/$2/cabl.zip $1/$2/cabl

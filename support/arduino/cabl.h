@@ -10,9 +10,6 @@
 
 #include "comm/Driver.h"
 #include "devices/Device.h"
-
-#include "midi/MidiMessage.hpp"
-
 #include "devices/DeviceFactory.h"
 
 #include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
@@ -20,7 +17,7 @@
 
 #include "util/Version.h"
 
-//#include "cabl-config.h"
+#include "cabl-config.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -29,8 +26,8 @@
 
 //#include "devices/DeviceKompleteKontrol.cpp"
 //#include "devices/DeviceMaschineMK1.cpp"
-#include "devices/DeviceMaschineMK2.h"
-#include "devices/DeviceMaschineMikroMK2.h"
+#include "devices/ni/MaschineMK2.h"
+#include "devices/ni/MaschineMikroMK2.h"
 //#include "devices/DeviceTraktorF1MK2.cpp"
 
 #include "gfx/Canvas.h"
