@@ -15,7 +15,7 @@
 
 namespace
 {
-unsigned kAppSleepBeforeNextDeviceSearch = 5; // seconds
+unsigned kAppSleepBeforeNextDeviceSearch = 10; // seconds
 }
 
 namespace sl
@@ -24,24 +24,8 @@ namespace cabl
 {
 
 ClientSingle::ClientSingle(const Driver::tCollDeviceDescriptor& collSupportedDevices_)
-  : m_collSupportedDevices(collSupportedDevices_)
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
-
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1340); // KK S25
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1350); // KK S49
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1360); // KK S61
-
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::USB, 0x17CC, 0x0808); // MK1
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1140); // MK2
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1110); // Mikro MK1
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1200); // Mikro MK2
-
-  m_collKnownDevices.emplace_back("", DeviceDescriptor::Type::HID, 0x17CC, 0x1120); // Traktor F1
-                                                                                    // MK2
-
-  m_collKnownDevices.emplace_back(
-    "Ableton Push Live Port", DeviceDescriptor::Type::MIDI, 0x0047, 0x1500); // Ableton Push
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -103,7 +87,7 @@ Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   for (const auto& deviceDescriptor : getDriver(Driver::Type::HIDAPI)->enumerate())
   {
-    if (!isKnownDevice(deviceDescriptor))
+    if (!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
     {
       continue; // not a Native Instruments USB device
     }
@@ -115,7 +99,7 @@ Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
   unsigned nFoundMidi = 0;
   for (const auto& deviceDescriptor : getDriver(Driver::Type::MIDI)->enumerate())
   {
-    if (!isKnownDevice(deviceDescriptor))
+    if (!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
     {
       continue; // not a Native Instruments USB device
     }
@@ -129,7 +113,7 @@ Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
 
   for (const auto& deviceDescriptor : getDriver(tMainDriver)->enumerate())
   {
-    if ((!isKnownDevice(deviceDescriptor))
+    if ((!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
         || (std::find(devicesList.begin(), devicesList.end(), deviceDescriptor)
              != devicesList.end()))
     {
@@ -176,42 +160,11 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
 #endif
   auto deviceHandle = getDriver(driverType)->connect(deviceDescriptor_);
 
-  if (isSupportedDevice(deviceDescriptor_) && deviceHandle)
+  if (deviceHandle)
   {
     m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
     m_pDevice->init();
     m_connected = (m_pDevice != nullptr);
-  }
-  else
-  {
-    m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
-    m_pDevice->init();
-    //      m_collDevices.emplace_back(new MaschineMK2(std::move(pDeviceHandle)));
-    m_connected = (m_pDevice != nullptr);
-    /*
-    tPtr<Device> unsupportedDevice(new MaschineMK1(std::move(pDeviceHandle)));
-    unsupportedDevice->init();
-    unsupportedDevice->tick();
-
-    unsupportedDevice->getGraphicDisplay(0)->black();
-    unsupportedDevice->getGraphicDisplay(0)->printStr(
-      0,
-      0,
-      "Unsupported device!",
-      namespace cabl::Canvas::tFont::BIG,
-      namespace cabl::Canvas::tColor::INVERT
-    );
-    unsupportedDevice->getGraphicDisplay(1)->printStr(
-      12,
-      44,
-      "Unsupported device!",
-      namespace cabl::Canvas::tFont::BIG,
-      namespace cabl::Canvas::tColor::INVERT
-    );
-
-    unsupportedDevice->tick();
-    */
-    // Device is known but unsupported by the current Application
   }
 
   return m_connected;
@@ -227,34 +180,6 @@ ClientSingle::tDriverPtr ClientSingle::getDriver(Driver::Type tDriver_)
   }
 
   return m_collDrivers[tDriver_];
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool ClientSingle::isKnownDevice(const DeviceDescriptor& device_) const
-{
-  for (const auto& d : m_collKnownDevices)
-  {
-    if (device_.isSameProduct(d))
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool ClientSingle::isSupportedDevice(const DeviceDescriptor& device_) const
-{
-  for (const auto& d : m_collSupportedDevices)
-  {
-    if (device_.isSameProduct(d))
-    {
-      return true;
-    }
-  }
-  return false;
 }
 
 //--------------------------------------------------------------------------------------------------

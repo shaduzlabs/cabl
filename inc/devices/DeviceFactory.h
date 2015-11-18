@@ -45,6 +45,7 @@ public:
   }
   
   std::shared_ptr<Device> getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
+  bool isKnownDevice(const DeviceDescriptor&) const;
   
   void registerClass(const DeviceDescriptor&, tFnCreate);
 

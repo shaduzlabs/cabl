@@ -36,6 +36,13 @@ std::shared_ptr<Device> DeviceFactory::getDevice(
 
 //--------------------------------------------------------------------------------------------------
 
+bool DeviceFactory::isKnownDevice(const DeviceDescriptor& deviceDescriptor_) const
+{
+  return m_registry.find(deviceDescriptor_) != m_registry.end();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void DeviceFactory::registerClass(
   const DeviceDescriptor& deviceDescriptor_,
   tFnCreate fnCreate_

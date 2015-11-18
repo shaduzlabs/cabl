@@ -59,19 +59,12 @@ private:
 
   tDriverPtr getDriver(Driver::Type);
 
-  bool isKnownDevice(const DeviceDescriptor&) const;
-
-  bool isSupportedDevice(const DeviceDescriptor&) const;
-
   bool        m_appStopped;
   bool        m_connected;
   std::thread m_cablThread;
   
   unsigned                      m_maxConsecutiveErrors;
   
-  Driver::tCollDeviceDescriptor m_collKnownDevices;
-  Driver::tCollDeviceDescriptor m_collSupportedDevices;
-
   tDevicePtr   m_pDevice;
   tCollDrivers m_collDrivers;
 };
