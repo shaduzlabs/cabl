@@ -61,7 +61,7 @@ bool DeviceHandleSAM3XE::read(Transfer& transfer_, uint8_t endpoint_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleSAM3XE::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleSAM3XE::write(const Transfer& transfer_, uint8_t endpoint_)
 {
   int nBytesWritten = transfer_.size();
   if (transfer_ == true)

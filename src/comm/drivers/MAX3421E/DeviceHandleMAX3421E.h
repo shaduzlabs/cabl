@@ -25,11 +25,11 @@ public:
 
   DeviceHandleMAX3421E(tDeviceHandle*);
   ~DeviceHandleMAX3421E();
-  
+
   void disconnect() override;
 
   bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
+  bool write(const Transfer&, uint8_t) override;
 
 private:
 

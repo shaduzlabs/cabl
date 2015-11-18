@@ -19,7 +19,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class DriverSAM3X8E : public DriverImpl, public UsbConfigXtracter
+class DriverSAM3X8E : public DriverImpl
 {
 public:
   DriverSAM3X8E();

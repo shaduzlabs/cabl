@@ -46,7 +46,7 @@ bool DeviceHandleMAX3421E::read(Transfer& transfer_, uint8_t endpoint_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_) const
+bool DeviceHandleMAX3421E::write(const Transfer& transfer_, uint8_t endpoint_)
 {
   return true;
 }

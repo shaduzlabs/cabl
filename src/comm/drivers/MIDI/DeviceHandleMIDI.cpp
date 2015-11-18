@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "DeviceHandleMIDI.h"
+#include "comm/drivers/MIDI/DeviceHandleMIDI.h"
 
 namespace sl
 {
@@ -23,7 +23,7 @@ DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& device_)
   }
   catch (RtMidiError e)
   {
-  
+
   }
 }
 
@@ -45,7 +45,7 @@ void DeviceHandleMIDI::disconnect()
   }
   catch (RtMidiError e)
   {
-  
+
   }
 }
 
@@ -85,7 +85,7 @@ void DeviceHandleMIDI::onMidiMessage(
   {
     return;
   }
-  
+
   DeviceHandleMIDI* pSelf = static_cast<DeviceHandleMIDI*>(pUserData_);
   pSelf->m_cbRead(tRawData{pMessage_->begin(),pMessage_->end()});
 }

@@ -20,7 +20,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class DeviceHandleSAM3XE : public DeviceHandleImpl, public USBDeviceConfig
+class DeviceHandleSAM3XE : public DeviceHandleImpl, public USBDeviceConfig, public UsbConfigXtracter
 {
 public:
   DeviceHandleSAM3XE(std::shared_ptr<USBHost> pUsb_, uint32_t deviceAddress_);
@@ -29,7 +29,7 @@ public:
   void disconnect() override;
 
   bool read(Transfer&, uint8_t) override;
-  bool write(const Transfer&, uint8_t) const override;
+  bool write(const Transfer&, uint8_t) override;
 
 private:
   static constexpr uint8_t kDHSAM3X8E_maxEndpoints = 5;

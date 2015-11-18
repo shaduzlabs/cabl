@@ -447,8 +447,15 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 if(${IS_CABL} AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 add_custom_target( CreateArduinoLibrary
-  command ${CMAKE_SOURCE_DIR}/arduinify.sh ${CMAKE_SOURCE_DIR} artifacts/arduino &&
-     cp ${PROJECT_BINARY_DIR}/cabl-config.h ${CMAKE_SOURCE_DIR}/artifacts/arduino/cabl/cabl-config.h
+  command ${CMAKE_SOURCE_DIR}/arduinify.sh ${CMAKE_SOURCE_DIR} artifacts/arduino
+    && cp ${PROJECT_BINARY_DIR}/cabl-config.h
+          ${CMAKE_SOURCE_DIR}/artifacts/arduino/cabl/cabl-config.h
+    && cp ${PROJECT_BINARY_DIR}/library.properties
+          ${CMAKE_SOURCE_DIR}/artifacts/arduino/cabl/library.properties
+)
+configure_file (
+  "${PROJECT_SOURCE_DIR}/support/arduino/library.properties.in"
+  "${PROJECT_BINARY_DIR}/library.properties"
 )
 endif()
 
