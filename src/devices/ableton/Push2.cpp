@@ -78,16 +78,20 @@ enum class Push2::Led : uint8_t
 {
   TapTempo      = 3,
   Metronome     = 9,
-  Btn1Row1      = 20, // [RG]
-  Btn2Row1      = 21, // [RG]
-  Btn3Row1      = 22, // [RG]
-  Btn4Row1      = 23, // [RG]
-  Btn5Row1      = 24, // [RG]
-  Btn6Row1      = 25, // [RG]
-  Btn7Row1      = 26, // [RG]
-  Btn8Row1      = 27, // [RG]
+  TouchStripTap = 12,
+  Btn1Row1      = 20, // [RGB]
+  Btn2Row1      = 21, // [RGB]
+  Btn3Row1      = 22, // [RGB]
+  Btn4Row1      = 23, // [RGB]
+  Btn5Row1      = 24, // [RGB]
+  Btn6Row1      = 25, // [RGB]
+  Btn7Row1      = 26, // [RGB]
+  Btn8Row1      = 27, // [RGB]
   Master        = 28,
   Stop          = 29,
+  Setup         = 30,
+  Layout        = 31,
+  Convert       = 35,
   Grid1_4       = 36, // [RG]
   Grid1_4T      = 37, // [RG]
   Grid1_8       = 38, // [RG]
@@ -159,6 +163,7 @@ enum class Push2::Button : uint8_t
 {
   TapTempo      = 3,
   Metronome     = 9,
+  TouchStripTap = 12,
   Btn1Row1      = 20,
   Btn2Row1      = 21,
   Btn3Row1      = 22,
@@ -169,6 +174,9 @@ enum class Push2::Button : uint8_t
   Btn8Row1      = 27,
   Master        = 28,
   Stop          = 29,
+  Setup         = 30,
+  Layout        = 31,
+  Convert       = 35,
   Grid1_4       = 36,
   Grid1_4T      = 37,
   Grid1_8       = 38,
@@ -391,9 +399,8 @@ void Push2::setLedImpl(Led led_, const util::LedColor& color_)
   {
     uint8_t currentValue = m_leds[ledIndex];
 
-    m_leds[ledIndex] =
-
-      m_isDirtyLeds = m_isDirtyLeds || currentValue != m_leds[ledIndex];
+    m_leds[ledIndex] = getColorIndex(color_);
+    m_isDirtyLeds = m_isDirtyLeds || currentValue != m_leds[ledIndex];
   }
   else
   {
@@ -409,12 +416,8 @@ void Push2::setLedImpl(Led led_, const util::LedColor& color_)
 
 bool Push2::isRGBLed(Led led_) const noexcept
 {
-  if (Led::Undo < led_ || Led::Btn1Row2 == led_ || Led::Btn2Row2 == led_ || Led::Btn3Row2 == led_
-      || Led::Btn4Row2 == led_
-      || Led::Btn5Row2 == led_
-      || Led::Btn6Row2 == led_
-      || Led::Btn7Row2 == led_
-      || Led::Btn8Row2 == led_)
+  if (Led::Undo < led_ || (Led::Btn1Row1 <= led_ && Led::Btn8Row1 >= led_) ||
+                          (Led::Btn1Row2 <= led_ && Led::Btn8Row2 >= led_) )
   {
     //\todo handle RG leds
     return true;
@@ -435,6 +438,7 @@ Push2::Led Push2::getLed(Device::Button btn_) const noexcept
   {
     M_LED_CASE(TapTempo);
     M_LED_CASE(Metronome);
+    M_LED_CASE(TouchStripTap);
     M_LED_CASE(Btn1Row1);
     M_LED_CASE(Btn2Row1);
     M_LED_CASE(Btn3Row1);
@@ -445,6 +449,9 @@ Push2::Led Push2::getLed(Device::Button btn_) const noexcept
     M_LED_CASE(Btn8Row1);
     M_LED_CASE(Master);
     M_LED_CASE(Stop);
+    M_LED_CASE(Setup);
+    M_LED_CASE(Layout);
+    M_LED_CASE(Convert);
     M_LED_CASE(Grid1_4);
     M_LED_CASE(Grid1_4T);
     M_LED_CASE(Grid1_8);
@@ -532,6 +539,7 @@ Device::Button Push2::getDeviceButton(Button btn_) const noexcept
   {
     M_BTN_CASE(TapTempo);
     M_BTN_CASE(Metronome);
+    M_BTN_CASE(TouchStripTap);
     M_BTN_CASE(Btn1Row1);
     M_BTN_CASE(Btn2Row1);
     M_BTN_CASE(Btn3Row1);
@@ -542,6 +550,9 @@ Device::Button Push2::getDeviceButton(Button btn_) const noexcept
     M_BTN_CASE(Btn8Row1);
     M_BTN_CASE(Master);
     M_BTN_CASE(Stop);
+    M_BTN_CASE(Setup);
+    M_BTN_CASE(Layout);
+    M_BTN_CASE(Convert);
     M_BTN_CASE(Grid1_4);
     M_BTN_CASE(Grid1_4T);
     M_BTN_CASE(Grid1_8);

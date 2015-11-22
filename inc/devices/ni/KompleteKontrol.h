@@ -76,7 +76,7 @@ private:
   GDisplayDummy               m_displayDummy;
   tRawData                    m_leds;
   tRawData                    m_buttons;
-  bool                        m_buttonStates[kKK_nButtons];
+  std::bitset<kKK_nButtons>   m_buttonStates;
   uint16_t                    m_encoderValues[kKK_nEncoders];
   
   bool                        m_isDirtyLeds;

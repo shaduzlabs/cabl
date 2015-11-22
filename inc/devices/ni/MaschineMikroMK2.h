@@ -76,13 +76,13 @@ private:
   std::array<uint8_t, kMikroMK2_ledsDataSize>               m_leds;
   std::array<uint8_t, kMikroMK2_buttonsDataSize>            m_buttons;
   
-  bool                  m_buttonStates[kMikroMK2_nButtons];
-  uint8_t               m_encoderValue;
+  std::bitset<kMikroMK2_nButtons> m_buttonStates;
+  uint8_t                         m_encoderValue;
   
-  uint16_t                      m_padsData[ kMikroMK2_nPads ];
-  std::bitset<kMikroMK2_nPads>  m_padsStatus;
+  uint16_t                        m_padsData[ kMikroMK2_nPads ];
+  std::bitset<kMikroMK2_nPads>    m_padsStatus;
   
-  bool                  m_isDirtyLeds;
+  bool                            m_isDirtyLeds;
 
 };
 

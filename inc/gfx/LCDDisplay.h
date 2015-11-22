@@ -154,15 +154,17 @@ public:
   
   virtual uint8_t getNumberOfCharsPerRow() const noexcept { return m_numCharsPerRow; }
   virtual uint8_t getNumberOfRows() const noexcept { return m_numRows; }
+
+  void setDirty(bool isDirty_){ m_isDirty = isDirty_; }
   
   /** @} */ // End of group Utility
   
   /** @} */ // End of group LCDDisplay
   
 //--------------------------------------------------------------------------------------------------
+
 protected:
 
-  void setDirty(bool isDirty_){ m_isDirty = isDirty_; }
   tRawData& data(){ return m_data; }
   
 private:

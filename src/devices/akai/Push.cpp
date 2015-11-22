@@ -78,6 +78,7 @@ enum class Push::Led : uint8_t
 {
   TapTempo      = 3,
   Metronome     = 9,
+  TouchStripTap = 12,
   Btn1Row1      = 20, // [RG]
   Btn2Row1      = 21, // [RG]
   Btn3Row1      = 22, // [RG]
@@ -159,6 +160,7 @@ enum class Push::Button : uint8_t
 {
   TapTempo      = 3,
   Metronome     = 9,
+  TouchStripTap = 12,
   Btn1Row1      = 20,
   Btn2Row1      = 21,
   Btn3Row1      = 22,
@@ -261,6 +263,11 @@ enum class Push::Encoder : uint8_t
 Push::Push()
   : m_isDirtyLeds(false)
 {
+  for(int i = 0; i < kPush_ledsDataSize; i++)
+  {
+    m_leds[i] = 0;
+    m_ledsPrev[i] = 0;
+  }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -309,11 +316,12 @@ LCDDisplay* Push::getLCDDisplay(uint8_t displayIndex_)
 
 bool Push::tick()
 {
-  bool success = false;
+  bool success = true;
 
   if (m_displays[0].isDirty() || m_displays[1].isDirty() || m_displays[2].isDirty()
       || m_displays[3].isDirty())
   {
+    success = false;
     success = sendDisplayData();
   }
 
@@ -334,6 +342,13 @@ void Push::init()
 
   // Leds
   m_isDirtyLeds = true;
+
+  getDeviceHandle()->readAsync(0, [this](Transfer transfer_)
+    {
+      process(transfer_.getData());
+    }
+  );
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -364,7 +379,10 @@ bool Push::sendDisplayData()
     }
     result = sendSysex({sysexHeader, data});
   }
-
+  for (uint8_t i = 0; i < kPush_nDisplays; i++)
+  {
+    m_displays[i].setDirty(false);
+  }
   return result;
 }
 
@@ -372,13 +390,33 @@ bool Push::sendDisplayData()
 
 bool Push::sendLeds()
 {
-  //  if (m_isDirtyLeds)
+  static const unsigned firstPadLed = static_cast<unsigned>(Led::Pad1);
+ // if (m_isDirtyLeds)
   {
-    if (!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kPush_epOut))
+    for(int i = 0; i < m_leds.size(); i++)
     {
-      return false;
+      if(m_ledsPrev[i] != m_leds[i])
+      {
+        m_ledsPrev[i] = m_leds[i];
+        if(i < firstPadLed)
+        {
+          uint8_t led = static_cast<uint8_t>(i);
+          if (!getDeviceHandle()->write(Transfer({0xB0, led, m_leds[i]}), kPush_epOut))
+          {
+            return false;
+          }
+        }
+        else
+        {
+          uint8_t led = static_cast<uint8_t>(i - firstPadLed + 36);
+          if (!getDeviceHandle()->write(Transfer({0x90, led, m_leds[i]}), kPush_epOut))
+          {
+            return false;
+          }
+        }
+      }
     }
-    m_isDirtyLeds = false;
+ //   m_isDirtyLeds = false;
   }
   return true;
 }
@@ -398,9 +436,8 @@ void Push::setLedImpl(Led led_, const util::LedColor& color_)
   {
     uint8_t currentValue = m_leds[ledIndex];
 
-    m_leds[ledIndex] =
-
-      m_isDirtyLeds = m_isDirtyLeds || currentValue != m_leds[ledIndex];
+    m_leds[ledIndex] = getColorIndex(color_);
+    m_isDirtyLeds = m_isDirtyLeds || currentValue != m_leds[ledIndex];
   }
   else
   {
@@ -442,6 +479,7 @@ Push::Led Push::getLed(Device::Button btn_) const noexcept
   {
     M_LED_CASE(TapTempo);
     M_LED_CASE(Metronome);
+    M_LED_CASE(TouchStripTap);
     M_LED_CASE(Btn1Row1);
     M_LED_CASE(Btn2Row1);
     M_LED_CASE(Btn3Row1);
@@ -539,6 +577,7 @@ Device::Button Push::getDeviceButton(Button btn_) const noexcept
   {
     M_BTN_CASE(TapTempo);
     M_BTN_CASE(Metronome);
+    M_BTN_CASE(TouchStripTap);
     M_BTN_CASE(Btn1Row1);
     M_BTN_CASE(Btn2Row1);
     M_BTN_CASE(Btn3Row1);
@@ -686,12 +725,14 @@ uint8_t Push::getColorIndex(const util::LedColor& color_)
 
 void Push::onNoteOff(NoteOff msg_)
 {
+  processNote(msg_.data()[1], 0);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Push::onNoteOn(NoteOn msg_)
 {
+  processNote(msg_.data()[1], msg_.data()[2]);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -756,6 +797,29 @@ void Push::onUSysExRT(sl::midi::USysExRT msg_)
 
 void Push::onUSysExNonRT(sl::midi::USysExNonRT msg_)
 {
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push::processNote(uint8_t note_, uint8_t velocity_)
+{
+  if(note_<=10)
+  {
+    // Touch encoders
+    uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
+    Device::Button btn = getDeviceButton(static_cast<Button>(note_+offset));
+    buttonChanged(btn, (velocity_>0), m_shiftPressed);
+  }
+  else if(note_==12)
+  {
+    // Pitch bend
+  }
+  else if(note_>=36 && note_<=99)
+  {
+    // Pads
+    Device::Pad pad = static_cast<Device::Pad>(note_ - 36);
+    padChanged(pad, (velocity_>0), m_shiftPressed);
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

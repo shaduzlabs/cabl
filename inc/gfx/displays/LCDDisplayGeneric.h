@@ -42,10 +42,6 @@ private:
   
   std::string alignText(const std::string&, Align align_) const;
   
-  void setDot(uint8_t nDot_, uint8_t row_, bool visible_ = true);
-
-  void resetDots(uint8_t row_);
-
   static constexpr uint8_t kLCDKK_numRows = 4;
   static constexpr uint8_t kLCDKK_numCols = 17;
   

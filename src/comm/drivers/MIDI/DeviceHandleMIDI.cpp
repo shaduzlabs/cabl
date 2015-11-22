@@ -61,7 +61,15 @@ bool DeviceHandleMIDI::read( Transfer& transfer_, uint8_t /* endpoint_ */)
 
 bool DeviceHandleMIDI::write( const Transfer& transfer_, uint8_t /* endpoint_ */)
 {
-  m_midiOut.sendMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.getData())));
+  try
+  {
+    m_midiOut.sendMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.getData())));
+  }
+  catch(RtMidiError)
+  {
+    return false;
+  }
+  
   return true;
 }
 

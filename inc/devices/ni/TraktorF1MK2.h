@@ -70,11 +70,11 @@ private:
   std::array<uint8_t, kF1MK2_buttonsDataSize>     m_buttons;
   std::array<uint8_t, kF1MK2_nLeds>               m_leds;
 
-  bool                        m_buttonStates[kF1MK2_nButtons];
-  uint16_t                    m_potentiometersValues[kF1MK2_nPotentiometers];
-  uint8_t                     m_encoderValue;
+  std::bitset<kF1MK2_nButtons>  m_buttonStates;
+  uint16_t                      m_potentiometersValues[kF1MK2_nPotentiometers];
+  uint8_t                       m_encoderValue;
 
-  bool                        m_isDirtyLeds;  
+  bool                          m_isDirtyLeds;
 };
 
 //--------------------------------------------------------------------------------------------------

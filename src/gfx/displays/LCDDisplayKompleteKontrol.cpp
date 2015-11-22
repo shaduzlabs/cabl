@@ -122,6 +122,7 @@ void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align
   uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
   resetDots(row_);
   setDot(strValue.length()-1+leftFills, row_);
+  strValue.append(std::string( 3-strFractional.length(), '0'));
   strValue.append(strFractional);
   
   setText(strValue, row_, align_);

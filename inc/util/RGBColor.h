@@ -45,9 +45,14 @@ public:
 
   bool operator<(const RGBColor& other_) const
   {
-    return (m_red < other_.m_red) && (m_green < other_.m_green) && (m_blue < other_.m_blue);
+    return getValue() < other_.getValue();
   }  
 
+  unsigned getValue() const
+  {
+    return (m_red << 16) | (m_green << 8) | m_blue;
+  }
+  
 private:
   uint8_t m_red;
   uint8_t m_green;

@@ -47,8 +47,8 @@ private:
   enum class Encoder: uint8_t;
  
   static constexpr uint8_t kPush_nDisplays         = 4;
-  static constexpr uint8_t kPush_nButtons          = 45;
-  static constexpr uint8_t kPush_ledsDataSize      = 78;
+  static constexpr uint8_t kPush_nButtons          = 75;
+  static constexpr uint8_t kPush_ledsDataSize      = 184;
   static constexpr uint8_t kPush_buttonsDataSize   = 138;
   static constexpr uint8_t kPush_padDataSize       = 64;
   static constexpr uint8_t kPush_nPads             = 64;
@@ -81,20 +81,23 @@ private:
   void onUSysExRT(USysExRT msg_) override;
   void onUSysExNonRT(USysExNonRT msg_) override;
   
+  void processNote(uint8_t, uint8_t);
+  
   LCDDisplayGeneric     m_displays[kPush_nDisplays];
   
   std::array<uint8_t, kPush_ledsDataSize>   m_leds;
+  std::array<uint8_t, kPush_ledsDataSize>   m_ledsPrev;
   
   bool                  m_shiftPressed;
   
   bool                  m_isDirtyLeds;
-  
+
   std::map<util::RGBColor,uint8_t>  m_colorsCache;
 };
   
 //--------------------------------------------------------------------------------------------------
 
-M_REGISTER_DEVICE_CLASS(Push,"Ableton Push Live Port", DeviceDescriptor::Type::MIDI, 0x0047, 0x1500);
+M_REGISTER_DEVICE_CLASS(Push,"Ableton Push User Port", DeviceDescriptor::Type::MIDI, 0x0047, 0x1500);
   
 //--------------------------------------------------------------------------------------------------
 
