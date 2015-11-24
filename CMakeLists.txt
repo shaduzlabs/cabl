@@ -31,6 +31,7 @@ endif()
 option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
 option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
+option(CABL_PYTHON    "Build python binding" ${IS_CABL})
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
@@ -58,9 +59,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   addLibUSB()
   addRtMidi()
 else()
-  find_package(hidapi)
-  find_package(libusb)
-  find_package(rtmidi)
+  find_package(hidapi REQUIRED)
+  find_package(libusb REQUIRED)
+  find_package(rtmidi REQUIRED)
+  find_package(Boost  COMPONENTS python)
+  if(Boost_PYTHON_FOUND)
+    find_package(PythonLibs)
+  endif()
 endif()
 
 # Unmidify --------------------------------------------------------------------------------------- #
@@ -382,6 +387,7 @@ set_target_properties(
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
+target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
 
 add_library( cabl-static STATIC ${cabl_ALL} )
 set_target_properties(
@@ -391,21 +397,41 @@ set_target_properties(
     OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
+target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+
+if(CABL_PYTHON)
+  set(
+    cabl_python_SRCS
+      src/py/pyCabl.cpp
+  )
+
+  source_group("py"              FILES ${cabl_python_SRCS})
+
+  if(NOT Boost_PYTHON_FOUND)
+    message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
+  else()
+    add_library( pycabl SHARED ${cabl_ALL} ${cabl_python_SRCS})
+    set_target_properties(
+      pycabl
+      PROPERTIES
+        VERSION             "${CABL_VERSION_STRING}"
+        OUTPUT_NAME         "py${LIBRARY_FILE_NAME}"
+        SUFFIX              ".so"
+        PREFIX              ""
+    )
+    target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+    target_link_libraries( pycabl PUBLIC ${Boost_PYTHON_LIBRARY} ${PYTHON_LIBRARIES})
+    target_include_directories(pycabl PUBLIC ${PYTHON_INCLUDE_DIRS})
+  endif()
+endif()
 
 # OS X and Linux --------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  target_link_libraries( cabl PUBLIC usb hidapi-libusb rtmidi pthread)
-  target_link_libraries( cabl-static PUBLIC hidapi-libusb usb-1.0 rtmidi pthread)
-  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
-  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
-endif()
-
-if(APPLE)
-  target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
-  target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
-#  message(FATAL_ERROR "paths ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES}")
-
+  target_link_libraries( cabl PUBLIC pthread)
+  target_link_libraries( cabl-static PUBLIC pthread)
+#  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+#  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 endif()
 
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -413,7 +439,7 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   if(${IS_CABL})
 
     install (TARGETS    cabl             DESTINATION lib)
-    install (TARGETS    cabl-static       DESTINATION lib)
+    install (TARGETS    cabl-static      DESTINATION lib)
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -440,8 +466,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
       EXCLUDE_FROM_ALL            TRUE
       EXCLUDE_FROM_DEFAULT_BUILD  TRUE
   )
-  target_link_libraries( cabl        ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
-  target_link_libraries( cabl-static  ${rtmidi_LIBRARIES} ${libusb_LIBRARIES} ${hidapi_LIBRARIES} setupapi.lib)
+  target_link_libraries( cabl         setupapi.lib)
+  target_link_libraries( cabl-static  setupapi.lib)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
