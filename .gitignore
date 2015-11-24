@@ -2,6 +2,7 @@
 build/
 artifacts/
 ipch/
+.env/
 cmake_install.cmake
 Makefile
 
