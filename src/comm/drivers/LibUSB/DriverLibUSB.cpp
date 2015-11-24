@@ -43,6 +43,7 @@ DriverLibUSB::DriverLibUSB()
   
 DriverLibUSB::~DriverLibUSB()
 {
+  M_LOG("[LibUSB] shutting down...");
   m_usbThreadRunning = false;
   struct timeval tv = { 1, 0 };
   int completed = 0;

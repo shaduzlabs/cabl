@@ -64,6 +64,12 @@ public:
 
 private:
 
+  friend std::ostream& operator<<(std::ostream& out_, const LedColor& lc_)
+  {
+    out_ << lc_.m_red << "," << lc_.m_green << "," << lc_.m_blue << "," << lc_.m_mono;
+    return out_;
+  }
+  
   unsigned m_red;
   unsigned m_green;
   unsigned m_blue;

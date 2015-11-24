@@ -98,7 +98,7 @@ private:
   
 //--------------------------------------------------------------------------------------------------
 
-M_REGISTER_DEVICE_CLASS(MaschineMK1, "", DeviceDescriptor::Type::USB, 0x17CC, 0x0808);
+M_REGISTER_DEVICE_CLASS(MaschineMK1, "Maschine Controller", DeviceDescriptor::Type::USB, 0x17CC, 0x0808);
 
 //--------------------------------------------------------------------------------------------------
 

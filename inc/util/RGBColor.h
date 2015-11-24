@@ -9,6 +9,7 @@
 
 #include "Functions.h"
 #include <cmath>
+#include <iomanip>
 
 namespace sl
 {
@@ -54,6 +55,13 @@ public:
   }
   
 private:
+
+  friend std::ostream& operator<<(std::ostream& out_, const RGBColor& lc_)
+  {
+    out_ << std::hex << std::setw(6) << lc_.getValue() << std::dec;
+    return out_;
+  }
+  
   uint8_t m_red;
   uint8_t m_green;
   uint8_t m_blue;

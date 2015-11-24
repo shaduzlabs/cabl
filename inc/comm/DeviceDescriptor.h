@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <string>
+#include <iostream>
 
 namespace sl
 {
@@ -86,8 +86,36 @@ public:
            (m_productId == other_.m_productId);
   }
   
+  static std::string toString(Type type_)
+  {
+#define M_TYPE_CASE(item) case Type::item: return #item
+    switch(type_)
+    {
+      M_TYPE_CASE(USB);
+      M_TYPE_CASE(HID);
+      M_TYPE_CASE(MIDI);
+      M_TYPE_CASE(Unknown);
+      default:
+      {
+        return "Unknown";
+      }
+    }
+#undef M_TYPE_CASE
+  }
+  
 private:
 
+  friend std::ostream& operator<<(std::ostream& out_, const DeviceDescriptor& dd_)
+  {
+    out_ << dd_.m_name << "["
+              << DeviceDescriptor::toString(dd_.m_type)
+              << ":" << std::hex << dd_.m_vendorId << std::dec
+              << ":" << std::hex << dd_.m_productId << std::dec
+              << ":" << dd_.m_serialNumber
+              << "]";
+    return out_;
+  }
+  
   std::string     m_name;
   Type            m_type{Type::Unknown};
   tVendorId       m_vendorId;
@@ -98,6 +126,6 @@ private:
 };
 
 //--------------------------------------------------------------------------------------------------
-
+  
 } // cabl
 } // sl

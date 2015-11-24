@@ -37,6 +37,8 @@ public:
   virtual ~ClientSingle();
 
   void run();
+  void stop();
+  
   static Driver::tCollDeviceDescriptor enumerateDevices();
   bool connect(const DeviceDescriptor&);
     

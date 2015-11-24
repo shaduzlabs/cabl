@@ -84,11 +84,20 @@ void ClientSingle::run()
         }
         else
         {
+          M_LOG("[Application] waiting for a device" );
           std::this_thread::yield();
         }
       }
     }
   );
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::stop()
+{
+  m_connected = false;
+  m_clientStopped = true;
 }
 
 //--------------------------------------------------------------------------------------------------

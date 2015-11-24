@@ -214,22 +214,14 @@ public:
 
   enum class Pad : uint8_t
   {
-    Pad13,
-    Pad14,
-    Pad15,
-    Pad16,
-    Pad9,
-    Pad10,
-    Pad11,
-    Pad12,
-    Pad5,
-    Pad6,
-    Pad7,
-    Pad8,
-    Pad1,
-    Pad2,
-    Pad3,
-    Pad4,
+    Pad1,   Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
+    Pad9,  Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
+    Pad17, Pad18, Pad19, Pad20, Pad21, Pad22, Pad23, Pad24,
+    Pad25, Pad26, Pad27, Pad28, Pad29, Pad30, Pad31, Pad32,
+    Pad33, Pad34, Pad35, Pad36, Pad37, Pad38, Pad39, Pad40,
+    Pad41, Pad42, Pad43, Pad44, Pad45, Pad46, Pad47, Pad48,
+    Pad49, Pad50, Pad51, Pad52, Pad53, Pad54, Pad55, Pad56,
+    Pad57, Pad58, Pad59, Pad60, Pad61, Pad62, Pad63, Pad64,
     Unknown,
   };
 
