@@ -96,30 +96,6 @@ set(
 )
 
 set(
-  inc_devices_ableton_INCLUDES
-    inc/devices/ableton/Push2.h
-)
-
-set(
-  inc_devices_akai_INCLUDES
-    inc/devices/akai/Push.h
-)
-
-set(
-  inc_devices_generic_INCLUDES
-    inc/devices/generic/USBMidi.h
-)
-
-set(
-  inc_devices_ni_INCLUDES
-    inc/devices/ni/KompleteKontrol.h
-    inc/devices/ni/MaschineMK1.h
-    inc/devices/ni/MaschineMK2.h
-    inc/devices/ni/MaschineMikroMK2.h
-    inc/devices/ni/TraktorF1MK2.h
-)
-
-set(
   inc_gfx_displays_INCLUDES
     inc/gfx/displays/GDisplayDummy.h
     inc/gfx/displays/GDisplayMaschineMikro.h
@@ -158,10 +134,6 @@ set(
 source_group("inc\\app"              FILES ${inc_app_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
-source_group("inc\\devices\\ableton" FILES ${inc_devices_ableton_INCLUDES})
-source_group("inc\\devices\\akai"    FILES ${inc_devices_akai_INCLUDES})
-source_group("inc\\devices\\generic" FILES ${inc_devices_generic_INCLUDES})
-source_group("inc\\devices\\ni"      FILES ${inc_devices_ni_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
 source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
@@ -256,25 +228,33 @@ set(
 
 set(
   src_devices_ableton_SRCS
+    src/devices/ableton/Push2.h
     src/devices/ableton/Push2.cpp
 )
 
 set(
   src_devices_akai_SRCS
+    src/devices/akai/Push.h
     src/devices/akai/Push.cpp
 )
 
 set(
   src_devices_generic_SRCS
+    src/devices/generic/USBMidi.h
     src/devices/generic/USBMidi.cpp
 )
 
 set(
   src_devices_ni_SRCS
+    src/devices/ni/KompleteKontrol.h
     src/devices/ni/KompleteKontrol.cpp
+    src/devices/ni/MaschineMK1.h
     src/devices/ni/MaschineMK1.cpp
+    src/devices/ni/MaschineMK2.h
     src/devices/ni/MaschineMK2.cpp
+    src/devices/ni/MaschineMikroMK2.h
     src/devices/ni/MaschineMikroMK2.cpp
+    src/devices/ni/TraktorF1MK2.h
     src/devices/ni/TraktorF1MK2.cpp
 )
 
