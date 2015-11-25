@@ -23,6 +23,7 @@ using namespace boost::python;
 /*
 useful links:
 - https://misspent.wordpress.com/2009/10/11/boost-python-and-handling-python-exceptions/
+- http://stackoverflow.com/questions/1418015/how-to-get-python-exception-text
 */
 
 //--------------------------------------------------------------------------------------------------
@@ -46,6 +47,34 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
+std::string PyErrorString()
+{
+  try
+  {
+    PyObject *ptype, *value, *tb;
+    boost::python::object formattedList;
+    boost::python::object formatted;
+    PyErr_Fetch(&ptype, &value, &tb);
+    if (!ptype)
+    {
+      return "UNKNOWN error";
+    }
+    boost::python::handle<> hexc(ptype), hval(boost::python::allow_null(value)),
+      htb(boost::python::allow_null(tb));
+    boost::python::object traceback(boost::python::import("traceback"));
+    boost::python::object format_exception_only(traceback.attr("format_exception_only"));
+    formattedList = format_exception_only(hexc, hval);
+    formatted = boost::python::str("\n").join(formattedList);
+    return boost::python::extract<std::string>(formatted);
+  }
+  catch (...)
+  {
+    return "Error while trying to get python error";
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void registerClientCallbacks(
   ClientSingle& rClass,
   object onConnected_,
@@ -62,7 +91,7 @@ void registerClientCallbacks(
       }
       catch (const error_already_set&)
       {
-        M_LOG("[pyCabl:registerClientCallbacks] exception in the onConnected callback");
+        M_LOG("[pyCabl:registerClientCallbacks::onConnected] exception: " << PyErrorString());
       }
     },
     [onTick_](){
@@ -73,7 +102,7 @@ void registerClientCallbacks(
       }
       catch (const error_already_set& e)
       {
-        M_LOG("[pyCabl:registerClientCallbacks] exception in the onTick callback");
+        M_LOG("[pyCabl:registerClientCallbacks::onTick] exception: " << PyErrorString());
       }
     },
     [onDisconnected_](){
@@ -84,7 +113,7 @@ void registerClientCallbacks(
       }
       catch (const error_already_set& e)
       {
-        M_LOG("[pyCabl:registerClientCallbacks] exception in the onDisconnected callback");
+        M_LOG("[pyCabl:registerClientCallbacks::onDisconnected] exception: " << PyErrorString());
       }
     }
   );
