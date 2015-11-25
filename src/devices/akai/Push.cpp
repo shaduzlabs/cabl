@@ -342,6 +342,7 @@ void Push::init()
 
   // Leds
   m_isDirtyLeds = true;
+  std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
 
   getDeviceHandle()->readAsync(0, [this](Transfer transfer_)
     {

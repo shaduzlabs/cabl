@@ -334,6 +334,7 @@ void Push2::init()
   initDisplay();
 
   // Leds
+  std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
   m_isDirtyLeds = true;
 }
 

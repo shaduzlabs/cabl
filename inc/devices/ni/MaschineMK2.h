@@ -8,6 +8,7 @@
 #pragma once
 
 #include <bitset>
+#include <array>
 
 #include "devices/Device.h"
 #include "gfx/displays/GDisplayMaschineMK2.h"
@@ -46,12 +47,14 @@ private:
  
   static constexpr uint8_t kMASMK2_nDisplays         = 2;
   static constexpr uint8_t kMASMK2_nButtons          = 48;
-  static constexpr uint8_t kMASMK2_ledsDataSize      = 56;
   static constexpr uint8_t kMASMK2_buttonsDataSize   = 8;
   static constexpr uint8_t kMASMK2_padDataSize       = 64;
   static constexpr uint8_t kMASMK2_nPads             = 16;
   static constexpr uint8_t kMASMK2_padsBufferSize    = 16;
   static constexpr uint8_t kMASMK2_nEncoders         = 9;
+  static constexpr uint8_t kMASMK2_nLedsButtons      = 32;
+  static constexpr uint8_t kMASMK2_nLedsGroups       = 57;
+  static constexpr uint8_t kMASMK2_nLedsPads         = 49;
 
   void init() override;
 
@@ -74,11 +77,12 @@ private:
 
   GDisplayMaschineMK2 m_displays[kMASMK2_nDisplays];
   
-  tRawData            m_ledsButtons;
-  tRawData            m_ledsGroups;
-  tRawData            m_ledsPads;
+  std::array<uint8_t, kMASMK2_nLedsButtons> m_ledsButtons;
+  std::array<uint8_t, kMASMK2_nLedsGroups> m_ledsGroups;
+  std::array<uint8_t, kMASMK2_nLedsPads> m_ledsPads;
+  
+  std::array<uint8_t, kMASMK2_buttonsDataSize> m_buttons;
 
-  tRawData            m_buttons;
   std::bitset<kMASMK2_nButtons> m_buttonStates;
   uint16_t                      m_encoderValues[kMASMK2_nEncoders];
   

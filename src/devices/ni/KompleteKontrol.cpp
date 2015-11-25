@@ -771,6 +771,7 @@ bool KompleteKontrolBase::tick()
 
 void KompleteKontrolBase::init()
 {
+  std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
   getDeviceHandle()->write(Transfer({0xA0, 0x00, 0x00}), kKK_epOut);
 }
 

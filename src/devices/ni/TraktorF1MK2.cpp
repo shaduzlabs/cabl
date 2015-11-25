@@ -213,6 +213,7 @@ bool TraktorF1MK2::tick()
 
 void TraktorF1MK2::init()
 {
+  std::fill(m_leds.begin(), m_leds.end(), 0);
   getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kF1MK2_epOut);
 }
 

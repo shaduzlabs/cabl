@@ -62,6 +62,7 @@ void ClientSingle::run()
         
         if(m_connected)
         {
+          m_pDevice->init();
           onConnected();
           M_LOG("[Application] run: device connected" );
           unsigned nErrors = 0;
@@ -186,7 +187,6 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
   if (deviceHandle)
   {
     m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
-    m_pDevice->init();
     m_connected = (m_pDevice != nullptr);
   }
 

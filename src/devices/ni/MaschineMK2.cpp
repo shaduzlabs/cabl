@@ -189,12 +189,6 @@ MaschineMK2::MaschineMK2()
   , m_pMidiout(new RtMidiOut)
 #endif
 {
-  m_buttons.resize(kMASMK2_buttonsDataSize);
-  m_ledsButtons.resize(kMASMK2_ledsDataSize);
-  m_ledsButtons.resize(32);
-  m_ledsGroups.resize(57);
-  m_ledsPads.resize(49);
-
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::string portName;
   unsigned nPorts = m_pMidiout->getPortCount();
@@ -324,6 +318,9 @@ void MaschineMK2::init()
   m_displays[1].white();
 
   // Leds
+  std::fill( std::begin( m_ledsButtons ), std::end( m_ledsButtons ), 0 );
+  std::fill( std::begin( m_ledsGroups ), std::end( m_ledsGroups ), 0 );
+  std::fill( std::begin( m_ledsPads ), std::end( m_ledsPads ), 0 );
   m_isDirtyButtonLeds = true;
   m_isDirtyGroupLeds = true;
   m_isDirtyPadLeds = true;
