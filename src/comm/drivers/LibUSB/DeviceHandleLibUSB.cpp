@@ -29,6 +29,7 @@ DeviceHandleLibUSB::DeviceHandleLibUSB(libusb_device_handle* pCurrentDevice_)
 
 DeviceHandleLibUSB::~DeviceHandleLibUSB()
 {
+  M_LOG("[DeviceHandleLibUSB] destructor");
   disconnect();
 }
 
@@ -39,6 +40,7 @@ void DeviceHandleLibUSB::disconnect()
   if( m_pCurrentDevice != nullptr )
   {
     libusb_close( m_pCurrentDevice );
+    M_LOG("[DeviceHandleLibUSB] disconnect: device closed");
     m_pCurrentDevice = nullptr;
   }
 }

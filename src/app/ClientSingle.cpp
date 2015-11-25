@@ -32,6 +32,7 @@ ClientSingle::ClientSingle()
 
 ClientSingle::~ClientSingle()
 {
+  M_LOG("[ClientSingle] destructor");
   if (m_cablThread.joinable())
   {
     m_cablThread.join();
@@ -62,6 +63,7 @@ void ClientSingle::run()
         if(m_connected)
         {
           onConnected();
+          M_LOG("[Application] run: device connected" );
           unsigned nErrors = 0;
           while (m_connected)
           {
@@ -84,7 +86,6 @@ void ClientSingle::run()
         }
         else
         {
-          M_LOG("[Application] waiting for a device" );
           std::this_thread::yield();
         }
       }
@@ -96,6 +97,7 @@ void ClientSingle::run()
 
 void ClientSingle::stop()
 {
+  M_LOG("[ClientSingle] stop");
   m_connected = false;
   m_clientStopped = true;
 }
@@ -189,6 +191,35 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
   }
 
   return m_connected;
+}
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::setLed(Device::Button btn_, const util::LedColor& color_)
+{
+  if(m_pDevice)
+  {
+    m_pDevice->setLed(btn_, color_);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::setLed(Device::Pad pad_, const util::LedColor& color_)
+{
+  if(m_pDevice)
+  {
+    m_pDevice->setLed(pad_, color_);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ClientSingle::setLed(Device::Key key_, const util::LedColor& color_)
+{
+  if(m_pDevice)
+  {
+    m_pDevice->setLed(key_, color_);
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

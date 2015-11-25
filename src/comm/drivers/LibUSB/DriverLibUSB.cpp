@@ -31,7 +31,8 @@ DriverLibUSB::DriverLibUSB()
     {
       while (m_usbThreadRunning)
       {
-       libusb_handle_events(m_pContext);
+        libusb_handle_events(m_pContext);
+//      std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
     }
   );

@@ -20,28 +20,65 @@ using namespace boost::python;
 
 //--------------------------------------------------------------------------------------------------
 
+class GILLock
+{
+public:
+  GILLock()
+  {
+    m_state = PyGILState_Ensure();
+  }
+  
+  ~GILLock()
+  {
+    PyGILState_Release(m_state);
+  }
+  
+private:
+  PyGILState_STATE m_state;
+};
+
+//--------------------------------------------------------------------------------------------------
+
 void registerClientCallbacks(
-  ClientSingle* pClass,
+  ClientSingle& rClass,
   object onConnected_,
   object onTick_,
   object onDisconnected_
 )
 {
-  return pClass->setCallbacks(
+  rClass.setCallbacks(
     [onConnected_](){
-      PyGILState_STATE gstate = PyGILState_Ensure();
-      onConnected_();
-      PyGILState_Release(gstate);
+      GILLock lock;
+      try
+      {
+        onConnected_();
+      }
+      catch (const error_already_set& e)
+      {
+        M_LOG("[pyCabl:registerClientCallbacks] exception in the onConnected callback");
+      }
     },
     [onTick_](){
-      PyGILState_STATE gstate = PyGILState_Ensure();
-      onTick_();
-      PyGILState_Release(gstate);
+      GILLock lock;
+      try
+      {
+        onTick_();
+      }
+      catch (const error_already_set& e)
+      {
+        M_LOG("[pyCabl:registerClientCallbacks] exception in the onTick callback");
+      }
     },
     [onDisconnected_](){
-      PyGILState_STATE gstate = PyGILState_Ensure();
-      onDisconnected_();
-      PyGILState_Release(gstate);
+      GILLock lock;
+      try
+      {
+        onDisconnected_();
+      }
+      catch (const error_already_set& e)
+      {
+        M_LOG("[pyCabl:registerClientCallbacks] exception in the onDisconnected callback");
+      }
     }
   );
 }
@@ -142,12 +179,15 @@ void onDeviceDisconnected(PyObject* callable)
 
 BOOST_PYTHON_MODULE(pycabl)
 {
+  Py_Initialize();
+  PyEval_InitThreads();
+
   enum_<DeviceDescriptor::Type>("DeviceDescriptorType")
-        .value("USB", DeviceDescriptor::Type::USB)
-        .value("MIDI", DeviceDescriptor::Type::MIDI)
-        .value("HID", DeviceDescriptor::Type::HID)
-        .value("Unknown", DeviceDescriptor::Type::Unknown)
-        ;
+  .value("USB", DeviceDescriptor::Type::USB)
+  .value("MIDI", DeviceDescriptor::Type::MIDI)
+  .value("HID", DeviceDescriptor::Type::HID)
+  .value("Unknown", DeviceDescriptor::Type::Unknown)
+  ;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -289,13 +329,17 @@ BOOST_PYTHON_MODULE(pycabl)
 #undef M_POT_DEF
 
 //--------------------------------------------------------------------------------------------------
- 
+ /*
   class_<DeviceFactory, std::shared_ptr<DeviceFactory>, boost::noncopyable >("DeviceFactory",no_init)
     .def("instance",&deviceFactory )
     .staticmethod("instance")
   ;
-
+*/
 //--------------------------------------------------------------------------------------------------
+
+  void (ClientSingle::*setLed_btn)(Device::Button, const util::LedColor&) = &ClientSingle::setLed;
+  void (ClientSingle::*setLed_pad)(Device::Pad, const util::LedColor&) = &ClientSingle::setLed;
+  void (ClientSingle::*setLed_key)(Device::Key, const util::LedColor&) = &ClientSingle::setLed;
 
   class_<ClientSingle, boost::noncopyable>("ClientSingle")
     .def("enumerateDevices",&enumerateDevices).staticmethod("enumerateDevices")
@@ -303,6 +347,9 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("connect", &ClientSingle::connect)
     .def("run",&ClientSingle::run)
     .def("stop",&ClientSingle::stop)
+    .def("setLedButton", setLed_btn)
+    .def("setLedPad", setLed_pad)
+    .def("setLedKey", setLed_key)
   ;
   
 //--------------------------------------------------------------------------------------------------
@@ -321,6 +368,32 @@ BOOST_PYTHON_MODULE(pycabl)
         return_value_policy<copy_const_reference>() )
   ;
 
+//--------------------------------------------------------------------------------------------------
+  
+  /*
+
+  void (Device::*setLed_btn)(Device::Button, const util::LedColor&) = &Device::setLed;
+  void (Device::*setLed_pad)(Device::Pad, const util::LedColor&) = &Device::setLed;
+  void (Device::*setLed_key)(Device::Key, const util::LedColor&) = &Device::setLed;
+  
+  class_<Device, boost::noncopyable>("Device")
+    .def("setLedButton", pure_virtual(setLed_btn))
+    .def("setLedPad", setLed_pad)
+    .def("setLedKey", setLed_key)
+  ;
+  class_<MaschineMK1, bases<Device> >("MaschineMK1");
+  class_<MaschineMK2, bases<Device> >("MaschineMK2");
+  class_<MaschineMikroMK2, bases<Device> >("MaschineMikroMK2");
+  class_<TraktorF1MK2, bases<Device> >("TraktorF1MK2");
+  class_<KompleteKontrolS25, bases<Device> >("KompleteKontrolS25");
+  class_<KompleteKontrolS49, bases<Device> >("KompleteKontrolS49");
+  class_<KompleteKontrolS61, bases<Device> >("KompleteKontrolS61");
+  class_<KompleteKontrolS88, bases<Device> >("KompleteKontrolS88");
+  class_<Push, bases<Device> >("Push");
+  class_<Push2, bases<Device> >("Push2");
+  
+  */
+  
 //--------------------------------------------------------------------------------------------------
 
   class_<util::LedColor>("LedColor", init<uint8_t>())

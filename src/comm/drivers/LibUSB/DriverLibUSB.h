@@ -34,7 +34,7 @@ public:
 private:
 
   std::string getStringDescriptor(libusb_device_handle*, uint8_t);
-  bool                            m_usbThreadRunning;
+  std::atomic<bool>               m_usbThreadRunning;
   std::thread                     m_usbThread;
   libusb_context*                 m_pContext;
 };

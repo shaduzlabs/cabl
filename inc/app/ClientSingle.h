@@ -36,6 +36,9 @@ public:
   ClientSingle();
   virtual ~ClientSingle();
 
+  ClientSingle(const ClientSingle&) = delete;
+  ClientSingle& operator=(const ClientSingle&) = delete;
+
   void run();
   void stop();
   
@@ -53,6 +56,11 @@ public:
   {
     return m_pDevice;
   }
+  
+  void setLed(Device::Button, const util::LedColor&);
+
+  void setLed(Device::Pad, const util::LedColor&);
+  void setLed(Device::Key, const util::LedColor&);
   
 private:
 

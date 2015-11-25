@@ -1,4 +1,5 @@
 from pycabl import *
+import time
 
 class CablClient:
     'The cabl client class'
@@ -6,11 +7,15 @@ class CablClient:
     def __init__(self):
         self.client = ClientSingle()
         self.client.registerCallbacks(self.onConnect, self.onTick, self.onDisconnect)
-        self.device = None
+
+    def __del__(self):
+        'Destructor'
+        del self.client
+        print "Destructor"
 
     def run(self):
         'Start the client loop'
-        self.client.stop()
+        self.client.run()
         print "Client started"
 
     def stop(self):
@@ -24,7 +29,6 @@ class CablClient:
 
     def onTick(self):
         'Called periodically while the device is connected'
-        print( ".")
 
     def onDisconnect(self):
         'Called when a known device is disconnected'
@@ -52,7 +56,26 @@ class CablClient:
             self.connect(deviceDescriptors[0])
 
 
+#time.sleep(12)
 theClient = CablClient()
 theClient.run()
 theClient.discoverAndConnect()
-theClient.stop()
+theClient.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
+theClient.client.setLedPad(Pad.Pad2, LedColor(0,110,0))
+theClient.client.setLedPad(Pad.Pad3, LedColor(0,100,0))
+theClient.client.setLedPad(Pad.Pad4, LedColor(0,95, 0))
+theClient.client.setLedPad(Pad.Pad5, LedColor(0,90, 0))
+theClient.client.setLedPad(Pad.Pad6, LedColor(0,85, 0))
+theClient.client.setLedPad(Pad.Pad7, LedColor(0,80, 0))
+theClient.client.setLedPad(Pad.Pad8, LedColor(0,75, 0))
+theClient.client.setLedPad(Pad.Pad9, LedColor(0,70, 0))
+theClient.client.setLedPad(Pad.Pad10,LedColor(0,60, 0))
+theClient.client.setLedPad(Pad.Pad11,LedColor(0,50, 0))
+theClient.client.setLedPad(Pad.Pad12,LedColor(0,40, 0))
+theClient.client.setLedPad(Pad.Pad13,LedColor(0,35, 0))
+theClient.client.setLedPad(Pad.Pad14,LedColor(0,30, 0))
+theClient.client.setLedPad(Pad.Pad15,LedColor(0,20, 0))
+theClient.client.setLedPad(Pad.Pad16,LedColor(0,10, 0))
+
+while True:
+    time.sleep(1)
