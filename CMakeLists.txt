@@ -76,8 +76,8 @@ addUnmidify()
 # Includes --------------------------------------------------------------------------------------- #
 
 set(
-  inc_app_INCLUDES
-    inc/app/ClientSingle.h
+  inc_client_INCLUDES
+    inc/client/Client.h
 )
 
 set(
@@ -120,7 +120,7 @@ set(
     inc/cabl.h
 )
 
-source_group("inc\\app"              FILES ${inc_app_INCLUDES})
+source_group("inc\\client"           FILES ${inc_client_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
@@ -129,7 +129,7 @@ source_group("inc"                   FILES ${inc_INCLUDES})
 
 set (
   cabl_INCLUDES
-    ${inc_app_INCLUDES}
+    ${inc_client_INCLUDES}
     ${inc_comm_INCLUDES}
     ${inc_devices_INCLUDES}
     ${inc_devices_ableton_INCLUDES}
@@ -147,8 +147,8 @@ set (
 # Source files ----------------------------------------------------------------------------------- #
 
 set(
-  src_app_SRCS
-    src/app/ClientSingle.cpp
+  src_client_SRCS
+    src/client/Client.cpp
 )
 
 set(
@@ -295,7 +295,7 @@ set(
     src/cabl.cpp
 )
 
-source_group("src\\app"              FILES ${src_app_SRCS})
+source_group("src\\client"           FILES ${src_client_SRCS})
 source_group("src\\comm"             FILES ${src_comm_SRCS})
 #source_group("src\\comm\\drivers")
 
@@ -322,7 +322,7 @@ source_group("src"                   FILES ${src_SRCS})
 set(
   cabl_SRCS
     ${src_SRCS}
-    ${src_app_SRCS}
+    ${src_client_SRCS}
     ${src_comm_drivers_HIDAPI_SRCS}
     ${src_comm_drivers_LibUSB_SRCS}
     ${src_comm_drivers_MIDI_SRCS}

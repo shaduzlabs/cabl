@@ -76,7 +76,7 @@ std::string PyErrorString()
 //--------------------------------------------------------------------------------------------------
 
 void registerClientCallbacks(
-  ClientSingle& rClass,
+  Client& rClass,
   object onConnected_,
   object onTick_,
   object onDisconnected_
@@ -147,7 +147,7 @@ std::shared_ptr<DeviceFactory> deviceFactory()
 
 list enumerateDevices()
 {
-  return toPythonList(ClientSingle::enumerateDevices());
+  return toPythonList(Client::enumerateDevices());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -373,16 +373,16 @@ BOOST_PYTHON_MODULE(pycabl)
 */
 //--------------------------------------------------------------------------------------------------
 
-  void (ClientSingle::*setLed_btn)(Device::Button, const util::LedColor&) = &ClientSingle::setLed;
-  void (ClientSingle::*setLed_pad)(Device::Pad, const util::LedColor&) = &ClientSingle::setLed;
-  void (ClientSingle::*setLed_key)(Device::Key, const util::LedColor&) = &ClientSingle::setLed;
+  void (Client::*setLed_btn)(Device::Button, const util::LedColor&) = &Client::setLed;
+  void (Client::*setLed_pad)(Device::Pad, const util::LedColor&) = &Client::setLed;
+  void (Client::*setLed_key)(Device::Key, const util::LedColor&) = &Client::setLed;
 
-  class_<ClientSingle, boost::noncopyable>("ClientSingle")
+  class_<Client, boost::noncopyable>("Client")
     .def("enumerateDevices",&enumerateDevices).staticmethod("enumerateDevices")
     .def("registerCallbacks", &registerClientCallbacks, args("onConnect","onTick","onDisconnect"))
-    .def("connect", &ClientSingle::connect)
-    .def("run",&ClientSingle::run)
-    .def("stop",&ClientSingle::stop)
+    .def("connect", &Client::connect)
+    .def("run",&Client::run)
+    .def("stop",&Client::stop)
     .def("setLedButton", setLed_btn)
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)

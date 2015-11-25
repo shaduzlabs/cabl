@@ -5,7 +5,7 @@ class CablClient:
     'The cabl client class'
 
     def __init__(self):
-        self.client = ClientSingle()
+        self.client = Client()
         self.client.registerCallbacks(self.onConnect, self.onTick, self.onDisconnect)
 
     def __del__(self):

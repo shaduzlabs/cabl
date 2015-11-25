@@ -96,7 +96,7 @@ private:
   Device::Pad getPad(uint8_t padIndex_);
   uint8_t getPadIndex(Device::Pad pad_);
 
-  ClientSingle       m_client;
+  Client       m_client;
   
   Sequence<uint16_t> m_sequences[3];
 

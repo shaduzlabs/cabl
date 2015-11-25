@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "app/ClientSingle.h"
+#include "client/Client.h"
 
 #include "devices/DeviceFactory.h"
 #include "devices/ableton/Push2.h"

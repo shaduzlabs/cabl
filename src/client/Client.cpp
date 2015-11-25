@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "app/ClientSingle.h"
+#include "client/Client.h"
 
 #include <algorithm>
 #include <thread> //remove and use a custom sleep function!
@@ -23,16 +23,16 @@ namespace sl
 namespace cabl
 {
 
-ClientSingle::ClientSingle()
+Client::Client()
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-ClientSingle::~ClientSingle()
+Client::~Client()
 {
-  M_LOG("[ClientSingle] destructor");
+  M_LOG("[Client] destructor");
   if (m_cablThread.joinable())
   {
     m_cablThread.join();
@@ -41,7 +41,7 @@ ClientSingle::~ClientSingle()
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::run()
+void Client::run()
 {
   m_clientStopped = false;
   m_cablThread = std::thread(
@@ -96,16 +96,16 @@ void ClientSingle::run()
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::stop()
+void Client::stop()
 {
-  M_LOG("[ClientSingle] stop");
+  M_LOG("[Client] stop");
   m_connected = false;
   m_clientStopped = true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
+Driver::tCollDeviceDescriptor Client::enumerateDevices()
 {
   Driver::tCollDeviceDescriptor devicesList;
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
@@ -152,7 +152,7 @@ Driver::tCollDeviceDescriptor ClientSingle::enumerateDevices()
 
 //--------------------------------------------------------------------------------------------------
 
-bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
+bool Client::connect(const DeviceDescriptor& deviceDescriptor_)
 {
   m_connected = false;
   if (!deviceDescriptor_)
@@ -194,7 +194,7 @@ bool ClientSingle::connect(const DeviceDescriptor& deviceDescriptor_)
 }
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::setLed(Device::Button btn_, const util::LedColor& color_)
+void Client::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   if(m_pDevice)
   {
@@ -204,7 +204,7 @@ void ClientSingle::setLed(Device::Button btn_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::setLed(Device::Pad pad_, const util::LedColor& color_)
+void Client::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   if(m_pDevice)
   {
@@ -214,7 +214,7 @@ void ClientSingle::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::setLed(Device::Key key_, const util::LedColor& color_)
+void Client::setLed(Device::Key key_, const util::LedColor& color_)
 {
   if(m_pDevice)
   {
@@ -224,7 +224,7 @@ void ClientSingle::setLed(Device::Key key_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::onConnected()
+void Client::onConnected()
 {
   if(m_cbConnected)
   {
@@ -234,7 +234,7 @@ void ClientSingle::onConnected()
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::onTick()
+void Client::onTick()
 {
   if(m_cbTick)
   {
@@ -244,7 +244,7 @@ void ClientSingle::onTick()
 
 //--------------------------------------------------------------------------------------------------
 
-void ClientSingle::onDisconnected()
+void Client::onDisconnected()
 {
   if(m_cbDisconnected)
   {
@@ -254,7 +254,7 @@ void ClientSingle::onDisconnected()
 
 //--------------------------------------------------------------------------------------------------
 
-ClientSingle::tDriverPtr ClientSingle::getDriver(Driver::Type tDriver_)
+Client::tDriverPtr Client::getDriver(Driver::Type tDriver_)
 {
   static tCollDrivers collDrivers;
 

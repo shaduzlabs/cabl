@@ -123,12 +123,12 @@ void Euklid::tick()
 void Euklid::discoverAndConnect()
 {
   static unsigned retryDelayInSeconds(5);
-  auto devices = ClientSingle::enumerateDevices();
+  auto devices = Client::enumerateDevices();
   while(devices.size()<=0)
   {
     M_LOG("[Application] no devices found. Retrying in " << retryDelayInSeconds << " seconds" );
     std::this_thread::sleep_for(std::chrono::seconds(retryDelayInSeconds));
-    devices = ClientSingle::enumerateDevices();
+    devices = Client::enumerateDevices();
   }
   m_client.connect(devices[0]);
 }

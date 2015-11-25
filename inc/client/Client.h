@@ -23,7 +23,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 using namespace devices;
 
-class ClientSingle final
+class Client final
 {
 public:
 
@@ -33,11 +33,11 @@ public:
   
   using tCbVoid = std::function<void(void)>;
   
-  ClientSingle();
-  virtual ~ClientSingle();
+  Client();
+  virtual ~Client();
 
-  ClientSingle(const ClientSingle&) = delete;
-  ClientSingle& operator=(const ClientSingle&) = delete;
+  Client(const Client&) = delete;
+  Client& operator=(const Client&) = delete;
 
   void run();
   void stop();
