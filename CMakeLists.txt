@@ -96,17 +96,6 @@ set(
 )
 
 set(
-  inc_gfx_displays_INCLUDES
-    inc/gfx/displays/GDisplayDummy.h
-    inc/gfx/displays/GDisplayMaschineMikro.h
-    inc/gfx/displays/GDisplayMaschineMK1.h
-    inc/gfx/displays/GDisplayMaschineMK2.h
-    inc/gfx/displays/LCDDisplay7Segments.h
-    inc/gfx/displays/LCDDisplayGeneric.h
-    inc/gfx/displays/LCDDisplayKompleteKontrol.h
-)
-
-set(
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
     inc/gfx/Font.h
@@ -135,7 +124,6 @@ source_group("inc\\app"              FILES ${inc_app_INCLUDES})
 source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
 source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
 source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
-source_group("inc\\gfx\\displays"    FILES ${inc_gfx_displays_INCLUDES})
 source_group("inc\\util"             FILES ${inc_util_INCLUDES})
 source_group("inc"                   FILES ${inc_INCLUDES})
 
@@ -260,11 +248,17 @@ set(
 
 set(
   src_gfx_displays_SRCS
+    src/gfx/displays/GDisplayMaschineMikro.h
     src/gfx/displays/GDisplayMaschineMikro.cpp
+    src/gfx/displays/GDisplayMaschineMK1.h
     src/gfx/displays/GDisplayMaschineMK1.cpp
+    src/gfx/displays/GDisplayMaschineMK2.h
     src/gfx/displays/GDisplayMaschineMK2.cpp
+    src/gfx/displays/LCDDisplay7Segments.h
     src/gfx/displays/LCDDisplay7Segments.cpp
+    src/gfx/displays/LCDDisplayGeneric.h
     src/gfx/displays/LCDDisplayGeneric.cpp
+    src/gfx/displays/LCDDisplayKompleteKontrol.h
     src/gfx/displays/LCDDisplayKompleteKontrol.cpp
 )
 
