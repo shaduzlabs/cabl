@@ -20,6 +20,13 @@ using namespace boost::python;
 
 //--------------------------------------------------------------------------------------------------
 
+/*
+useful links:
+- https://misspent.wordpress.com/2009/10/11/boost-python-and-handling-python-exceptions/
+*/
+
+//--------------------------------------------------------------------------------------------------
+
 class GILLock
 {
 public:
@@ -53,7 +60,7 @@ void registerClientCallbacks(
       {
         onConnected_();
       }
-      catch (const error_already_set& e)
+      catch (const error_already_set&)
       {
         M_LOG("[pyCabl:registerClientCallbacks] exception in the onConnected callback");
       }
