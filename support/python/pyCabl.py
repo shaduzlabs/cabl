@@ -25,6 +25,22 @@ class CablClient:
 
     def onConnect(self):
         'Called when a known device is connected'
+        self.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
+        self.client.setLedPad(Pad.Pad2, LedColor(0,110,0))
+        self.client.setLedPad(Pad.Pad3, LedColor(0,100,0))
+        self.client.setLedPad(Pad.Pad4, LedColor(0,95, 0))
+        self.client.setLedPad(Pad.Pad5, LedColor(0,90, 0))
+        self.client.setLedPad(Pad.Pad6, LedColor(0,85, 0))
+        self.client.setLedPad(Pad.Pad7, LedColor(0,80, 0))
+        self.client.setLedPad(Pad.Pad8, LedColor(0,75, 0))
+        self.client.setLedPad(Pad.Pad9, LedColor(0,70, 0))
+        self.client.setLedPad(Pad.Pad10,LedColor(0,60, 0))
+        self.client.setLedPad(Pad.Pad11,LedColor(0,50, 0))
+        self.client.setLedPad(Pad.Pad12,LedColor(0,40, 0))
+        self.client.setLedPad(Pad.Pad13,LedColor(0,35, 0))
+        self.client.setLedPad(Pad.Pad14,LedColor(0,30, 0))
+        self.client.setLedPad(Pad.Pad15,LedColor(0,20, 0))
+        self.client.setLedPad(Pad.Pad16,LedColor(0,10, 0))
         print( "Device connected" )
 
     def onTick(self):
@@ -60,22 +76,7 @@ class CablClient:
 theClient = CablClient()
 theClient.run()
 theClient.discoverAndConnect()
-theClient.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
-theClient.client.setLedPad(Pad.Pad2, LedColor(0,110,0))
-theClient.client.setLedPad(Pad.Pad3, LedColor(0,100,0))
-theClient.client.setLedPad(Pad.Pad4, LedColor(0,95, 0))
-theClient.client.setLedPad(Pad.Pad5, LedColor(0,90, 0))
-theClient.client.setLedPad(Pad.Pad6, LedColor(0,85, 0))
-theClient.client.setLedPad(Pad.Pad7, LedColor(0,80, 0))
-theClient.client.setLedPad(Pad.Pad8, LedColor(0,75, 0))
-theClient.client.setLedPad(Pad.Pad9, LedColor(0,70, 0))
-theClient.client.setLedPad(Pad.Pad10,LedColor(0,60, 0))
-theClient.client.setLedPad(Pad.Pad11,LedColor(0,50, 0))
-theClient.client.setLedPad(Pad.Pad12,LedColor(0,40, 0))
-theClient.client.setLedPad(Pad.Pad13,LedColor(0,35, 0))
-theClient.client.setLedPad(Pad.Pad14,LedColor(0,30, 0))
-theClient.client.setLedPad(Pad.Pad15,LedColor(0,20, 0))
-theClient.client.setLedPad(Pad.Pad16,LedColor(0,10, 0))
+
 
 while True:
     time.sleep(1)
