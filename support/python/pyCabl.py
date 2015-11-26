@@ -49,6 +49,7 @@ class CablClient:
     def onDisconnect(self):
         'Called when a known device is disconnected'
         print( "Device disconnected" )
+        discoverAndConnect()
 
     def enumerateDevices(self):
         'Returns a list of the known devices detected'
@@ -68,15 +69,17 @@ class CablClient:
     def discoverAndConnect(self):
         'Detect known devices and connect to the first device of the list'
         deviceDescriptors = self.enumerateDevices()
-        if(len(deviceDescriptors)>0):
-            self.connect(deviceDescriptors[0])
+        while(len(deviceDescriptors)<=0):
+            print("No devices found, retrying in 5 seconds.")
+            time.sleep(5)
+            deviceDescriptors = self.enumerateDevices()
+        self.connect(deviceDescriptors[0])
 
 
 #time.sleep(12)
 theClient = CablClient()
 theClient.run()
 theClient.discoverAndConnect()
-
 
 while True:
     time.sleep(1)
