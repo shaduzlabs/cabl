@@ -56,6 +56,12 @@ Canvas::Canvas( uint16_t width_, uint16_t height_, Allocation allocationType_ )
       m_canvasSizeInBytes = ( m_canvasWidthInBytes * height_ );
       break;
     }
+    case Allocation::RGB565:
+    {
+      m_canvasWidthInBytes = 2 * m_width;
+      m_canvasSizeInBytes = ( m_canvasWidthInBytes * height_ );
+      break;
+    }
     case Allocation::None:
     default:
     {

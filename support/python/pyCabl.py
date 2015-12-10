@@ -1,5 +1,13 @@
 from pycabl import *
+import gizeh
+import numpy as np
 import time
+import os, sys
+from PIL import Image
+
+W,H = 1024,160
+duration = 2
+ncircles = 20 # Number of circles
 
 class CablClient:
     'The cabl client class'
@@ -7,11 +15,32 @@ class CablClient:
     def __init__(self):
         self.client = Client()
         self.client.registerCallbacks(self.onConnect, self.onTick, self.onDisconnect)
+        self.drawingContext = None
+        self.drawingBuffer = None
 
     def __del__(self):
         'Destructor'
         del self.client
         print "Destructor"
+
+    def make_frame(self,t):
+        im = Image.open("pac.bmp")
+        print im.load()[0,0]
+        print im.size
+        return im.load()
+
+    def make_frame2(self, t):
+
+        surface = gizeh.Surface(W,H)
+
+        for i in range(ncircles):
+            angle = 2*np.pi*(1.0*i/ncircles+t/duration)
+            center = W*( 0.5+ gizeh.polar2cart(0.1,angle))
+            circle = gizeh.circle(r= W*(1.0-1.0*i/ncircles),
+                                  xy= center, fill= (i%2,i%2,i%2))
+            circle.draw(surface)
+
+        return surface.get_npimage()
 
     def run(self):
         'Start the client loop'
@@ -23,28 +52,46 @@ class CablClient:
         self.client.stop()
         print "Client has been stopped."
 
+    def onConnect2(self):
+        'Called when a known device is connected'
+        self.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
+        self.drawingContext = self.client.getDrawingContext(0)
+        self.drawingBuffer = bytearray(self.drawingContext.getSize())
+
+        data = self.make_frame(0)
+        indexDest = 0
+        for row in range(0,H):
+            for col in range(0,W):
+                self.drawingBuffer[indexDest] = 0x1F & (data[row][col][0])
+                self.drawingBuffer[indexDest] |= 0xE0 & (data[row][col][1] << 5)
+                self.drawingBuffer[indexDest+1] = 0x07 & (data[row][col][1] >> 3)
+                self.drawingBuffer[indexDest+1] |= 0xF8 & (data[row][col][2] << 3)
+                indexDest += 2
+
+        print( "Device connected" )
+
     def onConnect(self):
         'Called when a known device is connected'
         self.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
-        self.client.setLedPad(Pad.Pad2, LedColor(0,110,0))
-        self.client.setLedPad(Pad.Pad3, LedColor(0,100,0))
-        self.client.setLedPad(Pad.Pad4, LedColor(0,95, 0))
-        self.client.setLedPad(Pad.Pad5, LedColor(0,90, 0))
-        self.client.setLedPad(Pad.Pad6, LedColor(0,85, 0))
-        self.client.setLedPad(Pad.Pad7, LedColor(0,80, 0))
-        self.client.setLedPad(Pad.Pad8, LedColor(0,75, 0))
-        self.client.setLedPad(Pad.Pad9, LedColor(0,70, 0))
-        self.client.setLedPad(Pad.Pad10,LedColor(0,60, 0))
-        self.client.setLedPad(Pad.Pad11,LedColor(0,50, 0))
-        self.client.setLedPad(Pad.Pad12,LedColor(0,40, 0))
-        self.client.setLedPad(Pad.Pad13,LedColor(0,35, 0))
-        self.client.setLedPad(Pad.Pad14,LedColor(0,30, 0))
-        self.client.setLedPad(Pad.Pad15,LedColor(0,20, 0))
-        self.client.setLedPad(Pad.Pad16,LedColor(0,10, 0))
+        self.drawingContext = self.client.getDrawingContext(0)
+        self.drawingBuffer = bytearray(self.drawingContext.getSize())
+
+        data = self.make_frame(0)
+        indexDest = 0
+        for col in range(0,H):
+            for row in range(0,W):
+                self.drawingBuffer[indexDest+1] = 0x1F & (data[row,col][2])
+                self.drawingBuffer[indexDest+1] |= 0xE0 & (data[row,col][1] << 4)
+                self.drawingBuffer[indexDest+0] = 0x07 & (data[row,col][1] >> 3)
+                self.drawingBuffer[indexDest+0] |= 0xF8 & (data[row,col][0] << 3)
+                indexDest += 2
+
         print( "Device connected" )
 
     def onTick(self):
         'Called periodically while the device is connected'
+        if self.drawingContext:
+            self.drawingContext.write(self.drawingBuffer)
 
     def onDisconnect(self):
         'Called when a known device is disconnected'

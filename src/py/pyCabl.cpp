@@ -120,6 +120,35 @@ void registerClientCallbacks(
 }
 
 //--------------------------------------------------------------------------------------------------
+/*
+static object drawingContext_load(DrawingContext& self) {
+  unsigned char* buffer;
+  int size;
+  self.load(buffer, size);
+
+  //now you wrap that as buffer
+  PyObject* py_buf = PyBuffer_FromReadWriteMemory(buffer, size);
+  object retval = object(handle<>(py_buf));
+  return retval;
+}*/
+
+//--------------------------------------------------------------------------------------------------
+
+static void writeDrawingContext(DrawingContext& self_, object buffer) {
+  PyObject* pyBuffer = buffer.ptr();
+  if (!PyBuffer_Check(pyBuffer))
+  {
+    //raise TypeError using standard boost::python mechanisms
+  }
+  PyObject* pobj = buffer.ptr();
+  Py_buffer pybuf;
+  PyObject_GetBuffer(pobj, &pybuf, PyBUF_SIMPLE);
+  
+  std::copy_n((uint8_t*)pybuf.buf, self_.getSize() ,self_.getData().begin());
+  self_.setDirty(true);
+}
+
+//--------------------------------------------------------------------------------------------------
 
 template <class T>
 boost::python::list toPythonList(std::vector<T> vector) {
@@ -386,6 +415,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("setLedButton", setLed_btn)
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)
+    .def("getDrawingContext", &Client::getDrawingContext, return_value_policy<reference_existing_object>())
   ;
   
 //--------------------------------------------------------------------------------------------------
@@ -449,6 +479,18 @@ BOOST_PYTHON_MODULE(pycabl)
       .def(self_ns::str(self_ns::self))
       .def("distance",&util::RGBColor::distance)
       .def("getValue",&util::RGBColor::getValue)
+  ;
+  
+//--------------------------------------------------------------------------------------------------
+
+  class_<DrawingContext, boost::noncopyable>("DrawingContext", init<unsigned, unsigned, unsigned>())
+      .def("getWidth",&DrawingContext::getWidth)
+      .def("getHeight",&DrawingContext::getHeight)
+      .def("getBytesPerPixel",&DrawingContext::getBytesPerPixel)
+      .def("getSize",&DrawingContext::getSize)
+      .def("isDirty",&DrawingContext::isDirty)
+      .def("setDirty",&DrawingContext::setDirty)
+      .def("write", &writeDrawingContext)
   ;
 
 //--------------------------------------------------------------------------------------------------

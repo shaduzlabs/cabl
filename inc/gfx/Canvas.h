@@ -78,9 +78,14 @@ public:
   //! The allocation type
   enum class Allocation{
     None,
+    
+    // B&W
     OneBytePacksOneRowOfEightPixels,    //!< 1 bit per pixel, 1 byte packs a row of 8 pixels
     OneBytePacksOneColOfEightPixels,    //!< 1 bit per pixel, 1 byte packs a column of 8 pixels
     TwoBytesPackThreePixelsInARow,      //!< 3 pixels each 2 bytes
+    
+    // Color
+    RGB565,                             //!< 2 bytes per pixel (RGB565)
   };
   
   /** @} */ // End of group Types
@@ -97,9 +102,9 @@ public:
   /*!
    \param width_  Canvas width in pixels
    \param height_ Canvas height in pixels
-   \param height_ Number of data chunks (Default value is 8)
+   \param alloc_  Number of data chunks (Default value is 8)
    */
-  Canvas( uint16_t width_, uint16_t height_, Allocation);
+  Canvas( uint16_t width_, uint16_t height_, Allocation alloc_);
   
   //! Destructor
   virtual ~Canvas();

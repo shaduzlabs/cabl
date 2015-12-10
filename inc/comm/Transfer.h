@@ -26,8 +26,8 @@ public:
   Transfer( uint16_t length_ );
   
   Transfer( tRawData data_ );
-  Transfer( tRawData header_, tRawData data_ );
-  Transfer( tRawData header_, const uint8_t* pData_, size_t dataLength_ );
+  Transfer( const tRawData& header_, const tRawData& data_ );
+  Transfer( const tRawData& header_, const uint8_t* pData_, size_t dataLength_ );
   
   virtual ~Transfer();
   

@@ -87,8 +87,9 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ )
     {
       M_LOG("[DeviceHandleLibUSB] write: error=" << result << " - transfer size: "
             << transfer_.size() << " written: " << nBytesWritten);
+      return false;
     }
-    return( ( LIBUSB_SUCCESS == result ) && ( nBytesWritten == transfer_.size() ) );
+    return true;
   }
 
   return false;

@@ -20,6 +20,7 @@
 #include "comm/DeviceHandle.h"
 #include "comm/DeviceDescriptor.h"
 #include "util/LedColor.h"
+#include "gfx/DrawingContext.h"
 
 namespace sl
 {
@@ -284,6 +285,12 @@ public:
 
   virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
   virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
+  
+  virtual DrawingContext& getDrawingContext(uint8_t contextIndex_)
+  {
+    static DrawingContext s_dummyContext{0,0,0};
+    return s_dummyContext;
+  }
 
   virtual void setLed(Button, const util::LedColor&) = 0;
 

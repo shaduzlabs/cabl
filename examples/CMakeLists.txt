@@ -11,3 +11,4 @@
 
 # Euklid - Euclidean sequencer ------------------------------------------------------------------- #
 add_subdirectory(euklid Euklid)
+add_subdirectory(colordisplay ColorDisplay)

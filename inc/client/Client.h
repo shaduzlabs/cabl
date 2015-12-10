@@ -62,7 +62,9 @@ public:
 
   void setLed(Device::Pad, const util::LedColor&);
   void setLed(Device::Key, const util::LedColor&);
-
+  
+  DrawingContext& getDrawingContext(unsigned nContext_ = 0){ return m_pDevice->getDrawingContext(nContext_); }
+  
 private:
 
   void onTick();

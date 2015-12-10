@@ -30,14 +30,13 @@ Transfer::Transfer( uint16_t length_ )
 //--------------------------------------------------------------------------------------------------
 
 Transfer::Transfer( tRawData data_ )
+  : m_data(std::move(data_))
 {
-  m_data.resize(data_.size());
-  std::copy(data_.begin(),data_.end(), m_data.begin());
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( tRawData header_, tRawData data_ )
+Transfer::Transfer( const tRawData& header_, const tRawData& data_ )
 {
   m_data.resize(header_.size()+data_.size());
   std::copy(header_.begin(),header_.end(),m_data.begin());
@@ -46,7 +45,7 @@ Transfer::Transfer( tRawData header_, tRawData data_ )
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( tRawData header_, const uint8_t* pData_, size_t dataLength_ )
+Transfer::Transfer( const tRawData& header_, const uint8_t* pData_, size_t dataLength_ )
 {
   m_data.resize(header_.size()+dataLength_);
   std::copy(header_.begin(),header_.end(),m_data.begin());
