@@ -36,16 +36,16 @@ public:
   {
     return m_display;
   }
-  
+
   bool tick() override;
 
 private:
 
   bool sendDisplayData();
-  
-  static constexpr uint8_t kPush2_nRows             = 160;
-  static constexpr uint8_t kPush2_nColumns          = 1024;
-  static constexpr uint8_t kPush2_nBytesPerPixel    = 2;
+
+  static constexpr uint16_t kPush2_nRows             = 160;
+  static constexpr uint16_t kPush2_nColumns          = 1024;
+  static constexpr uint8_t  kPush2_nBytesPerPixel    = 2;
 
   void init() override;
 

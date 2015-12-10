@@ -10,14 +10,10 @@
 #include "client/Client.h"
 
 #include "devices/DeviceFactory.h"
-#include "devices/ableton/Push2.h"
-#include "devices/ableton/Push2Display.h"
-#include "devices/akai/Push.h"
-#include "devices/ni/KompleteKontrol.h"
-#include "devices/ni/MaschineMK1.h"
-#include "devices/ni/MaschineMK2.h"
-#include "devices/ni/MaschineMikroMK2.h"
-#include "devices/ni/TraktorF1MK2.h"
+
+#include "gfx/GDisplay.h"
+#include "gfx/LCDDisplay.h"
+#include "gfx/DrawingContext.h"
 
 #include "util/Version.h"
 
@@ -36,10 +32,10 @@ class Lib
 public:
 
   static std::string getVersion()
-  { 
-    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO); 
+  {
+    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
   }
-  
+
 };
 
 //--------------------------------------------------------------------------------------------------

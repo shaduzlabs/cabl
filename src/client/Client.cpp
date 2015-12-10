@@ -13,6 +13,15 @@
 
 #include "cabl.h"
 
+#include "devices/ableton/Push2.h"
+#include "devices/ableton/Push2Display.h"
+#include "devices/akai/Push.h"
+#include "devices/ni/KompleteKontrol.h"
+#include "devices/ni/MaschineMK1.h"
+#include "devices/ni/MaschineMK2.h"
+#include "devices/ni/MaschineMikroMK2.h"
+#include "devices/ni/TraktorF1MK2.h"
+
 namespace
 {
 static const unsigned kClientMaxConsecutiveErrors = 100;
@@ -49,7 +58,7 @@ void Client::run()
     {
       while (!m_clientStopped)
       {
-      
+
         //\todo remove enumerateDevices call!
 /*
         m_connected = false;
@@ -58,8 +67,8 @@ void Client::run()
         {
           connect(collDevices[0]);
         }
-  */      
-        
+  */
+
         if(m_connected)
         {
           m_pDevice->init();
