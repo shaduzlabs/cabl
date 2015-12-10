@@ -8,6 +8,7 @@
 #pragma once
 
 #include <map>
+#include <atomic>
 #include <thread>
 
 #include "comm/Driver.h"
@@ -30,9 +31,9 @@ public:
   using tDevicePtr = std::shared_ptr<Device>;
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
-  
+
   using tCbVoid = std::function<void(void)>;
-  
+
   Client();
   virtual ~Client();
 
@@ -41,27 +42,27 @@ public:
 
   void run();
   void stop();
-  
+
   static Driver::tCollDeviceDescriptor enumerateDevices();
   bool connect(const DeviceDescriptor&);
-    
+
   void setCallbacks(tCbVoid cbConnected_, tCbVoid cbTick_, tCbVoid cbDisconnected_)
   {
     m_cbConnected = cbConnected_;
     m_cbTick = cbTick_;
     m_cbDisconnected = cbDisconnected_;
   }
-  
+
   tDevicePtr getDevice()
   {
     return m_pDevice;
   }
-  
+
   void setLed(Device::Button, const util::LedColor&);
 
   void setLed(Device::Pad, const util::LedColor&);
   void setLed(Device::Key, const util::LedColor&);
-  
+
 private:
 
   void onTick();
@@ -73,11 +74,11 @@ private:
   tCbVoid             m_cbConnected;
   tCbVoid             m_cbTick;
   tCbVoid             m_cbDisconnected;
-  
+
   std::atomic<bool>   m_clientStopped;
   std::atomic<bool>   m_connected;
   std::thread         m_cablThread;
-  
+
   tDevicePtr          m_pDevice;
 };
 
