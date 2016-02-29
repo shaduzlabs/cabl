@@ -71,7 +71,8 @@ private:
   void onConnected();
   void onDisconnected();
 
-  static tDriverPtr getDriver(Driver::Type);
+  static tDriverPtr   getDriver(Driver::Type);
+  static tCollDrivers s_collDrivers;
 
   tCbVoid             m_cbConnected;
   tCbVoid             m_cbTick;

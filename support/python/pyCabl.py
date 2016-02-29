@@ -3,6 +3,7 @@ import gizeh
 import numpy as np
 import time
 import os, sys
+import  PIL
 from PIL import Image
 
 W,H = 1024,160

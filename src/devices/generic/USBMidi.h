@@ -26,9 +26,9 @@ namespace devices
 
 class USBMidi : public midi::Unmidifier, public Device
 {
- 
+
 public:
-  
+
   void onNoteOff(NoteOff msg) override {}
   void onNoteOn(NoteOn msg) override {}
   void onPolyPressure(PolyPressure msg) override {}
@@ -36,6 +36,7 @@ public:
   void onProgramChange(ProgramChange msg) override {}
   void onChannelPressure(ChannelPressure msg) override {}
   void onPitchBend(PitchBend msg) override {}
+  void onClock(Clock msg_) override {}
   void onSysEx(SysEx msg_) override {}
   void onUSysExRT(USysExRT msg_) override {}
   void onUSysExNonRT(USysExNonRT msg_) override {}
@@ -46,7 +47,7 @@ private:
 
 
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // devices

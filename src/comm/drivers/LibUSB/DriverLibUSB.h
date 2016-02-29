@@ -10,6 +10,7 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
+#include <atomic>
 #include <thread>
 
 #include <libusb.h>

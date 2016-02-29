@@ -26,6 +26,9 @@ class Push2Display : public Device
 
 public:
 
+  Push2Display();
+  ~Push2Display() override;
+  
   void setLed(Device::Button, const util::LedColor&) override {}
   void setLed(Device::Pad, const util::LedColor&) override {}
   void sendMidiMsg(tRawData) override {}
@@ -42,12 +45,20 @@ public:
 private:
 
   bool sendDisplayData();
+  
+  void processNote(uint8_t note_, uint8_t velocity_);
+  static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
+  tPtr<RtMidiOut>     m_pMidiOut;
+  tPtr<RtMidiIn>      m_pMidiIn;
+  
   static constexpr uint16_t kPush2_nRows             = 160;
   static constexpr uint16_t kPush2_nColumns          = 1024;
-  static constexpr uint8_t  kPush2_nBytesPerPixel    = 2;
+  static constexpr uint8_t kPush2_nBytesPerPixel    = 2;
 
   void init() override;
+
+  bool                  m_shiftPressed;
 
   DrawingContext    m_display{1024, 160, 2};
 };

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 
 #include "devices/Device.h"
 #include "devices/DeviceFactory.h"
@@ -20,22 +21,22 @@ namespace cabl
 {
 namespace devices
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 class KompleteKontrolBase : public Device
 {
- 
+
 public:
-  
+
   KompleteKontrolBase();
   ~KompleteKontrolBase() override;
-  
+
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Key, const util::LedColor&) override;
 
   void sendMidiMsg(tRawData) override;
-  
+
   GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
   LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
 
@@ -55,9 +56,9 @@ private:
   bool sendDisplayData();
   bool sendLeds();
   bool read();
-  
+
   void processButtons( const Transfer& );
-  
+
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
   Led getLed(Device::Key) const noexcept;
@@ -66,11 +67,11 @@ private:
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
-  
+
   virtual unsigned getNumKeys() const = 0;
   virtual unsigned getLedDataSize() const = 0;
   virtual uint8_t* getLedsKeysData() = 0;
-  
+
   static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
   GDisplayDummy               m_displayDummy;
@@ -78,14 +79,14 @@ private:
   tRawData                    m_buttons;
   std::bitset<kKK_nButtons>   m_buttonStates;
   uint16_t                    m_encoderValues[kKK_nEncoders];
-  
+
   bool                        m_isDirtyLeds;
   bool                        m_isDirtyKeyLeds;
 
   uint8_t                     m_firstOctave;
 
   LCDDisplayKompleteKontrol   m_displays[kKK_nDisplays];
-    
+
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   tPtr<RtMidiOut>     m_pMidiOut;
   tPtr<RtMidiIn>      m_pMidiIn;
@@ -105,11 +106,11 @@ public:
   unsigned getLedDataSize() const override { return kKK_keysLedDataSize;  }
 
 private:
-  
+
   uint8_t* getLedsKeysData() override { return &m_ledsKeys[0]; }
-  
+
   uint8_t  m_ledsKeys[kKK_keysLedDataSize];
-  
+
 };
 
 //--------------------------------------------------------------------------------------------------

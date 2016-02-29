@@ -26,6 +26,7 @@
 
 namespace
 {
+static const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
 static const uint8_t kPush_epOut          = 0x01;
 static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
@@ -263,6 +264,61 @@ enum class Push2::Encoder : uint8_t
 
   Unknown,
 };
+
+//--------------------------------------------------------------------------------------------------
+
+Push2::Push2()
+  : m_pMidiOut(new RtMidiOut)
+  , m_pMidiIn(new RtMidiIn)
+{
+  std::string portName;
+  unsigned nPorts = m_pMidiOut->getPortCount();
+  for (unsigned int i = 0; i < nPorts; i++)
+  {
+    try
+    {
+      portName = m_pMidiOut->getPortName(i);
+      if (portName.find(kPush2_midiPortName) != std::string::npos && portName.back() == '1')
+      {
+        m_pMidiOut->openPort(i);
+      }
+    }
+    catch (RtMidiError& error)
+    {
+      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+    }
+  }
+  if (!m_pMidiOut->isPortOpen())
+  {
+    m_pMidiOut.reset(nullptr);
+  }
+
+  portName.clear();
+  nPorts = m_pMidiIn->getPortCount();
+  for (unsigned int i = 0; i < nPorts; i++)
+  {
+    try
+    {
+      portName = m_pMidiIn->getPortName(i);
+      if (portName.find(kPush2_midiPortName) != std::string::npos && portName.back() == '1')
+      {
+        m_pMidiIn->openPort(i);
+      }
+    }
+    catch (RtMidiError& error)
+    {
+      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+    }
+  }
+  if (!m_pMidiIn->isPortOpen())
+  {
+    m_pMidiIn.reset(nullptr);
+  }
+  else
+  {
+    m_pMidiIn->setCallback(&Push2::midiInCallback, this);
+  }
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -691,12 +747,14 @@ uint8_t Push2::getColorIndex(const util::LedColor& color_)
 
 void Push2::onNoteOff(NoteOff msg_)
 {
+  processNote(msg_.data()[1], 0);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Push2::onNoteOn(NoteOn msg_)
 {
+  processNote(msg_.data()[1], msg_.data()[2]);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -761,6 +819,41 @@ void Push2::onUSysExRT(sl::midi::USysExRT msg_)
 
 void Push2::onUSysExNonRT(sl::midi::USysExNonRT msg_)
 {
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push2::processNote(uint8_t note_, uint8_t velocity_)
+{
+  if(note_<=10)
+  {
+    // Touch encoders
+    uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
+    Device::Button btn = getDeviceButton(static_cast<Button>(note_+offset));
+    buttonChanged(btn, (velocity_>0), m_shiftPressed);
+  }
+  else if(note_==12)
+  {
+    // Pitch bend
+  }
+  else if(note_>=36 && note_<=99)
+  {
+    // Pads
+    Device::Pad pad = static_cast<Device::Pad>(note_ - 36);
+    padChanged(pad, (velocity_>0), m_shiftPressed);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Push2::midiInCallback(
+  double timeStamp_, std::vector<unsigned char>* pMessage_, void* userData_)
+{
+  Push2* pSelf = static_cast<Push2*>(userData_);
+  if ((pMessage_->at(0) & 0xf0) == 0x90)
+  {
+    pSelf->processNote(pMessage_->at(1), pMessage_->at(2));
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 
 #include "devices/Device.h"
 #include "gfx/displays/GDisplayDummy.h"
@@ -19,21 +20,21 @@ namespace cabl
 {
 namespace devices
 {
-  
+
 //--------------------------------------------------------------------------------------------------
-    
+
 class TraktorF1MK2 : public Device
 {
- 
+
 public:
-  
+
   TraktorF1MK2();
-  
+
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Pad, const util::LedColor&) override;
-  
+
   void sendMidiMsg(tRawData) override;
-  
+
   GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
   LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
 
@@ -52,9 +53,9 @@ private:
   void init() override;
   bool sendLedsAndDisplay();
   bool read();
-  
+
   void processButtons( const Transfer& );
-  
+
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
   Led getLed(Device::Button) const noexcept;
@@ -63,7 +64,7 @@ private:
   Device::Button getDeviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
-  
+
   GDisplayDummy               m_displayDummy;
   LCDDisplay7Segments         m_lcdDisplay;
 

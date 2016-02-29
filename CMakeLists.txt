@@ -55,13 +55,14 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   addHIDAPI()
   addLibUSB()
   addRtMidi()
 else()
-  find_package(hidapi REQUIRED)
-  find_package(libusb REQUIRED)
-  find_package(rtmidi REQUIRED)
+  find_package(HIDAPI REQUIRED)
+  find_package(LibUSB REQUIRED)
+  find_package(RtMidi REQUIRED)
   find_package(Boost  COMPONENTS python)
   if(Boost_PYTHON_FOUND)
     find_package(PythonLibs)
@@ -348,7 +349,7 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src ${RTMIDI_INCLUDE_DIRS})
+include_directories(inc src ${RTMIDI_INCLUDE_DIRS} /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
 include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
 
 set(

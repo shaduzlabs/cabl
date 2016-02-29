@@ -10,7 +10,6 @@
 # ------------------------------------------------------------------------------------------------ #
 
 project(colordisplay)
-find_package(Cairo REQUIRED)
 
 set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -30,6 +29,8 @@ SET(
     main.cpp
     ColorDisplay.h
     ColorDisplay.cpp
+    lodepng.h
+    lodepng.cpp
     ${VERSION_RESOURCES}
 )
 
@@ -45,10 +46,8 @@ set_target_properties(
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
-target_link_libraries(${PROJECT_NAME} ${CAIRO_LIBRARIES})
+target_link_libraries(${PROJECT_NAME})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} cabl-static)
-else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} cabl-static)
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+target_link_libraries(${PROJECT_NAME} cabl-static)
+target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreFoundation" "-framework IOKit")
+target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)

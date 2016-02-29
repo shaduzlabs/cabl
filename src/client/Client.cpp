@@ -32,6 +32,12 @@ namespace sl
 namespace cabl
 {
 
+//--------------------------------------------------------------------------------------------------
+
+Client::tCollDrivers Client::s_collDrivers = Client::tCollDrivers();
+
+//--------------------------------------------------------------------------------------------------
+
 Client::Client()
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
@@ -53,6 +59,7 @@ Client::~Client()
 void Client::run()
 {
   m_clientStopped = false;
+  m_connected = false;
   m_cablThread = std::thread(
     [this]()
     {
@@ -60,15 +67,14 @@ void Client::run()
       {
 
         //\todo remove enumerateDevices call!
-/*
+        /*
         m_connected = false;
         auto collDevices = enumerateDevices();
         if (collDevices.size() > 0) // found known devices
         {
           connect(collDevices[0]);
         }
-  */
-
+*/
         if(m_connected)
         {
           m_pDevice->init();
@@ -265,14 +271,12 @@ void Client::onDisconnected()
 
 Client::tDriverPtr Client::getDriver(Driver::Type tDriver_)
 {
-  static tCollDrivers collDrivers;
-
-  if (collDrivers.find(tDriver_) == collDrivers.end())
+  if (s_collDrivers.find(tDriver_) == s_collDrivers.end())
   {
-    collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
+    s_collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
   }
 
-  return collDrivers[tDriver_];
+  return s_collDrivers[tDriver_];
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -173,7 +173,7 @@ endfunction()
 # ------------------------------------------------------------------------------------------------ #
 function (addHIDAPI)
   if(DEFINED HIDAPI_INCLUDE_DIRS)
-    message(STATUS "HIDAPI is already available")
+    message(STATUS "HIDAPI is already available: ${HIDAPI_INCLUDE_DIRS}")
   else()
     checkout_external_project(hidapi https://github.com/signal11/hidapi.git master)
     set(HIDAPI_BASE_DIR ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/)

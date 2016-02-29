@@ -28,6 +28,8 @@ class Push2 : public USBMidi
 
 public:
 
+  Push2();
+
   void setLed(Device::Button, const util::LedColor&) override;
   void setLed(Device::Pad, const util::LedColor&) override;
 
@@ -75,9 +77,14 @@ private:
   void onProgramChange(ProgramChange msg) override;
   void onChannelPressure(ChannelPressure msg) override;
   void onPitchBend(PitchBend msg) override;
+  void onClock(Clock msg_) override {}
   void onSysEx(SysEx msg_) override;
   void onUSysExRT(USysExRT msg_) override;
   void onUSysExNonRT(USysExNonRT msg_) override;
+
+  void processNote(uint8_t note_, uint8_t velocity_);
+
+  static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
   LCDDisplayGeneric     m_displays[kPush_nDisplays];
 
@@ -87,6 +94,8 @@ private:
   bool                  m_isDirtyLeds;
 
   std::map<util::RGBColor,uint8_t>  m_colorsCache;
+  tPtr<RtMidiOut>     m_pMidiOut;
+  tPtr<RtMidiIn>      m_pMidiIn;
 };
 
 //--------------------------------------------------------------------------------------------------
