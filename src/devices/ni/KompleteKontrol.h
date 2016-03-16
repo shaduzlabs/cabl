@@ -122,10 +122,14 @@ using KompleteKontrolS88 = KompleteKontrol<88>;
 
 //--------------------------------------------------------------------------------------------------
 
-M_REGISTER_DEVICE_CLASS(KompleteKontrolS25, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1340);
-M_REGISTER_DEVICE_CLASS(KompleteKontrolS49, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1350);
-M_REGISTER_DEVICE_CLASS(KompleteKontrolS61, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1360);
-M_REGISTER_DEVICE_CLASS(KompleteKontrolS88, "", DeviceDescriptor::Type::HID, 0x17CC, 0x1410);
+M_REGISTER_DEVICE_CLASS(
+  KompleteKontrolS25, "KOMPLETE KONTROL S25", DeviceDescriptor::Type::HID, 0x17CC, 0x1340);
+M_REGISTER_DEVICE_CLASS(
+  KompleteKontrolS49, "KOMPLETE KONTROL S49", DeviceDescriptor::Type::HID, 0x17CC, 0x1350);
+M_REGISTER_DEVICE_CLASS(
+  KompleteKontrolS61, "KOMPLETE KONTROL S61", DeviceDescriptor::Type::HID, 0x17CC, 0x1360);
+M_REGISTER_DEVICE_CLASS(
+  KompleteKontrolS88, "KOMPLETE KONTROL S88", DeviceDescriptor::Type::HID, 0x17CC, 0x1410);
 
 //--------------------------------------------------------------------------------------------------
 
