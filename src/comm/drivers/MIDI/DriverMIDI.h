@@ -13,7 +13,7 @@
 #include <thread>
 
 #include <RtMidi.h>
-#include <unMIDIfy.hpp>
+#include <unmidify.hpp>
 
 namespace sl
 {

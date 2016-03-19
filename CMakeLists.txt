@@ -20,7 +20,10 @@ set(DEBUG_SUFFIX          "_d")
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
 set (CABL_VERSION_MICRO 2)
-set( CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
+set (CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
+
+option(BUILD_SHARED_LIBS "build as shared library" OFF)
+option(BUILD_STATIC_LIBS "build as static library" ON)
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   set(IS_CABL TRUE)
@@ -358,6 +361,7 @@ set(
     ${cabl_SRCS}
 )
 
+if(BUILD_SHARED_LIBS)
 add_library( cabl SHARED ${cabl_ALL} )
 set_target_properties(
   cabl
@@ -368,7 +372,9 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+endif(BUILD_SHARED_LIBS)
 
+if(BUILD_STATIC_LIBS)
 add_library( cabl-static STATIC ${cabl_ALL} )
 set_target_properties(
   cabl-static
@@ -378,6 +384,7 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+endif(BUILD_STATIC_LIBS)
 
 if(CABL_PYTHON)
   set(
@@ -408,8 +415,13 @@ endif()
 # OS X and Linux --------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  target_link_libraries( cabl PUBLIC pthread)
-  target_link_libraries( cabl-static PUBLIC pthread)
+  if(BUILD_SHARED_LIBS)
+    target_link_libraries( cabl PUBLIC pthread)
+  endif(BUILD_SHARED_LIBS)
+
+  if(BUILD_STATIC_LIBS)
+    target_link_libraries( cabl-static PUBLIC pthread)
+  endif(BUILD_STATIC_LIBS)
 #  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 #  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 endif()
@@ -418,8 +430,13 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   if(${IS_CABL})
 
-    install (TARGETS    cabl             DESTINATION lib)
-    install (TARGETS    cabl-static      DESTINATION lib)
+    if(BUILD_SHARED_LIBS)
+      install (TARGETS    cabl             DESTINATION lib)
+    endif(BUILD_SHARED_LIBS)
+
+    if(BUILD_STATIC_LIBS)
+      install (TARGETS    cabl-static      DESTINATION lib)
+    endif(BUILD_STATIC_LIBS)
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -446,8 +463,14 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
       EXCLUDE_FROM_ALL            TRUE
       EXCLUDE_FROM_DEFAULT_BUILD  TRUE
   )
-  target_link_libraries( cabl         setupapi.lib)
-  target_link_libraries( cabl-static  setupapi.lib)
+  if(BUILD_SHARED_LIBS)
+    target_link_libraries( cabl         setupapi.lib)
+  endif(BUILD_SHARED_LIBS)
+
+  if(BUILD_STATIC_LIBS)
+    target_link_libraries( cabl-static  setupapi.lib)
+  endif(BUILD_STATIC_LIBS)
+
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 

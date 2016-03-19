@@ -10,7 +10,7 @@
 #include "devices/Device.h"
 #include "gfx/displays/LCDDisplayGeneric.h"
 
-#include <unMIDIfy.hpp>
+#include <unmidify.hpp>
 
 namespace sl
 {
@@ -24,7 +24,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class USBMidi : public midi::Unmidifier, public Device
+class USBMidi : public midi::Unmidify, public Device
 {
 
 public:

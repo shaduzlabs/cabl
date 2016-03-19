@@ -14,7 +14,7 @@
 #include "comm/Driver.h"
 #include "devices/Device.h"
 
-#include <unMIDIfy.hpp>
+#include <unmidify.hpp>
 
 namespace sl
 {

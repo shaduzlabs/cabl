@@ -80,13 +80,13 @@ endfunction()
 
 
 # ------------------------------------------------------------------------------------------------ #
-#  unMIDIfy                                                                                        #
+#  unmidify                                                                                        #
 # ------------------------------------------------------------------------------------------------ #
 function (addUnmidify)
   if(DEFINED UNMIDIFY_INCLUDE_DIRS)
     message(STATUS "Unmidify is already available")
   else()
-    checkout_external_project(unmidify https://bitbucket.org/shaduzlabs/unmidify.git develop)
+    checkout_external_project(unmidify https://github.com/shaduzlabs/unmidify.git master)
     set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include PARENT_SCOPE)
     set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include)
     message(STATUS "Unmidify path: ${UNMIDIFY_INCLUDE_DIRS}")
