@@ -1,34 +1,15 @@
-/*----------------------------------------------------------------------------------------------------------------------   
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "gfx/displays/GDisplayMaschineMK1.h"
 
-#include "util/Functions_SL.h"
+#include "util/Functions.h"
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace
 {
@@ -39,27 +20,54 @@ namespace
   
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
+namespace cabl
+{
   
+//--------------------------------------------------------------------------------------------------
+
 GDisplayMaschineMK1::GDisplayMaschineMK1()
-  : GDisplay( kMASMK1_displayWidth, kMASMK1_displayHeight, kMASMK1_nOfDisplayDataChunks, tAllocation::ROW_2BYTES_3_PIXELS )
+  : GDisplay( 
+      kMASMK1_displayWidth, 
+      kMASMK1_displayHeight, 
+      kMASMK1_nOfDisplayDataChunks, 
+      Allocation::TwoBytesPackThreePixelsInARow 
+    )
 {
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMK1::white()
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == tColor::NONE )
+  fillPattern(0x0);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::black()
+{
+  fillPattern(0xFF);
+  m_isDirty = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
+{
+  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
     return;
   
-  tColor oldColor = getPixelImpl( x_, y_ );
+  Color oldColor = getPixelImpl( x_, y_ );
   
-  if( color_ == tColor::RANDOM )
-    color_ = static_cast<tColor>( util::randomRange(0,2) );
+  if (color_ == Color::Random)
+  {
+    color_ = static_cast<Color>(util::randomRange(0, 2));
+  }
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
 
@@ -67,50 +75,50 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
 
   switch( color_ )
   {
-    case tColor::WHITE:
+    case Color::Black:
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] |= 0xF8;
+          getData()[ byteIndex ] |= 0xF8;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] |= 0x07;
-          getDataPtr()[ byteIndex + 1 ] |= 0xC0;
+          getData()[ byteIndex ] |= 0x07;
+          getData()[ byteIndex + 1 ] |= 0xC0;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] |= 0x1F;
+          getData()[ byteIndex + 1 ] |= 0x1F;
           break;
       }
       break;
 
-    case tColor::BLACK:
+    case Color::White:
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] &= 0x07;
+          getData()[ byteIndex ] &= 0x07;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] &= 0xF8;
-          getDataPtr()[ byteIndex + 1 ] &= 0x1F;
+          getData()[ byteIndex ] &= 0xF8;
+          getData()[ byteIndex + 1 ] &= 0x1F;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] &= 0xC0;
+          getData()[ byteIndex + 1 ] &= 0xC0;
           break;
       }
       break;
 
-    case tColor::INVERT:
+    case Color::Invert:
       switch( blockIndex )
       {
         case 0:
-          getDataPtr()[ byteIndex ] ^= 0xF8;
+          getData()[ byteIndex ] ^= 0xF8;
           break;
         case 1:
-          getDataPtr()[ byteIndex ] ^= 0x07;
-          getDataPtr()[ byteIndex + 1 ] ^= 0xC0;
+          getData()[ byteIndex ] ^= 0x07;
+          getData()[ byteIndex + 1 ] ^= 0xC0;
           break;
         case 2:
-          getDataPtr()[ byteIndex + 1 ] ^= 0x1F;
+          getData()[ byteIndex + 1 ] ^= 0x1F;
           break;
       }
       break;
@@ -124,29 +132,30 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, 
     setDirtyChunks( y_ );
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-GDisplay::tColor GDisplayMaschineMK1::getPixelImpl( uint8_t x_, uint8_t y_ ) const
+GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) const
 {
   if ( x_ >= getWidth() || y_ >= getHeight() )
-    return tColor::BLACK;
+    return Color::Black;
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
   uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
   switch( blockIndex )
   {
     case 0:
-      return ( getDataPtr()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0xF8 ) ? Color::Black : Color::White;
     case 1:
-      return ( getDataPtr()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex ] & 0x07 ) ? Color::Black : Color::White;
       break;
     case 2:
-      return ( getDataPtr()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
+      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? Color::Black : Color::White;
   }
   
-  return tColor::BLACK;
- }
+  return Color::Black;
+}
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+} // cabl
 } // sl

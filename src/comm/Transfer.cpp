@@ -1,73 +1,57 @@
-/*----------------------------------------------------------------------------------------------------------------------   
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "comm/Transfer.h"
 #include <iostream>
 
 namespace sl
 {
+namespace cabl
+{
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 Transfer::Transfer()
 {
 
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 Transfer::Transfer( uint16_t length_ )
-  : m_pData( new uint8_t[length_] )
-  , m_length( length_ )
 {
-
-}
-  
-//----------------------------------------------------------------------------------------------------------------------
-
-Transfer::Transfer( const uint8_t* pData_, uint16_t length_ )
-  : Transfer( length_ )
-{
-  setData( pData_, length_ );
+  m_data.resize(length_);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer(
-  const uint8_t* pHeader_,
-  uint16_t headerLength_,
-  const uint8_t* pData_,
-  uint16_t dataLength_
-)
-  : Transfer( headerLength_ + dataLength_ )
+Transfer::Transfer( tRawData data_ )
+  : m_data(std::move(data_))
 {
-  memcpy( m_pData.get(), pHeader_, headerLength_ );
-  memcpy( ( m_pData.get() + headerLength_ ), pData_, dataLength_ );
 }
-//----------------------------------------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------------
+
+Transfer::Transfer( const tRawData& header_, const tRawData& data_ )
+{
+  m_data.resize(header_.size()+data_.size());
+  std::copy(header_.begin(),header_.end(),m_data.begin());
+  std::copy(data_.begin(),data_.end(),&m_data[header_.size()]);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Transfer::Transfer( const tRawData& header_, const uint8_t* pData_, size_t dataLength_ )
+{
+  m_data.resize(header_.size()+dataLength_);
+  std::copy(header_.begin(),header_.end(),m_data.begin());
+  std::copy(pData_,pData_+dataLength_,&m_data[header_.size()]);
+}
+
 /*
 
 Transfer::Transfer( const std::initializer_list<uint8_t>& data_, uint8_t endpoint_ )
@@ -79,7 +63,7 @@ Transfer::Transfer( const std::initializer_list<uint8_t>& data_, uint8_t endpoin
     m_pData[i++]= byte;
   }
 }
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 Transfer::Transfer(
   const std::initializer_list<uint8_t>& header_,
@@ -98,32 +82,32 @@ Transfer::Transfer(
   memcpy( ( m_pData.get() + i ), data_, m_length );
 
 }
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 */
 Transfer::~Transfer()
 {
   reset();
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 void Transfer::reset()
 {  
-  m_length = 0;
+  m_data.clear();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-void Transfer::setData( const uint8_t* data_, uint16_t length_ )
+void Transfer::setData( const uint8_t* data_, size_t length_ )
 {
   if( length_ == 0 || data_ == nullptr )
     return;
   
-  m_length = length_;
-  m_pData.reset( new uint8_t[m_length] );
-  memcpy( m_pData.get(), data_, m_length );
+  m_data.resize( length_ );
+  std::copy(data_,(data_+length_),m_data.begin());
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+} // cabl
 } // sl

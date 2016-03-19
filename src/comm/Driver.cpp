@@ -1,105 +1,83 @@
-/*----------------------------------------------------------------------------------------------------------------------   
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "comm/Driver.h"
 #include "comm/DriverImpl.h"
+#include "comm/DeviceHandle.h"
 
-#include "comm/drivers/DriverMOCK.h"
+#include "comm/drivers/Probe/DriverProbe.h"
 
-#if !defined (__arm__) && !defined (__SAM3X8E__)
-#include "comm/drivers/DriverHIDAPI.h"
-#include "comm/drivers/DriverLIBUSB.h"
+#if defined (__SAM3X8E__)
+#include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
+#elif defined (__MAX3421E__)
+#include "comm/drivers/MAX3421E/DriverMAX3421E.h"
 #else
-#include "comm/drivers/Driver_SAM3X.h"
+#include "comm/drivers/HIDAPI/DriverHIDAPI.h"
+#include "comm/drivers/LibUSB/DriverLibUSB.h"
+#include "comm/drivers/MIDI/DriverMIDI.h"
 #endif
 
 namespace sl
 {
+namespace cabl
+{
 
-Driver::Driver( tDriver type_ )
+Driver::Driver( Type type_ )
 {
   switch( type_ )
   {
-#if !defined (__arm__) && !defined (__SAM3X8E__)
-    case tDriver::HIDAPI:
-      m_pImpl.reset( new DriverHIDAPI );
+#if defined (__SAM3X8E__)
+    case Type::SAM3X8E:
+      m_pImpl.reset( new DriverSAM3X8E );
       break;
-    case tDriver::LIBUSB:
-      m_pImpl.reset( new DriverLIBUSB );
-      break;
-#else
-    case tDriver::SAM3X:
-      m_pImpl.reset( new DriverSAM3X );
-      break;
-    case tDriver::MAX3421E:
+#elif defined (__MAX3421E__)
+    case Type::MAX3421E:
       m_pImpl.reset( new DriverMAX3421E );
       break;
+#else
+    case Type::HIDAPI:
+      m_pImpl.reset( new DriverHIDAPI );
+      break;
+    case Type::LibUSB:
+      m_pImpl.reset( new DriverLibUSB );
+      break;
+    case Type::MIDI:
+      m_pImpl.reset( new DriverMIDI );
+      break;
 #endif
-    case tDriver::MOCK:
+    case Type::Probe:
     default:
-      m_pImpl.reset( new DriverMOCK );
+      m_pImpl.reset( new DriverProbe );
       break;
     }
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
 Driver::~Driver()
 {
 
 }
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
-bool Driver::connect( tVendorId vid_, tProductId pid_  )
+Driver::tCollDeviceDescriptor Driver::enumerate()
 {
-  return m_pImpl->connect( vid_,pid_ );
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-void Driver::disconnect()
-{
-  m_pImpl->disconnect();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-bool Driver::read( Transfer& transfer_, uint8_t endpoint_ ) const
-{
-  return m_pImpl->read( transfer_, endpoint_ );
+  return m_pImpl->enumerate();
 }
   
-//----------------------------------------------------------------------------------------------------------------------
-
-bool Driver::write(const Transfer& transfer_, uint8_t endpoint_ ) const
+//--------------------------------------------------------------------------------------------------
+  
+tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
 {
-  return m_pImpl->write( transfer_, endpoint_ );
+  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( device_ )));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
+} // cabl
 } // sl

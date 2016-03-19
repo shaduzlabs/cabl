@@ -1,37 +1,18 @@
-/*----------------------------------------------------------------------------------------------------------------------   
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
 #pragma once
-
-#ifndef SL_GDISPLAY_H
-#define SL_GDISPLAY_H
 
 #include <stdint.h>
 #include "Canvas.h"
 
 namespace sl
+{
+namespace cabl
 {
   class Font;
   
@@ -40,11 +21,11 @@ namespace sl
   public:
     
     /**
-     * @defgroup GDisplay
+     * @defgroup GDisplay Graphic display
      * @{
      */
     
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
     
     /**
      * @defgroup Lifetime Constructor and destructor
@@ -56,19 +37,19 @@ namespace sl
     /*!
      \param width_  Display width in pixels
      \param height_ Display height in pixels
-     \param height_ Number of data chunks (Default value is 8)
+     \param numDisplayChunks_ Number of data chunks (Default value is 8)
      */
-    GDisplay( uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, tAllocation );
+    GDisplay( uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation );
     
     //! Destructor
     virtual ~GDisplay();
     
     /** @} */ // End of group Lifetime
 
-//----------------------------------------------------------------------------------------------------------------------    
+//--------------------------------------------------------------------------------------------------
     
     /**
-     * @defgroup Primitives
+     * @defgroup Primitives Drawing primitives
      * @ingroup Drawing
      * @{
      */
@@ -78,9 +59,8 @@ namespace sl
      \param x_               The X coordinate of the pixel
      \param y_               The Y coordinate of the pixel
      \param color_           The pixel color (white, black, invert)
-     \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    void setPixel( uint16_t x_, uint16_t y_, tColor color_ ) override;
+    void setPixel( uint16_t x_, uint16_t y_, Color color_ ) override;
     
     //! Get the pixel value
     /*!
@@ -88,11 +68,11 @@ namespace sl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    tColor getPixel( uint8_t x_, uint8_t y_ ) const override;
+    Color getPixel(uint16_t x_, uint16_t y_ ) const override;
         
     /** @} */ // End of group Primitives
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
     
     /**
      * @defgroup Access Access and state queries functions
@@ -119,7 +99,7 @@ namespace sl
     
     /** @} */ // End of group Access
     
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
     
     /**
      * @defgroup Utility Utility/debug functions
@@ -127,13 +107,13 @@ namespace sl
      * @{
      */
     
-    inline uint8_t getNumberOfChunks() const noexcept { return m_numDisplayChunks; }
+    virtual uint8_t getNumberOfChunks() const noexcept { return m_numDisplayChunks; }
     
     /** @} */ // End of group Utility
     
     /** @} */ // End of group GDisplay
     
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
     
   protected:
   
@@ -144,7 +124,7 @@ namespace sl
      \param color_           The pixel color (white, black, invert)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    virtual void setPixelImpl( uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_  ) = 0;
+    virtual void setPixelImpl( uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_  ) = 0;
     
     //! Get the pixel value (implementation)
     /*!
@@ -152,22 +132,21 @@ namespace sl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    virtual tColor getPixelImpl( uint8_t x_, uint8_t y_ ) const = 0;
+    virtual Color getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
     
-    void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
+    virtual void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
     
     volatile bool           m_isDirty;                              //!< Global 'dirty' flag
 
   private:
 
-    tPtr<volatile bool[]>   m_pChunksDirtyFlags;                    //!< Chunk-specific dirty flags
+    tCollFlags              m_pChunksDirtyFlags;                    //!< Chunk-specific dirty flags
     uint8_t                 m_numDisplayChunks;                     //!< Number of display chunks
     
  //   uint32_t                m_uFrameSizeInBytes;                    //!< Frame size in bytes
 };
   
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
   
-} // SL
-
-#endif // SL_GDISPLAY_H
+} // cabl
+} // sl
