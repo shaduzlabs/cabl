@@ -20,35 +20,40 @@ namespace devices
 //--------------------------------------------------------------------------------------------------
 
 std::shared_ptr<Device> DeviceFactory::getDevice(
-  const DeviceDescriptor& deviceDescriptor_, 
-  tPtr<DeviceHandle> pDeviceHandle_
-)
+  const DeviceDescriptor& deviceDescriptor_, tPtr<DeviceHandle> pDeviceHandle_)
 {
-  auto deviceClass = m_registry.find(deviceDescriptor_);
-  if( deviceClass == m_registry.end() )
+  for (const auto& dd : m_registry)
   {
-    return nullptr;
+    if (dd.first.isSameProduct(deviceDescriptor_))
+    {
+      auto device = dd.second();
+      device->setDeviceHandle(std::move(pDeviceHandle_));
+      return device;
+    }
   }
-  auto device = deviceClass->second();
-  device->setDeviceHandle(std::move(pDeviceHandle_));
-  return device;
+
+  return nullptr;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool DeviceFactory::isKnownDevice(const DeviceDescriptor& deviceDescriptor_) const
 {
-  return m_registry.find(deviceDescriptor_) != m_registry.end();
+  for (const auto& dd : m_registry)
+  {
+    if (dd.first.isSameProduct(deviceDescriptor_))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void DeviceFactory::registerClass(
-  const DeviceDescriptor& deviceDescriptor_,
-  tFnCreate fnCreate_
-)
+void DeviceFactory::registerClass(const DeviceDescriptor& deviceDescriptor_, tFnCreate fnCreate_)
 {
-  m_registry.insert(std::pair<DeviceDescriptor, tFnCreate>(deviceDescriptor_, fnCreate_)); 
+  m_registry.insert(std::pair<DeviceDescriptor, tFnCreate>(deviceDescriptor_, fnCreate_));
 }
 
 //--------------------------------------------------------------------------------------------------
