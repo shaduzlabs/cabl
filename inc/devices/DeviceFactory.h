@@ -35,26 +35,23 @@ class Device;
 class DeviceFactory
 {
 public:
-
-  using tFnCreate = std::function< std::shared_ptr<Device>(void)>;
+  using tFnCreate = std::function<std::shared_ptr<Device>(void)>;
 
   static DeviceFactory& instance()
   {
     static DeviceFactory instance;
     return instance;
   }
-  
+
   std::shared_ptr<Device> getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
   bool isKnownDevice(const DeviceDescriptor&) const;
-  
+
   void registerClass(const DeviceDescriptor&, tFnCreate);
 
 private:
-  
   DeviceFactory() = default;
-  
-  std::map<DeviceDescriptor, tFnCreate> m_registry;
 
+  std::map<DeviceDescriptor, tFnCreate> m_registry;
 };
 
 //--------------------------------------------------------------------------------------------------
