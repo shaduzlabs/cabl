@@ -11,8 +11,7 @@
 #include <stdint.h>
 
 #include <cabl.h>
-
-#include "lodepng.h"
+#include <lodepng.h>
 
 namespace sl
 {

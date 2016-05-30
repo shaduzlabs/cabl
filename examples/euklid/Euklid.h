@@ -42,11 +42,9 @@ public:
   };
 
   Euklid();
-  void run();
   
-  void initHardware();
+  void init();
   void tick();
-  void discoverAndConnect();
   
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
@@ -85,6 +83,8 @@ public:
   void prevTrack();
   
 private:
+  
+  void devicesListChanged(Devices::tCollDeviceDescriptor devices_);
 
   uint8_t getEncoderValue(
     bool valueIncreased_,
@@ -96,7 +96,8 @@ private:
   Device::Pad getPad(uint8_t padIndex_);
   uint8_t getPadIndex(Device::Pad pad_);
 
-  Client       m_client;
+  Devices             m_devices;
+  Devices::tDevicePtr m_pDevice;
   
   Sequence<uint16_t> m_sequences[3];
 

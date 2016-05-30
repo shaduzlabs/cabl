@@ -242,7 +242,7 @@ bool MaschineMikroMK2::sendFrame()
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display.getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(
+    if(!writeToDeviceHandle(
       Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
       kMikroMK2_epDisplay)
     )
@@ -259,7 +259,7 @@ bool MaschineMikroMK2::sendLeds()
 {
 //  if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
+    if(!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
     {
       return false;
     }
@@ -275,7 +275,7 @@ bool MaschineMikroMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMikroMK2_epInput))
+    if (!readFromDeviceHandle(input, kMikroMK2_epInput))
     {
       return false;
     }

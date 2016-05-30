@@ -22,7 +22,8 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::Devices()
+Devices::Devices(tCbDevicesListChanged cbDevicesListChanged_)
+: m_cbDevicesListChanged(cbDevicesListChanged_)
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
   auto usbDriver = getDriver(Driver::Type::LibUSB);
@@ -208,12 +209,10 @@ void Devices::scan()
 
       if (!found)
       {
-        it = m_collDevices.erase(it);
+        it->second->resetDeviceHandle();
       }
-      else
-      {
-        it++;
-      }
+
+      it++;
     }
   }
 
@@ -248,6 +247,10 @@ void Devices::devicesListChanged()
   for(const auto& device : devices)
   {
     M_LOG(device.getName());
+  }
+  if(m_cbDevicesListChanged)
+  {
+    m_cbDevicesListChanged(devices);
   }
 }
 

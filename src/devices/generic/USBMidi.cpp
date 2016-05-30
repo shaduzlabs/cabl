@@ -26,7 +26,7 @@ namespace devices
 bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 {
 #if !ARDUINO
-  if(getDeviceHandle()->write(Transfer(sysexMessage_.data()), 0))
+  if(writeToDeviceHandle(Transfer(sysexMessage_.data()), 0))
   {
     return true;
   }
@@ -75,7 +75,7 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
       }
     }
     
-    if(!getDeviceHandle()->write(Transfer(message), 0x02))
+    if(!writeToDeviceHandle(Transfer(message), 0x02))
     {
       return false;
     }

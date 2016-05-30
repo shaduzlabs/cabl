@@ -772,7 +772,7 @@ bool KompleteKontrolBase::tick()
 void KompleteKontrolBase::init()
 {
   std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
-  getDeviceHandle()->write(Transfer({0xA0, 0x00, 0x00}), kKK_epOut);
+  writeToDeviceHandle(Transfer({0xA0, 0x00, 0x00}), kKK_epOut);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -792,7 +792,7 @@ bool KompleteKontrolBase::sendDisplayData()
         std::copy_n(m_displays[i].getData().data() + (row * 16), 16, &displayData[i * 16]);
       }
     }
-    if (!getDeviceHandle()->write(
+    if (!writeToDeviceHandle(
           Transfer({0xe0, 0x00, 0x00, row, 0x00, 0x48, 0x00, 0x01, 0x00}, displayData), kKK_epOut))
     {
       result = false;
@@ -808,7 +808,7 @@ bool KompleteKontrolBase::sendLeds()
 {
   if (m_isDirtyLeds)
   {
-    if (!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], kKK_ledsDataSize), kKK_epOut))
+    if (!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], kKK_ledsDataSize), kKK_epOut))
     {
       return false;
     }
@@ -816,7 +816,7 @@ bool KompleteKontrolBase::sendLeds()
   }
   if (m_isDirtyKeyLeds)
   {
-    if (!getDeviceHandle()->write(Transfer({0x82}, getLedsKeysData(), getLedDataSize()), kKK_epOut))
+    if (!writeToDeviceHandle(Transfer({0x82}, getLedsKeysData(), getLedDataSize()), kKK_epOut))
     {
       return false;
     }
@@ -831,7 +831,7 @@ bool KompleteKontrolBase::read()
 {
   Transfer input;
 
-  if (!getDeviceHandle()->read(input, kKK_epInput))
+  if (!readFromDeviceHandle(input, kKK_epInput))
   {
     return false;
   }

@@ -432,7 +432,7 @@ bool Push2::sendLeds()
 {
   //  if (m_isDirtyLeds)
   {
-    if (!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], 78), kPush_epOut))
+    if (!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], 78), kPush_epOut))
     {
       return false;
     }

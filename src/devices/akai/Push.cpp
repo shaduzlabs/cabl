@@ -344,7 +344,7 @@ void Push::init()
   m_isDirtyLeds = true;
   std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
 
-  getDeviceHandle()->readAsync(0, [this](Transfer transfer_)
+  readFromDeviceHandleAsync(0, [this](Transfer transfer_)
     {
       process(transfer_.getData());
     }
@@ -402,7 +402,7 @@ bool Push::sendLeds()
         if(i < firstPadLed)
         {
           uint8_t led = static_cast<uint8_t>(i);
-          if (!getDeviceHandle()->write(Transfer({0xB0, led, m_leds[i]}), kPush_epOut))
+          if (!writeToDeviceHandle(Transfer({0xB0, led, m_leds[i]}), kPush_epOut))
           {
             return false;
           }
@@ -410,7 +410,7 @@ bool Push::sendLeds()
         else
         {
           uint8_t led = static_cast<uint8_t>(i - firstPadLed + 36);
-          if (!getDeviceHandle()->write(Transfer({0x90, led, m_leds[i]}), kPush_epOut))
+          if (!writeToDeviceHandle(Transfer({0x90, led, m_leds[i]}), kPush_epOut))
           {
             return false;
           }

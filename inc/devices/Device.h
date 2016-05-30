@@ -9,6 +9,7 @@
 
 // STL includes
 #include <functional>
+#include <mutex>
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
 #include <RtMidi.h>
@@ -278,7 +279,11 @@ public:
   void setDeviceHandle(tPtr<DeviceHandle> pDeviceHandle_)
   {
     m_pDeviceHandle  = std::move(pDeviceHandle_);
-    m_hasDeviceHandle = true;
+  }
+  
+  void resetDeviceHandle()
+  {
+    m_pDeviceHandle  = nullptr;
   }
 
   //  virtual bool connect() = 0;
@@ -332,12 +337,46 @@ public:
     m_cbPotentiometerChanged = cbPotentiometerChanged_;
   }
 
-protected:
-  std::shared_ptr<DeviceHandle> getDeviceHandle()
+  bool hasDeviceHandle()
   {
-    return m_pDeviceHandle;
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
+    return static_cast<bool>(m_pDeviceHandle);
   }
 
+protected:
+
+  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_ )
+  {
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
+    
+    if(m_pDeviceHandle)
+    {
+      return m_pDeviceHandle->write(transfer_, endpoint_);
+    }
+    
+    return false;
+  }
+
+  bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_)
+  {
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
+    if(m_pDeviceHandle)
+    {
+      return m_pDeviceHandle->read(transfer_, endpoint_);
+    }
+    
+    return false;
+  }
+  
+  void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
+  {
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
+    if(m_pDeviceHandle)
+    {
+      return m_pDeviceHandle->readAsync(endpoint_, cbRead_);
+    }
+  }
+  
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
     if (m_cbButtonChanged)
@@ -379,7 +418,6 @@ protected:
   }
 
 private:
-  bool m_hasDeviceHandle;
 
   tCbButtonChanged m_cbButtonChanged;
   tCbEncoderChanged m_cbEncoderChanged;
@@ -387,7 +425,8 @@ private:
   tCbKeyChanged m_cbKeyChanged;
   tCbPotentiometerChanged m_cbPotentiometerChanged;
 
-  std::shared_ptr<DeviceHandle> m_pDeviceHandle;
+  std::mutex         m_mtxDeviceHandle;
+  tPtr<DeviceHandle> m_pDeviceHandle;
 };
 
 //--------------------------------------------------------------------------------------------------

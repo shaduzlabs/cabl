@@ -214,7 +214,7 @@ bool TraktorF1MK2::tick()
 void TraktorF1MK2::init()
 {
   std::fill(m_leds.begin(), m_leds.end(), 0);
-  getDeviceHandle()->write(Transfer({ 0xA0, 0x00, 0x00 }), kF1MK2_epOut);
+  writeToDeviceHandle(Transfer({ 0xA0, 0x00, 0x00 }), kF1MK2_epOut);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ bool TraktorF1MK2::sendLedsAndDisplay()
   }
   if (m_isDirtyLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_leds[0], kF1MK2_nLeds), kF1MK2_epOut))
+    if(!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], kF1MK2_nLeds), kF1MK2_epOut))
     {
       return false;
     }
@@ -251,7 +251,7 @@ bool TraktorF1MK2::read()
 {
   Transfer input;
 
-  if (!getDeviceHandle()->read(input, kF1MK2_epInput))
+  if (!readFromDeviceHandle(input, kF1MK2_epInput))
   {
     return false;
   }

@@ -349,7 +349,7 @@ bool MaschineMK2::sendFrame(uint8_t displayIndex_)
     uint8_t firstByte = 0xE0| displayIndex_;
     chunkByte = chunk * 8;
     const uint8_t* ptr = m_displays[displayIndex_].getPtr(chunk * 256);
-    if(!getDeviceHandle()->write(
+    if(!writeToDeviceHandle(
       Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
       kMASMK2_epDisplay)
     )
@@ -367,7 +367,7 @@ bool MaschineMK2::sendLeds()
 {
   if (m_isDirtyButtonLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x82}, &m_ledsButtons[0], 32), kMASMK2_epOut))
+    if(!writeToDeviceHandle(Transfer({0x82}, &m_ledsButtons[0], 32), kMASMK2_epOut))
     {
       return false;
     }
@@ -375,7 +375,7 @@ bool MaschineMK2::sendLeds()
   }
   if (m_isDirtyGroupLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x81}, &m_ledsGroups[0], 57), kMASMK2_epOut))
+    if(!writeToDeviceHandle(Transfer({0x81}, &m_ledsGroups[0], 57), kMASMK2_epOut))
     {
       return false;
     }
@@ -383,7 +383,7 @@ bool MaschineMK2::sendLeds()
   }
   if (m_isDirtyPadLeds)
   {
-    if(!getDeviceHandle()->write(Transfer({0x80}, &m_ledsPads[0], 49), kMASMK2_epOut))
+    if(!writeToDeviceHandle(Transfer({0x80}, &m_ledsPads[0], 49), kMASMK2_epOut))
     {
       return false;
     }
@@ -399,7 +399,7 @@ bool MaschineMK2::read()
   Transfer input;
   for (uint8_t n = 0; n < 32; n++)
   {
-    if (!getDeviceHandle()->read(input, kMASMK2_epInput))
+    if (!readFromDeviceHandle(input, kMASMK2_epInput))
     {
       return false;
     }

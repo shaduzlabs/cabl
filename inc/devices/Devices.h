@@ -35,8 +35,9 @@ public:
 
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
-
-  Devices();
+  using tCbDevicesListChanged = std::function<void(tCollDeviceDescriptor)>;
+  
+  Devices(tCbDevicesListChanged);
   ~Devices();
 
   void run();
@@ -44,8 +45,6 @@ public:
   tCollDeviceDescriptor enumerate(bool forceScan_ = false);
 
   tDevicePtr connect(const DeviceDescriptor&);
-
-  void onDevicesListChanged();
 
 private:
 
@@ -64,6 +63,7 @@ private:
 
   tCollDrivers m_collDrivers;
 
+  tCbDevicesListChanged m_cbDevicesListChanged;
   tCollDeviceDescriptor m_collDeviceDescriptors;
   tCollDevices m_collDevices;
 };

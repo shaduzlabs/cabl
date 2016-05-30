@@ -142,11 +142,11 @@ void Push2Display::init()
 bool Push2Display::sendDisplayData()
 {
   bool result = true;
-  getDeviceHandle()->write(Transfer({0xEF,0xCD,0xAB,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}),0x01);
+  writeToDeviceHandle(Transfer({0xEF,0xCD,0xAB,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}),0x01);
   
   for(unsigned offset = 0; offset < m_display.getSize(); offset+=16384)
   {
-    if(!getDeviceHandle()->write(Transfer({m_display.getData().begin() + offset, m_display.getData().begin() + offset + 16384}),0x01))
+    if(!writeToDeviceHandle(Transfer({m_display.getData().begin() + offset, m_display.getData().begin() + offset + 16384}),0x01))
     {
       return false;
     }
