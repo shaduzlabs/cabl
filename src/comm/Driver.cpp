@@ -21,10 +21,14 @@
 #include "comm/drivers/MIDI/DriverMIDI.h"
 #endif
 
+//--------------------------------------------------------------------------------------------------
+
 namespace sl
 {
 namespace cabl
 {
+
+//--------------------------------------------------------------------------------------------------
 
 Driver::Driver( Type type_ )
 {
@@ -75,6 +79,13 @@ Driver::tCollDeviceDescriptor Driver::enumerate()
 tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
 {
   return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( device_ )));
+}
+
+//--------------------------------------------------------------------------------------------------
+  
+void Driver::setHotplugCallback( Driver::tCbHotplug cbHotplug_)
+{
+  m_pImpl->setHotplugCallback( cbHotplug_ );
 }
 
 //--------------------------------------------------------------------------------------------------

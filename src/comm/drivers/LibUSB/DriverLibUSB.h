@@ -26,18 +26,24 @@ class DriverLibUSB : public DriverImpl
 {
 public:
 
+
   DriverLibUSB();
   ~DriverLibUSB() override;
 
   Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
+  tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) override;
+
+  void setHotplugCallback( Driver::tCbHotplug ) override;
+
+  void hotplug(const DeviceDescriptor&, bool);
 
 private:
+  std::atomic<bool> m_usbThreadRunning;
+  libusb_hotplug_callback_handle* m_pHotplugHandle{nullptr};
 
-  std::string getStringDescriptor(libusb_device_handle*, uint8_t);
-  std::atomic<bool>               m_usbThreadRunning;
-  std::thread                     m_usbThread;
-  libusb_context*                 m_pContext;
+  std::thread m_usbThread;
+  libusb_context* m_pContext;
+  Driver::tCbHotplug m_cbHotplug;
 };
 
 //--------------------------------------------------------------------------------------------------

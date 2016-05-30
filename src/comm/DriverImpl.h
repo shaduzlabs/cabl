@@ -14,7 +14,7 @@ namespace sl
 {
 namespace cabl
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 class DeviceHandleImpl;
@@ -25,14 +25,13 @@ class DriverImpl
 {
 
 public:
-  
   virtual ~DriverImpl() = default;
 
-  virtual Driver::tCollDeviceDescriptor  enumerate() = 0;
-  virtual tPtr<DeviceHandleImpl>         connect( const DeviceDescriptor& ) = 0;
-
+  virtual Driver::tCollDeviceDescriptor enumerate() = 0;
+  virtual tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) = 0;
+  virtual void setHotplugCallback( Driver::tCbHotplug ) {};
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // cabl
