@@ -86,9 +86,9 @@ set(
 
 set(
   inc_comm_INCLUDES
-    inc/comm/Driver.h
     inc/comm/DeviceDescriptor.h
     inc/comm/DeviceHandle.h
+    inc/comm/Driver.h
     inc/comm/Transfer.h
 )
 
@@ -97,6 +97,7 @@ set(
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
     inc/devices/DeviceRegistrar.h
+    inc/devices/Devices.h
 )
 
 set(
@@ -206,10 +207,10 @@ set(
 
 set(
   src_comm_SRCS
-    src/comm/Driver.cpp
-    src/comm/DriverImpl.h
     src/comm/DeviceHandle.cpp
     src/comm/DeviceHandleImpl.h
+    src/comm/Driver.cpp
+    src/comm/DriverImpl.h
     src/comm/Transfer.cpp
 )
 
@@ -217,6 +218,7 @@ set(
   src_devices_SRCS
     src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
+    src/devices/Devices.cpp
 )
 
 set(
