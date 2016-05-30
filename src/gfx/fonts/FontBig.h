@@ -17,7 +17,7 @@ namespace sl
 namespace cabl
 {
 
-class FontBig : public FontBase<FontBig> // CRTP
+class FontBig : public FontBase<FontBig>
 {
 
 public:
