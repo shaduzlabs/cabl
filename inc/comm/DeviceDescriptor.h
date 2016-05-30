@@ -56,34 +56,36 @@ public:
   unsigned getPortIdIn() const { return m_portIdIn; }
   unsigned getPortIdOut() const { return m_portIdOut; }
   const tSerialNumber& getSerialNumber() const{ return m_serialNumber; }
-
+  
   bool operator==(const DeviceDescriptor& other_) const
   {
     return (m_name == other_.m_name)                 &&
-//           (m_type == other_.m_type)               &&
+           (m_type == other_.m_type)                 &&
            (m_vendorId == other_.m_vendorId)         &&
-           (m_productId == other_.m_productId)       ;
-//           (m_serialNumber == other_.m_serialNumber) &&
-//           (m_portIdIn == other_.m_portIdIn)         &&
-//           (m_portIdOut == other_.m_portIdOut);
+           (m_productId == other_.m_productId)       &&
+           (m_serialNumber == other_.m_serialNumber) &&
+           (m_portIdIn == other_.m_portIdIn)         &&
+           (m_portIdOut == other_.m_portIdOut);
   }
 
   bool operator!=(const DeviceDescriptor& other_) const { return !(operator==(other_)); }
   
   bool operator<(const DeviceDescriptor& other_) const
   {
-    return (m_name < other_.m_name) || ((m_name == other_.m_name) && (m_type < other_.m_type))
-           || ((m_name == other_.m_name) && (m_type == other_.m_type)
-                && (m_vendorId < other_.m_vendorId))
-           || ((m_name == other_.m_name) && (m_type == other_.m_type)
-                && (m_vendorId == other_.m_vendorId) && (m_productId < other_.m_productId));
+    return (m_name < other_.m_name)
+            || ((m_name == other_.m_name) && (m_type < other_.m_type))
+            || ((m_name == other_.m_name) && (m_type == other_.m_type) && (m_vendorId < other_.m_vendorId))
+            || ((m_name == other_.m_name) && (m_type == other_.m_type) && (m_vendorId == other_.m_vendorId) && (m_productId < other_.m_productId))
+            || ((m_name == other_.m_name) && (m_type == other_.m_type) && (m_vendorId == other_.m_vendorId) && (m_productId < other_.m_productId) && (m_serialNumber < other_.m_serialNumber))
+            ;
   }
   operator bool() const{ return ( m_type != Type::Unknown ); }
   
   bool isSameProduct(const DeviceDescriptor& other_) const
   {
     return (m_vendorId == other_.m_vendorId)   &&
-           (m_productId == other_.m_productId);
+           (m_productId == other_.m_productId) &&
+           (m_type == other_.m_type);
   }
   
   static std::string toString(Type type_)
