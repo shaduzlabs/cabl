@@ -106,3 +106,7 @@ void GDisplay::setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ )
 
 } // cabl
 } // sl
+
+//--------------------------------------------------------------------------------------------------
+
+#undef M_SWAP
