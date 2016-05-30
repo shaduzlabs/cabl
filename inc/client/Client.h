@@ -22,12 +22,12 @@ namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
+
 using namespace devices;
 
 class Client final
 {
 public:
-
   using tDevicePtr = std::shared_ptr<Device>;
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
@@ -73,18 +73,18 @@ private:
   void onConnected();
   void onDisconnected();
 
-  static tDriverPtr   getDriver(Driver::Type);
+  static tDriverPtr getDriver(Driver::Type);
   static tCollDrivers s_collDrivers;
 
-  tCbVoid             m_cbConnected;
-  tCbVoid             m_cbTick;
-  tCbVoid             m_cbDisconnected;
+  tCbVoid m_cbConnected;
+  tCbVoid m_cbTick;
+  tCbVoid m_cbDisconnected;
 
-  std::atomic<bool>   m_clientStopped;
-  std::atomic<bool>   m_connected;
-  std::thread         m_cablThread;
+  std::atomic<bool> m_clientStopped;
+  std::atomic<bool> m_connected;
+  std::thread m_cablThread;
 
-  tDevicePtr          m_pDevice;
+  tDevicePtr m_pDevice;
 };
 
 //--------------------------------------------------------------------------------------------------
