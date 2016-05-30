@@ -38,6 +38,8 @@ class Device
 
 public:
 
+// clang-format off
+
   enum class Button : uint8_t
   {
     Control,
@@ -127,8 +129,8 @@ public:
     TouchEncoder9,
     TouchEncoderMain,
     TouchEncoderMain2,
-    
-    //Traktor F1
+
+    // Traktor F1
     Size,
     Type,
     Reverse,
@@ -138,8 +140,8 @@ public:
     Pad1, Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
     Pad9, Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
     Stop1, Stop2, Stop3, Stop4,
-    
-    //Push
+
+    // Push
     Btn1Row1,
     Btn2Row1,
     Btn3Row1,
@@ -201,7 +203,7 @@ public:
     Tempo,
     Main2 = Tempo,
     Swing,
-    Encoder1, 
+    Encoder1,
     Encoder2,
     Encoder3,
     Encoder4,
@@ -242,7 +244,7 @@ public:
     Key121, Key122, Key123, Key124, Key125, Key126, Key127, Key128,
     Unknown,
   };
-  
+
   enum class Potentiometer : uint8_t
   {
     CenterDetented1, CenterDetented2, CenterDetented3, CenterDetented4,
@@ -251,7 +253,9 @@ public:
     Fader9,  Fader10, Fader11, Fader12, Fader13, Fader14, Fader15, Fader16,
     Unknown,
   };
-  
+
+// clang-format on
+
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
@@ -267,7 +271,7 @@ public:
     MaschineMikroMk1,
     MaschineMikroMk2,
   };
-  
+
   Device() = default;
   virtual ~Device() = default;
 
@@ -276,8 +280,8 @@ public:
     m_pDeviceHandle  = std::move(pDeviceHandle_);
     m_hasDeviceHandle = true;
   }
-  
-//  virtual bool connect() = 0;
+
+  //  virtual bool connect() = 0;
 
   virtual void init() = 0;
 
@@ -285,100 +289,105 @@ public:
 
   virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
   virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
-  
+
   virtual DrawingContext& getDrawingContext(uint8_t contextIndex_)
   {
-    static DrawingContext s_dummyContext{0,0,0};
+    static DrawingContext s_dummyContext{0, 0, 0};
     return s_dummyContext;
   }
 
   virtual void setLed(Button, const util::LedColor&) = 0;
 
-  virtual void setLed(Pad, const util::LedColor&) {}
-  virtual void setLed(Key, const util::LedColor&) {}
+  virtual void setLed(Pad, const util::LedColor&)
+  {
+  }
+  virtual void setLed(Key, const util::LedColor&)
+  {
+  }
 
   virtual void sendMidiMsg(tRawData) = 0;
 
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_)
-  { 
-    m_cbButtonChanged = cbButtonChanged_; 
+  {
+    m_cbButtonChanged = cbButtonChanged_;
   }
-  
+
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_)
-  { 
-    m_cbEncoderChanged = cbEncoderChanged_; 
+  {
+    m_cbEncoderChanged = cbEncoderChanged_;
   }
 
   void setCallbackPadChanged(tCbPadChanged cbPadChanged_)
-  { 
+  {
     m_cbPadChanged = cbPadChanged_;
   }
 
-  void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_){ m_cbKeyChanged = cbKeyChanged_;}
+  void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_)
+  {
+    m_cbKeyChanged = cbKeyChanged_;
+  }
 
   void setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_)
-  { 
+  {
     m_cbPotentiometerChanged = cbPotentiometerChanged_;
   }
 
 protected:
-
   std::shared_ptr<DeviceHandle> getDeviceHandle()
   {
     return m_pDeviceHandle;
   }
-  
+
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
-    if(m_cbButtonChanged)
+    if (m_cbButtonChanged)
     {
-      m_cbButtonChanged(button_,buttonState_,shiftPressed_);
+      m_cbButtonChanged(button_, buttonState_, shiftPressed_);
     }
   }
-  
+
   void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
   {
-    if(m_cbEncoderChanged)
+    if (m_cbEncoderChanged)
     {
-      m_cbEncoderChanged(encoder_,valueIncreased_,shiftPressed_);
+      m_cbEncoderChanged(encoder_, valueIncreased_, shiftPressed_);
     }
   }
-  
+
   void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_)
   {
-    if(m_cbPadChanged)
+    if (m_cbPadChanged)
     {
-      m_cbPadChanged(pad_,value_,shiftPressed_);
+      m_cbPadChanged(pad_, value_, shiftPressed_);
     }
   }
-  
+
   void keyChanged(Key key_, uint16_t value_, bool shiftPressed_)
   {
-    if(m_cbKeyChanged)
+    if (m_cbKeyChanged)
     {
-      m_cbKeyChanged(key_,value_,shiftPressed_);
+      m_cbKeyChanged(key_, value_, shiftPressed_);
     }
   }
-  
+
   void potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_)
   {
-    if(m_cbPotentiometerChanged)
+    if (m_cbPotentiometerChanged)
     {
-      m_cbPotentiometerChanged(potentiometer_,value_,shiftPressed_);
+      m_cbPotentiometerChanged(potentiometer_, value_, shiftPressed_);
     }
   }
-  
+
 private:
+  bool m_hasDeviceHandle;
 
-  bool                            m_hasDeviceHandle;
+  tCbButtonChanged m_cbButtonChanged;
+  tCbEncoderChanged m_cbEncoderChanged;
+  tCbPadChanged m_cbPadChanged;
+  tCbKeyChanged m_cbKeyChanged;
+  tCbPotentiometerChanged m_cbPotentiometerChanged;
 
-  tCbButtonChanged                m_cbButtonChanged;
-  tCbEncoderChanged               m_cbEncoderChanged;
-  tCbPadChanged                   m_cbPadChanged;
-  tCbKeyChanged                   m_cbKeyChanged;
-  tCbPotentiometerChanged         m_cbPotentiometerChanged;
-  
-  std::shared_ptr<DeviceHandle>   m_pDeviceHandle;
+  std::shared_ptr<DeviceHandle> m_pDeviceHandle;
 };
 
 //--------------------------------------------------------------------------------------------------
