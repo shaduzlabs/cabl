@@ -42,6 +42,8 @@ uint32_t randomRange( uint32_t min_, uint32_t max_ )
 #endif  
 }
 
+//--------------------------------------------------------------------------------------------------
+
 uint8_t reverseByte( uint8_t byte )
 {
   byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
