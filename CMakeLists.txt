@@ -12,6 +12,11 @@ project (cabl)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 include(sl-main)
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/support/windows/cmake")
+  include(GenerateProductVersion)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
 set(DEBUG_SUFFIX          "_d")
@@ -459,17 +464,23 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-  set_target_properties(
-    cabl
-    PROPERTIES
-      EXCLUDE_FROM_ALL            TRUE
-      EXCLUDE_FROM_DEFAULT_BUILD  TRUE
-  )
   if(BUILD_SHARED_LIBS)
+    set_target_properties(
+      cabl
+      PROPERTIES
+        EXCLUDE_FROM_ALL            TRUE
+        EXCLUDE_FROM_DEFAULT_BUILD  TRUE
+    )
     target_link_libraries( cabl         setupapi.lib)
   endif(BUILD_SHARED_LIBS)
 
   if(BUILD_STATIC_LIBS)
+    set_target_properties(
+      cabl-static
+      PROPERTIES
+        EXCLUDE_FROM_ALL            TRUE
+        EXCLUDE_FROM_DEFAULT_BUILD  TRUE
+    )
     target_link_libraries( cabl-static  setupapi.lib)
   endif(BUILD_STATIC_LIBS)
 

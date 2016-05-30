@@ -11,6 +11,8 @@
 
 project(colordisplay)
 
+addlodepng()
+
 set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   generateProductVersion(
@@ -29,8 +31,6 @@ SET(
     main.cpp
     ColorDisplay.h
     ColorDisplay.cpp
-    lodepng.h
-    lodepng.cpp
     ${VERSION_RESOURCES}
 )
 
@@ -48,7 +48,7 @@ set_target_properties(
 
 target_link_libraries(${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static)
+target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static lodepng)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreFoundation" "-framework IOKit")

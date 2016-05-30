@@ -28,7 +28,6 @@ function (checkout_external_project target repository tag)
         GIT_TAG ${tag}
         CONFIGURE_COMMAND echo \"\"
         BUILD_COMMAND echo \"\"
-        INSTALL_COMMAND echo \"\"
         LOG_DOWNLOAD ON
         LOG_INSTALL ON
         CMAKE_ARGS ${ARGN}

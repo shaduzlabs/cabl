@@ -120,7 +120,9 @@ function (addLibUSB)
           ${LIBUSB_BASE_DIR}/libusb/strerror.c
           ${LIBUSB_BASE_DIR}/libusb/sync.c
           ${LIBUSB_BASE_DIR}/libusb/os/threads_windows.c
-          ${LIBUSB_BASE_DIR}/libusb/os/windows_usb.c
+          ${LIBUSB_BASE_DIR}/libusb/os/windows_nt_common.c
+          ${LIBUSB_BASE_DIR}/libusb/os/windows_usbdk.c
+          ${LIBUSB_BASE_DIR}/libusb/os/windows_winusb.c
       )
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       set(
@@ -212,6 +214,39 @@ function (addHIDAPI)
         OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
     )
     target_include_directories(hidapi PUBLIC ${HIDAPI_INCLUDE_DIRS})
+
+  endif()
+endfunction()
+
+
+# ------------------------------------------------------------------------------------------------ #
+#  lodepng                                                                                         #
+# ------------------------------------------------------------------------------------------------ #
+function (addlodepng)
+  if(DEFINED LODEPNG_INCLUDE_DIRS)
+    message(STATUS "lodepng is already available")
+  else()
+    checkout_external_project(lodepng https://github.com/lvandeve/lodepng.git master)
+    set(LODEPNG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/lodepng/src/lodepng PARENT_SCOPE)
+    set(LODEPNG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/lodepng/src/lodepng)
+    message(STATUS "lodepng path: ${LODEPNG_INCLUDE_DIRS}")
+
+    set(
+      lib_lodepng_LIBRARY
+        ${LODEPNG_INCLUDE_DIRS}/lodepng.h
+        ${LODEPNG_INCLUDE_DIRS}/lodepng.cpp
+    )
+    source_group("src"  FILES  ${lib_lodepng_LIBRARY})
+    add_library( lodepng STATIC ${lib_lodepng_LIBRARY})
+
+    set_target_properties(
+      lodepng
+      PROPERTIES
+        OUTPUT_NAME         "lodepng"
+        OUTPUT_NAME_DEBUG   "lodepng${DEBUG_SUFFIX}"
+    )
+
+    target_include_directories(lodepng PUBLIC ${LODEPNG_INCLUDE_DIRS})
 
   endif()
 endfunction()
