@@ -250,6 +250,7 @@ bool MaschineMikroMK2::sendFrame()
       return false;
     }
   }
+//  m_display.resetDirtyFlags();
   return true;
 }
 

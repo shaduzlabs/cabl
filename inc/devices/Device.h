@@ -278,11 +278,13 @@ public:
 
   void setDeviceHandle(tPtr<DeviceHandle> pDeviceHandle_)
   {
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     m_pDeviceHandle  = std::move(pDeviceHandle_);
   }
   
   void resetDeviceHandle()
   {
+    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     m_pDeviceHandle  = nullptr;
   }
 

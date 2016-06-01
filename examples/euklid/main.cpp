@@ -22,7 +22,8 @@ int main(int argc, const char* argv[])
   Euklid euklid;
 
   std::cout << "Type 'q' and hit ENTER to quit." << std::endl;
-  while (std::cin.get() != 'q')
+
+  while (true)//std::cin.get() != 'q')
   {
     euklid.tick();
   }

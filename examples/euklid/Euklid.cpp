@@ -179,9 +179,13 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   {
     uint8_t padIndex = static_cast<uint8_t>(button_) - static_cast<uint8_t>(Device::Button::Pad1 );
     m_sequences[m_currentTrack].toggleStep(padIndex);
-    m_update = true;
   }
-  updateGUI();
+  else
+  {
+    return;
+  }
+  
+  m_update = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -261,25 +265,7 @@ void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
   {
     lastEvent = now;
     uint8_t padIndex = getPadIndex(pad_);
-    if (m_sequences[m_currentTrack].toggleStep(padIndex))
-    {/*
-      switch (m_currentTrack)
-      {
-      case 0:
-        m_pDevice->setLed(getPadLed(padIndex), 127, 0, 0);
-        break;
-      case 1:
-        m_pDevice->setLed(getPadLed(padIndex), 0, 127, 0);
-        break;
-      case 2:
-        m_pDevice->setLed(getPadLed(padIndex), 0, 0, 127);
-        break;
-      }*/
-    }
-    else
-    {
-   //   m_pDevice->setLed(getPadLed(padIndex), 0);
-    }
+    m_sequences[m_currentTrack].toggleStep(padIndex);
     m_update = true;
   }
 
@@ -295,25 +281,7 @@ void Euklid::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
   {
     lastEvent = now;
     uint8_t padIndex = static_cast<uint8_t>(key_);
-    if (m_sequences[m_currentTrack].toggleStep(padIndex))
-    {/*
-      switch (m_currentTrack)
-      {
-      case 0:
-        m_pDevice->setLed(getPadLed(padIndex), 127, 0, 0);
-        break;
-      case 1:
-        m_pDevice->setLed(getPadLed(padIndex), 0, 127, 0);
-        break;
-      case 2:
-        m_pDevice->setLed(getPadLed(padIndex), 0, 0, 127);
-        break;
-      }*/
-    }
-    else
-    {
-   //   m_pDevice->setLed(getPadLed(padIndex), 0);
-    }
+    m_sequences[m_currentTrack].toggleStep(padIndex);
     m_update = true;
   }
 
@@ -451,7 +419,6 @@ void Euklid::updateGUI()
       break;
     }
   }
-  m_update = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -479,7 +446,6 @@ void Euklid::updateGroupLeds()
     m_pDevice->setLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
     break;
   }
-  m_update = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -533,7 +499,6 @@ void Euklid::updatePads()
       }
     }
   }
-  m_update = true;
 }
 
 //--------------------------------------------------------------------------------------------------
