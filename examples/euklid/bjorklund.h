@@ -1,3 +1,5 @@
+// from https://github.com/pingdynasty/EuclideanSequencer
+
 #ifndef _BJORKLUND_H_
 #define _BJORKLUND_H_
 
