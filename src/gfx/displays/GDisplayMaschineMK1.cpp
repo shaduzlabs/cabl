@@ -43,7 +43,7 @@ GDisplayMaschineMK1::GDisplayMaschineMK1()
 
 void GDisplayMaschineMK1::white()
 {
-  fillPattern(0x0);
+  fillPattern(0xff);
   m_isDirty = true;
 }
 
@@ -51,7 +51,7 @@ void GDisplayMaschineMK1::white()
 
 void GDisplayMaschineMK1::black()
 {
-  fillPattern(0xFF);
+  fillPattern(0x0);
   m_isDirty = true;
 }
 
@@ -76,6 +76,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
   switch( color_ )
   {
     case Color::Black:
+    {
       switch( blockIndex )
       {
         case 0:
@@ -90,8 +91,9 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
           break;
       }
       break;
-
+    }
     case Color::White:
+    {
       switch( blockIndex )
       {
         case 0:
@@ -106,23 +108,34 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
           break;
       }
       break;
-
+    }
     case Color::Invert:
+    {
       switch( blockIndex )
       {
         case 0:
-          getData()[ byteIndex ] ^= 0xF8;
+        {
+          uint8_t pixel2a = getData()[ byteIndex ] & 0x07;
+          getData()[ byteIndex ] = (~(getData()[ byteIndex ]) & 0xF8) | pixel2a;
           break;
+        }
         case 1:
-          getData()[ byteIndex ] ^= 0x07;
-          getData()[ byteIndex + 1 ] ^= 0xC0;
+        {
+          uint8_t pixel1 = getData()[ byteIndex ] & 0xF8;
+          uint8_t pixel3 = getData()[ byteIndex + 1] & 0x1F;
+          getData()[ byteIndex ] = ((~getData()[ byteIndex ]) & 0x07) | pixel1;
+          getData()[ byteIndex + 1 ] = ((~getData()[ byteIndex + 1 ]) & 0xC0) | pixel3;
           break;
+        }
         case 2:
-          getData()[ byteIndex + 1 ] ^= 0x1F;
+        {
+          uint8_t pixel2b = getData()[ byteIndex + 1 ] & 0xC0;
+          getData()[ byteIndex + 1 ] = (~(getData()[ byteIndex + 1 ]) & 0x1F) | pixel2b;
           break;
+        }
       }
       break;
-
+    }
     default:
       break;
   }
