@@ -358,6 +358,7 @@ bool MaschineMK2::sendFrame(uint8_t displayIndex_)
     }
   }
 
+  m_displays[displayIndex_].resetDirtyFlags();
   return true;
 }
 
