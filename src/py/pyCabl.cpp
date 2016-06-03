@@ -415,7 +415,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("setLedButton", setLed_btn)
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)
-    .def("getDrawingContext", &Client::getDrawingContext, return_value_policy<reference_existing_object>())
+    .def("drawingContext", &Client::drawingContext, return_value_policy<reference_existing_object>())
   ;
   
 //--------------------------------------------------------------------------------------------------

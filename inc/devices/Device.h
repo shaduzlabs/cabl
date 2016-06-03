@@ -297,8 +297,10 @@ public:
 
   virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
   virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
+  virtual size_t numOfGraphicDisplays() { return 0; }
+  virtual size_t numOfLCDDisplays() { return 0; }
 
-  virtual DrawingContext& getDrawingContext(uint8_t contextIndex_)
+  virtual DrawingContext& drawingContext(uint8_t contextIndex_)
   {
     static DrawingContext s_dummyContext{0, 0, 0};
     return s_dummyContext;
@@ -353,7 +355,7 @@ public:
   
   void render()
   {
-      if (m_cbRender)
+    if (m_cbRender)
     {
       m_cbRender();
     }

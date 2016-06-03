@@ -35,7 +35,7 @@ public:
 
   GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
   LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
-  DrawingContext& getDrawingContext(uint8_t /*contextIndex_*/) override
+  DrawingContext& drawingContext(uint8_t /*contextIndex_*/) override
   {
     return m_display;
   }

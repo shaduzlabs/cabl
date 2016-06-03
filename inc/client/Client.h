@@ -7,87 +7,55 @@
 
 #pragma once
 
-#include <map>
-#include <atomic>
-#include <thread>
-
-#include "comm/Driver.h"
-#include "devices/Device.h"
-
-#include <unmidify.hpp>
+#include "devices/Coordinator.h"
 
 namespace sl
 {
 namespace cabl
 {
 
-//--------------------------------------------------------------------------------------------------
-
 using namespace devices;
 
-class Client final
+class Client
 {
 public:
-  using tDevicePtr = std::shared_ptr<Device>;
-  using tDriverPtr = std::shared_ptr<Driver>;
-  using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
-
-  using tCbVoid = std::function<void(void)>;
 
   Client();
-  virtual ~Client();
+  
+  virtual void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_);
+  virtual void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
+  virtual void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
+  virtual void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed);
+  
+  virtual void initDevice(){}
+  virtual void render() = 0;
+  
+protected:
 
-  Client(const Client&) = delete;
-  Client& operator=(const Client&) = delete;
-
-  void run();
-  void stop();
-
-  static Driver::tCollDeviceDescriptor enumerateDevices();
-  bool connect(const DeviceDescriptor&);
-
-  void setCallbacks(tCbVoid cbConnected_, tCbVoid cbTick_, tCbVoid cbDisconnected_)
-  {
-    m_cbConnected = cbConnected_;
-    m_cbTick = cbTick_;
-    m_cbDisconnected = cbDisconnected_;
-  }
-
-  tDevicePtr getDevice()
-  {
-    return m_pDevice;
-  }
-
-  void setLed(Device::Button, const util::LedColor&);
-
-  void setLed(Device::Pad, const util::LedColor&);
-  void setLed(Device::Key, const util::LedColor&);
-
-  DrawingContext& getDrawingContext(unsigned nContext_ = 0)
-  {
-    return m_pDevice->getDrawingContext(nContext_);
-  }
-
+  Coordinator::tDevicePtr device(){ return m_pDevice; }
+  void requestDeviceUpdate() { m_update = true; }
+  
 private:
-  void onTick();
-  void onConnected();
-  void onDisconnected();
+  
+  void onInitDevice();
+  void onRender();
+  
+  void devicesListChanged(Coordinator::tCollDeviceDescriptor devices_);
 
-  static tDriverPtr getDriver(Driver::Type);
-  static tCollDrivers s_collDrivers;
+  uint8_t getEncoderValue(
+    bool valueIncreased_,
+    uint8_t step_,
+    uint8_t currentValue_,
+    uint8_t minValue_,
+    uint8_t maxValue_
+  );
 
-  tCbVoid m_cbConnected;
-  tCbVoid m_cbTick;
-  tCbVoid m_cbDisconnected;
-
-  std::atomic<bool> m_clientStopped;
-  std::atomic<bool> m_connected;
-  std::thread m_cablThread;
-
-  tDevicePtr m_pDevice;
+  Coordinator             m_coordinator;
+  Coordinator::tDevicePtr m_pDevice;
+  
+  std::atomic<bool> m_update{true};
+  
 };
 
-//--------------------------------------------------------------------------------------------------
-
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

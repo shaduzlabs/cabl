@@ -26,7 +26,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-class Devices
+class Coordinator
 {
 public:
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
@@ -37,8 +37,8 @@ public:
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
   using tCbDevicesListChanged = std::function<void(tCollDeviceDescriptor)>;
   
-  Devices(tCbDevicesListChanged);
-  ~Devices();
+  Coordinator(tCbDevicesListChanged);
+  ~Coordinator();
 
   void run();
 

@@ -142,7 +142,7 @@ void ColorDisplay::updateDisplay()
   {
     nTick = 0;
     
-    uint8_t* pDrawingContext = m_pDevice->getDrawingContext(0).getData().data();
+    uint8_t* pDrawingContext = m_pDevice->drawingContext(0).getData().data();
     uint8_t* pPNG = m_pngImage.data();
     for(unsigned col=0; col<m_pngWidth; col++)
     {
@@ -156,7 +156,7 @@ void ColorDisplay::updateDisplay()
         *pDrawingContext++ = ((b&0x1f) << 3) | ((g & 0x38) >> 3);
       }
     }
-    m_pDevice->getDrawingContext(0).setDirty(true);
+    m_pDevice->drawingContext(0).setDirty(true);
   }
 }
 

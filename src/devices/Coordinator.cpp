@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/Devices.h"
+#include "devices/Coordinator.h"
 #include "devices/DeviceFactory.h"
 
 #include "cabl.h"
@@ -22,7 +22,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::Devices(tCbDevicesListChanged cbDevicesListChanged_)
+Coordinator::Coordinator(tCbDevicesListChanged cbDevicesListChanged_)
 : m_cbDevicesListChanged(cbDevicesListChanged_)
 {
   M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
@@ -51,9 +51,9 @@ Devices::Devices(tCbDevicesListChanged cbDevicesListChanged_)
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::~Devices()
+Coordinator::~Coordinator()
 {
-  M_LOG("[Devices] destructor");
+  M_LOG("[Coordinator] destructor");
   m_running = false;
   if (m_cablThread.joinable())
   {
@@ -63,7 +63,7 @@ Devices::~Devices()
 
 //--------------------------------------------------------------------------------------------------
 
-void Devices::run()
+void Coordinator::run()
 {
   bool expected=false;
   if (!m_running.compare_exchange_strong(expected,true))
@@ -94,7 +94,7 @@ void Devices::run()
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::tCollDeviceDescriptor Devices::enumerate(bool forceScan_)
+Coordinator::tCollDeviceDescriptor Coordinator::enumerate(bool forceScan_)
 {
   if (forceScan_ || !m_scanDone)
   {
@@ -106,7 +106,7 @@ Devices::tCollDeviceDescriptor Devices::enumerate(bool forceScan_)
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::tDevicePtr Devices::connect(const DeviceDescriptor& deviceDescriptor_)
+Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescriptor_)
 {
   if (!deviceDescriptor_)
   {
@@ -157,7 +157,7 @@ Devices::tDevicePtr Devices::connect(const DeviceDescriptor& deviceDescriptor_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Devices::scan()
+void Coordinator::scan()
 {
   std::lock_guard<std::mutex> lock(m_mtxDeviceDescriptors);
   tCollDeviceDescriptor deviceDescriptors{m_collDeviceDescriptors};
@@ -168,7 +168,7 @@ void Devices::scan()
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
-      M_LOG("[Devices] scan: new device found via HIDAPI");
+      M_LOG("[Coordinator] scan: new device found via HIDAPI");
     }
   }
 
@@ -176,7 +176,7 @@ void Devices::scan()
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
-      M_LOG("[Devices] scan: new device found via MIDI");
+      M_LOG("[Coordinator] scan: new device found via MIDI");
     }
   }
 
@@ -187,7 +187,7 @@ void Devices::scan()
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
-      M_LOG("[Devices] scan: new device found via main driver");
+      M_LOG("[Coordinator] scan: new device found via main driver");
     }
   }
 
@@ -228,7 +228,7 @@ void Devices::scan()
 
 //--------------------------------------------------------------------------------------------------
 
-bool Devices::checkAndAddDeviceDescriptor(const sl::cabl::DeviceDescriptor& deviceDescriptor)
+bool Coordinator::checkAndAddDeviceDescriptor(const sl::cabl::DeviceDescriptor& deviceDescriptor)
 {
     if ((!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
         || std::find(m_collDeviceDescriptors.begin(), m_collDeviceDescriptors.end(), deviceDescriptor) != m_collDeviceDescriptors.end())
@@ -241,9 +241,9 @@ bool Devices::checkAndAddDeviceDescriptor(const sl::cabl::DeviceDescriptor& devi
 
 //--------------------------------------------------------------------------------------------------
 
-void Devices::devicesListChanged()
+void Coordinator::devicesListChanged()
 {
-  M_LOG("[Devices]: The devices list has changed");
+  M_LOG("[Coordinator]: The devices list has changed");
   auto devices = enumerate();
   for(const auto& device : devices)
   {
@@ -257,7 +257,7 @@ void Devices::devicesListChanged()
 
 //--------------------------------------------------------------------------------------------------
 
-Devices::tDriverPtr Devices::getDriver(Driver::Type tDriver_)
+Coordinator::tDriverPtr Coordinator::getDriver(Driver::Type tDriver_)
 {
   if (m_collDrivers.find(tDriver_) == m_collDrivers.end())
   {

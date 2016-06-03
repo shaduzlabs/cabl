@@ -22,7 +22,7 @@ namespace sl
 
 using namespace cabl;
 
-class Euklid
+class Euklid : public Client
 {
 public:
 
@@ -43,15 +43,14 @@ public:
 
   Euklid();
   
-  void init();
-  void tick();
+  void initDevice() override;
+  void render() override;
   
-  void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_);
-  void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
-  void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
-  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed);
-  
-  
+  void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_) override;
+  void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
+  void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
+  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed) override;
+    
   void updateClock();
   
   void play();
@@ -84,8 +83,6 @@ public:
   
 private:
   
-  void devicesListChanged(Devices::tCollDeviceDescriptor devices_);
-
   uint8_t getEncoderValue(
     bool valueIncreased_,
     uint8_t step_,
@@ -95,9 +92,6 @@ private:
   );
   Device::Pad getPad(uint8_t padIndex_);
   uint8_t getPadIndex(Device::Pad pad_);
-
-  Devices             m_devices;
-  Devices::tDevicePtr m_pDevice;
   
   Sequence<uint16_t> m_sequences[3];
 
@@ -120,8 +114,6 @@ private:
   uint8_t   m_quarterNote;
   uint16_t  m_delayEven;
   uint16_t  m_delayOdd;
-  
-  std::atomic<bool> m_update;
   
 };
 

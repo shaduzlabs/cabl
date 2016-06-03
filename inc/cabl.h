@@ -8,7 +8,6 @@
 #pragma once
 
 #include "client/Client.h"
-#include "devices/Devices.h"
 
 #include "devices/DeviceFactory.h"
 

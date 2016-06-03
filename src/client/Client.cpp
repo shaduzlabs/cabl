@@ -7,12 +7,6 @@
 
 #include "client/Client.h"
 
-#include <algorithm>
-#include <thread> //remove and use a custom sleep function!
-#include <iostream>
-
-#include "cabl.h"
-
 #include "devices/ableton/Push2.h"
 #include "devices/ableton/Push2Display.h"
 #include "devices/akai/Push.h"
@@ -22,264 +16,129 @@
 #include "devices/ni/MaschineMikroMK2.h"
 #include "devices/ni/TraktorF1MK2.h"
 
-namespace
-{
-static const unsigned kClientMaxConsecutiveErrors = 100;
-}
-
 namespace sl
 {
 namespace cabl
 {
 
-//--------------------------------------------------------------------------------------------------
-
-Client::tCollDrivers Client::s_collDrivers = Client::tCollDrivers();
+using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------
 
 Client::Client()
+  : m_coordinator(std::bind(&Client::devicesListChanged,this,std::placeholders::_1))
 {
-  M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
+  m_coordinator.run();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Client::~Client()
+void Client::onInitDevice()
 {
-  M_LOG("[Client] destructor");
-  if (m_cablThread.joinable())
+  M_LOG("[Client] onInitDevice" );
+  
+  if(!m_pDevice)
   {
-    m_cablThread.join();
+    return;
+  }
+  
+  for(size_t i = 0; i < m_pDevice->numOfGraphicDisplays() ; i++)
+  {
+    m_pDevice->getGraphicDisplay(i)->black();
+  }
+  
+  for(size_t i = 0; i < m_pDevice->numOfLCDDisplays() ; i++)
+  {
+    m_pDevice->getLCDDisplay(i)->clear();
+  }
+  
+  m_pDevice->setCallbackRender(std::bind(&Client::onRender, this));
+  
+  m_pDevice->setCallbackButtonChanged(std::bind(&Client::buttonChanged, this, _1, _2, _3));
+  m_pDevice->setCallbackEncoderChanged(std::bind(&Client::encoderChanged, this, _1, _2, _3));
+  m_pDevice->setCallbackPadChanged(std::bind(&Client::padChanged, this, _1, _2, _3));
+  m_pDevice->setCallbackKeyChanged(std::bind(&Client::keyChanged, this, _1, _2, _3));
+  
+  initDevice();
+  
+  m_update = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::onRender()
+{
+  bool expected = true;
+  if(m_update.compare_exchange_weak(expected, false) && m_pDevice)
+  {
+    render();
+  }
+  else
+  {
+    std::this_thread::yield();
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::run()
+void Client::buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_)
 {
-  m_clientStopped = false;
-  m_connected = false;
-  m_cablThread = std::thread(
-    [this]()
-    {
-      while (!m_clientStopped)
-      {
+  M_LOG("[Client] encoderChanged " << static_cast<int>(button_) << " (" << ( buttonState_ ? "clicked " : "released" ) << ") " << ( shiftPressed_ ? " SHIFT" : "" ));
+  m_update = true;
+}
 
-        //\todo remove enumerateDevices call!
-        /*
-        m_connected = false;
-        auto collDevices = enumerateDevices();
-        if (collDevices.size() > 0) // found known devices
-        {
-          connect(collDevices[0]);
-        }
-*/
-        if(m_connected)
-        {
-          m_pDevice->init();
-          onConnected();
-          M_LOG("[Application] run: device connected" );
-          unsigned nErrors = 0;
-          while (m_connected)
-          {
-            onTick();
-            if(!m_pDevice->tick())
-            {
-              nErrors++;
-              if (nErrors >= kClientMaxConsecutiveErrors)
-              {
-                m_connected = false;
-                M_LOG("[Application] run: disconnected after " << nErrors << " errors" );
-              }
-            }
-            else
-            {
-              nErrors = 0;
-            }
-          }
-          onDisconnected();
-        }
-        else
-        {
-          std::this_thread::yield();
-        }
+//--------------------------------------------------------------------------------------------------
+
+void Client::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
+{
+  M_LOG("[Client] encoderChanged " << static_cast<int>(encoder_) << ( valueIncreased_ ? "++ " : "--" ) << ") " << ( shiftPressed_ ? " SHIFT" : "" ));
+  m_update = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
+{
+  M_LOG("[Client] padChanged " << static_cast<int>(pad_) << " (" << value_ << ") " << ( shiftPressed_ ? " SHIFT" : "" ));
+  m_update = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
+{
+  M_LOG("[Client] keyChanged " << static_cast<int>(key_) << " (" << value_ << ") " << ( shiftPressed_ ? " SHIFT" : "" ));
+  m_update = true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::devicesListChanged(Coordinator::tCollDeviceDescriptor devices_)
+{
+  M_LOG("[Client] devicesListChanged : " << devices_.size() << " devices" );
+  
+  if(m_pDevice)
+  {
+    if(!m_pDevice->hasDeviceHandle())
+    {
+      if(devices_.size() > 0)
+      {
+        m_pDevice = m_coordinator.connect(devices_[0]);
+        onInitDevice();
       }
     }
-  );
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::stop()
-{
-  M_LOG("[Client] stop");
-  m_connected = false;
-  m_clientStopped = true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Driver::tCollDeviceDescriptor Client::enumerateDevices()
-{
-  Driver::tCollDeviceDescriptor devicesList;
-#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  for (const auto& deviceDescriptor : getDriver(Driver::Type::HIDAPI)->enumerate())
-  {
-    if (!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
-    {
-      continue; // not a Native Instruments USB device
-    }
-    devicesList.push_back(deviceDescriptor);
   }
-  M_LOG(
-    "[Application] enumerateDevices: " << devicesList.size() << " known devices found via HIDAPI");
-
-  unsigned nFoundMidi = 0;
-  for (const auto& deviceDescriptor : getDriver(Driver::Type::MIDI)->enumerate())
+  else
   {
-    if (!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
+    if(devices_.size() > 0)
     {
-      continue; // not a Native Instruments USB device
-    }
-    nFoundMidi++;
-    devicesList.push_back(deviceDescriptor);
-  }
-  M_LOG("[Application] enumerateDevices: " << nFoundMidi << " known devices found via MIDI");
-
-  Driver::Type tMainDriver(Driver::Type::LibUSB);
-#endif
-
-  for (const auto& deviceDescriptor : getDriver(tMainDriver)->enumerate())
-  {
-    if ((!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
-        || (std::find(devicesList.begin(), devicesList.end(), deviceDescriptor)
-             != devicesList.end()))
-    {
-      continue; // unknown
-    }
-    devicesList.push_back(deviceDescriptor);
-  }
-  M_LOG("[Application] enumerateDevices: " << devicesList.size() << " total known devices found");
-
-  return devicesList;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Client::connect(const DeviceDescriptor& deviceDescriptor_)
-{
-  m_connected = false;
-  if (!deviceDescriptor_)
-  {
-    return false;
-  }
-
-#if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  Driver::Type driverType;
-  switch (deviceDescriptor_.getType())
-  {
-    case DeviceDescriptor::Type::HID:
-    {
-      driverType = Driver::Type::HIDAPI;
-      break;
-    }
-    case DeviceDescriptor::Type::MIDI:
-    {
-      driverType = Driver::Type::MIDI;
-      break;
-    }
-    case DeviceDescriptor::Type::USB:
-    default:
-    {
-      driverType = Driver::Type::LibUSB;
-      break;
+      m_pDevice = m_coordinator.connect(devices_[0]);
+      onInitDevice();
     }
   }
-#endif
-  auto deviceHandle = getDriver(driverType)->connect(deviceDescriptor_);
-
-  if (deviceHandle)
-  {
-    m_pDevice = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
-    m_connected = (m_pDevice != nullptr);
-  }
-
-  return m_connected;
-}
-//--------------------------------------------------------------------------------------------------
-
-void Client::setLed(Device::Button btn_, const util::LedColor& color_)
-{
-  if(m_pDevice)
-  {
-    m_pDevice->setLed(btn_, color_);
-  }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::setLed(Device::Pad pad_, const util::LedColor& color_)
-{
-  if(m_pDevice)
-  {
-    m_pDevice->setLed(pad_, color_);
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::setLed(Device::Key key_, const util::LedColor& color_)
-{
-  if(m_pDevice)
-  {
-    m_pDevice->setLed(key_, color_);
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::onConnected()
-{
-  if(m_cbConnected)
-  {
-    m_cbConnected();
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::onTick()
-{
-  if(m_cbTick)
-  {
-    m_cbTick();
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::onDisconnected()
-{
-  if(m_cbDisconnected)
-  {
-    m_cbDisconnected();
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Client::tDriverPtr Client::getDriver(Driver::Type tDriver_)
-{
-  if (s_collDrivers.find(tDriver_) == s_collDrivers.end())
-  {
-    s_collDrivers.emplace(tDriver_, std::make_shared<Driver>(tDriver_));
-  }
-
-  return s_collDrivers[tDriver_];
-}
-
-//--------------------------------------------------------------------------------------------------
-
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

@@ -99,10 +99,10 @@ set(
 
 set(
   inc_devices_INCLUDES
+    inc/devices/Coordinator.h
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
     inc/devices/DeviceRegistrar.h
-    inc/devices/Devices.h
 )
 
 set(
@@ -221,9 +221,9 @@ set(
 
 set(
   src_devices_SRCS
+    src/devices/Coordinator.cpp
     src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
-    src/devices/Devices.cpp
 )
 
 set(
