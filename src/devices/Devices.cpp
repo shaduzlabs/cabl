@@ -82,6 +82,7 @@ void Devices::run()
         {
           if(device.second)
           {
+            device.second->render();
             auto result = device.second->tick();
             //! \todo Check tick() result
           }

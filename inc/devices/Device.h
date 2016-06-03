@@ -257,6 +257,7 @@ public:
 
 // clang-format on
 
+  using tCbRender = std::function<void(void)>;
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
@@ -314,6 +315,11 @@ public:
 
   virtual void sendMidiMsg(tRawData) = 0;
 
+  void setCallbackRender(tCbRender cbRender_)
+  {
+    m_cbRender = cbRender_;
+  }
+  
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_)
   {
     m_cbButtonChanged = cbButtonChanged_;
@@ -344,7 +350,15 @@ public:
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     return static_cast<bool>(m_pDeviceHandle);
   }
-
+  
+  void render()
+  {
+      if (m_cbRender)
+    {
+      m_cbRender();
+    }
+  }
+  
 protected:
 
   bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_ )
@@ -379,6 +393,7 @@ protected:
     }
   }
   
+
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
     if (m_cbButtonChanged)
@@ -421,6 +436,7 @@ protected:
 
 private:
 
+  tCbRender        m_cbRender;
   tCbButtonChanged m_cbButtonChanged;
   tCbEncoderChanged m_cbEncoderChanged;
   tCbPadChanged m_cbPadChanged;

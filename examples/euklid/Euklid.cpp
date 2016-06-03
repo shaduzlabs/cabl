@@ -82,6 +82,8 @@ void Euklid::init()
 
   m_pDevice->setLed(Device::Key::Key1, kEuklidColor_Track[0]);
   
+  m_pDevice->setCallbackRender(std::bind(&Euklid::tick, this));
+  
   m_pDevice->setCallbackButtonChanged(std::bind(&Euklid::buttonChanged, this, _1, _2, _3));
   m_pDevice->setCallbackEncoderChanged(std::bind(&Euklid::encoderChanged, this, _1, _2, _3));
   m_pDevice->setCallbackPadChanged(std::bind(&Euklid::padChanged, this, _1, _2, _3));
