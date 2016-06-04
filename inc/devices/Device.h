@@ -289,8 +289,6 @@ public:
     m_pDeviceHandle  = nullptr;
   }
 
-  //  virtual bool connect() = 0;
-
   virtual void init() = 0;
 
   virtual bool tick() = 0;
