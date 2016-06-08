@@ -258,6 +258,8 @@ public:
 // clang-format on
 
   using tCbRender = std::function<void(void)>;
+  using tCbDisconnect = std::function<void(void)>;
+
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
@@ -291,8 +293,6 @@ public:
 
   virtual void init() = 0;
 
-  virtual bool tick() = 0;
-
   virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
   virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
   virtual size_t numOfGraphicDisplays() { return 0; }
@@ -314,6 +314,11 @@ public:
   }
 
   virtual void sendMidiMsg(tRawData) = 0;
+
+  void setCallbackDisconnect(tCbDisconnect cbDisconnect_)
+  {
+    m_cbDisconnect = cbDisconnect_;
+  }
 
   void setCallbackRender(tCbRender cbRender_)
   {
@@ -351,15 +356,9 @@ public:
     return static_cast<bool>(m_pDeviceHandle);
   }
   
-  void render()
-  {
-    if (m_cbRender)
-    {
-      m_cbRender();
-    }
-  }
-  
 protected:
+
+  virtual bool tick() = 0;
 
   bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_ )
   {
@@ -435,8 +434,42 @@ protected:
   }
 
 private:
+  bool onTick()
+  {
+    if(!hasDeviceHandle())
+    {
+      return false;
+    }
+    
+    render();
+    return tick();
+  }
 
+  void onConnect()
+  {
+    init();
+  }
+
+  void onDisconnect()
+  {
+    resetDeviceHandle();
+    if (m_cbDisconnect)
+    {
+      m_cbDisconnect();
+    }
+  }
+  
+  void render()
+  {
+    if (m_cbRender)
+    {
+      m_cbRender();
+    }
+  }
+
+  tCbDisconnect    m_cbDisconnect;
   tCbRender        m_cbRender;
+
   tCbButtonChanged m_cbButtonChanged;
   tCbEncoderChanged m_cbEncoderChanged;
   tCbPadChanged m_cbPadChanged;
@@ -445,6 +478,8 @@ private:
 
   std::mutex         m_mtxDeviceHandle;
   tPtr<DeviceHandle> m_pDeviceHandle;
+
+  friend class Coordinator;
 };
 
 //--------------------------------------------------------------------------------------------------

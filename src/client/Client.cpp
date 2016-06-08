@@ -26,9 +26,16 @@ using namespace std::placeholders;
 //--------------------------------------------------------------------------------------------------
 
 Client::Client()
-  : m_coordinator(std::bind(&Client::devicesListChanged,this,std::placeholders::_1))
+ :m_clientId(Coordinator::instance().registerClient(std::bind(&Client::devicesListChanged,this,std::placeholders::_1)))
 {
-  m_coordinator.run();
+  devicesListChanged(Coordinator::instance().enumerate());
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Client::~Client()
+{
+  Coordinator::instance().unregisterClient(m_clientId);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -52,6 +59,7 @@ void Client::onInitDevice()
     m_pDevice->getLCDDisplay(i)->clear();
   }
   
+  m_pDevice->setCallbackDisconnect(std::bind(&Client::disconnected, this));
   m_pDevice->setCallbackRender(std::bind(&Client::onRender, this));
   
   m_pDevice->setCallbackButtonChanged(std::bind(&Client::buttonChanged, this, _1, _2, _3));
@@ -66,10 +74,24 @@ void Client::onInitDevice()
 
 //--------------------------------------------------------------------------------------------------
 
+void Client::setDiscoveryPolicy(DiscoveryPolicy discoveryPolicy_)
+{
+  m_discoveryPolicy = std::move(discoveryPolicy_);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::disconnected()
+{
+  M_LOG("[Client] device disconnected");
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Client::onRender()
 {
   bool expected = true;
-  if(m_update.compare_exchange_weak(expected, false) && m_pDevice)
+  if(m_update.compare_exchange_weak(expected, false) && m_pDevice && m_pDevice->hasDeviceHandle())
   {
     render();
   }
@@ -113,27 +135,21 @@ void Client::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::devicesListChanged(Coordinator::tCollDeviceDescriptor devices_)
+void Client::devicesListChanged(Coordinator::tCollDeviceDescriptor deviceDescriptors_)
 {
-  M_LOG("[Client] devicesListChanged : " << devices_.size() << " devices" );
+  M_LOG("[Client] devicesListChanged : " << deviceDescriptors_.size() << " devices" );
   
-  if(m_pDevice)
+  for(const auto& deviceDescriptor : deviceDescriptors_)
   {
-    if(!m_pDevice->hasDeviceHandle())
+    if(!m_discoveryPolicy.matches(deviceDescriptor))
     {
-      if(devices_.size() > 0)
-      {
-        m_pDevice = m_coordinator.connect(devices_[0]);
-        onInitDevice();
-      }
+      continue;
     }
-  }
-  else
-  {
-    if(devices_.size() > 0)
+    if((m_pDevice && !m_pDevice->hasDeviceHandle()) || !m_pDevice)
     {
-      m_pDevice = m_coordinator.connect(devices_[0]);
+      m_pDevice = Coordinator::instance().connect(deviceDescriptor);
       onInitDevice();
+      break;
     }
   }
 }

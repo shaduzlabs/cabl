@@ -8,11 +8,16 @@
 #pragma once
 
 #include "devices/Coordinator.h"
+#include "devices/DiscoveryPolicy.h"
+
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
+
+//--------------------------------------------------------------------------------------------------
 
 using namespace devices;
 
@@ -21,7 +26,11 @@ class Client
 public:
 
   Client();
+  ~Client();
   
+  void setDiscoveryPolicy(DiscoveryPolicy);
+  
+  virtual void disconnected();
   virtual void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_);
   virtual void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
   virtual void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
@@ -50,12 +59,15 @@ private:
     uint8_t maxValue_
   );
 
-  Coordinator             m_coordinator;
+  std::string m_clientId;
   Coordinator::tDevicePtr m_pDevice;
+  DiscoveryPolicy m_discoveryPolicy;
   
   std::atomic<bool> m_update{true};
   
 };
+
+//--------------------------------------------------------------------------------------------------
 
 } // namespace cabl
 } // namespace sl
