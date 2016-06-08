@@ -64,7 +64,7 @@ void ColorDisplay::initHardware()
 
 //--------------------------------------------------------------------------------------------------
 
-void ColorDisplay::tick()
+void ColorDisplay::onTick()
 {
     updateDisplay();
     m_update = false;
