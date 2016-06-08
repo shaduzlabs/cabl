@@ -22,32 +22,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-Coordinator::Coordinator(tCbDevicesListChanged cbDevicesListChanged_)
-: m_cbDevicesListChanged(cbDevicesListChanged_)
-{
-  M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
-  auto usbDriver = getDriver(Driver::Type::LibUSB);
-  
-  usbDriver->setHotplugCallback([this](DeviceDescriptor deviceDescriptor_, bool plugged_)
-    {
-      scan();/*
-      if (plugged_)
-      {
-        M_LOG("[Devices] hotplug: device plugged");
-        if (checkAndAddDeviceDescriptor(deviceDescriptor_))
-        {
-          M_LOG("[Devices] hotplug: new device found");
-        }
-        devicesListChanged();
-        // notify new device?
-      }
-      else
-      {
-        M_LOG("[Devices] usb device unplugged");
-        scan();
-      }*/
-    });
-}
+std::atomic<unsigned> Coordinator::s_clientCount{0};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -61,6 +36,23 @@ Coordinator::~Coordinator()
   }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+Coordinator::tClientId Coordinator::registerClient(tCbDevicesListChanged cbDevicesListChanged_)
+{
+  std::string clientId{"client-" + std::to_string(s_clientCount.fetch_add(1))};
+  m_collCbDevicesListChanged[clientId] = cbDevicesListChanged_;
+
+  return clientId;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Coordinator::unregisterClient(tClientId clientId_)
+{
+  m_collCbDevicesListChanged.erase(clientId_);
+}
+  
 //--------------------------------------------------------------------------------------------------
 
 void Coordinator::run()
@@ -82,8 +74,7 @@ void Coordinator::run()
         {
           if(device.second)
           {
-            device.second->render();
-            auto result = device.second->tick();
+            device.second->onTick();
             //! \todo Check tick() result
           }
         }
@@ -149,10 +140,25 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
       auto device = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
       m_collDevices.insert(std::pair<DeviceDescriptor, tDevicePtr>(deviceDescriptor_, device));
     }
-    m_collDevices[deviceDescriptor_]->init();
+    m_collDevices[deviceDescriptor_]->onConnect();
   }
 
   return m_collDevices[deviceDescriptor_];
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Coordinator::Coordinator()
+{
+  M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
+  auto usbDriver = getDriver(Driver::Type::LibUSB);
+  
+  usbDriver->setHotplugCallback([this](DeviceDescriptor deviceDescriptor_, bool plugged_)
+    {
+      scan();
+    });
+  
+  run();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -210,7 +216,7 @@ void Coordinator::scan()
 
       if (!found)
       {
-        it->second->resetDeviceHandle();
+        it->second->onDisconnect();
       }
 
       it++;
@@ -249,9 +255,12 @@ void Coordinator::devicesListChanged()
   {
     M_LOG(device.getName());
   }
-  if(m_cbDevicesListChanged)
+  for(const auto d : m_collCbDevicesListChanged)
   {
-    m_cbDevicesListChanged(devices);
+    if(d.second)
+    {
+      d.second(devices);
+    }
   }
 }
 

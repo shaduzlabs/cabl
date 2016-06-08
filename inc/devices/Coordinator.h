@@ -33,13 +33,23 @@ public:
   using tDevicePtr = std::shared_ptr<devices::Device>;
   using tCollDevices = std::map<DeviceDescriptor, tDevicePtr>;
 
+  using tClientId = std::string;
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
   using tCbDevicesListChanged = std::function<void(tCollDeviceDescriptor)>;
+  using tCollCbDevicesListChanged = std::map<tClientId,tCbDevicesListChanged>;
   
-  Coordinator(tCbDevicesListChanged);
+  static Coordinator& instance()
+  {
+    static Coordinator instance;
+    return instance;
+  }
+  
   ~Coordinator();
 
+  tClientId registerClient(tCbDevicesListChanged);
+  void unregisterClient(tClientId);
+  
   void run();
 
   tCollDeviceDescriptor enumerate(bool forceScan_ = false);
@@ -47,6 +57,8 @@ public:
   tDevicePtr connect(const DeviceDescriptor&);
 
 private:
+
+  Coordinator();
 
   void scan();
   bool checkAndAddDeviceDescriptor(const DeviceDescriptor&);
@@ -63,9 +75,11 @@ private:
 
   tCollDrivers m_collDrivers;
 
-  tCbDevicesListChanged m_cbDevicesListChanged;
+  tCollCbDevicesListChanged m_collCbDevicesListChanged;
   tCollDeviceDescriptor m_collDeviceDescriptors;
   tCollDevices m_collDevices;
+  
+  static std::atomic<unsigned> s_clientCount;
 };
 
 //--------------------------------------------------------------------------------------------------
