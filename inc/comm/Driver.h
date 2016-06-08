@@ -48,6 +48,7 @@ public:
     SAM3X8E,
     MAX3421E,
     MIDI,
+    nanomsg,
   };
 
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;

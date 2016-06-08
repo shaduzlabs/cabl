@@ -53,7 +53,7 @@ public:
     return ((bits & (1UL << pos++))>0);
   }
   
-  uint8_t length() const{ return length; }
+  uint8_t getLength() const{ return length; }
   uint8_t getPos() const{ return pos; }
   T getBits() const {return bits; }
 

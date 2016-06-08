@@ -75,7 +75,10 @@ else()
   if(Boost_PYTHON_FOUND)
     find_package(PythonLibs)
   endif()
+  find_package(nanomsg REQUIRED)
 endif()
+
+addnanomsgxx()
 
 # Unmidify --------------------------------------------------------------------------------------- #
 
@@ -204,6 +207,14 @@ set(
 )
 
 set(
+  src_comm_drivers_Nanomsg_SRCS
+    src/comm/drivers/nanomsg/DriverNanomsg.cpp
+    src/comm/drivers/nanomsg/DriverNanomsg.h
+    src/comm/drivers/nanomsg/DeviceHandleNanomsg.cpp
+    src/comm/drivers/nanomsg/DeviceHandleNanomsg.h
+)
+
+set(
   src_comm_drivers_SAM3X8E_SRCS
     src/comm/drivers/SAM3X8E/DriverSAM3X8E.cpp
     src/comm/drivers/SAM3X8E/DriverSAM3X8E.h
@@ -320,6 +331,7 @@ source_group("src\\comm"             FILES ${src_comm_SRCS})
 source_group("src\\comm\\drivers\\HIDAPI"    FILES ${src_comm_drivers_HIDAPI_SRCS})
 source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRCS})
 source_group("src\\comm\\drivers\\MIDI"      FILES ${src_comm_drivers_MIDI_SRCS})
+source_group("src\\comm\\drivers\\nanomsg"   FILES ${src_comm_drivers_Nanomsg_SRCS})
 source_group("src\\comm\\drivers\\Probe"     FILES ${src_comm_drivers_Probe_SRCS})
 
 source_group("src\\devices"          FILES ${src_devices_SRCS})
@@ -344,6 +356,7 @@ set(
     ${src_comm_drivers_HIDAPI_SRCS}
     ${src_comm_drivers_LibUSB_SRCS}
     ${src_comm_drivers_MIDI_SRCS}
+    ${src_comm_drivers_Nanomsg_SRCS}
     ${src_comm_drivers_Probe_SRCS}
     ${src_comm_SRCS}
     ${src_devices_SRCS}
@@ -363,6 +376,7 @@ set(
 
 include_directories(inc src ${RTMIDI_INCLUDE_DIRS} /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
 include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+include_directories(${NANOMSG_INCLUDE_DIRS} ${NANOMSGXX_INCLUDE_DIRS})
 
 set(
   cabl_ALL
@@ -381,6 +395,7 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+target_link_libraries( cabl PUBLIC ${NANOMSG_LIB_STATIC})
 endif(BUILD_SHARED_LIBS)
 
 if(BUILD_STATIC_LIBS)
@@ -393,6 +408,7 @@ set_target_properties(
     OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
 )
 target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+target_link_libraries( cabl-static PUBLIC ${NANOMSG_LIB_STATIC})
 endif(BUILD_STATIC_LIBS)
 
 if(CABL_PYTHON)

@@ -250,3 +250,56 @@ function (addlodepng)
 
   endif()
 endfunction()
+
+# ------------------------------------------------------------------------------------------------ #
+#  nanomsgxx                                                                                         #
+# ------------------------------------------------------------------------------------------------ #
+function (addnanomsgxx)
+  if(DEFINED NANOMSGXX_INCLUDE_DIRS)
+    message(STATUS "nanomsgxx is already available")
+  else()
+    checkout_external_project(nanomsgxx https://github.com/achille-roussel/nanomsgxx.git master)
+    set(NANOMSGXX_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/nanomsgxx/src/nanomsgxx/src PARENT_SCOPE)
+    set(NANOMSGXX_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/nanomsgxx/src/nanomsgxx/src)
+    message(STATUS "nanomsgxx path: ${NANOMSGXX_INCLUDE_DIRS}")
+
+    set(
+      lib_nanomsgxx_ext_LIBRARY
+        ${NANOMSGXX_INCLUDE_DIRS}/nanomsg/ext/nnxx_ext.h
+        ${NANOMSGXX_INCLUDE_DIRS}/nanomsg/ext/nnxx_ext.c
+    )
+
+    set(
+      lib_nanomsgxx_nnxx_LIBRARY
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/error.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message_control.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message_istream.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message_iterator.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message_ostream.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message_streambuf.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/message.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/nn.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/poll.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/pubsub.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/reqrep.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/socket.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/survey.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/tcp.cpp
+        ${NANOMSGXX_INCLUDE_DIRS}/nnxx/timeout.cpp
+    )
+
+    source_group("ext"  FILES  ${lib_nanomsgxx_ext_LIBRARY})
+    source_group("nnxx"  FILES  ${lib_nanomsgxx_nnxx_LIBRARY})
+    add_library( nanomsgxx STATIC ${lib_nanomsgxx_ext_LIBRARY} ${lib_nanomsgxx_nnxx_LIBRARY})
+
+    set_target_properties(
+      nanomsgxx
+      PROPERTIES
+        OUTPUT_NAME         "nanomsgxx"
+        OUTPUT_NAME_DEBUG   "nanomsgxx${DEBUG_SUFFIX}"
+    )
+
+    target_include_directories(nanomsgxx PUBLIC ${NANOMSGXX_INCLUDE_DIRS})
+
+  endif()
+endfunction()

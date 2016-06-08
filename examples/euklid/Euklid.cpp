@@ -93,7 +93,7 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
 {
   if (button_ == Device::Button::F1 || button_ == Device::Button::DisplayButton1)
   {
-    if (getScreenPage() == Euklid::ScreenPage::Configuration)
+    if (screenPage() == Euklid::ScreenPage::Configuration)
     {
       setEncoderState(Euklid::EncoderState::Speed);
     }
@@ -104,7 +104,7 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   }
   else if (button_ == Device::Button::F2 || button_ == Device::Button::DisplayButton2)
   {
-    if (getScreenPage() == Euklid::ScreenPage::Configuration)
+    if (screenPage() == Euklid::ScreenPage::Configuration)
     {
       setEncoderState(Euklid::EncoderState::Shuffle);
     }
@@ -115,7 +115,7 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   }
   else if (button_ == Device::Button::F3 || button_ == Device::Button::DisplayButton3)
   {
-    if (getScreenPage() == Euklid::ScreenPage::Sequencer)
+    if (screenPage() == Euklid::ScreenPage::Sequencer)
     {
       setEncoderState(Euklid::EncoderState::Rotate);
     }
@@ -150,7 +150,7 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   }
   else if (button_ == Device::Button::Control && buttonState_)
   {
-    setScreenPage(getScreenPage() == Euklid::ScreenPage::Configuration
+    setScreenPage(screenPage() == Euklid::ScreenPage::Configuration
                                   ? Euklid::ScreenPage::Sequencer
                                   : Euklid::ScreenPage::Configuration);
   }
@@ -243,8 +243,8 @@ void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
   if (now - lastEvent > std::chrono::milliseconds(180))
   {
     lastEvent = now;
-    uint8_t padIndex = padIndex(pad_);
-    m_sequences[m_currentTrack].toggleStep(padIndex);
+    uint8_t idx = padIndex(pad_);
+    m_sequences[m_currentTrack].toggleStep(idx);
     requestDeviceUpdate();
   }
 
@@ -438,41 +438,41 @@ void Euklid::updatePads()
     uint16_t pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, k = m_rotates[t]; i < 16; i++, k++)
     {
-      Device::Pad pad = pad(i);
-      Device::Key key = static_cast<Device::Key>(i);
+      Device::Pad currentPad = pad(i);
+      Device::Key currentKey = static_cast<Device::Key>(i);
 
       if (m_currentTrack == t)
       {
 
         if (i >= m_lengths[t])
         {
-          device()->setLed(pad, kEuklidColor_Black);
-          device()->setLed(key, kEuklidColor_Black);
+          device()->setLed(currentPad, kEuklidColor_Black);
+          device()->setLed(currentKey, kEuklidColor_Black);
         }
         else if (pulses & (1 << i))
         {
           if (pos == (k % m_lengths[t]) && m_play)
           {
-            device()->setLed(pad, kEuklidColor_Track_CurrentStep[m_currentTrack]);
-            device()->setLed(key, kEuklidColor_Track_CurrentStep[m_currentTrack]);
+            device()->setLed(currentPad, kEuklidColor_Track_CurrentStep[m_currentTrack]);
+            device()->setLed(currentKey, kEuklidColor_Track_CurrentStep[m_currentTrack]);
           }
           else
           {
-            device()->setLed(pad, kEuklidColor_Track[m_currentTrack]);
-            device()->setLed(key, kEuklidColor_Track[m_currentTrack]);
+            device()->setLed(currentPad, kEuklidColor_Track[m_currentTrack]);
+            device()->setLed(currentKey, kEuklidColor_Track[m_currentTrack]);
           }
         }
         else
         {
           if (pos == (k % m_lengths[t]) && m_play)
           {
-            device()->setLed(pad, kEuklidColor_Step_Empty_Current);
-            device()->setLed(key, kEuklidColor_Step_Empty_Current);
+            device()->setLed(currentPad, kEuklidColor_Step_Empty_Current);
+            device()->setLed(currentKey, kEuklidColor_Step_Empty_Current);
           }
           else
           {
-            device()->setLed(pad, kEuklidColor_Step_Empty);
-            device()->setLed(key, kEuklidColor_Step_Empty);
+            device()->setLed(currentPad, kEuklidColor_Step_Empty);
+            device()->setLed(currentKey, kEuklidColor_Step_Empty);
           }
         }
       }
@@ -540,7 +540,7 @@ void Euklid::drawSequencerPage()
   device()->displayGraphic(0)->printStr(5, 2, "Length Pulses Rotate");
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
-    for (uint8_t n = 0; n < m_sequences[i].length(); n++)
+    for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
       device()->displayGraphic(0)->drawRect(
         n * 8,

@@ -125,6 +125,12 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
       break;
     }
   }
+  
+  if(!deviceDescriptor_.local())
+  {
+    driverType = Driver::Type::nanomsg;
+  }
+  
 #endif
   auto deviceHandle = driver(driverType)->connect(deviceDescriptor_);
 

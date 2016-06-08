@@ -19,6 +19,7 @@
 #include "comm/drivers/HIDAPI/DriverHIDAPI.h"
 #include "comm/drivers/LibUSB/DriverLibUSB.h"
 #include "comm/drivers/MIDI/DriverMIDI.h"
+#include "comm/drivers/nanomsg/DriverNanomsg.h"
 #endif
 
 //--------------------------------------------------------------------------------------------------
@@ -51,6 +52,9 @@ Driver::Driver( Type type_ )
       break;
     case Type::MIDI:
       m_pImpl.reset( new DriverMIDI );
+      break;
+    case Type::nanomsg:
+      m_pImpl.reset( new DriverNanomsg );
       break;
 #endif
     case Type::Probe:
