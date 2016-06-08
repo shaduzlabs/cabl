@@ -703,14 +703,14 @@ KompleteKontrolBase::~KompleteKontrolBase()
 
 void KompleteKontrolBase::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void KompleteKontrolBase::setLed(Device::Key key_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(key_), color_);
+  setLedImpl(led(key_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -722,14 +722,14 @@ void KompleteKontrolBase::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* KompleteKontrolBase::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* KompleteKontrolBase::displayGraphic(uint8_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* KompleteKontrolBase::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* KompleteKontrolBase::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > 8)
@@ -789,7 +789,7 @@ bool KompleteKontrolBase::sendDisplayData()
     {
       if (m_displays[i].isDirty())
       {
-        std::copy_n(m_displays[i].getData().data() + (row * 16), 16, &displayData[i * 16]);
+        std::copy_n(m_displays[i].displayData().data() + (row * 16), 16, &displayData[i * 16]);
       }
     }
     if (!writeToDeviceHandle(
@@ -816,7 +816,7 @@ bool KompleteKontrolBase::sendLeds()
   }
   if (m_isDirtyKeyLeds)
   {
-    if (!writeToDeviceHandle(Transfer({0x82}, getLedsKeysData(), getLedDataSize()), kKK_epOut))
+    if (!writeToDeviceHandle(Transfer({0x82}, ledsKeysData(), ledDataSize()), kKK_epOut))
     {
       return false;
     }
@@ -865,7 +865,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
       if (buttonPressed != m_buttonStates[btn])
       {
         m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
+        changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
           //    std::copy(&input_[1],&input_[kKK_buttonsDataSize],m_buttons.begin());
@@ -876,7 +876,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
   }
 
   // Now process the encoder data
-  uint8_t currentEncoderValue = input_.getData()[kKK_buttonsDataSize];
+  uint8_t currentEncoderValue = input_.data()[kKK_buttonsDataSize];
   if (currentEncoderValue != m_encoderValues[0])
   {
     bool valueIncreased = ((m_encoderValues[0] < currentEncoderValue)
@@ -890,8 +890,8 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
   {
     Device::Encoder encoder
       = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
-    uint16_t value  = (input_.getData()[i]) | (input_.getData()[i + 1] << 8);
-    uint16_t hValue = input_.getData()[i + 1];
+    uint16_t value  = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    uint16_t hValue = input_.data()[i + 1];
     if (m_encoderValues[encIndex + 1] != value)
     {
       uint16_t prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
@@ -903,7 +903,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
     }
   }
 
-  m_firstOctave = input_.getData()[37];
+  m_firstOctave = input_.data()[37];
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -920,22 +920,22 @@ void KompleteKontrolBase::setLedImpl(Led led_, const util::LedColor& color_)
 
   if (isRGBLed(led_))
   {
-    uint8_t currentR = getLedsKeysData()[ledIndex - kFirstKeyIndex];
-    uint8_t currentG = getLedsKeysData()[ledIndex - kFirstKeyIndex + 1];
-    uint8_t currentB = getLedsKeysData()[ledIndex - kFirstKeyIndex + 2];
+    uint8_t currentR = ledsKeysData()[ledIndex - kFirstKeyIndex];
+    uint8_t currentG = ledsKeysData()[ledIndex - kFirstKeyIndex + 1];
+    uint8_t currentB = ledsKeysData()[ledIndex - kFirstKeyIndex + 2];
 
-    getLedsKeysData()[ledIndex - kFirstKeyIndex]     = color_.getRed();
-    getLedsKeysData()[ledIndex - kFirstKeyIndex + 1] = color_.getGreen();
-    getLedsKeysData()[ledIndex - kFirstKeyIndex + 2] = color_.getBlue();
+    ledsKeysData()[ledIndex - kFirstKeyIndex]     = color_.red();
+    ledsKeysData()[ledIndex - kFirstKeyIndex + 1] = color_.green();
+    ledsKeysData()[ledIndex - kFirstKeyIndex + 2] = color_.blue();
 
     m_isDirtyKeyLeds
-      = m_isDirtyKeyLeds || (currentR != color_.getRed() || currentG != color_.getGreen()
-                              || currentB != color_.getBlue());
+      = m_isDirtyKeyLeds || (currentR != color_.red() || currentG != color_.green()
+                              || currentB != color_.blue());
   }
   else
   {
     uint8_t currentVal = m_leds[ledIndex];
-    uint8_t newVal     = color_.getMono();
+    uint8_t newVal     = color_.mono();
 
     m_leds[ledIndex] = newVal;
     m_isDirtyLeds    = m_isDirtyLeds || (currentVal != newVal);
@@ -956,7 +956,7 @@ bool KompleteKontrolBase::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Button btn_) const noexcept
+KompleteKontrolBase::Led KompleteKontrolBase::led(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -996,9 +996,9 @@ KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Button btn_) const 
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Key key_) const noexcept
+KompleteKontrolBase::Led KompleteKontrolBase::led(Device::Key key_) const noexcept
 {
-  static const Device::Key kMaxKey = static_cast<Device::Key>(getNumKeys());
+  static const Device::Key kMaxKey = static_cast<Device::Key>(numKeys());
   if (key_ >= kMaxKey)
     return Led::Unknown;
 
@@ -1147,7 +1147,7 @@ KompleteKontrolBase::Led KompleteKontrolBase::getLed(Device::Key key_) const noe
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button KompleteKontrolBase::getDeviceButton(Button btn_) const noexcept
+Device::Button KompleteKontrolBase::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \

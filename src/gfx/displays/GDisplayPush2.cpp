@@ -60,31 +60,31 @@ void GDisplayPush2::black()
 
 void GDisplayPush2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
+  if ( x_ >= width() || y_ >= height() || color_ == Color::None )
     return;
 
-  Color oldColor = getPixelImpl( x_, y_ );
+  Color oldColor =pixelImpl( x_, y_ );
 
   if( color_ == Color::Random )
     color_ = static_cast<Color>( util::randomRange(0,2) );
 
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + (x_ * 2) ;
+  uint16_t byteIndex = ( canvasWidthInBytes() * y_ ) + (x_ * 2) ;
 
   switch( color_ )
   {
     case Color::White:
-      getData()[ byteIndex ] = 0xff;
-      getData()[ byteIndex+1 ] = 0xff;
+      data()[ byteIndex ] = 0xff;
+      data()[ byteIndex+1 ] = 0xff;
       break;
 
     case Color::Black:
-      getData()[ byteIndex ] = 0x00;
-      getData()[ byteIndex+1 ] = 0x00;
+      data()[ byteIndex ] = 0x00;
+      data()[ byteIndex+1 ] = 0x00;
       break;
 
     case Color::Invert:
-      getData()[ byteIndex ] = 0xff;
-      getData()[ byteIndex+1 ] = 0xff;
+      data()[ byteIndex ] = 0xff;
+      data()[ byteIndex+1 ] = 0xff;
       break;
 
     default:
@@ -98,13 +98,13 @@ void GDisplayPush2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bS
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::Color GDisplayPush2::getPixelImpl(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_ ) const
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() )
+  if ( x_ >= width() || y_ >= height() )
     return Color::Black;
 
   return
-    ( getData()[ ( getCanvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
+    ( data()[ ( canvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
     ? Color::Black
     : Color::White;
 }

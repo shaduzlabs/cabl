@@ -60,9 +60,9 @@ void GDisplay::setPixel( uint16_t x_, uint16_t y_, Color color_ )
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::Color GDisplay::getPixel(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplay::pixel(uint16_t x_, uint16_t y_ ) const
 {
-  return getPixelImpl( x_,y_ );
+  return pixelImpl( x_,y_ );
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -87,8 +87,8 @@ void GDisplay::resetDirtyFlags()
 
 void GDisplay::setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ )
 {
-  float chunkHeight = static_cast<float>(getHeight()) / m_numDisplayChunks;
-  if( yEnd_ == 0xFFFF && yStart_ < getHeight() )
+  float chunkHeight = static_cast<float>(height()) / m_numDisplayChunks;
+  if( yEnd_ == 0xFFFF && yStart_ < height() )
     m_pChunksDirtyFlags[ static_cast<uint8_t>( yStart_ / chunkHeight) ] = true;
   else if( yEnd_ != 0xFFFF )
   {

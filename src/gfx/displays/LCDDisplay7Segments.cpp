@@ -66,7 +66,7 @@ bool LCDDisplay7Segments::isDirtyRow(uint8_t row_) const
 void LCDDisplay7Segments::setCharacter(uint8_t col_, uint8_t row_, char c_)
 {
   uint8_t charNum = static_cast<uint8_t>(c_);
-  if(row_>0 || col_ > getNumberOfCharsPerRow() || charNum < 45 || charNum > 90)
+  if(row_>0 || col_ > numberOfCharsPerRow() || charNum < 45 || charNum > 90)
   {
     return;
   }
@@ -87,7 +87,7 @@ void LCDDisplay7Segments::setText(const std::string& string_, uint8_t row_, Alig
   std::string strAligned = alignText(string_, align_);
   std::transform(strAligned.begin(), strAligned.end(),strAligned.begin(), ::toupper);
 
-  for(size_t i = 0; i < std::min<size_t>(strAligned.length(),getNumberOfCharsPerRow());i++)
+  for(size_t i = 0; i < std::min<size_t>(strAligned.length(),numberOfCharsPerRow());i++)
   {
     const uint8_t& character = strAligned.at(i);
     data()[i] = (character < 45 && character > 90) ? 0x00 : kLCDDisplay7S_FontData[character-45];
@@ -109,7 +109,7 @@ void LCDDisplay7Segments::setText(double value_, uint8_t row_, Align align_)
   double fractional = modf(value_, &integral);
   std::string strValue = std::to_string(static_cast<int>(integral));
   std::string strFractional = std::to_string(static_cast<int>(fractional*10));
-  uint8_t emptySpaces = getNumberOfCharsPerRow() - strValue.length() - strFractional.length();
+  uint8_t emptySpaces = numberOfCharsPerRow() - strValue.length() - strFractional.length();
   uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
   resetDots(row_);
   setDot(strValue.length()-1+leftFills, row_);
@@ -129,9 +129,9 @@ void LCDDisplay7Segments::setValue(float value_, uint8_t row_, Align align_)
 
 std::string LCDDisplay7Segments::alignText(const std::string& string_, Align align_) const
 {
-  if(string_.length()>=getNumberOfCharsPerRow())
+  if(string_.length()>=numberOfCharsPerRow())
   {
-    return string_.substr(0,getNumberOfCharsPerRow());
+    return string_.substr(0,numberOfCharsPerRow());
   }
   
   std::string strValue(string_);
@@ -139,12 +139,12 @@ std::string LCDDisplay7Segments::alignText(const std::string& string_, Align ali
   {
     case Align::Right:
     {
-      strValue.insert(0, getNumberOfCharsPerRow()-strValue.length(),' ');
+      strValue.insert(0, numberOfCharsPerRow()-strValue.length(),' ');
       break;
     }
     case Align::Center:
     {
-      uint8_t nFills = getNumberOfCharsPerRow()-strValue.length();
+      uint8_t nFills = numberOfCharsPerRow()-strValue.length();
       uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
       strValue.insert(0, leftFills,' ');
       strValue.append(nFills-leftFills,' ');
@@ -153,7 +153,7 @@ std::string LCDDisplay7Segments::alignText(const std::string& string_, Align ali
     case Align::Left:
     default:
     {
-      strValue.append(getNumberOfCharsPerRow()-strValue.length(), ' ');
+      strValue.append(numberOfCharsPerRow()-strValue.length(), ' ');
       break;
     }
   }
@@ -164,7 +164,7 @@ std::string LCDDisplay7Segments::alignText(const std::string& string_, Align ali
 
 void LCDDisplay7Segments::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
 {
-  if (row_ > 0 || nDot_ >= getNumberOfCharsPerRow())
+  if (row_ > 0 || nDot_ >= numberOfCharsPerRow())
   {
     return;
   }
@@ -182,7 +182,7 @@ void LCDDisplay7Segments::resetDots(uint8_t row_)
   }
   setDirty(true);
 
-  for(uint8_t i=0; i < getNumberOfCharsPerRow(); i++)
+  for(uint8_t i=0; i < numberOfCharsPerRow(); i++)
   {
     data()[i] &= 0xfe;
   }

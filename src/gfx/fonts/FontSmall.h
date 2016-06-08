@@ -22,26 +22,26 @@ class FontSmall : public FontBase<FontSmall>
 
 public:
   
-  inline uint8_t getWidth() const noexcept        { return 3; };
+  inline uint8_t width() const noexcept        { return 3; };
   
-  inline uint8_t getHeight() const noexcept       { return 5; };
+  inline uint8_t height() const noexcept       { return 5; };
 
-  inline uint8_t getCharSpacing() const noexcept  { return 1 + getWidth(); };
+  inline uint8_t charSpacing() const noexcept  { return 1 + width(); };
   
-  inline uint8_t getFirstChar() const noexcept    { return 32; };
+  inline uint8_t firstChar() const noexcept    { return 32; };
   
-  inline uint8_t getLastChar() const noexcept     { return 126; };
+  inline uint8_t lastChar() const noexcept     { return 126; };
   
-  inline uint8_t getBytesPerLine() const noexcept { return 1; };
+  inline uint8_t bytesPerLine() const noexcept { return 1; };
 
-  inline bool    getPixel( uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
+  inline bool   pixel( uint8_t c_, uint8_t x_, uint8_t y_ ) const noexcept
   {
     static uint8_t fontData[] =
     {
 #include "data/FONT_small.h"
     };
     
-    return getPixelImpl( fontData, c_, x_, y_ );
+    return pixelImpl( fontData, c_, x_, y_ );
   }
 
 };

@@ -76,16 +76,16 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
 
 tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 {
-  M_LOG("[HIDAPI] connecting to " << device_.getVendorId() << ":"
-    << device_.getProductId() << ":"
-    << device_.getSerialNumber());
+  M_LOG("[HIDAPI] connecting to " << device_.vendorId() << ":"
+    << device_.productId() << ":"
+    << device_.serialNumber());
 
-  std::string serialNumber(device_.getSerialNumber());
+  std::string serialNumber(device_.serialNumber());
   std::wstring wSerialNumber(serialNumber.begin(), serialNumber.end());
 
   hid_device* pCurrentDevice = hid_open(
-    device_.getVendorId(), 
-    device_.getProductId(), 
+    device_.vendorId(), 
+    device_.productId(), 
     wSerialNumber.c_str()
   );
   
@@ -94,9 +94,9 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
     
   hid_set_nonblocking(pCurrentDevice, 1);
   
-  M_LOG("[HIDAPI] CONNECTED to " << device_.getVendorId() << ":"
-    << device_.getProductId() << ":"
-    << device_.getSerialNumber());
+  M_LOG("[HIDAPI] CONNECTED to " << device_.vendorId() << ":"
+    << device_.productId() << ":"
+    << device_.serialNumber());
 
   return tPtr<DeviceHandleImpl>(new DeviceHandleHIDAPI(pCurrentDevice));
 }

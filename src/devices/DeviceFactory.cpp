@@ -19,7 +19,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
-std::shared_ptr<Device> DeviceFactory::getDevice(
+std::shared_ptr<Device> DeviceFactory::device(
   const DeviceDescriptor& deviceDescriptor_, tPtr<DeviceHandle> pDeviceHandle_)
 {
   for (const auto& dd : m_registry)

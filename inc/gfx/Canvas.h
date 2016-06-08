@@ -158,7 +158,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual Color getPixel(uint16_t x_, uint16_t y_ ) const;
+  virtual Color pixel(uint16_t x_, uint16_t y_ ) const;
   
   //! Draw a line
   /*!
@@ -368,7 +368,7 @@ public:
    \param offset_  Offset of the pointer starting from the first byte of Canvas data
    \return         A pointer to Canvas data (at the specified offset)
    */
-  virtual const uint8_t* getPtr( uint16_t offset_ ) const;
+  virtual const uint8_t* ptr( uint16_t offset_ ) const;
   
   /** @} */ // End of group Access
   
@@ -384,13 +384,13 @@ public:
   /*!
    \return         The Canvas width in pixels
    */
-  uint16_t getWidth() const noexcept { return m_width; }
+  uint16_t width() const noexcept { return m_width; }
   
   //! Get the Canvas height in pixels
   /*!
    \return         The Canvas height in pixels
    */
-  uint16_t getHeight() const noexcept { return m_height; }
+  uint16_t height() const noexcept { return m_height; }
   
   /** @} */ // End of group Utility
   
@@ -400,9 +400,9 @@ public:
 
 protected:
 
-  tRawData& getData() { return m_data; }
-  const tRawData& getData() const { return m_data; }
-  uint16_t getCanvasWidthInBytes() const noexcept { return m_canvasWidthInBytes; }
+  tRawData& data() { return m_data; }
+  const tRawData& data() const { return m_data; }
+  uint16_t canvasWidthInBytes() const noexcept { return m_canvasWidthInBytes; }
   
 private:
 
@@ -432,7 +432,7 @@ inline void Canvas::black()
 
 //--------------------------------------------------------------------------------------------------
 
-inline const uint8_t* Canvas::getPtr( uint16_t offset ) const
+inline const uint8_t* Canvas::ptr( uint16_t offset ) const
 {
   return m_data.data() + offset;
 }

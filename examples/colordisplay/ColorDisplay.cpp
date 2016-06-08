@@ -55,8 +55,8 @@ void ColorDisplay::run()
 
 void ColorDisplay::initHardware()
 {
-  m_pDevice->getGraphicDisplay(0)->black();
-  m_pDevice->getGraphicDisplay(1)->black();
+  m_pDevice->displayGraphic(0)->black();
+  m_pDevice->displayGraphic(1)->black();
   m_pDevice->setCallbackPadChanged(std::bind(&ColorDisplay::padChanged, this, _1, _2, _3));
 
   m_update = true;
@@ -142,7 +142,7 @@ void ColorDisplay::updateDisplay()
   {
     nTick = 0;
     
-    uint8_t* pDrawingContext = m_pDevice->drawingContext(0).getData().data();
+    uint8_t* pDrawingContext = m_pDevice->drawingContext(0).data().data();
     uint8_t* pPNG = m_pngImage.data();
     for(unsigned col=0; col<m_pngWidth; col++)
     {

@@ -45,9 +45,9 @@ public:
   
   void reset();
   
-//  uint8_t* getDataPtr() const { return m_pData.get(); }
+//  uint8_t* dataPtr() const { return m_pData.get(); }
 //  void setData( const uint8_t*, uint16_t );
-  const tRawData& getData() const { return m_data; }
+  const tRawData& data() const { return m_data; }
   void setData( const uint8_t*, size_t);
   
   size_t size() const noexcept{ return m_data.size(); }

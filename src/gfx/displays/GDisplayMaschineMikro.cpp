@@ -65,28 +65,28 @@ void GDisplayMaschineMikro::setPixelImpl(
   bool bSetDirtyChunk_
 )
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
+  if ( x_ >= width() || y_ >= height() || color_ == Color::None )
     return;
   
-  Color oldColor = getPixelImpl( x_, y_ );
+  Color oldColor =pixelImpl( x_, y_ );
   
   if( color_ == Color::Random )
     color_ = static_cast<Color>( util::randomRange(0,2) );
   
-  uint16_t byteIndex = ( getWidth() * ( y_ >> 3 ) ) + x_;
+  uint16_t byteIndex = ( width() * ( y_ >> 3 ) ) + x_;
   
   switch( color_ )
   {
     case Color::White:
-      getData()[ byteIndex ] |= 0x01 << ( y_ & 7 );
+      data()[ byteIndex ] |= 0x01 << ( y_ & 7 );
       break;
       
     case Color::Black:
-      getData()[ byteIndex ] &= ~(0x01 << ( y_ & 7 ) );
+      data()[ byteIndex ] &= ~(0x01 << ( y_ & 7 ) );
       break;
       
     case Color::Invert:
-      getData()[ byteIndex ] ^= 0x01 << ( y_ & 7 );
+      data()[ byteIndex ] ^= 0x01 << ( y_ & 7 );
       break;
       
     default:
@@ -100,13 +100,13 @@ void GDisplayMaschineMikro::setPixelImpl(
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::Color GDisplayMaschineMikro::getPixelImpl( uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayMaschineMikro::pixelImpl( uint16_t x_, uint16_t y_ ) const
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() )
+  if ( x_ >= width() || y_ >= height() )
     return Color::Black;
   
   return
-  ( ( getData()[ x_ + ( getWidth() * ( y_ >> 3 ) ) ] >> ( ( y_ ) & 7 ) ) & 0x01 ) == 0
+  ( ( data()[ x_ + ( width() * ( y_ >> 3 ) ) ] >> ( ( y_ ) & 7 ) ) & 0x01 ) == 0
   ? Color::Black
   : Color::White;
 }

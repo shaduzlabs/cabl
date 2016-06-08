@@ -102,7 +102,7 @@ static void writeDrawingContext(DrawingContext& self_, object buffer) {
   Py_buffer pybuf;
   PyObject_GetBuffer(pobj, &pybuf, PyBUF_SIMPLE);
   
-  std::copy_n((uint8_t*)pybuf.buf, self_.getSize() ,self_.getData().begin());
+  std::copy_n((uint8_t*)pybuf.buf, self_.size() ,self_.data().begin());
   self_.setDirty(true);
 }
 
@@ -359,13 +359,13 @@ BOOST_PYTHON_MODULE(pycabl)
     DeviceDescriptor::tVendorId,
     DeviceDescriptor::tProductId>())
       .def(self_ns::str(self_ns::self))
-      .def("getName",&DeviceDescriptor::getName, return_value_policy<copy_const_reference>())
-      .def("getType",&DeviceDescriptor::getType)
-      .def("getVendorId",&DeviceDescriptor::getVendorId)
-      .def("getProductId",&DeviceDescriptor::getProductId)
+      .def("name",&DeviceDescriptor::name, return_value_policy<copy_const_reference>())
+      .def("type",&DeviceDescriptor::type)
+      .def("vendorId",&DeviceDescriptor::vendorId)
+      .def("productId",&DeviceDescriptor::productId)
       .def(
-        "getSerialNumber",
-        &DeviceDescriptor::getSerialNumber,
+        "serialNumber",
+        &DeviceDescriptor::serialNumber,
         return_value_policy<copy_const_reference>() )
   ;
 
@@ -401,11 +401,11 @@ BOOST_PYTHON_MODULE(pycabl)
       .def(init<uint8_t, uint8_t, uint8_t>())
       .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
       .def(self_ns::str(self_ns::self))
-      .def("getRGBColor",&util::LedColor::getRGBColor)
-      .def("getRed",&util::LedColor::getRed)
-      .def("getGreen",&util::LedColor::getGreen)
-      .def("getBlue",&util::LedColor::getBlue)
-      .def("getMono",&util::LedColor::getMono)
+      .def("colorRGB",&util::LedColor::colorRGB)
+      .def("red",&util::LedColor::red)
+      .def("green",&util::LedColor::green)
+      .def("blue",&util::LedColor::blue)
+      .def("mono",&util::LedColor::mono)
   ;
   
 //--------------------------------------------------------------------------------------------------
@@ -419,10 +419,10 @@ BOOST_PYTHON_MODULE(pycabl)
 //--------------------------------------------------------------------------------------------------
 
   class_<DrawingContext, boost::noncopyable>("DrawingContext", init<unsigned, unsigned, unsigned>())
-      .def("getWidth",&DrawingContext::getWidth)
-      .def("getHeight",&DrawingContext::getHeight)
-      .def("getBytesPerPixel",&DrawingContext::getBytesPerPixel)
-      .def("getSize",&DrawingContext::getSize)
+      .def("width",&DrawingContext::width)
+      .def("height",&DrawingContext::height)
+      .def("bytesPerPixel",&DrawingContext::bytesPerPixel)
+      .def("size",&DrawingContext::size)
       .def("isDirty",&DrawingContext::isDirty)
       .def("setDirty",&DrawingContext::setDirty)
       .def("write", &writeDrawingContext)

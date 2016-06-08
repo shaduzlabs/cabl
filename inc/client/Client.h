@@ -51,7 +51,7 @@ private:
   
   void devicesListChanged(Coordinator::tCollDeviceDescriptor devices_);
 
-  uint8_t getEncoderValue(
+  uint8_t encoderValue(
     bool valueIncreased_,
     uint8_t step_,
     uint8_t currentValue_,

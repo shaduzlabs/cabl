@@ -43,7 +43,7 @@ public:
     return instance;
   }
 
-  std::shared_ptr<Device> getDevice(const DeviceDescriptor&, tPtr<DeviceHandle>);
+  std::shared_ptr<Device> device(const DeviceDescriptor&, tPtr<DeviceHandle>);
   bool isKnownDevice(const DeviceDescriptor&) const;
 
   void registerClass(const DeviceDescriptor&, tFnCreate);

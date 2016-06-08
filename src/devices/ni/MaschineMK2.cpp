@@ -225,14 +225,14 @@ MaschineMK2::~MaschineMK2()
 
 void MaschineMK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void MaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(pad_), color_);
+  setLedImpl(led(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -249,7 +249,7 @@ void MaschineMK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* MaschineMK2::displayGraphic(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -262,7 +262,7 @@ GDisplay* MaschineMK2::getGraphicDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* MaschineMK2::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -348,7 +348,7 @@ bool MaschineMK2::sendFrame(uint8_t displayIndex_)
   {
     uint8_t firstByte = 0xE0| displayIndex_;
     chunkByte = chunk * 8;
-    const uint8_t* ptr = m_displays[displayIndex_].getPtr(chunk * 256);
+    const uint8_t* ptr = m_displays[displayIndex_].ptr(chunk * 256);
     if(!writeToDeviceHandle(
       Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
       kMASMK2_epDisplay)
@@ -443,7 +443,7 @@ void MaschineMK2::processButtons(const Transfer& input_)
       if (buttonPressed != m_buttonStates[btn])
       {
         m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
+        changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
       //    std::copy(&input_[1],&input_[kMASMK2_buttonsDataSize],m_buttons.begin());
@@ -455,7 +455,7 @@ void MaschineMK2::processButtons(const Transfer& input_)
   }
   
   // Now process the encoder data
-  uint8_t currValue = input_.getData()[kMASMK2_buttonsDataSize];
+  uint8_t currValue = input_.data()[kMASMK2_buttonsDataSize];
   if (currValue != m_encoderValues[0])
   {
     bool valueIncreased = (
@@ -470,8 +470,8 @@ void MaschineMK2::processButtons(const Transfer& input_)
     Device::Encoder encoder = static_cast<Device::Encoder>(
       static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex
     );
-    uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
-    uint16_t hValue = input_.getData()[i+1];
+    uint16_t value = (input_.data()[i]) | (input_.data()[i+1] << 8);
+    uint16_t hValue = input_.data()[i+1];
     if(m_encoderValues[encIndex+1] != value)
     {
       uint16_t prevHValue = (m_encoderValues[encIndex+1] &0xF00 )>> 8 ;
@@ -558,13 +558,13 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       uint8_t currentG = m_ledsPads[ledIndex - kFirstPadIndex + 1];
       uint8_t currentB = m_ledsPads[ledIndex - kFirstPadIndex + 2];
 
-      m_ledsPads[ledIndex - kFirstPadIndex] = color_.getRed();
-      m_ledsPads[ledIndex - kFirstPadIndex + 1] = color_.getGreen();
-      m_ledsPads[ledIndex - kFirstPadIndex + 2] = color_.getBlue();
+      m_ledsPads[ledIndex - kFirstPadIndex] = color_.red();
+      m_ledsPads[ledIndex - kFirstPadIndex + 1] = color_.green();
+      m_ledsPads[ledIndex - kFirstPadIndex + 2] = color_.blue();
       m_isDirtyPadLeds = m_isDirtyPadLeds || (
-        currentR != color_.getRed() || 
-        currentG != color_.getGreen() || 
-        currentB != color_.getBlue()
+        currentR != color_.red() || 
+        currentG != color_.green() || 
+        currentB != color_.blue()
       );
     }
     else
@@ -574,17 +574,17 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       uint8_t currentG = m_ledsGroups[ledIndex - firstGroupIndex + 1];
       uint8_t currentB = m_ledsGroups[ledIndex - firstGroupIndex + 2];
 
-      m_ledsGroups[ledIndex - firstGroupIndex] = color_.getRed();
-      m_ledsGroups[ledIndex - firstGroupIndex + 1] = color_.getGreen();
-      m_ledsGroups[ledIndex - firstGroupIndex + 2] = color_.getBlue();
-      m_ledsGroups[ledIndex - firstGroupIndex + 3] = color_.getRed();
-      m_ledsGroups[ledIndex - firstGroupIndex + 4] = color_.getGreen();
-      m_ledsGroups[ledIndex - firstGroupIndex + 5] = color_.getBlue();
+      m_ledsGroups[ledIndex - firstGroupIndex] = color_.red();
+      m_ledsGroups[ledIndex - firstGroupIndex + 1] = color_.green();
+      m_ledsGroups[ledIndex - firstGroupIndex + 2] = color_.blue();
+      m_ledsGroups[ledIndex - firstGroupIndex + 3] = color_.red();
+      m_ledsGroups[ledIndex - firstGroupIndex + 4] = color_.green();
+      m_ledsGroups[ledIndex - firstGroupIndex + 5] = color_.blue();
 
       m_isDirtyGroupLeds = m_isDirtyGroupLeds || (
-        currentR != color_.getRed() || 
-        currentG != color_.getGreen() || 
-        currentB != color_.getBlue()
+        currentR != color_.red() || 
+        currentG != color_.green() || 
+        currentB != color_.blue()
       );
     }
 
@@ -592,7 +592,7 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
   else 
   {
     uint8_t currentVal = m_ledsGroups[ledIndex];
-    uint8_t newVal = color_.getMono();
+    uint8_t newVal = color_.mono();
     if (led_ >= Led::Restart)
     {
       m_ledsGroups[ledIndex] = newVal;
@@ -625,7 +625,7 @@ bool MaschineMK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK2::Led MaschineMK2::getLed(Device::Button btn_) const noexcept
+MaschineMK2::Led MaschineMK2::led(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -692,7 +692,7 @@ MaschineMK2::Led MaschineMK2::getLed(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK2::Led MaschineMK2::getLed(Device::Pad pad_) const noexcept
+MaschineMK2::Led MaschineMK2::led(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -727,7 +727,7 @@ MaschineMK2::Led MaschineMK2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button MaschineMK2::getDeviceButton(Button btn_) const noexcept
+Device::Button MaschineMK2::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \

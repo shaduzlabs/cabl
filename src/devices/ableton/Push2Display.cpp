@@ -58,7 +58,7 @@ Push2Display::Push2Display()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+      M_LOG("[MaschineMK2] RtMidiError: " << error.message());
     }
   }
   if (!m_pMidiOut->isPortOpen())
@@ -80,7 +80,7 @@ Push2Display::Push2Display()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+      M_LOG("[MaschineMK2] RtMidiError: " << error.message());
     }
   }
   if (!m_pMidiIn->isPortOpen())
@@ -103,7 +103,7 @@ Push2Display::~Push2Display()
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push2Display::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* Push2Display::displayGraphic(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   return &s_dummyDisplay;
@@ -111,7 +111,7 @@ GDisplay* Push2Display::getGraphicDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push2Display::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* Push2Display::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -144,9 +144,9 @@ bool Push2Display::sendDisplayData()
   bool result = true;
   writeToDeviceHandle(Transfer({0xEF,0xCD,0xAB,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}),0x01);
   
-  for(unsigned offset = 0; offset < m_display.getSize(); offset+=16384)
+  for(unsigned offset = 0; offset < m_display.size(); offset+=16384)
   {
-    if(!writeToDeviceHandle(Transfer({m_display.getData().begin() + offset, m_display.getData().begin() + offset + 16384}),0x01))
+    if(!writeToDeviceHandle(Transfer({m_display.data().begin() + offset, m_display.data().begin() + offset + 16384}),0x01))
     {
       return false;
     }
@@ -163,7 +163,7 @@ void Push2Display::processNote(uint8_t note_, uint8_t velocity_)
   {
     // Touch encoders
  //   uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
- //   Device::Button btn = getDeviceButton(static_cast<Button>(note_+offset));
+ //   Device::Button btn = deviceButton(static_cast<Button>(note_+offset));
  //   buttonChanged(btn, (velocity_>0), m_shiftPressed);
   }
   else if(note_==12)

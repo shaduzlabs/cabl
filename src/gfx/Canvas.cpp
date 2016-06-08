@@ -100,7 +100,7 @@ void Canvas::fillPattern( uint8_t value_ )
 
 void Canvas::setPixel( uint16_t x_, uint16_t y_, Color color_ )
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
+  if ( x_ >= width() || y_ >= height() || color_ == Color::None )
     return;
   
   if( color_ == Color::Random )
@@ -129,9 +129,9 @@ void Canvas::setPixel( uint16_t x_, uint16_t y_, Color color_ )
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas::Color Canvas::getPixel(uint16_t x_, uint16_t y_ ) const
+Canvas::Color Canvas::pixel(uint16_t x_, uint16_t y_ ) const
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() )
+  if ( x_ >= width() || y_ >= height() )
     return Color::Black;
   
   return
@@ -367,7 +367,7 @@ void Canvas::drawFilledRect(
   Color fillColor_
 )
 {
-  if( x_ > getWidth() || y_ > getHeight() || w_ == 0 || h_ == 0 )
+  if( x_ > width() || y_ > height() || w_ == 0 || h_ == 0 )
     return;
   
   drawLineHorizontal( x_, y_, w_, color_);
@@ -419,7 +419,7 @@ void Canvas::drawFilledRectRounded(
   Color fillColor_
 )
 {
-  if( x_ > getWidth() || y_ > getHeight() || w_ == 0 || h_ == 0 )
+  if( x_ > width() || y_ > height() || w_ == 0 || h_ == 0 )
     return;
 
   uint16_t smallestSide = ( w_ >= h_ ) ? h_ : w_;
@@ -625,12 +625,12 @@ void Canvas::draw(
 {
   if ( (xDest_ >= m_width)  ||
        (yDest_ >= m_height) ||
-       (xSource_ >= c_.getWidth()) ||
-       (ySource_ >= c_.getHeight()) )
+       (xSource_ >= c_.width()) ||
+       (ySource_ >= c_.height()) )
     return;
   
-  uint16_t width  = ( w_ <= c_.getWidth()  && w_ > 0 ) ? w_ : c_.getWidth();
-  uint16_t height = ( h_ <= c_.getHeight() && h_ > 0 ) ? h_ : c_.getHeight();
+  uint16_t width  = ( w_ <= c_.width()  && w_ > 0 ) ? w_ : c_.width();
+  uint16_t height = ( h_ <= c_.height() && h_ > 0 ) ? h_ : c_.height();
   
   uint16_t drawableHeight = ( ( yDest_ + height ) > m_height ) ? ( m_height - yDest_ ) : height;
   uint16_t drawableWidth = ( ( xDest_ + width ) > m_width ) ? ( m_width - xDest_ ) : width;
@@ -639,7 +639,7 @@ void Canvas::draw(
   {
     for (uint8_t i=0; i<drawableWidth; i++ )
     {
-      setPixel( xDest_+i, yDest_+j, c_.getPixel( xSource_ + i, ySource_ + j ) );
+      setPixel( xDest_+i, yDest_+j, c_.pixel( xSource_ + i, ySource_ + j ) );
     }
   }
 
@@ -649,19 +649,19 @@ void Canvas::draw(
 
 void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color color_ ) {
   
-  uint8_t c = c_ - pFont_->getFirstChar();
+  uint8_t c = c_ - pFont_->firstChar();
   
   if ( ( x_ >= m_width ) ||
     ( y_ >= m_height ) ||
-    c > pFont_->getLastChar()
-    || c_ < pFont_->getFirstChar() )
+    c > pFont_->lastChar()
+    || c_ < pFont_->firstChar() )
     return;
   
-  for ( uint8_t y=0; y < pFont_->getHeight(); y++ )
+  for ( uint8_t y=0; y < pFont_->height(); y++ )
   {
-    for ( uint8_t x=0; x < pFont_->getHeight(); x++ )
+    for ( uint8_t x=0; x < pFont_->height(); x++ )
     {
-      if( pFont_->getPixel( c, x, y ) )
+      if( pFont_->pixel( c, x, y ) )
       {
         setPixel( ( x_ + x     ), y_ + y, color_ );
       }
@@ -712,7 +712,7 @@ void Canvas::printStr(
   uint8_t spacing_
 )
 {
-  uint8_t charWidth = pFont_->getCharSpacing() + spacing_;
+  uint8_t charWidth = pFont_->charSpacing() + spacing_;
   if (y_ >= m_height || x_ > m_width )
     return;
   for (unsigned i=0; static_cast<unsigned>(pStr_[i]) != 0; i++)

@@ -293,8 +293,8 @@ public:
 
   virtual void init() = 0;
 
-  virtual GDisplay* getGraphicDisplay(uint8_t displayIndex_) = 0;
-  virtual LCDDisplay* getLCDDisplay(uint8_t displayIndex_) = 0;
+  virtual GDisplay* displayGraphic(uint8_t displayIndex_) = 0;
+  virtual LCDDisplay* displayLCD(uint8_t displayIndex_) = 0;
   virtual size_t numOfGraphicDisplays() { return 0; }
   virtual size_t numOfLCDDisplays() { return 0; }
 

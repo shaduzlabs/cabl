@@ -141,9 +141,9 @@ Driver::tCollDeviceDescriptor DriverMIDI::enumerate()
   
 tPtr<DeviceHandleImpl> DriverMIDI::connect( const DeviceDescriptor& device_ )
 {
-  M_LOG("[DriverMIDI] connecting to " << device_.getName()  << ":"
-                                  << device_.getVendorId() << ":"
-                                  << device_.getProductId() );
+  M_LOG("[DriverMIDI] connecting to " << device_.name()  << ":"
+                                  << device_.vendorId() << ":"
+                                  << device_.productId() );
   try
   {
     return tPtr<DeviceHandleImpl>(new DeviceHandleMIDI(device_));

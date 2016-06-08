@@ -26,7 +26,7 @@ public:
 
   void setPixel(uint16_t, uint16_t, Color) override {}
 
-  Color getPixel(uint16_t, uint16_t) const override { return Color::None; }
+  Color pixel(uint16_t, uint16_t) const override { return Color::None; }
 
   bool isDirty() const override { return false; }
 
@@ -34,7 +34,7 @@ public:
 
   void resetDirtyFlags() override {}
 
-  virtual uint8_t getNumberOfChunks() const noexcept override { return 0; }
+  virtual uint8_t numberOfChunks() const noexcept override { return 0; }
 
   void setDirtyChunks(uint16_t, uint16_t) override {}
   
@@ -108,13 +108,13 @@ public:
 
   void setDefaultFont(FontType)override {}
 
-  const uint8_t* getPtr(uint16_t) const override { return nullptr; }
+  const uint8_t* ptr(uint16_t) const override { return nullptr; }
 
 protected:
 
   void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override {}
 
-  Color getPixelImpl(uint16_t x_, uint16_t y_) const override { return Color::None; }
+  Color pixelImpl(uint16_t x_, uint16_t y_) const override { return Color::None; }
   
 };
   

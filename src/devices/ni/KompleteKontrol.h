@@ -37,8 +37,8 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
-  LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
+  GDisplay* displayGraphic(uint8_t displayIndex_) override;
+  LCDDisplay* displayLCD(uint8_t displayIndex_) override;
 
   bool tick() override;
 
@@ -61,16 +61,16 @@ private:
 
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(Device::Key) const noexcept;
-  Led getLed(Device::Button) const noexcept;
+  Led led(Device::Key) const noexcept;
+  Led led(Device::Button) const noexcept;
 
-  Device::Button getDeviceButton( Button btn_ ) const noexcept;
+  Device::Button deviceButton( Button btn_ ) const noexcept;
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
-  virtual unsigned getNumKeys() const = 0;
-  virtual unsigned getLedDataSize() const = 0;
-  virtual uint8_t* getLedsKeysData() = 0;
+  virtual unsigned numKeys() const = 0;
+  virtual unsigned ledDataSize() const = 0;
+  virtual uint8_t* ledsKeysData() = 0;
 
   static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
@@ -102,12 +102,12 @@ public:
 
   static constexpr uint8_t kKK_keysLedDataSize = NKEYS * 3;
 
-  unsigned getNumKeys() const override { return NKEYS; }
-  unsigned getLedDataSize() const override { return kKK_keysLedDataSize;  }
+  unsigned numKeys() const override { return NKEYS; }
+  unsigned ledDataSize() const override { return kKK_keysLedDataSize;  }
 
 private:
 
-  uint8_t* getLedsKeysData() override { return &m_ledsKeys[0]; }
+  uint8_t* ledsKeysData() override { return &m_ledsKeys[0]; }
 
   uint8_t  m_ledsKeys[kKK_keysLedDataSize];
 

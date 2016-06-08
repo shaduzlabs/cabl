@@ -40,7 +40,7 @@ public:
     , m_mono( mono_ )
   {}
 
-  RGBColor getRGBColor() const
+  RGBColor colorRGB() const
   {
     return {
       static_cast<uint8_t>(m_red),
@@ -49,10 +49,10 @@ public:
     };
   }
   
-  unsigned getRed  () const { return m_red;   }
-  unsigned getGreen() const { return m_green; }
-  unsigned getBlue () const { return m_blue;  }
-  unsigned getMono () const { return m_mono;  }
+  unsigned red  () const { return m_red;   }
+  unsigned green() const { return m_green; }
+  unsigned blue () const { return m_blue;  }
+  unsigned mono () const { return m_mono;  }
 
   void setRed   (uint8_t red_  ){ m_red = red_;     }
   void setGreen (uint8_t green_){ m_green = green_; }

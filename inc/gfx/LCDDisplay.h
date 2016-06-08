@@ -67,7 +67,7 @@ public:
   
   virtual void clear() {}
   
-  virtual const tRawData& getData() const { return m_data; }
+  virtual const tRawData& displayData() const { return m_data; }
   
   /** @} */ // End of group Lifetime
  
@@ -152,8 +152,8 @@ public:
    * @{
    */
   
-  virtual uint8_t getNumberOfCharsPerRow() const noexcept { return m_numCharsPerRow; }
-  virtual uint8_t getNumberOfRows() const noexcept { return m_numRows; }
+  virtual uint8_t numberOfCharsPerRow() const noexcept { return m_numCharsPerRow; }
+  virtual uint8_t numberOfRows() const noexcept { return m_numRows; }
 
   void setDirty(bool isDirty_){ m_isDirty = isDirty_; }
   

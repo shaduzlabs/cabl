@@ -106,7 +106,7 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   Driver::Type driverType;
-  switch (deviceDescriptor_.getType())
+  switch (deviceDescriptor_.type())
   {
     case DeviceDescriptor::Type::HID:
     {
@@ -126,7 +126,7 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
     }
   }
 #endif
-  auto deviceHandle = getDriver(driverType)->connect(deviceDescriptor_);
+  auto deviceHandle = driver(driverType)->connect(deviceDescriptor_);
 
   if (deviceHandle)
   {
@@ -137,7 +137,7 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
     }
     else
     {
-      auto device = DeviceFactory::instance().getDevice(deviceDescriptor_, std::move(deviceHandle));
+      auto device = DeviceFactory::instance().device(deviceDescriptor_, std::move(deviceHandle));
       m_collDevices.insert(std::pair<DeviceDescriptor, tDevicePtr>(deviceDescriptor_, device));
     }
     m_collDevices[deviceDescriptor_]->onConnect();
@@ -150,8 +150,8 @@ Coordinator::tDevicePtr Coordinator::connect(const DeviceDescriptor& deviceDescr
 
 Coordinator::Coordinator()
 {
-  M_LOG("Controller Abstraction Library v. " << Lib::getVersion());
-  auto usbDriver = getDriver(Driver::Type::LibUSB);
+  M_LOG("Controller Abstraction Library v. " << Lib::version());
+  auto usbDriver = driver(Driver::Type::LibUSB);
   
   usbDriver->setHotplugCallback([this](DeviceDescriptor deviceDescriptor_, bool plugged_)
     {
@@ -170,7 +170,7 @@ void Coordinator::scan()
   m_collDeviceDescriptors.clear();
   
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  for (const auto& deviceDescriptor : getDriver(Driver::Type::HIDAPI)->enumerate())
+  for (const auto& deviceDescriptor : driver(Driver::Type::HIDAPI)->enumerate())
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
@@ -178,7 +178,7 @@ void Coordinator::scan()
     }
   }
 
-  for (const auto& deviceDescriptor : getDriver(Driver::Type::MIDI)->enumerate())
+  for (const auto& deviceDescriptor : driver(Driver::Type::MIDI)->enumerate())
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
@@ -189,7 +189,7 @@ void Coordinator::scan()
   Driver::Type tMainDriver(Driver::Type::LibUSB);
 #endif
 
-  for (const auto& deviceDescriptor : getDriver(tMainDriver)->enumerate())
+  for (const auto& deviceDescriptor : driver(tMainDriver)->enumerate())
   {
     if (checkAndAddDeviceDescriptor(deviceDescriptor))
     {
@@ -251,9 +251,9 @@ void Coordinator::devicesListChanged()
 {
   M_LOG("[Coordinator]: The devices list has changed");
   auto devices = enumerate();
-  for(const auto& device : devices)
+  for(const auto& deviceDescriptor : devices)
   {
-    M_LOG(device.getName());
+    M_LOG(static_cast<int>(deviceDescriptor.type()));
   }
   for(const auto d : m_collCbDevicesListChanged)
   {
@@ -266,7 +266,7 @@ void Coordinator::devicesListChanged()
 
 //--------------------------------------------------------------------------------------------------
 
-Coordinator::tDriverPtr Coordinator::getDriver(Driver::Type tDriver_)
+Coordinator::tDriverPtr Coordinator::driver(Driver::Type tDriver_)
 {
   if (m_collDrivers.find(tDriver_) == m_collDrivers.end())
   {

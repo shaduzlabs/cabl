@@ -16,7 +16,7 @@ namespace
 
 //--------------------------------------------------------------------------------------------------
 
-std::string getStringDescriptor(libusb_device_handle* pHandle_, uint8_t uDescriptor)
+std::string stringDescriptor(libusb_device_handle* pHandle_, uint8_t uDescriptor)
 {
   if (uDescriptor != 0)
   {
@@ -49,8 +49,8 @@ int cbHotplug(
     {
       return -1;
     }
-    std::string strSerialNum = ::getStringDescriptor(pHandle, descriptor.iSerialNumber);
-    std::string strProd = ::getStringDescriptor(pHandle, descriptor.iProduct);
+    std::string strSerialNum = ::stringDescriptor(pHandle, descriptor.iSerialNumber);
+    std::string strProd = ::stringDescriptor(pHandle, descriptor.iProduct);
 
     libusb_close(pHandle);
     sl::cabl::DeviceDescriptor deviceDescriptor(strProd,
@@ -66,7 +66,7 @@ int cbHotplug(
   }
   else if (LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT == event_)
   {
-    // Device name and serial number are unknown because getStringDescriptor cannot be used (pHandle is null)
+    // Device name and serial number are unknown because stringDescriptor cannot be used (pHandle is null)
     sl::cabl::DeviceDescriptor deviceDescriptor(
       "", sl::cabl::DeviceDescriptor::Type::USB, descriptor.idVendor, descriptor.idProduct, "");
 
@@ -163,11 +163,11 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
     }
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    std::string strSerialNum = ::getStringDescriptor(pHandle, descriptor.iSerialNumber);
+    std::string strSerialNum = ::stringDescriptor(pHandle, descriptor.iSerialNumber);
 
-    std::string strProd = ::getStringDescriptor(pHandle, descriptor.iProduct);
+    std::string strProd = ::stringDescriptor(pHandle, descriptor.iProduct);
 #ifndef NDEBUG
-    std::string strManuf = ::getStringDescriptor(pHandle, descriptor.iManufacturer);
+    std::string strManuf = ::stringDescriptor(pHandle, descriptor.iManufacturer);
 
     if (strSerialNum.empty())
     {
@@ -194,8 +194,8 @@ Driver::tCollDeviceDescriptor DriverLibUSB::enumerate()
 
 tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
 {
-  M_LOG("[LibUSB] connecting to " << device_.getVendorId() << ":" << device_.getProductId() << ":"
-                                  << device_.getSerialNumber());
+  M_LOG("[LibUSB] connecting to " << device_.vendorId() << ":" << device_.productId() << ":"
+                                  << device_.serialNumber());
   bool bConnected = false;
   libusb_device** devices;
   ssize_t nDevices = libusb_get_device_list(m_pContext, &devices);
@@ -206,8 +206,8 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
     libusb_device* device = devices[i];
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    if (descriptor.idVendor != device_.getVendorId()
-        || descriptor.idProduct != device_.getProductId())
+    if (descriptor.idVendor != device_.vendorId()
+        || descriptor.idProduct != device_.productId())
     {
       continue;
     }
@@ -216,8 +216,8 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
 
     if (e == 0)
     {
-      std::string strSerialNum = ::getStringDescriptor(pCurrentDevice, descriptor.iSerialNumber);
-      if (strSerialNum == device_.getSerialNumber())
+      std::string strSerialNum = ::stringDescriptor(pCurrentDevice, descriptor.iSerialNumber);
+      if (strSerialNum == device_.serialNumber())
       {
         bConnected = true;
         break;
@@ -239,8 +239,8 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
   if (pCurrentDevice == nullptr || !bConnected)
     return nullptr;
 
-  M_LOG("[LibUSB] CONNECTED to " << device_.getVendorId() << ":" << device_.getProductId() << ":"
-                                 << device_.getSerialNumber());
+  M_LOG("[LibUSB] CONNECTED to " << device_.vendorId() << ":" << device_.productId() << ":"
+                                 << device_.serialNumber());
 
   return tPtr<DeviceHandleImpl>(new DeviceHandleLibUSB(pCurrentDevice));
 }

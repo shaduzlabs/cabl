@@ -35,8 +35,8 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* getGraphicDisplay(uint8_t displayIndex_) override;
-  LCDDisplay* getLCDDisplay(uint8_t displayIndex_) override;
+  GDisplay* displayGraphic(uint8_t displayIndex_) override;
+  LCDDisplay* displayLCD(uint8_t displayIndex_) override;
 
   bool tick() override;
 
@@ -62,11 +62,11 @@ private:
 
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
-  Led getLed(Device::Button) const noexcept;
-  Led getLed(Device::Pad) const noexcept;
+  Led led(Device::Button) const noexcept;
+  Led led(Device::Pad) const noexcept;
 
-  Device::Button getDeviceButton(Button) const noexcept;
-  Device::Encoder getDeviceEncoder(Encoder) const noexcept;
+  Device::Button deviceButton(Button) const noexcept;
+  Device::Encoder deviceEncoder(Encoder) const noexcept;
 
   uint8_t getColorIndex(const util::LedColor&);
 

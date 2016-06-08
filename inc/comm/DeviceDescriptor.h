@@ -49,13 +49,16 @@ public:
     ,m_portIdOut(portIdOut_)
   { }
   
-  const std::string& getName() const{ return m_name; }
-  Type getType() const { return m_type; }
-  tVendorId getVendorId() const{ return m_vendorId; }
-  tProductId getProductId() const{ return m_productId; }
-  unsigned getPortIdIn() const { return m_portIdIn; }
-  unsigned getPortIdOut() const { return m_portIdOut; }
-  const tSerialNumber& getSerialNumber() const{ return m_serialNumber; }
+  const std::string& name() const{ return m_name; }
+  Type type() const { return m_type; }
+  tVendorId vendorId() const{ return m_vendorId; }
+  tProductId productId() const{ return m_productId; }
+  unsigned portIdIn() const { return m_portIdIn; }
+  unsigned portIdOut() const { return m_portIdOut; }
+  const tSerialNumber& serialNumber() const{ return m_serialNumber; }
+  bool local() const { return m_local; }
+
+  void setLocal(bool local_) { m_local = local_; }
   
   bool operator==(const DeviceDescriptor& other_) const
   {
@@ -125,6 +128,7 @@ private:
   tSerialNumber   m_serialNumber;
   unsigned        m_portIdIn;
   unsigned        m_portIdOut;
+  bool            m_local;
 };
 
 //--------------------------------------------------------------------------------------------------

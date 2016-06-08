@@ -78,7 +78,7 @@ bool DeviceHandleLibUSB::write( const Transfer& transfer_, uint8_t endpoint_ )
     int result = libusb_bulk_transfer(
       m_pCurrentDevice,                 // Device handle
       endpoint_,                        // Endpoint
-      const_cast<uint8_t*>(transfer_.getData().data()),       // Data pointer
+      const_cast<uint8_t*>(transfer_.data().data()),       // Data pointer
       transfer_.size(),                 // Size of data
       &nBytesWritten,                   // N. of bytes actually written
       kLibUSBWriteTimeout                     // Timeout

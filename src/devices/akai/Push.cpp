@@ -274,14 +274,14 @@ Push::Push()
 
 void Push::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Push::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(pad_), color_);
+  setLedImpl(led(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -293,7 +293,7 @@ void Push::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* Push::displayGraphic(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   return &s_dummyDisplay;
@@ -301,7 +301,7 @@ GDisplay* Push::getGraphicDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* Push::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > kPush_nDisplays)
@@ -346,7 +346,7 @@ void Push::init()
 
   readFromDeviceHandleAsync(0, [this](Transfer transfer_)
     {
-      process(transfer_.getData());
+      process(transfer_.data());
     }
   );
 
@@ -367,14 +367,14 @@ bool Push::sendDisplayData()
   bool result = true;
   tRawData sysexHeader{kPush_manufacturerId, 0x7F, 0x15, 0x18, 0x00, 0x45, 0x00};
 
-  for (uint8_t row = 0; row < m_displays[0].getNumberOfRows(); row++)
+  for (uint8_t row = 0; row < m_displays[0].numberOfRows(); row++)
   {
     sysexHeader[3]       = 0x18 + row;
-    uint8_t nCharsPerRow = m_displays[0].getNumberOfCharsPerRow();
-    tRawData data(m_displays[0].getNumberOfCharsPerRow() * kPush_nDisplays);
+    uint8_t nCharsPerRow = m_displays[0].numberOfCharsPerRow();
+    tRawData data(m_displays[0].numberOfCharsPerRow() * kPush_nDisplays);
     for (uint8_t i = 0; i < kPush_nDisplays; i++)
     {
-      std::copy_n(m_displays[i].getData().data() + (row * nCharsPerRow),
+      std::copy_n(m_displays[i].displayData().data() + (row * nCharsPerRow),
         nCharsPerRow,
         &data[i * nCharsPerRow]);
     }
@@ -443,7 +443,7 @@ void Push::setLedImpl(Led led_, const util::LedColor& color_)
   else
   {
     uint8_t currentVal = m_leds[ledIndex];
-    uint8_t newVal     = color_.getMono();
+    uint8_t newVal     = color_.mono();
 
     m_leds[ledIndex] = newVal;
     m_isDirtyLeds    = m_isDirtyLeds || (currentVal != newVal);
@@ -470,7 +470,7 @@ bool Push::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Led Push::getLed(Device::Button btn_) const noexcept
+Push::Led Push::led(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -554,7 +554,7 @@ Push::Led Push::getLed(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Led Push::getLed(Device::Pad pad_) const noexcept
+Push::Led Push::led(Device::Pad pad_) const noexcept
 {
   uint8_t pad    = static_cast<unsigned>(pad_);
   unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
@@ -568,7 +568,7 @@ Push::Led Push::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button Push::getDeviceButton(Button btn_) const noexcept
+Device::Button Push::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -663,7 +663,7 @@ Device::Button Push::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
+Device::Encoder Push::deviceEncoder(Encoder enc_) const noexcept
 {
 #define M_ENC_CASE(idEnc) \
   case Encoder::idEnc:    \
@@ -695,7 +695,7 @@ Device::Encoder Push::getDeviceEncoder(Encoder enc_) const noexcept
 
 uint8_t Push::getColorIndex(const util::LedColor& color_)
 {
-  util::RGBColor ledColor(color_.getRGBColor());
+  util::RGBColor ledColor(color_.colorRGB());
 
   auto it = m_colorsCache.find(ledColor);
   if (it != m_colorsCache.end())
@@ -749,14 +749,14 @@ void Push::onControlChange(ControlChange msg_)
   uint8_t cc    = msg_.getControl();
   uint8_t value = msg_.getValue();
 
-  Device::Encoder changedEncoder = getDeviceEncoder(static_cast<Encoder>(cc));
+  Device::Encoder changedEncoder = deviceEncoder(static_cast<Encoder>(cc));
   if (changedEncoder != Device::Encoder::Unknown)
   {
     encoderChanged(changedEncoder, value < 64, m_shiftPressed);
   }
   else
   {
-    Device::Button changedButton = getDeviceButton(static_cast<Button>(cc));
+    Device::Button changedButton = deviceButton(static_cast<Button>(cc));
     if (changedButton == Device::Button::Shift)
     {
       m_shiftPressed = false;
@@ -808,7 +808,7 @@ void Push::processNote(uint8_t note_, uint8_t velocity_)
   {
     // Touch encoders
     uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
-    Device::Button btn = getDeviceButton(static_cast<Button>(note_+offset));
+    Device::Button btn = deviceButton(static_cast<Button>(note_+offset));
     buttonChanged(btn, (velocity_>0), m_shiftPressed);
   }
   else if(note_==12)

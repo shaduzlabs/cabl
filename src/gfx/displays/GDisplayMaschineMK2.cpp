@@ -60,28 +60,28 @@ void GDisplayMaschineMK2::black()
 
 void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
+  if ( x_ >= width() || y_ >= height() || color_ == Color::None )
     return;
   
-  Color oldColor = getPixelImpl( x_, y_ );
+  Color oldColor =pixelImpl( x_, y_ );
 
   if( color_ == Color::Random )
     color_ = static_cast<Color>( util::randomRange(0,2) );
   
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( x_ >> 3 );
+  uint16_t byteIndex = ( canvasWidthInBytes() * y_ ) + ( x_ >> 3 );
 
   switch( color_ )
   {
     case Color::White:
-      getData()[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
+      data()[ byteIndex ] |= ( 0x80 >> ( x_ & 7 ) );
       break;
 
     case Color::Black:
-      getData()[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
+      data()[ byteIndex ] &= ( ~0x80 >> ( x_ & 7 ) );
       break;
 
     case Color::Invert:
-      getData()[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
+      data()[ byteIndex ] ^= ( 0x80 >> ( x_ & 7 ) );
       break;
 
     default:
@@ -95,13 +95,13 @@ void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::Color GDisplayMaschineMK2::getPixelImpl(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayMaschineMK2::pixelImpl(uint16_t x_, uint16_t y_ ) const
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() )
+  if ( x_ >= width() || y_ >= height() )
     return Color::Black;
 
   return 
-    ( getData()[ ( getCanvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
+    ( data()[ ( canvasWidthInBytes() * y_ ) + ( x_ >> 3 ) ] & ( 0x80 >> ( x_  & 7 ) ) ) == 0
     ? Color::Black
     : Color::White;
 }

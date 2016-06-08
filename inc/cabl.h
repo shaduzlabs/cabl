@@ -31,7 +31,7 @@ class Lib
 
 public:
 
-  static std::string getVersion()
+  static std::string version()
   {
     return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
   }

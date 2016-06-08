@@ -149,14 +149,14 @@ TraktorF1MK2::TraktorF1MK2()
 
 void TraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(pad_), color_);
+  setLedImpl(led(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -168,14 +168,14 @@ void TraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* TraktorF1MK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* TraktorF1MK2::displayGraphic(uint8_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* TraktorF1MK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* TraktorF1MK2::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0,0);
   if (displayIndex_ > 0)
@@ -223,7 +223,7 @@ bool TraktorF1MK2::sendLedsAndDisplay()
 {
   if(m_lcdDisplay.isDirty() || true)
   {
-    const tRawData& displayData = m_lcdDisplay.getData();
+    const tRawData& displayData = m_lcdDisplay.displayData();
     for(size_t i = 0; i < displayData.size(); i++)
     {
       for(uint8_t j = 0; j < 8; j++)
@@ -285,7 +285,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       if (buttonPressed != m_buttonStates[btn])
       {
         m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
+        changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
           buttonChanged(changedButton, buttonPressed, shiftPressed);
@@ -295,7 +295,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
   }
   
   // Now process the pot/fader data
-  uint8_t currentValue = input_.getData()[kF1MK2_buttonsDataSize];
+  uint8_t currentValue = input_.data()[kF1MK2_buttonsDataSize];
   if (currentValue != m_encoderValue)
   {
     bool valueIncreased = ((static_cast<uint8_t>(m_encoderValue) < currentValue) ||
@@ -310,7 +310,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
     Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
       static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
     );
-    uint16_t value = (input_.getData()[i]) | (input_.getData()[i+1] << 8);
+    uint16_t value = (input_.data()[i]) | (input_.data()[i+1] << 8);
     if(m_potentiometersValues[potIndex] != value)
     {
       m_potentiometersValues[potIndex] = value;
@@ -336,17 +336,17 @@ void TraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
     uint8_t currentR = m_leds[ledIndex + 1];
     uint8_t currentG = m_leds[ledIndex + 2];
 
-    m_leds[ledIndex] = 0x7F & color_.getBlue();
-    m_leds[ledIndex + 1] = 0x7F & color_.getRed();
-    m_leds[ledIndex + 2] = 0x7F & color_.getGreen();
+    m_leds[ledIndex] = 0x7F & color_.blue();
+    m_leds[ledIndex + 1] = 0x7F & color_.red();
+    m_leds[ledIndex + 2] = 0x7F & color_.green();
 
     m_isDirtyLeds = m_isDirtyLeds ||
-     (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+     (currentR != color_.red() || currentG != color_.green() || currentB != color_.blue());
   }
   else
   {
     uint8_t currentVal = m_leds[ledIndex];
-    uint8_t newVal = 0x7F & color_.getMono();
+    uint8_t newVal = 0x7F & color_.mono();
 
     m_leds[ledIndex] = newVal;
     m_isDirtyLeds = m_isDirtyLeds || (currentVal != newVal);
@@ -367,7 +367,7 @@ bool TraktorF1MK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::led(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -414,7 +414,7 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
+TraktorF1MK2::Led TraktorF1MK2::led(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -449,7 +449,7 @@ TraktorF1MK2::Led TraktorF1MK2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button TraktorF1MK2::getDeviceButton(Button btn_) const noexcept
+Device::Button TraktorF1MK2::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \

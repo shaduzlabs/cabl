@@ -19,7 +19,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 /**
-  \class Canvas
+  \class DrawingContext
   \brief The canvas base class
 
 */
@@ -62,22 +62,22 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
-  unsigned getWidth() const
+  unsigned width() const
   {
     return m_width;
   }
 
-  unsigned getHeight() const
+  unsigned height() const
   {
     return m_height;
   }
 
-  unsigned getBytesPerPixel() const
+  unsigned bytesPerPixel() const
   {
     return m_bytesPerPixel;
   }
 
-  unsigned getSize() const
+  unsigned size() const
   {
     return m_width * m_height * m_bytesPerPixel;
   }
@@ -98,7 +98,7 @@ public:
     m_dirty = true;
   }
 
-  tRawData& getData() { return m_data; }
+  tRawData& data() { return m_data; }
 
 private:
 

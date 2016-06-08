@@ -51,7 +51,7 @@ protected:
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    Color getPixelImpl(uint16_t x_, uint16_t y_ ) const override;
+    Color pixelImpl(uint16_t x_, uint16_t y_ ) const override;
 
 };
   

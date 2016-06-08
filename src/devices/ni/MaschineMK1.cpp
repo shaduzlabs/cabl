@@ -199,14 +199,14 @@ MaschineMK1::~MaschineMK1()
 
 void MaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void MaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(pad_), color_);
+  setLedImpl(led(pad_), color_);
 }
 
 
@@ -225,7 +225,7 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
+GDisplay* MaschineMK1::displayGraphic( uint8_t displayIndex_ )
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -238,7 +238,7 @@ GDisplay* MaschineMK1::getGraphicDisplay( uint8_t displayIndex_ )
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMK1::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* MaschineMK1::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -390,7 +390,7 @@ bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
   
   if(!writeToDeviceHandle(
       Transfer({ d, 0x01, 0xF7, 0x5C },
-        m_displays[displayIndex_].getPtr( offset ),
+        m_displays[displayIndex_].ptr( offset ),
         dataSize
       ),
       kMASMK1_epDisplay
@@ -400,12 +400,12 @@ bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
   }
   
   d++;
-  for(uint8_t chunk = 1; chunk < m_displays[displayIndex_].getNumberOfChunks() - 1 ; chunk++ )
+  for(uint8_t chunk = 1; chunk < m_displays[displayIndex_].numberOfChunks() - 1 ; chunk++ )
   {
     offset += dataSize;
     if(!writeToDeviceHandle(
         Transfer({ d, 0x01, 0xF6 },
-          m_displays[displayIndex_].getPtr( offset ),
+          m_displays[displayIndex_].ptr( offset ),
           dataSize
         ),
         kMASMK1_epDisplay
@@ -420,7 +420,7 @@ bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
   if(!writeToDeviceHandle(
     Transfer(
       { d, 0x01, 0x52 },
-      m_displays[displayIndex_].getPtr( offset ),
+      m_displays[displayIndex_].ptr( offset ),
       338
     ),
     kMASMK1_epDisplay
@@ -536,7 +536,7 @@ void MaschineMK1::processButtons(const Transfer& input_)
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
-  if ((input_.getData()[6] & 0x40) == 0)
+  if ((input_.data()[6] & 0x40) == 0)
   {
     return;
   }
@@ -554,7 +554,7 @@ void MaschineMK1::processButtons(const Transfer& input_)
       if (buttonPressed != m_buttonStates[btn])
       {
         m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
+        changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
           //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
@@ -570,7 +570,7 @@ void MaschineMK1::processButtons(const Transfer& input_)
 void MaschineMK1::processEncoders(const Transfer& input_)
 {
 /*
-  if ((input_.getData()[6] & 0x80) == 0)
+  if ((input_.data()[6] & 0x80) == 0)
   {
     return;
   }*/
@@ -578,7 +578,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
-    uint16_t currentEncValue = (input_.getData()[2 + (2 * i)])|(input_.getData()[1 + (2 * i)] << 8);
+    uint16_t currentEncValue = (input_.data()[2 + (2 * i)])|(input_.data()[1 + (2 * i)] << 8);
     if (m_encoderValues[i] == currentEncValue)
     {
       continue;
@@ -594,7 +594,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
     if (m_encodersInitialized)
     {
       encoderChanged(
-        getDeviceEncoder(currentEnc), 
+        deviceEncoder(currentEnc), 
         valueIncreased, 
         m_buttonStates[static_cast<uint8_t>(Button::Shift)]
       );
@@ -617,7 +617,7 @@ void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 
   uint8_t currentVal = m_leds[ledIndex];
 
-  m_leds[ledIndex] = color_.getMono();
+  m_leds[ledIndex] = color_.mono();
   if (led_ > Led::Unused1)
   {
     m_isDirtyLedGroup1 = m_isDirtyLedGroup1 || (m_leds[ledIndex] != currentVal);
@@ -630,7 +630,7 @@ void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::getLed( Device::Button btn_ ) const noexcept
+MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
 {
 #define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
 
@@ -689,7 +689,7 @@ MaschineMK1::Led MaschineMK1::getLed( Device::Button btn_ ) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::getLed(Device::Pad pad_) const noexcept
+MaschineMK1::Led MaschineMK1::led(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -724,7 +724,7 @@ MaschineMK1::Led MaschineMK1::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
+Device::Button MaschineMK1::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \
@@ -785,7 +785,7 @@ Device::Button MaschineMK1::getDeviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder MaschineMK1::getDeviceEncoder(Encoder btn_) const noexcept
+Device::Encoder MaschineMK1::deviceEncoder(Encoder btn_) const noexcept
 {
 #define M_ENCODER_CASE(idEncoder) \
   case Encoder::idEncoder:     \

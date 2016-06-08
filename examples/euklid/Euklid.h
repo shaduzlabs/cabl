@@ -67,7 +67,7 @@ public:
     m_encoderState = encoderState_;
   }
 
-  ScreenPage getScreenPage() const{ return m_screenPage; }
+  ScreenPage screenPage() const{ return m_screenPage; }
   void setScreenPage(ScreenPage screenPage_)
   {
     m_screenPage = screenPage_;
@@ -83,15 +83,15 @@ public:
   
 private:
   
-  uint8_t getEncoderValue(
+  uint8_t encoderValue(
     bool valueIncreased_,
     uint8_t step_,
     uint8_t currentValue_,
     uint8_t minValue_,
     uint8_t maxValue_
   );
-  Device::Pad getPad(uint8_t padIndex_);
-  uint8_t getPadIndex(Device::Pad pad_);
+  Device::Pad pad(uint8_t padIndex_);
+  uint8_t padIndex(Device::Pad pad_);
   
   Sequence<uint16_t> m_sequences[3];
 

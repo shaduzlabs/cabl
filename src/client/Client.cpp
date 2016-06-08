@@ -51,12 +51,12 @@ void Client::onInitDevice()
   
   for(size_t i = 0; i < m_pDevice->numOfGraphicDisplays() ; i++)
   {
-    m_pDevice->getGraphicDisplay(i)->black();
+    m_pDevice->displayGraphic(i)->black();
   }
   
   for(size_t i = 0; i < m_pDevice->numOfLCDDisplays() ; i++)
   {
-    m_pDevice->getLCDDisplay(i)->clear();
+    m_pDevice->displayLCD(i)->clear();
   }
   
   m_pDevice->setCallbackDisconnect(std::bind(&Client::disconnected, this));

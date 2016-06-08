@@ -145,14 +145,14 @@ MaschineMikroMK2::MaschineMikroMK2()
 
 void MaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(btn_), color_);
+  setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void MaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  setLedImpl(getLed(pad_), color_);
+  setLedImpl(led(pad_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ void MaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMikroMK2::getGraphicDisplay(uint8_t displayIndex_)
+GDisplay* MaschineMikroMK2::displayGraphic(uint8_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 0)
@@ -177,7 +177,7 @@ GDisplay* MaschineMikroMK2::getGraphicDisplay(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMikroMK2::getLCDDisplay(uint8_t displayIndex_)
+LCDDisplay* MaschineMikroMK2::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;
@@ -241,7 +241,7 @@ bool MaschineMikroMK2::sendFrame()
   uint8_t yOffset = 0;
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
-    const uint8_t* ptr = m_display.getPtr(chunk * 256);
+    const uint8_t* ptr = m_display.ptr(chunk * 256);
     if(!writeToDeviceHandle(
       Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
       kMikroMK2_epDisplay)
@@ -324,7 +324,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
       if (buttonPressed != m_buttonStates[btn])
       {
         m_buttonStates[btn] = buttonPressed;
-        changedButton = getDeviceButton(currentButton);
+        changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
       //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
@@ -335,7 +335,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
   }
 
   // Now process the encoder data
-  uint8_t currentEncoderValue = input_.getData()[kMikroMK2_buttonsDataSize];
+  uint8_t currentEncoderValue = input_.data()[kMikroMK2_buttonsDataSize];
   if (m_encoderValue != currentEncoderValue)
   {
     bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
@@ -419,17 +419,17 @@ void MaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
     uint8_t currentG = m_leds[ledIndex + 1];
     uint8_t currentB = m_leds[ledIndex + 2];
 
-    m_leds[ledIndex] = color_.getRed();
-    m_leds[ledIndex + 1] = color_.getGreen();
-    m_leds[ledIndex + 2] = color_.getBlue();
+    m_leds[ledIndex] = color_.red();
+    m_leds[ledIndex + 1] = color_.green();
+    m_leds[ledIndex + 2] = color_.blue();
 
     m_isDirtyLeds = m_isDirtyLeds ||
-     (currentR != color_.getRed() || currentG != color_.getGreen() || currentB != color_.getBlue());
+     (currentR != color_.red() || currentG != color_.green() || currentB != color_.blue());
   }
   else
   {
     uint8_t currentVal = m_leds[ledIndex];
-    uint8_t newVal = color_.getMono();
+    uint8_t newVal = color_.mono();
 
     m_leds[ledIndex] = newVal;
     m_isDirtyLeds = m_isDirtyLeds || (currentVal != newVal);
@@ -455,7 +455,7 @@ bool MaschineMikroMK2::isRGBLed(Led led_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Button btn_) const noexcept
+MaschineMikroMK2::Led MaschineMikroMK2::led(Device::Button btn_) const noexcept
 {
 #define M_LED_CASE(idLed)     \
   case Device::Button::idLed: \
@@ -502,7 +502,7 @@ MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Button btn_) const noexce
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
+MaschineMikroMK2::Led MaschineMikroMK2::led(Device::Pad pad_) const noexcept
 {
 #define M_PAD_CASE(idPad)     \
   case Device::Pad::idPad: \
@@ -537,7 +537,7 @@ MaschineMikroMK2::Led MaschineMikroMK2::getLed(Device::Pad pad_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Button MaschineMikroMK2::getDeviceButton(Button btn_) const noexcept
+Device::Button MaschineMikroMK2::deviceButton(Button btn_) const noexcept
 {
 #define M_BTN_CASE(idBtn) \
   case Button::idBtn:     \

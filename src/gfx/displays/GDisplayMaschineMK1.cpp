@@ -59,10 +59,10 @@ void GDisplayMaschineMK1::black()
 
 void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == Color::None )
+  if ( x_ >= width() || y_ >= height() || color_ == Color::None )
     return;
   
-  Color oldColor = getPixelImpl( x_, y_ );
+  Color oldColor =pixelImpl( x_, y_ );
   
   if (color_ == Color::Random)
   {
@@ -71,7 +71,7 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
 
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
+  uint16_t byteIndex = ( canvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
 
   switch( color_ )
   {
@@ -80,14 +80,14 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
       switch( blockIndex )
       {
         case 0:
-          getData()[ byteIndex ] |= 0xF8;
+          data()[ byteIndex ] |= 0xF8;
           break;
         case 1:
-          getData()[ byteIndex ] |= 0x07;
-          getData()[ byteIndex + 1 ] |= 0xC0;
+          data()[ byteIndex ] |= 0x07;
+          data()[ byteIndex + 1 ] |= 0xC0;
           break;
         case 2:
-          getData()[ byteIndex + 1 ] |= 0x1F;
+          data()[ byteIndex + 1 ] |= 0x1F;
           break;
       }
       break;
@@ -97,14 +97,14 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
       switch( blockIndex )
       {
         case 0:
-          getData()[ byteIndex ] &= 0x07;
+          data()[ byteIndex ] &= 0x07;
           break;
         case 1:
-          getData()[ byteIndex ] &= 0xF8;
-          getData()[ byteIndex + 1 ] &= 0x1F;
+          data()[ byteIndex ] &= 0xF8;
+          data()[ byteIndex + 1 ] &= 0x1F;
           break;
         case 2:
-          getData()[ byteIndex + 1 ] &= 0xC0;
+          data()[ byteIndex + 1 ] &= 0xC0;
           break;
       }
       break;
@@ -115,22 +115,22 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
       {
         case 0:
         {
-          uint8_t pixel2a = getData()[ byteIndex ] & 0x07;
-          getData()[ byteIndex ] = (~(getData()[ byteIndex ]) & 0xF8) | pixel2a;
+          uint8_t pixel2a = data()[ byteIndex ] & 0x07;
+          data()[ byteIndex ] = (~(data()[ byteIndex ]) & 0xF8) | pixel2a;
           break;
         }
         case 1:
         {
-          uint8_t pixel1 = getData()[ byteIndex ] & 0xF8;
-          uint8_t pixel3 = getData()[ byteIndex + 1] & 0x1F;
-          getData()[ byteIndex ] = ((~getData()[ byteIndex ]) & 0x07) | pixel1;
-          getData()[ byteIndex + 1 ] = ((~getData()[ byteIndex + 1 ]) & 0xC0) | pixel3;
+          uint8_t pixel1 = data()[ byteIndex ] & 0xF8;
+          uint8_t pixel3 = data()[ byteIndex + 1] & 0x1F;
+          data()[ byteIndex ] = ((~data()[ byteIndex ]) & 0x07) | pixel1;
+          data()[ byteIndex + 1 ] = ((~data()[ byteIndex + 1 ]) & 0xC0) | pixel3;
           break;
         }
         case 2:
         {
-          uint8_t pixel2b = getData()[ byteIndex + 1 ] & 0xC0;
-          getData()[ byteIndex + 1 ] = (~(getData()[ byteIndex + 1 ]) & 0x1F) | pixel2b;
+          uint8_t pixel2b = data()[ byteIndex + 1 ] & 0xC0;
+          data()[ byteIndex + 1 ] = (~(data()[ byteIndex + 1 ]) & 0x1F) | pixel2b;
           break;
         }
       }
@@ -147,22 +147,22 @@ void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay::Color GDisplayMaschineMK1::getPixelImpl(uint16_t x_, uint16_t y_ ) const
+GDisplay::Color GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_ ) const
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() )
+  if ( x_ >= width() || y_ >= height() )
     return Color::Black;
   
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
+  uint16_t byteIndex = ( canvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
   switch( blockIndex )
   {
     case 0:
-      return ( getData()[ byteIndex ] & 0xF8 ) ? Color::Black : Color::White;
+      return ( data()[ byteIndex ] & 0xF8 ) ? Color::Black : Color::White;
     case 1:
-      return ( getData()[ byteIndex ] & 0x07 ) ? Color::Black : Color::White;
+      return ( data()[ byteIndex ] & 0x07 ) ? Color::Black : Color::White;
       break;
     case 2:
-      return ( getData()[ byteIndex + 1 ] & 0x1F ) ? Color::Black : Color::White;
+      return ( data()[ byteIndex + 1 ] & 0x1F ) ? Color::Black : Color::White;
   }
   
   return Color::Black;

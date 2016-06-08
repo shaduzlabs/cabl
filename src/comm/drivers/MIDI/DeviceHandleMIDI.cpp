@@ -14,12 +14,12 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& device_)
+DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& deviceDescriptor_)
 {
   try
   {
-    m_midiIn.openPort(device_.getPortIdIn(), device_.getName());
-    m_midiOut.openPort(device_.getPortIdOut(), device_.getName());
+    m_midiIn.openPort(deviceDescriptor_.portIdIn(), deviceDescriptor_.name());
+    m_midiOut.openPort(deviceDescriptor_.portIdOut(), deviceDescriptor_.name());
   }
   catch (RtMidiError e)
   {
@@ -53,7 +53,7 @@ void DeviceHandleMIDI::disconnect()
 
 bool DeviceHandleMIDI::read( Transfer& transfer_, uint8_t /* endpoint_ */)
 {
-  m_midiIn.getMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.getData())));
+  m_midiIn.getMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.data())));
   return transfer_;
 }
 
@@ -63,7 +63,7 @@ bool DeviceHandleMIDI::write( const Transfer& transfer_, uint8_t /* endpoint_ */
 {
   try
   {
-    m_midiOut.sendMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.getData())));
+    m_midiOut.sendMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.data())));
   }
   catch(RtMidiError)
   {

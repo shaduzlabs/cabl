@@ -29,7 +29,7 @@ public:
     return m_errorMessage.c_str();
   }
 
-  const std::string& getMessage() const noexcept
+  const std::string& message() const noexcept
   {
     return m_errorMessage;
   }

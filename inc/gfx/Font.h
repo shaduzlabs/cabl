@@ -26,35 +26,35 @@ class Font
 
 public:
 
-  virtual uint8_t  getWidth()         const noexcept = 0;
-  virtual uint8_t  getHeight()        const noexcept = 0;
-  virtual uint8_t  getCharSpacing()   const noexcept = 0;
+  virtual uint8_t  width()         const noexcept = 0;
+  virtual uint8_t  height()        const noexcept = 0;
+  virtual uint8_t charSpacing()   const noexcept = 0;
   
-  virtual uint8_t  getFirstChar()     const noexcept = 0;
-  virtual uint8_t  getLastChar()      const noexcept = 0;
+  virtual uint8_t firstChar()     const noexcept = 0;
+  virtual uint8_t lastChar()      const noexcept = 0;
   
-  virtual uint8_t  getBytesPerLine()  const noexcept = 0;
+  virtual uint8_t  bytesPerLine()  const noexcept = 0;
   
-  virtual bool     getPixel( uint8_t char_, uint8_t x_, uint8_t y_ ) const noexcept = 0;
+  virtual bool    pixel( uint8_t char_, uint8_t x_, uint8_t y_ ) const noexcept = 0;
   
-  virtual inline bool getPixelImpl(
+  virtual inline bool pixelImpl(
     uint8_t* pFontData_, 
     uint8_t c_, 
     uint8_t x_, 
     uint8_t y_ 
   ) const noexcept
   {
-    if( c_ > getLastChar() || x_ >= getWidth() || y_ >= getHeight() )
+    if( c_ >lastChar() || x_ >= width() || y_ >= height() )
       return false;
     
-    if( getBytesPerLine() == 1 )
+    if( bytesPerLine() == 1 )
     {
-      return ( ( pFontData_[ ( c_ * getHeight() ) + y_ ] & ( 0x080 >> x_ ) ) > 0 );
+      return ( ( pFontData_[ ( c_ * height() ) + y_ ] & ( 0x080 >> x_ ) ) > 0 );
     }
     else
     {
       return (
-        ( pFontData_[ ( c_ * getHeight() ) + ( y_ * getBytesPerLine() ) + ( x_ >> 3 ) ] & 
+        ( pFontData_[ ( c_ * height() ) + ( y_ * bytesPerLine() ) + ( x_ >> 3 ) ] & 
         ( 0x080 >> ( x_ % 8 ) ) ) > 0
       );
     }

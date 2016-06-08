@@ -68,7 +68,7 @@ namespace cabl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    Color getPixel(uint16_t x_, uint16_t y_ ) const override;
+    Color pixel(uint16_t x_, uint16_t y_ ) const override;
         
     /** @} */ // End of group Primitives
 
@@ -107,7 +107,7 @@ namespace cabl
      * @{
      */
     
-    virtual uint8_t getNumberOfChunks() const noexcept { return m_numDisplayChunks; }
+    virtual uint8_t numberOfChunks() const noexcept { return m_numDisplayChunks; }
     
     /** @} */ // End of group Utility
     
@@ -132,7 +132,7 @@ namespace cabl
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    virtual Color getPixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
+    virtual Color pixelImpl(uint16_t x_, uint16_t y_ ) const = 0;
     
     virtual void setDirtyChunks( uint16_t yStart_, uint16_t yEnd_ = 0xFFFF );
     

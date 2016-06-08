@@ -64,7 +64,7 @@ private:
   bool checkAndAddDeviceDescriptor(const DeviceDescriptor&);
   void devicesListChanged();
   
-  tDriverPtr getDriver(Driver::Type);
+  tDriverPtr driver(Driver::Type);
 
   std::thread m_cablThread;
   std::atomic<bool> m_running{false};
