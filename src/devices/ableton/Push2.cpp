@@ -285,7 +285,7 @@ Push2::Push2()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+      M_LOG("[Push2] RtMidiError: " << error.getMessage());
     }
   }
   if (!m_pMidiOut->isPortOpen())
@@ -307,7 +307,7 @@ Push2::Push2()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+      M_LOG("[Push2] RtMidiError: " << error.getMessage());
     }
   }
   if (!m_pMidiIn->isPortOpen())
