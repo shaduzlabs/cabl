@@ -103,6 +103,7 @@ set(
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
     inc/devices/DeviceRegistrar.h
+    inc/devices/DiscoveryPolicy.h
 )
 
 set(
@@ -224,6 +225,7 @@ set(
     src/devices/Coordinator.cpp
     src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
+    src/devices/DiscoveryPolicy.cpp
 )
 
 set(
@@ -397,6 +399,8 @@ if(CABL_PYTHON)
   set(
     cabl_python_SRCS
       src/py/pyCabl.cpp
+      src/py/PyClient.cpp
+      src/py/PyClient.h
   )
 
   source_group("py"              FILES ${cabl_python_SRCS})
