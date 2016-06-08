@@ -9,7 +9,8 @@
 
 using namespace boost::python;
 
-#include "cabl.h"
+#include <cabl.h>
+#include "py/PyClient.h"
 
 namespace sl
 {
@@ -17,6 +18,9 @@ namespace cabl
 {
 
 using namespace boost::python;
+using namespace devices;
+
+PyClient g_client;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -71,52 +75,6 @@ std::string PyErrorString()
   {
     return "Error while trying to get python error";
   }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void registerClientCallbacks(
-  Client& rClass,
-  object onConnected_,
-  object onTick_,
-  object onDisconnected_
-)
-{
-  rClass.setCallbacks(
-    [onConnected_](){
-      GILLock lock;
-      try
-      {
-        onConnected_();
-      }
-      catch (const error_already_set&)
-      {
-        M_LOG("[pyCabl:registerClientCallbacks::onConnected] exception: " << PyErrorString());
-      }
-    },
-    [onTick_](){
-      GILLock lock;
-      try
-      {
-        onTick_();
-      }
-      catch (const error_already_set& e)
-      {
-        M_LOG("[pyCabl:registerClientCallbacks::onTick] exception: " << PyErrorString());
-      }
-    },
-    [onDisconnected_](){
-      GILLock lock;
-      try
-      {
-        onDisconnected_();
-      }
-      catch (const error_already_set& e)
-      {
-        M_LOG("[pyCabl:registerClientCallbacks::onDisconnected] exception: " << PyErrorString());
-      }
-    }
-  );
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -176,7 +134,7 @@ std::shared_ptr<DeviceFactory> deviceFactory()
 
 list enumerateDevices()
 {
-  return toPythonList(Client::enumerateDevices());
+  return toPythonList(Coordinator::instance().enumerate());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -217,27 +175,6 @@ void onPotentiometerChanged(
 )
 {
   boost::python::call<void>(callable, pot_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onDeviceConnected(PyObject* callable)
-{
-  boost::python::call<void>(callable);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onDeviceTick(PyObject* callable)
-{
-  boost::python::call<void>(callable);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onDeviceDisconnected(PyObject* callable)
-{
-  boost::python::call<void>(callable);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -402,20 +339,18 @@ BOOST_PYTHON_MODULE(pycabl)
 */
 //--------------------------------------------------------------------------------------------------
 
-  void (Client::*setLed_btn)(Device::Button, const util::LedColor&) = &Client::setLed;
-  void (Client::*setLed_pad)(Device::Pad, const util::LedColor&) = &Client::setLed;
-  void (Client::*setLed_key)(Device::Key, const util::LedColor&) = &Client::setLed;
+  void (Device::*setLed_btn)(Device::Button, const util::LedColor&) = &Device::setLed;
+  void (Device::*setLed_pad)(Device::Pad, const util::LedColor&) = &Device::setLed;
+  void (Device::*setLed_key)(Device::Key, const util::LedColor&) = &Device::setLed;
 
-  class_<Client, boost::noncopyable>("Client")
+  class_<PyClient, boost::noncopyable>("Client")
     .def("enumerateDevices",&enumerateDevices).staticmethod("enumerateDevices")
-    .def("registerCallbacks", &registerClientCallbacks, args("onConnect","onTick","onDisconnect"))
-    .def("connect", &Client::connect)
-    .def("run",&Client::run)
-    .def("stop",&Client::stop)
+  //  .def("connect", &Client::connect)
+  //  .def("run",&Client::run)
     .def("setLedButton", setLed_btn)
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)
-    .def("drawingContext", &Client::drawingContext, return_value_policy<reference_existing_object>())
+    .def("drawingContext", &Device::drawingContext, return_value_policy<reference_existing_object>())
   ;
   
 //--------------------------------------------------------------------------------------------------
