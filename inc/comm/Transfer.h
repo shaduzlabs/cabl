@@ -10,6 +10,9 @@
 #include <cstdint>
 #include "util/Types.h"
 
+#include <cereal/cereal.hpp>
+#include <cereal/types/vector.hpp>
+
 namespace sl
 {
 namespace cabl
@@ -22,7 +25,7 @@ class Transfer
     
 public:
   
-  Transfer();
+  Transfer() = default;
   Transfer( uint16_t length_ );
   
   Transfer( tRawData data_ );
@@ -31,6 +34,9 @@ public:
   
   virtual ~Transfer();
   
+  bool operator == (const Transfer& other_) const;
+  bool operator != (const Transfer& other_) const;
+
   operator bool() const{ return ( m_data.size() > 0 ); }
   
   inline uint8_t &operator[](int i)
@@ -45,14 +51,20 @@ public:
   
   void reset();
   
-//  uint8_t* dataPtr() const { return m_pData.get(); }
-//  void setData( const uint8_t*, uint16_t );
   const tRawData& data() const { return m_data; }
   void setData( const uint8_t*, size_t);
   
   size_t size() const noexcept{ return m_data.size(); }
-
+  
 private:
+
+  friend class cereal::access;
+  
+  template <class Archive>
+  void serialize( Archive & archive )
+  {
+    archive( m_data );
+  }
 
   tRawData         m_data;
  
