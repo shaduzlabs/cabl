@@ -12,7 +12,6 @@
 
 #include "devices/Device.h"
 #include "devices/DeviceFactory.h"
-#include "gfx/displays/GDisplayDummy.h"
 #include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
 namespace sl
@@ -37,7 +36,6 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* displayGraphic(uint8_t displayIndex_) override;
   LCDDisplay* displayLCD(uint8_t displayIndex_) override;
 
   bool tick() override;
@@ -74,7 +72,6 @@ private:
 
   static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
 
-  GDisplayDummy               m_displayDummy;
   tRawData                    m_leds;
   tRawData                    m_buttons;
   std::bitset<kKK_nButtons>   m_buttonStates;

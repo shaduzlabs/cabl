@@ -168,13 +168,6 @@ void TraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* TraktorF1MK2::displayGraphic(uint8_t displayIndex_)
-{
-  return &m_displayDummy;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 LCDDisplay* TraktorF1MK2::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0,0);

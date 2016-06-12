@@ -18,6 +18,8 @@
 #include "stl-arduino.h"
 #endif // ARDUINO
 
+#define FT_NET_PROXY 1
+
 namespace sl
 {
 namespace cabl

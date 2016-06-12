@@ -722,13 +722,6 @@ void KompleteKontrolBase::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* KompleteKontrolBase::displayGraphic(uint8_t displayIndex_)
-{
-  return &m_displayDummy;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 LCDDisplay* KompleteKontrolBase::displayLCD(uint8_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);

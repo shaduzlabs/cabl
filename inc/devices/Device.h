@@ -22,6 +22,8 @@
 #include "comm/DeviceDescriptor.h"
 #include "util/LedColor.h"
 #include "gfx/DrawingContext.h"
+#include "gfx/displays/GDisplayDummy.h"
+#include "gfx/LCDDisplay.h"
 
 namespace sl
 {
@@ -291,10 +293,20 @@ public:
     m_pDeviceHandle  = nullptr;
   }
 
-  virtual void init() = 0;
+  virtual void init(){}
 
-  virtual GDisplay* displayGraphic(uint8_t displayIndex_) = 0;
-  virtual LCDDisplay* displayLCD(uint8_t displayIndex_) = 0;
+  virtual GDisplay* displayGraphic(uint8_t displayIndex_)
+  {
+    static GDisplayDummy s_displayDummy;
+    return &s_displayDummy;
+  }
+  
+  virtual LCDDisplay* displayLCD(uint8_t displayIndex_)
+  {
+    static LCDDisplay s_dummyLCDDisplay{0, 0};
+    return &s_dummyLCDDisplay;
+  }
+  
   virtual size_t numOfGraphicDisplays() { return 0; }
   virtual size_t numOfLCDDisplays() { return 0; }
 
@@ -304,7 +316,7 @@ public:
     return s_dummyContext;
   }
 
-  virtual void setLed(Button, const util::LedColor&) = 0;
+  virtual void setLed(Button, const util::LedColor&){}
 
   virtual void setLed(Pad, const util::LedColor&)
   {
@@ -313,7 +325,7 @@ public:
   {
   }
 
-  virtual void sendMidiMsg(tRawData) = 0;
+  virtual void sendMidiMsg(tRawData){}
 
   void setCallbackDisconnect(tCbDisconnect cbDisconnect_)
   {

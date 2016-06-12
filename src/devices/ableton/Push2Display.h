@@ -33,8 +33,6 @@ public:
   void setLed(Device::Pad, const util::LedColor&) override {}
   void sendMidiMsg(tRawData) override {}
 
-  GDisplay* displayGraphic(uint8_t displayIndex_) override;
-  LCDDisplay* displayLCD(uint8_t displayIndex_) override;
   DrawingContext& drawingContext(uint8_t /*contextIndex_*/) override
   {
     return m_display;

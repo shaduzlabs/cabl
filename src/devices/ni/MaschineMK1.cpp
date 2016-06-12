@@ -13,10 +13,6 @@
 #include "comm/Transfer.h"
 #include "util/Functions.h"
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
-
-
 //!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
@@ -235,15 +231,6 @@ GDisplay* MaschineMK1::displayGraphic( uint8_t displayIndex_ )
   
   return &m_displays[displayIndex_];
 }
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* MaschineMK1::displayLCD(uint8_t displayIndex_)
-{
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
-  return &s_dummyLCDDisplay;
-}
-
 
 //--------------------------------------------------------------------------------------------------
 

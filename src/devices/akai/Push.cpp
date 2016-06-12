@@ -13,9 +13,6 @@
 #include <algorithm>
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
-
 #include <cmath>
 
 //!\todo delete debug includes
@@ -289,14 +286,6 @@ void Push::setLed(Device::Pad pad_, const util::LedColor& color_)
 void Push::sendMidiMsg(tRawData midiMsg_)
 {
   //!\todo Use Push virtual midi port
-}
-
-//--------------------------------------------------------------------------------------------------
-
-GDisplay* Push::displayGraphic(uint8_t displayIndex_)
-{
-  static GDisplayDummy s_dummyDisplay;
-  return &s_dummyDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------

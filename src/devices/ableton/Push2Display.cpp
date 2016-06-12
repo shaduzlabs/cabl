@@ -13,9 +13,6 @@
 #include <algorithm>
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
-
 #include <cmath>
 
 //!\todo delete debug includes
@@ -99,22 +96,6 @@ Push2Display::Push2Display()
 Push2Display::~Push2Display()
 {
   M_LOG("[Push2Display]: destructor");
-}
-
-//--------------------------------------------------------------------------------------------------
-
-GDisplay* Push2Display::displayGraphic(uint8_t displayIndex_)
-{
-  static GDisplayDummy s_dummyDisplay;
-  return &s_dummyDisplay;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* Push2Display::displayLCD(uint8_t displayIndex_)
-{
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
-  return &s_dummyLCDDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------

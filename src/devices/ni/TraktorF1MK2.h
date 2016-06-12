@@ -11,7 +11,6 @@
 #include <bitset>
 
 #include "devices/Device.h"
-#include "gfx/displays/GDisplayDummy.h"
 #include "gfx/displays/LCDDisplay7Segments.h"
 
 namespace sl
@@ -35,7 +34,6 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* displayGraphic(uint8_t displayIndex_) override;
   LCDDisplay* displayLCD(uint8_t displayIndex_) override;
 
   bool tick() override;
@@ -65,7 +63,6 @@ private:
   bool isButtonPressed( Button button ) const noexcept;
   bool isButtonPressed( const Transfer&, Button button_) const noexcept;
 
-  GDisplayDummy               m_displayDummy;
   LCDDisplay7Segments         m_lcdDisplay;
 
   std::array<uint8_t, kF1MK2_buttonsDataSize>     m_buttons;

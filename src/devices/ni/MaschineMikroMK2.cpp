@@ -12,9 +12,6 @@
 
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
-
 //!\todo delete debug includes
 #include <iostream>
 #include <iomanip>
@@ -173,14 +170,6 @@ GDisplay* MaschineMikroMK2::displayGraphic(uint8_t displayIndex_)
   }
 
   return &m_display;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* MaschineMikroMK2::displayLCD(uint8_t displayIndex_)
-{
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
-  return &s_dummyLCDDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
