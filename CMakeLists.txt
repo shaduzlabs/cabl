@@ -9,6 +9,26 @@ cmake_minimum_required (VERSION 2.8.0)
 
 project (cabl)
 
+# The version number.
+set (CABL_VERSION_MAJOR 0)
+set (CABL_VERSION_MINOR 9)
+set (CABL_VERSION_MICRO 4)
+set (CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
+
+MESSAGE( STATUS "                                   ")
+MESSAGE( STATUS "                            __       ___       ")
+MESSAGE( STATUS "                           /\\ \\     /\\_ \\      ")
+MESSAGE( STATUS "               ___     __  \\ \\ \\____\\//\\ \\     ")
+MESSAGE( STATUS "              /'___\\ /'__`\\ \\ \\ '__`\\ \\ \\ \\    ")
+MESSAGE( STATUS "             /\\ \\__//\\ \\L\\.\\_\\ \\ \\L\\ \\ \\_\\ \\_  ")
+MESSAGE( STATUS "             \\ \\____\\ \\__/.\\_\\\\ \\_,__/ /\\____\\ ")
+MESSAGE( STATUS "              \\/____/\\/__/\\/_/ \\/___/  \\/____/ ")
+MESSAGE( STATUS "               Controller ABstraction Library                      ")
+
+MESSAGE( STATUS "                                     v. ${CABL_VERSION_STRING}")
+MESSAGE( STATUS "                                               ")
+
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 include(sl-main)
 
@@ -20,12 +40,6 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
 set(DEBUG_SUFFIX          "_d")
-
-# The version number.
-set (CABL_VERSION_MAJOR 0)
-set (CABL_VERSION_MINOR 9)
-set (CABL_VERSION_MICRO 2)
-set (CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
 
 option(BUILD_SHARED_LIBS "build as shared library" OFF)
 option(BUILD_STATIC_LIBS "build as static library" ON)
@@ -78,6 +92,7 @@ else()
   find_package(nanomsg REQUIRED)
 endif()
 
+addCereal()
 addnanomsgxx()
 
 # Unmidify --------------------------------------------------------------------------------------- #
@@ -274,6 +289,12 @@ set(
 )
 
 set(
+  src_devices_special_SRCS
+    src/devices/special/DeviceProxy.h
+    src/devices/special/DeviceProxy.cpp
+)
+
+set(
   src_gfx_displays_SRCS
     src/gfx/displays/GDisplayMaschineMikro.h
     src/gfx/displays/GDisplayMaschineMikro.cpp
@@ -339,6 +360,8 @@ source_group("src\\devices\\ableton" FILES ${src_devices_ableton_SRCS})
 source_group("src\\devices\\akai"    FILES ${src_devices_akai_SRCS})
 source_group("src\\devices\\generic" FILES ${src_devices_generic_SRCS})
 source_group("src\\devices\\ni"      FILES ${src_devices_ni_SRCS})
+source_group("src\\devices\\special" FILES ${src_devices_special_SRCS})
+
 
 source_group("src\\gfx"              FILES ${src_gfx_SRCS})
 source_group("src\\gfx\\displays"    FILES ${src_gfx_displays_SRCS})
@@ -364,6 +387,7 @@ set(
     ${src_devices_akai_SRCS}
     ${src_devices_generic_SRCS}
     ${src_devices_ni_SRCS}
+    ${src_devices_special_SRCS}
     ${src_gfx_displays_SRCS}
     ${src_gfx_fonts_SRCS}
     ${src_gfx_fonts_data_SRCS}
@@ -374,9 +398,9 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src ${RTMIDI_INCLUDE_DIRS} /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
+include_directories(inc src ${RTMIDI_INCLUDE_DIRS})
 include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
-include_directories(${NANOMSG_INCLUDE_DIRS} ${NANOMSGXX_INCLUDE_DIRS})
+include_directories(${NANOMSG_INCLUDE_DIRS} ${CEREAL_INCLUDE_DIRS} ${NANOMSGXX_INCLUDE_DIRS})
 
 set(
   cabl_ALL
@@ -451,6 +475,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif(BUILD_STATIC_LIBS)
 #  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 #  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+endif()
+
+if(APPLE)
+  include_directories(/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
 endif()
 
 if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")

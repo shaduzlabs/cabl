@@ -46,6 +46,7 @@ function (addRtMidi)
     )
     endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   endif()
+  message(STATUS "")
 endfunction()
 
 
@@ -61,6 +62,7 @@ function (addCatch)
     set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include)
     message(STATUS "Catch path: ${CATCH_INCLUDE_DIRS}")
   endif()
+  message(STATUS "")
 endfunction()
 
 
@@ -76,6 +78,7 @@ function (addMPL)
     set(MPL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl)
     message(STATUS "MPL path: ${MPL_INCLUDE_DIRS}")
   endif()
+  message(STATUS "")
 endfunction()
 
 
@@ -91,6 +94,7 @@ function (addUnmidify)
     set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include)
     message(STATUS "Unmidify path: ${UNMIDIFY_INCLUDE_DIRS}")
   endif()
+  message(STATUS "")
 endfunction()
 
 
@@ -166,8 +170,8 @@ function (addLibUSB)
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
       target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/Xcode)
     endif()
-
   endif()
+  message(STATUS "")
 endfunction()
 
 # ------------------------------------------------------------------------------------------------ #
@@ -214,7 +218,7 @@ function (addHIDAPI)
         OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
     )
     target_include_directories(hidapi PUBLIC ${HIDAPI_INCLUDE_DIRS})
-
+    message(STATUS "")
   endif()
 endfunction()
 
@@ -247,9 +251,26 @@ function (addlodepng)
     )
 
     target_include_directories(lodepng PUBLIC ${LODEPNG_INCLUDE_DIRS})
-
+    message(STATUS "")
   endif()
 endfunction()
+
+
+# ------------------------------------------------------------------------------------------------ #
+#  cereal                                                                                          #
+# ------------------------------------------------------------------------------------------------ #
+function (addCereal)
+  if(DEFINED CEREAL_INCLUDE_DIRS)
+    message(STATUS "Cereal is already available")
+  else()
+    checkout_external_project(Cereal https://github.com/USCiLab/cereal.git master)
+    set(CEREAL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/Cereal/src/Cereal/include PARENT_SCOPE)
+    set(CEREAL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/Cereal/src/Cereal/include )
+    message(STATUS "Cereal path: ${CEREAL_INCLUDE_DIRS}")
+    message(STATUS "")
+  endif()
+endfunction()
+
 
 # ------------------------------------------------------------------------------------------------ #
 #  nanomsgxx                                                                                         #
@@ -300,6 +321,6 @@ function (addnanomsgxx)
     )
 
     target_include_directories(nanomsgxx PUBLIC ${NANOMSGXX_INCLUDE_DIRS})
-
+    message(STATUS "")
   endif()
 endfunction()
