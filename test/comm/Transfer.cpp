@@ -46,28 +46,8 @@ TEST_CASE( "Constructors, reset, bool operator", "[comm/Transfer]" )
   CHECK(t5);
 
   t5.reset();
-  CHECK_FALSE(t1);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-TEST_CASE( "Constructors", "[comm/Transfer]" )
-{
-  Transfer t1;
-  CHECK(t1.size() == 0);
-  
-  Transfer t2(19);
-  CHECK(t2.size() == 19);
-  
-  Transfer t3({0,1,2,3,4,5,6});
-  CHECK(t3.size() == 7);
-  
-  Transfer t4({0,1,2,3}, {4,5,6,7});
-  CHECK(t4.size() == 8);
-  
-  tRawData data{3,4,5,6,7,8};
-  Transfer t5( {0,1,2}, data.data(), data.size() );
-  CHECK(t5.size() == 9);
+  CHECK(t5.size() == 0);
+  CHECK_FALSE(t5);
 }
 
 //--------------------------------------------------------------------------------------------------
