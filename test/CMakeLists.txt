@@ -19,16 +19,23 @@ set(
 )
 
 set(
+  test_comm_SRCS
+    comm/Transfer.cpp
+)
+
+set(
   test_util_SRCS
     util/Version.cpp
 )
 
 source_group(""                  FILES ${test_SRCS})
+source_group("comm"              FILES ${test_comm_SRCS})
 source_group("util"              FILES ${test_util_SRCS})
 
 set(
   Test_FILES
     ${test_SRCS}
+    ${test_comm_SRCS}
     ${test_util_SRCS}
 )
 
