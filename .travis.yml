@@ -126,6 +126,7 @@ install:
       echo "The CMake path is: ${DEPS_DIR}/cmake/bin"
       CMAKE_EXECUTABLE=${DEPS_DIR}/cmake/bin/cmake
     else
+      brew update
       brew install cmake
       CMAKE_EXECUTABLE=cmake
     fi
