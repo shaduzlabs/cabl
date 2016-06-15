@@ -1,6 +1,11 @@
 language: cpp
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - libudev-dev
+
 matrix:
   include:
 
