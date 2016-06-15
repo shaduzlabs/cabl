@@ -1,11 +1,6 @@
 language: cpp
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - libudev-dev
-
 matrix:
   include:
 
@@ -160,9 +155,9 @@ install:
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       sudo apt-get install libusb-1.0-0-dev librtmidi-dev libhidapi-dev
-      wget https://github.com/libusb/libusb/archive/v1.0.19.tar.gz -O libusb-1.0.19.tar.gz
-      tar -zxvf libusb-1.0.19.tar.gz
-      cd libusb-1.0.19 && ./autogen.sh && ./configure --disable-udev --prefix=/usr && make && sudo make install
+      wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O libusb-1.0.20.tar.gz
+      tar -zxvf libusb-1.0.20.tar.gz
+      cd libusb-1.0.20 && ./autogen.sh && ./configure --disable-udev --prefix=/usr && make && sudo make install
       pkg-config --list-all
       pkg-config --libs libusb-1.0
       pkg-config --modversion libusb-1.0
