@@ -9,10 +9,13 @@
 #  Unit tests                                                                                      #
 # ------------------------------------------------------------------------------------------------ #
 
-include_directories( ${CATCH_INCLUDE_DIRS} )
-
 project(unit-tests)
+enable_testing(true)
 
+# Dependencies ----------------------------------------------------------------------------------- #
+addCatch()
+
+# Unit tests files ------------------------------------------------------------------------------- #
 set(
   test_SRCS
     main.cpp
@@ -37,11 +40,9 @@ add_executable(
   ${Test_FILES}
 )
 
-add_test(NAME ${PROJECT_NAME}-runner
-        COMMAND ${PROJECT_NAME} -s -b
-        CONFIGURATIONS Debug Release
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIR} ${UNMIDIFY_INCLUDE_DIR})
+
+add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
 set_target_properties(
   ${PROJECT_NAME}
@@ -49,7 +50,5 @@ set_target_properties(
     OUTPUT_NAME           ${PROJECT_NAME}
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
-
-target_link_libraries(${PROJECT_NAME} cabl-static)
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})

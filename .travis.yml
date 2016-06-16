@@ -154,7 +154,6 @@ install:
   ############################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      sudo apt-get install libusb-1.0-0-dev librtmidi-dev libhidapi-dev
       wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O libusb-1.0.20.tar.gz
       tar -zxvf libusb-1.0.20.tar.gz
       cd libusb-1.0.20 && ./autogen.sh && ./configure --prefix=/usr --disable-udev && make && sudo make install
