@@ -51,4 +51,6 @@ set_target_properties(
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
+target_link_libraries(${PROJECT_NAME} cabl-static)
+
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
