@@ -52,5 +52,4 @@ set_target_properties(
 )
 
 target_link_libraries(${PROJECT_NAME} cabl-static)
-
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
