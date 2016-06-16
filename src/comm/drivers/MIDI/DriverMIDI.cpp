@@ -8,6 +8,7 @@
 #include "DriverMIDI.h"
 
 #include <future>
+#include <algorithm>
 
 #include "DeviceHandleMIDI.h"
 
