@@ -1,0 +1,31 @@
+version: 1.0.{build}
+configuration: Release
+clone_folder: c:\SLBuild\cabl
+init:
+- cmd: choco install doxygen.install
+before_build:
+- cmd: >-
+    echo Running cmake...
+
+    cd c:\SLBuild\cabl
+
+    mkdir build
+
+    cd build
+
+    cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release ..
+build:
+  project: c:\SLBuild\cabl\build\test\check.vcxproj
+  verbosity: normal
+before_test:
+- cmd: >-
+    cd c:\SLBuild\cabl\build\test\Release\
+
+    unit-tests.exe -s -r junit -o test-report.junit.xml
+after_test:
+- cmd: >-
+    # upload results to AppVeyor
+
+    $wc = New-Object 'System.Net.WebClient'
+
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build\test\Release\test-report.junit.xml))
