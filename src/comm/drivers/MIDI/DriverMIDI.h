@@ -11,6 +11,7 @@
 #include "comm/DeviceHandleImpl.h"
 
 #include <thread>
+#include <algorithm>
 
 #include <RtMidi.h>
 #include <unmidify.hpp>
