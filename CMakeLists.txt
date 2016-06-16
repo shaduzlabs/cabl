@@ -510,6 +510,7 @@ endif()
 
 # Unit tests ------------------------------------------------------------------------------------- #
 if(${CABL_TEST})
+  addCatch()
   add_subdirectory(test)
 endif()
 
