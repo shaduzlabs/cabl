@@ -12,6 +12,9 @@
 project(unit-tests)
 enable_testing(true)
 
+# Dependencies ----------------------------------------------------------------------------------- #
+addCatch()
+
 # Unit tests files ------------------------------------------------------------------------------- #
 set(
   test_SRCS
@@ -37,7 +40,7 @@ add_executable(
   ${Test_FILES}
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIR} ${UNMIDIFY_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
 
 add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
