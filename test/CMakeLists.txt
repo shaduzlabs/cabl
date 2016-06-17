@@ -40,7 +40,7 @@ add_executable(
   ${Test_FILES}
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS})
 
 add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
