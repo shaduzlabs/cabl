@@ -44,13 +44,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS})
 
 add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
-set_target_properties(
-  ${PROJECT_NAME}
-  PROPERTIES
-    OUTPUT_NAME           ${PROJECT_NAME}
-    OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
-)
-
 target_link_libraries(${PROJECT_NAME} cabl-static)
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
