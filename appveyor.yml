@@ -23,7 +23,7 @@ before_test:
 
     unit-tests.exe -s -r junit -o test-report.junit.xml
 after_test:
-- cmd: >-
+- ps: >-
     # upload results to AppVeyor
 
     $wc = New-Object 'System.Net.WebClient'
