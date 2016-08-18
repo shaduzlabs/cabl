@@ -456,7 +456,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 #  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
 endif()
 
-if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if( UNIX )
 
   if(${IS_CABL})
 
@@ -467,6 +467,7 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     if(BUILD_STATIC_LIBS)
       install (TARGETS    cabl-static      DESTINATION lib)
     endif(BUILD_STATIC_LIBS)
+
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
@@ -488,25 +489,12 @@ endif()
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   if(BUILD_SHARED_LIBS)
-    set_target_properties(
-      cabl
-      PROPERTIES
-        EXCLUDE_FROM_ALL            TRUE
-        EXCLUDE_FROM_DEFAULT_BUILD  TRUE
-    )
     target_link_libraries( cabl  PUBLIC  setupapi.lib)
   endif(BUILD_SHARED_LIBS)
 
   if(BUILD_STATIC_LIBS)
-    set_target_properties(
-      cabl-static
-      PROPERTIES
-        EXCLUDE_FROM_ALL            TRUE
-        EXCLUDE_FROM_DEFAULT_BUILD  TRUE
-    )
     target_link_libraries( cabl-static PUBLIC setupapi.lib)
   endif(BUILD_STATIC_LIBS)
-
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 

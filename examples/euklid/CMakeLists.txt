@@ -21,11 +21,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
      VERSION_MINOR  ${CABL_VERSION_MINOR}
      VERSION_PATCH  ${CABL_VERSION_MICRO}
      COMPANY_NAME   "Vincenzo Pacella"
-  ) 
+  )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-SET( 
-  Examples_euklid_FILES      
+SET(
+  Examples_euklid_FILES
     main.cpp
     bjorklund.h
     Sequence.h
@@ -35,19 +35,15 @@ SET(
 )
 
 add_executable(
-  ${PROJECT_NAME} 
-  ${Examples_euklid_FILES} 
+  ${PROJECT_NAME}
+  ${Examples_euklid_FILES}
 )
 
 set_target_properties(
-  ${PROJECT_NAME} 
-  PROPERTIES 
+  ${PROJECT_NAME}
+  PROPERTIES
     OUTPUT_NAME           ${PROJECT_NAME}
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} cabl-static)
-else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  target_link_libraries(${PROJECT_NAME} cabl-static)
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static)
