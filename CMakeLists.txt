@@ -362,7 +362,7 @@ set(
 
 include_directories(inc src ${RTMIDI_INCLUDE_DIRS} ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  target_include_directories( /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
+  include_directories( /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
 endif()
 
 set(
