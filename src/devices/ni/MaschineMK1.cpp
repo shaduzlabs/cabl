@@ -225,7 +225,7 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK1::displayGraphic( uint8_t displayIndex_ )
+GDisplay* MaschineMK1::displayGraphic(size_t displayIndex_ )
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -238,7 +238,7 @@ GDisplay* MaschineMK1::displayGraphic( uint8_t displayIndex_ )
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMK1::displayLCD(uint8_t displayIndex_)
+LCDDisplay* MaschineMK1::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;

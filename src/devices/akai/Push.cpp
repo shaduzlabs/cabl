@@ -293,7 +293,7 @@ void Push::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push::displayGraphic(uint8_t displayIndex_)
+GDisplay* Push::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   return &s_dummyDisplay;
@@ -301,7 +301,7 @@ GDisplay* Push::displayGraphic(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push::displayLCD(uint8_t displayIndex_)
+LCDDisplay* Push::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > kPush_nDisplays)
@@ -367,10 +367,10 @@ bool Push::sendDisplayData()
   bool result = true;
   tRawData sysexHeader{kPush_manufacturerId, 0x7F, 0x15, 0x18, 0x00, 0x45, 0x00};
 
-  for (uint8_t row = 0; row < m_displays[0].numberOfRows(); row++)
+  for (unsigned row = 0; row < m_displays[0].numberOfRows(); row++)
   {
     sysexHeader[3]       = 0x18 + row;
-    uint8_t nCharsPerRow = m_displays[0].numberOfCharsPerRow();
+    unsigned nCharsPerRow = m_displays[0].numberOfCharsPerRow();
     tRawData data(m_displays[0].numberOfCharsPerRow() * kPush_nDisplays);
     for (uint8_t i = 0; i < kPush_nDisplays; i++)
     {
@@ -394,7 +394,7 @@ bool Push::sendLeds()
   static const unsigned firstPadLed = static_cast<unsigned>(Led::Pad1);
  // if (m_isDirtyLeds)
   {
-    for(int i = 0; i < m_leds.size(); i++)
+    for(size_t i = 0; i < m_leds.size(); i++)
     {
       if(m_ledsPrev[i] != m_leds[i])
       {

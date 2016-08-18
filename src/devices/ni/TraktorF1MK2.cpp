@@ -168,14 +168,14 @@ void TraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* TraktorF1MK2::displayGraphic(uint8_t displayIndex_)
+GDisplay* TraktorF1MK2::displayGraphic(size_t displayIndex_)
 {
   return &m_displayDummy;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* TraktorF1MK2::displayLCD(uint8_t displayIndex_)
+LCDDisplay* TraktorF1MK2::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0,0);
   if (displayIndex_ > 0)
@@ -228,7 +228,7 @@ bool TraktorF1MK2::sendLedsAndDisplay()
     {
       for(uint8_t j = 0; j < 8; j++)
       {
-        uint8_t displayIndex = (displayData.size()-1 - i);
+        size_t displayIndex = (displayData.size()-1 - i);
         m_leds[(displayIndex*8)+j] = (((1 << j) & displayData[i] ) > 0) ? 0x7f : 0x00;
       }
     }

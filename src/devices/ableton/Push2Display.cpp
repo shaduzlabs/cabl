@@ -103,7 +103,7 @@ Push2Display::~Push2Display()
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push2Display::displayGraphic(uint8_t displayIndex_)
+GDisplay* Push2Display::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   return &s_dummyDisplay;
@@ -111,7 +111,7 @@ GDisplay* Push2Display::displayGraphic(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push2Display::displayLCD(uint8_t displayIndex_)
+LCDDisplay* Push2Display::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;

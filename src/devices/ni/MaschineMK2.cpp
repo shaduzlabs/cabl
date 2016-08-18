@@ -249,7 +249,7 @@ void MaschineMK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK2::displayGraphic(uint8_t displayIndex_)
+GDisplay* MaschineMK2::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -262,7 +262,7 @@ GDisplay* MaschineMK2::displayGraphic(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMK2::displayLCD(uint8_t displayIndex_)
+LCDDisplay* MaschineMK2::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   return &s_dummyLCDDisplay;

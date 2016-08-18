@@ -343,7 +343,7 @@ void Push2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push2::displayGraphic(uint8_t displayIndex_)
+GDisplay* Push2::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   return &s_dummyDisplay;
@@ -351,7 +351,7 @@ GDisplay* Push2::displayGraphic(uint8_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push2::displayLCD(uint8_t displayIndex_)
+LCDDisplay* Push2::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > kPush_nDisplays)

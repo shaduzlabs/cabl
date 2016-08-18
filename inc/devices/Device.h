@@ -293,12 +293,12 @@ public:
 
   virtual void init() = 0;
 
-  virtual GDisplay* displayGraphic(uint8_t displayIndex_) = 0;
-  virtual LCDDisplay* displayLCD(uint8_t displayIndex_) = 0;
+  virtual GDisplay* displayGraphic(size_t displayIndex_) = 0;
+  virtual LCDDisplay* displayLCD(size_t displayIndex_) = 0;
   virtual size_t numOfGraphicDisplays() { return 0; }
   virtual size_t numOfLCDDisplays() { return 0; }
 
-  virtual DrawingContext& drawingContext(uint8_t contextIndex_)
+  virtual DrawingContext& drawingContext(size_t contextIndex_)
   {
     static DrawingContext s_dummyContext{0, 0, 0};
     return s_dummyContext;
