@@ -183,7 +183,6 @@ enum class MaschineMK1::Encoder : uint8_t
 //--------------------------------------------------------------------------------------------------
 
 MaschineMK1::MaschineMK1()
-  : m_encodersInitialized(false)
 {
   m_leds.resize(kMASMK1_ledsDataSize);
 }

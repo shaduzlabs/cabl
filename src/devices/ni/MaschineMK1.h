@@ -50,7 +50,7 @@ private:
 
   static constexpr uint8_t kMASMK1_nDisplays      = 2;
   static constexpr uint8_t kMASMK1_ledsDataSize   = 62;
-  static constexpr uint8_t kMASMK1_nButtons = 41;
+  static constexpr uint8_t kMASMK1_nButtons = 42;
   static constexpr uint8_t kMASMK1_buttonsDataSize = 7;
   static constexpr uint8_t kMASMK1_padDataSize = 64;
   static constexpr uint8_t kMASMK1_padsBufferSize = 16;
@@ -91,9 +91,9 @@ private:
   uint16_t                      m_padsData[ kMASMK1_nPads ];
   std::bitset<kMASMK1_nPads>    m_padsStatus;
 
-  bool                m_isDirtyLedGroup0;
-  bool                m_isDirtyLedGroup1;
-  bool                m_encodersInitialized;
+  bool                m_isDirtyLedGroup0{ true };
+  bool                m_isDirtyLedGroup1{ true };
+  bool                m_encodersInitialized{ false };
 };
   
 //--------------------------------------------------------------------------------------------------

@@ -442,16 +442,22 @@ private:
     }
     
     render();
+	if (!m_connected)
+	{
+      return true;
+	}
     return tick();
   }
 
   void onConnect()
   {
     init();
+	m_connected = true;
   }
 
   void onDisconnect()
   {
+    m_connected = false;
     resetDeviceHandle();
     if (m_cbDisconnect)
     {
@@ -467,6 +473,7 @@ private:
     }
   }
 
+  bool			   m_connected{ false };
   tCbDisconnect    m_cbDisconnect;
   tCbRender        m_cbRender;
 
