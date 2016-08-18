@@ -16,21 +16,16 @@
 #include "gfx/LCDDisplay.h"
 #include "gfx/displays/GDisplayDummy.h"
 
-
-//!\todo delete debug includes
-#include <iostream>
-#include <iomanip>
-
 //--------------------------------------------------------------------------------------------------
 
 namespace
 {
-  static const uint8_t  kMASMK1_epDisplay                = 0x08;
-  static const uint8_t  kMASMK1_epOut                    = 0x01;
-  static const uint8_t  kMASMK1_epInputPads              = 0x84;
-  static const uint8_t  kMASMK1_epInputButtonsAndDials   = 0x81;  
-  static const uint8_t  kMASMK1_defaultDisplaysBacklight = 0x5C;
-  static const unsigned kMASMK1_padThreshold             =  200;
+static const uint8_t kMASMK1_epDisplay = 0x08;
+static const uint8_t kMASMK1_epOut = 0x01;
+static const uint8_t kMASMK1_epInputPads = 0x84;
+static const uint8_t kMASMK1_epInputButtonsAndDials = 0x81;
+static const uint8_t kMASMK1_defaultDisplaysBacklight = 0x5C;
+static const unsigned kMASMK1_padThreshold = 200;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -41,7 +36,7 @@ namespace cabl
 {
 namespace devices
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 enum class MaschineMK1::Led : uint8_t
@@ -188,22 +183,21 @@ MaschineMK1::MaschineMK1()
 }
 
 //--------------------------------------------------------------------------------------------------
-  
+
 MaschineMK1::~MaschineMK1()
 {
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed( Device::Button btn_, const util::LedColor& color_)
+void MaschineMK1::setLed(Device::Button btn_, const util::LedColor& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed( Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK1::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -216,22 +210,20 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
   uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
   uint8_t lengthL = midiMsg_.size() & 0xFF;
   writeToDeviceHandle(
-    Transfer({ 0x07, lengthH, lengthL }, midiMsg_.data(), midiMsg_.size()), 
-    kMASMK1_epOut
-  );
+    Transfer({0x07, lengthH, lengthL}, midiMsg_.data(), midiMsg_.size()), kMASMK1_epOut);
 }
 
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK1::displayGraphic(size_t displayIndex_ )
+GDisplay* MaschineMK1::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
   {
     return &s_dummyDisplay;
   }
-  
+
   return &m_displays[displayIndex_];
 }
 
@@ -289,7 +281,7 @@ bool MaschineMK1::tick()
 void MaschineMK1::init()
 {
   // Displays
-  for( int i=0; i< kMASMK1_nDisplays; i++ )
+  for (int i = 0; i < kMASMK1_nDisplays; i++)
   {
     initDisplay(i);
     m_displays[i].black();
@@ -297,7 +289,7 @@ void MaschineMK1::init()
   sendFrame(0);
   sendFrame(1);
 
-  writeToDeviceHandle(Transfer({ 0x0B, 0xFF, 0x02, 0x05 }), kMASMK1_epOut);
+  writeToDeviceHandle(Transfer({0x0B, 0xFF, 0x02, 0x05}), kMASMK1_epOut);
 
   std::fill(m_leds.begin(), m_leds.end(), 0);
   m_isDirtyLedGroup0 = true;
@@ -305,125 +297,106 @@ void MaschineMK1::init()
   sendLeds();
 
   readFromDeviceHandleAsync(
-    kMASMK1_epInputButtonsAndDials,
-    std::bind(&MaschineMK1::cbRead,
-    this,
-    std::placeholders::_1)
-  );
+    kMASMK1_epInputButtonsAndDials, std::bind(&MaschineMK1::cbRead, this, std::placeholders::_1));
 
   m_leds[static_cast<uint8_t>(Led::DisplayBacklight)] = kMASMK1_defaultDisplaysBacklight;
   m_isDirtyLedGroup1 = true;
   sendLeds();
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::initDisplay( uint8_t displayIndex_ )
+void MaschineMK1::initDisplay(uint8_t displayIndex_)
 {
-  if( displayIndex_ > 1 )
+  if (displayIndex_ > 1)
   {
     return;
   }
-  
+
   uint8_t d = displayIndex_ << 1;
-  
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x30                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00 }), kMASMK1_epDisplay);
+
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x30}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x04, 0xCA, 0x04, 0x0F, 0x00}), kMASMK1_epDisplay);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x02, 0xBB, 0x00             }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0xD1                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x94                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x03, 0x81, 0x1E, 0x02       }), kMASMK1_epDisplay);
-  
-  std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
-
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x02, 0x20, 0x08             }), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x02, 0xBB, 0x00}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0xD1}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x94}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x81, 0x1E, 0x02}), kMASMK1_epDisplay);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x02, 0x20, 0x0B             }), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x02, 0x20, 0x08}), kMASMK1_epDisplay);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0xA6                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x31                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05 }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x34                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x30                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02 }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x03, 0x75, 0x00, 0x3F       }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x03, 0x15, 0x00, 0x54       }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x5C                   }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0x25                   }), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x02, 0x20, 0x0B}), kMASMK1_epDisplay);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0xAF                   }), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0xA6}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x31}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x04, 0x32, 0x00, 0x00, 0x05}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x34}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x30}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x04, 0xBC, 0x00, 0x01, 0x02}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x75, 0x00, 0x3F}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x15, 0x00, 0x54}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x5C}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0x25}), kMASMK1_epDisplay);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
 
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01 }), kMASMK1_epDisplay);
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x01, 0xA6                   }), kMASMK1_epDisplay);
-  
-  writeToDeviceHandle(Transfer({ d, 0x00, 0x03, 0x81, 0x25, 0x02       }), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0xAF}), kMASMK1_epDisplay);
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Sleep 20 ms
+
+  writeToDeviceHandle(Transfer({d, 0x00, 0x04, 0xBC, 0x02, 0x01, 0x01}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x01, 0xA6}), kMASMK1_epDisplay);
+
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x81, 0x25, 0x02}), kMASMK1_epDisplay);
 }
 
 //--------------------------------------------------------------------------------------------------
-  
-bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
+
+bool MaschineMK1::sendFrame(uint8_t displayIndex_)
 {
-  if( displayIndex_ > 1 )
+  if (displayIndex_ > 1)
   {
     return false;
   }
-  
+
   uint8_t d = displayIndex_ << 1;
-  writeToDeviceHandle( Transfer({ d, 0x00, 0x03, 0x75, 0x00, 0x3F }), kMASMK1_epDisplay );
-  writeToDeviceHandle( Transfer({ d, 0x00, 0x03, 0x15, 0x00, 0x54 }), kMASMK1_epDisplay );
-  
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x75, 0x00, 0x3F}), kMASMK1_epDisplay);
+  writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x15, 0x00, 0x54}), kMASMK1_epDisplay);
+
   uint16_t offset = 0;
   const uint16_t dataSize = 502;
-  
-  if(!writeToDeviceHandle(
-      Transfer({ d, 0x01, 0xF7, 0x5C },
-        m_displays[displayIndex_].ptr( offset ),
-        dataSize
-      ),
-      kMASMK1_epDisplay
-  ))
+
+  if (!writeToDeviceHandle(
+        Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].ptr(offset), dataSize),
+        kMASMK1_epDisplay))
   {
     return false;
   }
-  
+
   d++;
-  for(uint8_t chunk = 1; chunk < m_displays[displayIndex_].numberOfChunks() - 1 ; chunk++ )
+  for (uint8_t chunk = 1; chunk < m_displays[displayIndex_].numberOfChunks() - 1; chunk++)
   {
     offset += dataSize;
-    if(!writeToDeviceHandle(
-        Transfer({ d, 0x01, 0xF6 },
-          m_displays[displayIndex_].ptr( offset ),
-          dataSize
-        ),
-        kMASMK1_epDisplay
-    ))
+    if (!writeToDeviceHandle(
+          Transfer({d, 0x01, 0xF6}, m_displays[displayIndex_].ptr(offset), dataSize),
+          kMASMK1_epDisplay))
     {
       return false;
     }
   }
-  
+
   offset += dataSize;
-  
-  if(!writeToDeviceHandle(
-    Transfer(
-      { d, 0x01, 0x52 },
-      m_displays[displayIndex_].ptr( offset ),
-      338
-    ),
-    kMASMK1_epDisplay
-  ))
+
+  if (!writeToDeviceHandle(
+        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].ptr(offset), 338), kMASMK1_epDisplay))
   {
     return false;
   }
@@ -435,9 +408,9 @@ bool MaschineMK1::sendFrame( uint8_t displayIndex_ )
 
 bool MaschineMK1::sendLeds()
 {
-  if( m_isDirtyLedGroup0)
+  if (m_isDirtyLedGroup0)
   {
-    if(!writeToDeviceHandle( Transfer( { 0x0C, 0x00}, &m_leds[0],  31 ), kMASMK1_epOut ))
+    if (!writeToDeviceHandle(Transfer({0x0C, 0x00}, &m_leds[0], 31), kMASMK1_epOut))
     {
       M_LOG("[MaschineMK1] sendLeds: error writing first block of leds");
       return false;
@@ -445,9 +418,9 @@ bool MaschineMK1::sendLeds()
     m_isDirtyLedGroup0 = false;
   }
 
-  if(m_isDirtyLedGroup1)
+  if (m_isDirtyLedGroup1)
   {
-    if(!writeToDeviceHandle( Transfer( { 0x0C, 0x1E}, &m_leds[31], 31 ), kMASMK1_epOut ))
+    if (!writeToDeviceHandle(Transfer({0x0C, 0x1E}, &m_leds[31], 31), kMASMK1_epOut))
     {
       M_LOG("[MaschineMK1] sendLeds: error writing second block of leds");
       return false;
@@ -463,7 +436,7 @@ bool MaschineMK1::read()
 {
 
   Transfer input;
-  if( !readFromDeviceHandle( input, kMASMK1_epInputPads ) )
+  if (!readFromDeviceHandle(input, kMASMK1_epInputPads))
   {
     M_LOG("[MaschineMK1] read: ERROR");
     return false;
@@ -476,7 +449,7 @@ bool MaschineMK1::read()
 
 void MaschineMK1::processPads(const Transfer& input_)
 {
-  for (int i = 1; i < kMASMK1_padDataSize-1; i += 2)
+  for (int i = 1; i < kMASMK1_padDataSize - 1; i += 2)
   {
     uint16_t h = input_[i];
     uint16_t l = input_[i + 1];
@@ -488,7 +461,7 @@ void MaschineMK1::processPads(const Transfer& input_)
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Pad::pad; \
+    btn = Device::Pad::pad;    \
     break
 
     switch (pad)
@@ -518,8 +491,9 @@ void MaschineMK1::processPads(const Transfer& input_)
       m_padsStatus[pad] = true;
       padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
-    else{
-      if(m_padsStatus[pad])
+    else
+    {
+      if (m_padsStatus[pad])
       {
         m_padsStatus[pad] = false;
         padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
@@ -568,35 +542,37 @@ void MaschineMK1::processButtons(const Transfer& input_)
 
 void MaschineMK1::processEncoders(const Transfer& input_)
 {
-/*
-  if ((input_.data()[6] & 0x80) == 0)
-  {
-    return;
-  }*/
-  //@\todo improve encoder value parsing
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
     Encoder currentEnc(static_cast<Encoder>(i));
-    uint16_t currentEncValue = (input_.data()[2 + (2 * i)])|(input_.data()[1 + (2 * i)] << 8);
+    uint16_t currentEncValue = (input_.data()[2 + (2 * i)]) | (input_.data()[1 + (2 * i)] << 8);
+
+    bool valueIncreased = true;
+
+    uint8_t x = input_.data()[1 + (2 * i)];
+    uint8_t y = input_.data()[2 + (2 * i)];
+    uint8_t prevX = (m_encoderValues[i] >> 8) & 0xFF;
+    uint8_t prevY = (m_encoderValues[i] & 0xFF);
+
     if (m_encoderValues[i] == currentEncValue)
     {
       continue;
     }
 
-    std::cout << (int)((m_encoderValues[i] & 0xFF00) >> 8) << " " 
-              << (int)(m_encoderValues[i] & 0xFF) << " " 
-              << currentEncValue << std::endl;
+    if (x > 127)
+    {
+      valueIncreased = (y > 127) ? (x < prevX && y >= prevY) : (x >= prevX && y >= prevY);
+    }
+    else
+    {
+      valueIncreased = (y > 127) ? (x < prevX && y < prevY) : (x >= prevX && y < prevY);
+    }
 
-    bool valueIncreased = ((m_encoderValues[i] < currentEncValue) || 
-      ((currentEncValue == 0xffff) && (currentEncValue == 0x00)))
-      && (!((m_encoderValues[i] == 0x0) && (m_encoderValues[i] == 0xffff)));
     if (m_encodersInitialized)
     {
-      encoderChanged(
-        deviceEncoder(currentEnc), 
-        valueIncreased, 
-        m_buttonStates[static_cast<uint8_t>(Button::Shift)]
-      );
+      encoderChanged(deviceEncoder(currentEnc),
+        valueIncreased,
+        m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
     m_encoderValues[i] = currentEncValue;
   }
@@ -629,11 +605,13 @@ void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
+MaschineMK1::Led MaschineMK1::led(Device::Button btn_) const noexcept
 {
-#define M_LED_CASE(idLed) case Device::Button::idLed: return Led::idLed
+#define M_LED_CASE(idLed)     \
+  case Device::Button::idLed: \
+    return Led::idLed
 
-  switch ( btn_ )
+  switch (btn_)
   {
     M_LED_CASE(Mute);
     M_LED_CASE(Solo);
@@ -648,7 +626,7 @@ MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
     M_LED_CASE(Grid);
     M_LED_CASE(TransportRight);
     M_LED_CASE(Rec);
-    M_LED_CASE(Play);  
+    M_LED_CASE(Play);
     M_LED_CASE(TransportLeft);
     M_LED_CASE(Loop);
     M_LED_CASE(GroupA);
@@ -658,7 +636,7 @@ MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
     M_LED_CASE(GroupE);
     M_LED_CASE(GroupF);
     M_LED_CASE(GroupG);
-    M_LED_CASE(GroupH);   
+    M_LED_CASE(GroupH);
     M_LED_CASE(AutoWrite);
     M_LED_CASE(Snap);
     M_LED_CASE(BrowseRight);
@@ -674,9 +652,9 @@ MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
     M_LED_CASE(DisplayButton5);
     M_LED_CASE(DisplayButton6);
     M_LED_CASE(DisplayButton7);
-    M_LED_CASE(DisplayButton8);   
+    M_LED_CASE(DisplayButton8);
     M_LED_CASE(NoteRepeat);
-    
+
     default:
     {
       return Led::Unknown;
@@ -690,7 +668,7 @@ MaschineMK1::Led MaschineMK1::led( Device::Button btn_ ) const noexcept
 
 MaschineMK1::Led MaschineMK1::led(Device::Pad pad_) const noexcept
 {
-#define M_PAD_CASE(idPad)     \
+#define M_PAD_CASE(idPad)  \
   case Device::Pad::idPad: \
     return Led::idPad
 
@@ -787,7 +765,7 @@ Device::Button MaschineMK1::deviceButton(Button btn_) const noexcept
 Device::Encoder MaschineMK1::deviceEncoder(Encoder btn_) const noexcept
 {
 #define M_ENCODER_CASE(idEncoder) \
-  case Encoder::idEncoder:     \
+  case Encoder::idEncoder:        \
     return Device::Encoder::idEncoder
 
   switch (btn_)
@@ -816,7 +794,7 @@ Device::Encoder MaschineMK1::deviceEncoder(Encoder btn_) const noexcept
 
 void MaschineMK1::cbRead(Transfer input_)
 {
-  if(input_[0] == 0x02)
+  if (input_[0] == 0x02)
   {
     processEncoders(input_);
   }
