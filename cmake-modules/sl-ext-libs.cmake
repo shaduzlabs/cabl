@@ -29,6 +29,18 @@ function (addRtMidi)
     if(APPLE)
       target_link_libraries(rtmidi PUBLIC "-framework CoreFoundation" "-framework IOKit")
       target_link_libraries(rtmidi PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)
+      set_target_properties(
+        rtmidi
+        PROPERTIES
+          COMPILE_DEFINITIONS __MACOSX_CORE__
+      )
+    elseif(WIN32)
+      target_link_libraries(rtmidi PUBLIC winmm.lib)
+      set_target_properties(
+        rtmidi
+        PROPERTIES
+          COMPILE_DEFINITIONS __WINDOWS_MM__
+      )
     endif()
 
     set_target_properties(
@@ -37,14 +49,6 @@ function (addRtMidi)
         OUTPUT_NAME         "rtmidi"
         OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
     )
-
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set_target_properties(
-      rtmidi
-      PROPERTIES
-        COMPILE_DEFINITIONS __MACOSX_CORE__
-    )
-    endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   endif()
 endfunction()
 
@@ -161,10 +165,11 @@ function (addLibUSB)
         OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
     )
 
+    target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS})
     if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/msvc)
+      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/msvc)
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/Xcode)
+      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/Xcode)
     endif()
 
   endif()

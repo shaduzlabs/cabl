@@ -12,6 +12,11 @@
 #include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
 
+#ifdef __APPLE__
+#define __MACOSX_CORE__ 1
+#elif defined(_WIN32)
+#define __WINDOWS_MM__ 1
+#endif
 #include <RtMidi.h>
 
 

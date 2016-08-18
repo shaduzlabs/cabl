@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <thread>
 
-#include <cabl.h>
 #include "Euklid.h"
 
 
