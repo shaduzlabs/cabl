@@ -108,7 +108,7 @@ set(
 set(
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
-#    inc/gfx/DrawingContext.h
+    inc/gfx/DrawingContext.h
     inc/gfx/Font.h
     inc/gfx/GDisplay.h
     inc/gfx/LCDDisplay.h

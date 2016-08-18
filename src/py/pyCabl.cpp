@@ -5,10 +5,6 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include <boost/python.hpp>
-
-using namespace boost::python;
-
 #include <cabl.h>
 #include "py/PyClient.h"
 
@@ -17,65 +13,7 @@ namespace sl
 namespace cabl
 {
 
-using namespace boost::python;
 using namespace devices;
-
-PyClient g_client;
-
-//--------------------------------------------------------------------------------------------------
-
-/*
-useful links:
-- https://misspent.wordpress.com/2009/10/11/boost-python-and-handling-python-exceptions/
-- http://stackoverflow.com/questions/1418015/how-to-get-python-exception-text
-*/
-
-//--------------------------------------------------------------------------------------------------
-
-class GILLock
-{
-public:
-  GILLock()
-  {
-    m_state = PyGILState_Ensure();
-  }
-  
-  ~GILLock()
-  {
-    PyGILState_Release(m_state);
-  }
-  
-private:
-  PyGILState_STATE m_state;
-};
-
-//--------------------------------------------------------------------------------------------------
-
-std::string PyErrorString()
-{
-  try
-  {
-    PyObject *ptype, *value, *tb;
-    boost::python::object formattedList;
-    boost::python::object formatted;
-    PyErr_Fetch(&ptype, &value, &tb);
-    if (!ptype)
-    {
-      return "UNKNOWN error";
-    }
-    boost::python::handle<> hexc(ptype), hval(boost::python::allow_null(value)),
-      htb(boost::python::allow_null(tb));
-    boost::python::object traceback(boost::python::import("traceback"));
-    boost::python::object format_exception_only(traceback.attr("format_exception_only"));
-    formattedList = format_exception_only(hexc, hval);
-    formatted = boost::python::str("\n").join(formattedList);
-    return boost::python::extract<std::string>(formatted);
-  }
-  catch (...)
-  {
-    return "Error while trying to get python error";
-  }
-}
 
 //--------------------------------------------------------------------------------------------------
 /*
@@ -331,6 +269,15 @@ BOOST_PYTHON_MODULE(pycabl)
 #undef M_POT_DEF
 
 //--------------------------------------------------------------------------------------------------
+
+#define M_PIXEL_DEF(item) value(#item, Canvas::Color::item)
+  enum_<Canvas::Color>("Pixel")
+    .M_PIXEL_DEF(Black).M_PIXEL_DEF(White).M_PIXEL_DEF(Invert).M_PIXEL_DEF(Random)
+    .M_PIXEL_DEF(None)
+  ;
+#undef M_PIXEL_DEF
+
+//--------------------------------------------------------------------------------------------------
  /*
   class_<DeviceFactory, std::shared_ptr<DeviceFactory>, boost::noncopyable >("DeviceFactory",no_init)
     .def("instance",&deviceFactory )
@@ -339,18 +286,23 @@ BOOST_PYTHON_MODULE(pycabl)
 */
 //--------------------------------------------------------------------------------------------------
 
-  void (Device::*setLed_btn)(Device::Button, const util::LedColor&) = &Device::setLed;
-  void (Device::*setLed_pad)(Device::Pad, const util::LedColor&) = &Device::setLed;
-  void (Device::*setLed_key)(Device::Key, const util::LedColor&) = &Device::setLed;
+  void (PyClient::*setLed_btn)(Device::Button, const util::LedColor&) = &PyClient::setLed;
+  void (PyClient::*setLed_pad)(Device::Pad, const util::LedColor&) = &PyClient::setLed;
+  void (PyClient::*setLed_key)(Device::Key, const util::LedColor&) = &PyClient::setLed;
 
-  class_<PyClient, boost::noncopyable>("Client")
+  class_<PyClient, boost::noncopyable>("Client", init<object,object,object>())
     .def("enumerateDevices",&enumerateDevices).staticmethod("enumerateDevices")
-  //  .def("connect", &Client::connect)
+    .def("onInit", &Client::initDevice)
   //  .def("run",&Client::run)
-    .def("setLedButton", setLed_btn)
+    .def("setLedButton", setLed_btn)  
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)
     .def("drawingContext", &Device::drawingContext, return_value_policy<reference_existing_object>())
+    .def("onButtonChanged", &PyClient::onButtonChanged, args("onButtonChanged") )
+    .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged") )
+    .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged") )
+    .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged") )
+    .def("displayGraphic", &PyClient::displayGraphic, return_value_policy<reference_existing_object>() )
   ;
   
 //--------------------------------------------------------------------------------------------------
@@ -426,6 +378,17 @@ BOOST_PYTHON_MODULE(pycabl)
       .def("isDirty",&DrawingContext::isDirty)
       .def("setDirty",&DrawingContext::setDirty)
       .def("write", &writeDrawingContext)
+  ;
+
+//--------------------------------------------------------------------------------------------------
+
+  class_<GDisplay, boost::noncopyable>("GraphicDisplay", no_init)
+      .def("width",&GDisplay::width)
+      .def("height",&GDisplay::height)
+      .def("pixel",&GDisplay::pixel)
+      .def("setPixel",&GDisplay::setPixel)
+      .def("black",&GDisplay::black)
+      .def("white",&GDisplay::white)
   ;
 
 //--------------------------------------------------------------------------------------------------

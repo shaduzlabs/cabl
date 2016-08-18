@@ -9,7 +9,12 @@ class CablClient:
     'The cabl client class'
 
     def __init__(self):
-        self.client = Client()
+        print 'Constructor'
+        self.client = Client(self.onInitDevice, self.onRender, self.onDisconnect)
+        self.client.onButtonChanged(self.onButtonChanged)
+        self.client.onPadChanged(self.onPadChanged)
+        self.client.onEncoderChanged(self.onEncoderChanged)
+        self.client.onKeyChanged(self.onKeyChanged)
         self.drawingContext = None
         self.drawingBuffer = None
 
@@ -18,43 +23,62 @@ class CablClient:
         del self.client
         print "Destructor"
 
-    def run(self):
-        'Start the client loop'
-        self.client.run()
-        print "Client started"
+    def onInitDevice(self):
+        'Called after a device is connected'
+        self.client.setLedPad(Pad.Pad1, LedColor(12,0,0))
+        self.client.setLedPad(Pad.Pad2, LedColor(48,0,0))
+        self.client.setLedPad(Pad.Pad3, LedColor(80,0,0))
+        self.client.setLedPad(Pad.Pad4, LedColor(127,0,0))
+        self.client.setLedPad(Pad.Pad5, LedColor(0,12,0))
+        self.client.setLedPad(Pad.Pad6, LedColor(0,48,0))
+        self.client.setLedPad(Pad.Pad7, LedColor(0,80,0))
+        self.client.setLedPad(Pad.Pad8, LedColor(0,127,0))
+        self.client.setLedPad(Pad.Pad9, LedColor(0,0,12))
+        self.client.setLedPad(Pad.Pad10, LedColor(0,0,48))
+        self.client.setLedPad(Pad.Pad11, LedColor(0,0,80))
+        self.client.setLedPad(Pad.Pad12, LedColor(0,0,127))
+        self.client.setLedPad(Pad.Pad13, LedColor(12,12,12))
+        self.client.setLedPad(Pad.Pad14, LedColor(48,48,48))
+        self.client.setLedPad(Pad.Pad15, LedColor(80,80,80))
+        self.client.setLedPad(Pad.Pad16, LedColor(127,127,127))
 
-    def stop(self):
-        'Stop the client loop'
-        self.client.stop()
-        print "Client has been stopped."
+        display1 = self.client.displayGraphic(0)
+        display2 = self.client.displayGraphic(1)
 
-    def onConnect(self):
-        'Called when a known device is connected'
-        self.client.setLedPad(Pad.Pad1, LedColor(0,120,0))
-        self.drawingContext = self.client.getDrawingContext(0)
-        self.drawingBuffer = bytearray(self.drawingContext.getSize())
+        display1.white()
+        display2.black()
+        display1.setPixel(5,5,Pixel.Invert)
+        display1.setPixel(5,6,Pixel.White)
+        display1.setPixel(5,7,Pixel.Black)
+        display2.setPixel(5,5,Pixel.Invert)
+        display2.setPixel(5,6,Pixel.White)
+        display2.setPixel(5,7,Pixel.Black)
 
-        data = self.make_frame(0)
-        indexDest = 0
-        for col in range(0,H):
-            for row in range(0,W):
-                self.drawingBuffer[indexDest+1] = 0x1F & (data[row,col][2])
-                self.drawingBuffer[indexDest+1] |= 0xE0 & (data[row,col][1] << 4)
-                self.drawingBuffer[indexDest+0] = 0x07 & (data[row,col][1] >> 3)
-                self.drawingBuffer[indexDest+0] |= 0xF8 & (data[row,col][0] << 3)
-                indexDest += 2
+#        self.drawingContext = self.client.getDrawingContext(0)
+#        self.drawingBuffer = bytearray(self.drawingContext.getSize())
+
+#        data = self.make_frame(0)
+#        indexDest = 0
+#        for col in range(0,H):
+#            for row in range(0,W):
+#                self.drawingBuffer[indexDest+1] = 0x1F & (data[row,col][2])
+#                self.drawingBuffer[indexDest+1] |= 0xE0 & (data[row,col][1] << 4)
+#                self.drawingBuffer[indexDest+0] = 0x07 & (data[row,col][1] >> 3)
+#                self.drawingBuffer[indexDest+0] |= 0xF8 & (data[row,col][0] << 3)
+#                indexDest += 2
 
         print( "Device connected" )
+        return
 
-    def onTick(self):
+    def onRender(self):
         'Called periodically while the device is connected'
-        if self.drawingContext:
-            self.drawingContext.write(self.drawingBuffer)
+        print( "Render!" )
+#        if self.drawingContext:
+#            self.drawingContext.write(self.drawingBuffer)
 
     def onDisconnect(self):
         'Called when a known device is disconnected'
         print( "Device disconnected" )
-        discoverAndConnect()
 
     def enumerateDevices(self):
         'Returns a list of the known devices detected'
@@ -64,26 +88,25 @@ class CablClient:
             print "  " + str(dd)
         return deviceDescriptors
 
-    def connect(self, deviceDescriptor):
-        'Connect to a device. Returns TRUE if the connection succeeds, FALSE otherwise'
-        deviceName = deviceDescriptor.getName()
-        deviceSerialNumber = deviceDescriptor.getSerialNumber()
-        print "Connecting to " + deviceName + " (" + deviceSerialNumber + ")\n"
-        self.client.connect(deviceDescriptor)
+    def onButtonChanged(self, button, state, shiftPressed):
+        shiftStr = " + SHIFT" if shiftPressed else ""
+        print(str(button) + ": " + str(state) + shiftStr)
 
-    def discoverAndConnect(self):
-        'Detect known devices and connect to the first device of the list'
-        deviceDescriptors = self.enumerateDevices()
-        while(len(deviceDescriptors)<=0):
-            print("No devices found, retrying in 5 seconds.")
-            time.sleep(5)
-            deviceDescriptors = self.enumerateDevices()
-        self.connect(deviceDescriptors[0])
+    def onPadChanged(self, pad, value, shiftPressed):
+        shiftStr = " + SHIFT" if shiftPressed else ""
+        print(str(pad) + ": " + str(value) + shiftStr)
 
+    def onKeyChanged(self, key, value, shiftPressed):
+        shiftStr = " + SHIFT" if shiftPressed else ""
+        print(str(key) + ": " + str(value) + shiftStr)
+
+    def onEncoderChanged(self, encoder, increasing, shiftPressed):
+        shiftStr = " + SHIFT" if shiftPressed else ""
+        increasingStr = " ++ " if increasing else "--"
+        print(str(encoder) + ": " + increasingStr + shiftStr)
 
 theClient = CablClient()
-theClient.run()
-theClient.discoverAndConnect()
+theClient.enumerateDevices()
 
 while True:
     time.sleep(1)

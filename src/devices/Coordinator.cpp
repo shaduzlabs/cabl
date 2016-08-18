@@ -251,10 +251,6 @@ void Coordinator::devicesListChanged()
 {
   M_LOG("[Coordinator]: The devices list has changed");
   auto devices = enumerate();
-  for(const auto& deviceDescriptor : devices)
-  {
-    M_LOG(static_cast<int>(deviceDescriptor.type()));
-  }
   for(const auto d : m_collCbDevicesListChanged)
   {
     if(d.second)

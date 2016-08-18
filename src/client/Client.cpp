@@ -28,6 +28,7 @@ using namespace std::placeholders;
 Client::Client()
  :m_clientId(Coordinator::instance().registerClient(std::bind(&Client::devicesListChanged,this,std::placeholders::_1)))
 {
+  M_LOG("[Client] Client" );
   devicesListChanged(Coordinator::instance().enumerate());
 }
 
