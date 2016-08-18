@@ -14,7 +14,9 @@
 
 #include "Sequence.h"
 
+#ifdef __APPLE__
 #define __MACOSX_CORE__ 1
+#endif
 #include "RtMidi.h"
 
 namespace sl

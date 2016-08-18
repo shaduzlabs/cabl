@@ -108,7 +108,7 @@ DriverLibUSB::DriverLibUSB() : m_usbThreadRunning(true)
     LIBUSB_HOTPLUG_MATCH_ANY,
     LIBUSB_HOTPLUG_MATCH_ANY,
     LIBUSB_HOTPLUG_MATCH_ANY,
-    ::cbHotplug,
+    (libusb_hotplug_callback_fn)::cbHotplug,
     this,
     m_pHotplugHandle);
 

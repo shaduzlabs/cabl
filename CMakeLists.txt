@@ -63,7 +63,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-#if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   addHIDAPI()
   addLibUSB()
   addRtMidi()
@@ -361,8 +360,10 @@ set(
 
 # All platforms ---------------------------------------------------------------------------------- #
 
-include_directories(inc src ${RTMIDI_INCLUDE_DIRS} /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
-include_directories(${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+include_directories(inc src ${RTMIDI_INCLUDE_DIRS} ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  target_include_directories( /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
+endif()
 
 set(
   cabl_ALL
@@ -371,28 +372,40 @@ set(
 )
 
 if(BUILD_SHARED_LIBS)
-add_library( cabl SHARED ${cabl_ALL} )
-set_target_properties(
-  cabl
-  PROPERTIES
-    VERSION             "${CABL_VERSION_STRING}"
-    SOVERSION           "${CABL_VERSION_STRING}"
-    OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
-    OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
-)
-target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  add_library( cabl SHARED ${cabl_ALL} )
+  set_target_properties(
+    cabl
+    PROPERTIES
+      VERSION             "${CABL_VERSION_STRING}"
+      SOVERSION           "${CABL_VERSION_STRING}"
+      OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
+      OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
+  )
+
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    target_link_libraries( cabl PUBLIC rtmidi libusb hidapi)
+  else()
+    target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  endif()
+
 endif(BUILD_SHARED_LIBS)
 
 if(BUILD_STATIC_LIBS)
-add_library( cabl-static STATIC ${cabl_ALL} )
-set_target_properties(
-  cabl-static
-  PROPERTIES
-    VERSION             "${CABL_VERSION_STRING}"
-    OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
-    OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
-)
-target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  add_library( cabl-static STATIC ${cabl_ALL} )
+  set_target_properties(
+    cabl-static
+    PROPERTIES
+      VERSION             "${CABL_VERSION_STRING}"
+      OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
+      OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
+  )
+
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    target_link_libraries( cabl-static PUBLIC rtmidi libusb hidapi)
+  else()
+    target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+  endif()
+
 endif(BUILD_STATIC_LIBS)
 
 if(CABL_PYTHON)
@@ -417,7 +430,13 @@ if(CABL_PYTHON)
         SUFFIX              ".so"
         PREFIX              ""
     )
-    target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+      target_link_libraries( pycabl PUBLIC rtmidi libusb hidapi)
+    else()
+      target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+    endif()
+
     target_link_libraries( pycabl PUBLIC ${Boost_PYTHON_LIBRARY} ${PYTHON_LIBRARIES})
     target_include_directories(pycabl PUBLIC ${PYTHON_INCLUDE_DIRS})
   endif()
@@ -475,7 +494,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         EXCLUDE_FROM_ALL            TRUE
         EXCLUDE_FROM_DEFAULT_BUILD  TRUE
     )
-    target_link_libraries( cabl         setupapi.lib)
+    target_link_libraries( cabl  PUBLIC  setupapi.lib)
   endif(BUILD_SHARED_LIBS)
 
   if(BUILD_STATIC_LIBS)
@@ -485,7 +504,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         EXCLUDE_FROM_ALL            TRUE
         EXCLUDE_FROM_DEFAULT_BUILD  TRUE
     )
-    target_link_libraries( cabl-static  setupapi.lib)
+    target_link_libraries( cabl-static PUBLIC setupapi.lib)
   endif(BUILD_STATIC_LIBS)
 
 
