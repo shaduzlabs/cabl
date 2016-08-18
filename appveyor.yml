@@ -15,7 +15,7 @@ before_build:
 
     cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release ..
 build:
-  project: c:\SLBuild\cabl\build\test\check.vcxproj
+  project: c:\SLBuild\cabl\build\cabl.sln
   verbosity: normal
 before_test:
 - cmd: >-
