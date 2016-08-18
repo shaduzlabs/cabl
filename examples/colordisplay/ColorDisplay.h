@@ -18,10 +18,9 @@ namespace sl
 
 using namespace cabl;
 
-class ColorDisplay 
+class ColorDisplay
 {
 public:
-
   ColorDisplay(const std::string& pngFile_);
   void run();
 
@@ -33,19 +32,17 @@ public:
   void tryLoadFile();
 
 private:
-
   void updateDisplay();
 
-  Client       m_client;
+  Client m_client;
 
   std::atomic<bool> m_update;
   std::string m_pngFolder;
-  
+
   std::vector<unsigned char> m_pngImage;
   unsigned m_pngWidth;
   unsigned m_pngHeight;
   unsigned m_nFile{1};
-
 };
 
 } // namespace sl

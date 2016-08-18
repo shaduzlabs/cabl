@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 namespace sl
 {
@@ -20,7 +20,6 @@ namespace cabl
 class DeviceHandleMAX3421E : public DeviceHandleImpl
 {
 public:
-
   using tDeviceHandle = void;
 
   DeviceHandleMAX3421E(tDeviceHandle*);
@@ -32,9 +31,7 @@ public:
   bool write(const Transfer&, uint8_t) override;
 
 private:
-
-  tRawData           m_inputBuffer;
-
+  tRawData m_inputBuffer;
 };
 
 //--------------------------------------------------------------------------------------------------

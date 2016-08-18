@@ -19,14 +19,13 @@
 #include <cmath>
 
 //!\todo delete debug includes
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 namespace
 {
 
 static const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -39,59 +38,57 @@ namespace devices
 {
 
 
-Push2Display::Push2Display()
-  : m_pMidiOut(new RtMidiOut)
-  , m_pMidiIn(new RtMidiIn)
+Push2Display::Push2Display() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 {
-/*
-  std::string portName;
-  unsigned nPorts = m_pMidiOut->getPortCount();
-  for (unsigned int i = 0; i < nPorts; i++)
-  {
-    try
+  /*
+    std::string portName;
+    unsigned nPorts = m_pMidiOut->getPortCount();
+    for (unsigned int i = 0; i < nPorts; i++)
     {
-      portName = m_pMidiOut->getPortName(i);
-      if (portName.find(kPush2_midiPortName) != std::string::npos)
+      try
       {
-        m_pMidiOut->openPort(i);
+        portName = m_pMidiOut->getPortName(i);
+        if (portName.find(kPush2_midiPortName) != std::string::npos)
+        {
+          m_pMidiOut->openPort(i);
+        }
+      }
+      catch (RtMidiError& error)
+      {
+        M_LOG("[MaschineMK2] RtMidiError: " << error.message());
       }
     }
-    catch (RtMidiError& error)
+    if (!m_pMidiOut->isPortOpen())
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.message());
+      m_pMidiOut.reset(nullptr);
     }
-  }
-  if (!m_pMidiOut->isPortOpen())
-  {
-    m_pMidiOut.reset(nullptr);
-  }
 
-  portName.clear();
-  nPorts = m_pMidiIn->getPortCount();
-  for (unsigned int i = 0; i < nPorts; i++)
-  {
-    try
+    portName.clear();
+    nPorts = m_pMidiIn->getPortCount();
+    for (unsigned int i = 0; i < nPorts; i++)
     {
-      portName = m_pMidiIn->getPortName(i);
-      if (portName.find(kPush2_midiPortName) != std::string::npos)
+      try
       {
-        m_pMidiIn->openPort(i);
+        portName = m_pMidiIn->getPortName(i);
+        if (portName.find(kPush2_midiPortName) != std::string::npos)
+        {
+          m_pMidiIn->openPort(i);
+        }
+      }
+      catch (RtMidiError& error)
+      {
+        M_LOG("[MaschineMK2] RtMidiError: " << error.message());
       }
     }
-    catch (RtMidiError& error)
+    if (!m_pMidiIn->isPortOpen())
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.message());
+      m_pMidiIn.reset(nullptr);
     }
-  }
-  if (!m_pMidiIn->isPortOpen())
-  {
-    m_pMidiIn.reset(nullptr);
-  }
-  else
-  {
-    m_pMidiIn->setCallback(&Push2Display::midiInCallback, this);
-  }
-  */
+    else
+    {
+      m_pMidiIn->setCallback(&Push2Display::midiInCallback, this);
+    }
+    */
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -121,7 +118,7 @@ LCDDisplay* Push2Display::displayLCD(size_t displayIndex_)
 
 bool Push2Display::tick()
 {
-  if(m_display.isDirty())
+  if (m_display.isDirty())
   {
     return sendDisplayData();
   }
@@ -142,11 +139,16 @@ void Push2Display::init()
 bool Push2Display::sendDisplayData()
 {
   bool result = true;
-  writeToDeviceHandle(Transfer({0xEF,0xCD,0xAB,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}),0x01);
-  
-  for(unsigned offset = 0; offset < m_display.size(); offset+=16384)
+  writeToDeviceHandle(
+    Transfer(
+      {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
+    0x01);
+
+  for (unsigned offset = 0; offset < m_display.size(); offset += 16384)
   {
-    if(!writeToDeviceHandle(Transfer({m_display.data().begin() + offset, m_display.data().begin() + offset + 16384}),0x01))
+    if (!writeToDeviceHandle(
+          Transfer({m_display.data().begin() + offset, m_display.data().begin() + offset + 16384}),
+          0x01))
     {
       return false;
     }
@@ -159,22 +161,22 @@ bool Push2Display::sendDisplayData()
 
 void Push2Display::processNote(uint8_t note_, uint8_t velocity_)
 {
-  if(note_<=10)
+  if (note_ <= 10)
   {
     // Touch encoders
- //   uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
- //   Device::Button btn = deviceButton(static_cast<Button>(note_+offset));
- //   buttonChanged(btn, (velocity_>0), m_shiftPressed);
+    //   uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
+    //   Device::Button btn = deviceButton(static_cast<Button>(note_+offset));
+    //   buttonChanged(btn, (velocity_>0), m_shiftPressed);
   }
-  else if(note_==12)
+  else if (note_ == 12)
   {
     // Pitch bend
   }
-  else if(note_>=36 && note_<=99)
+  else if (note_ >= 36 && note_ <= 99)
   {
     // Pads
     Device::Pad pad = static_cast<Device::Pad>(note_ - 36);
-    padChanged(pad, (velocity_>0), m_shiftPressed);
+    padChanged(pad, (velocity_ > 0), m_shiftPressed);
   }
 }
 

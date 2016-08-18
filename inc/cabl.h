@@ -11,9 +11,9 @@
 
 #include "devices/DeviceFactory.h"
 
+#include "gfx/DrawingContext.h"
 #include "gfx/GDisplay.h"
 #include "gfx/LCDDisplay.h"
-#include "gfx/DrawingContext.h"
 
 #include "util/Version.h"
 
@@ -30,12 +30,10 @@ class Lib
 {
 
 public:
-
   static std::string version()
   {
     return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
   }
-
 };
 
 //--------------------------------------------------------------------------------------------------

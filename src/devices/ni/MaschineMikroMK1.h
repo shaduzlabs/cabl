@@ -20,12 +20,10 @@ namespace devices
 
 class MaschineMikroMK1 : public Device
 {
-  
+
 public:
-  
   MaschineMikroMK1();
   ~MaschineMikroMK1() override;
-  
 };
 
 //--------------------------------------------------------------------------------------------------

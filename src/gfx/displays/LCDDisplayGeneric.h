@@ -17,17 +17,16 @@ namespace cabl
 {
 class LCDDisplayGeneric : public LCDDisplay
 {
-  
-public:
 
+public:
   LCDDisplayGeneric();
-  
+
   ~LCDDisplayGeneric();
-  
+
   void clear() override;
 
   bool isDirtyRow(uint8_t row_) const override;
-  
+
   void setCharacter(uint8_t col_, uint8_t row_, char c_) override;
 
   void setText(const std::string& string_, uint8_t row_, Align align_) override;
@@ -37,18 +36,17 @@ public:
   void setText(double value_, uint8_t row_, Align align_) override;
 
   void setValue(float value_, uint8_t row_, Align align_) override;
-  
+
 private:
-  
   std::string alignText(const std::string&, Align align_) const;
-  
+
   static constexpr uint8_t kLCDKK_numRows = 4;
   static constexpr uint8_t kLCDKK_numCols = 17;
-  
-  bool                     m_dirtyFlags[kLCDKK_numRows];
+
+  bool m_dirtyFlags[kLCDKK_numRows];
 };
-  
+
 //--------------------------------------------------------------------------------------------------
-  
+
 } // cabl
 } // sl

@@ -19,17 +19,18 @@
 #include <cmath>
 
 //!\todo delete debug includes
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 //--------------------------------------------------------------------------------------------------
 
 namespace
 {
 static const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
-static const uint8_t kPush_epOut          = 0x01;
+static const uint8_t kPush_epOut = 0x01;
 static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
+// clang-format off
 static const std::vector<sl::util::RGBColor> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
@@ -61,7 +62,7 @@ static const std::vector<sl::util::RGBColor> kPush_colors{
   { 255, 255, 255 }, {  89,  89,  89 }, { 255, 255, 255 }, {  89,  89,  89 }, {  26,  26,  26 },
   {   0,   0, 255 }, {   0, 255,   0 }, {  25, 128,   0 },
 };
-
+// clang-format on
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -72,9 +73,10 @@ namespace cabl
 {
 namespace devices
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
+// clang-format off
 enum class Push2::Led : uint8_t
 {
   TapTempo      = 3,
@@ -157,79 +159,80 @@ enum class Push2::Led : uint8_t
 
   Unknown,
 };
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------
 
 enum class Push2::Button : uint8_t
 {
-  TapTempo      = 3,
-  Metronome     = 9,
+  TapTempo = 3,
+  Metronome = 9,
   TouchStripTap = 12,
-  Btn1Row1      = 20,
-  Btn2Row1      = 21,
-  Btn3Row1      = 22,
-  Btn4Row1      = 23,
-  Btn5Row1      = 24,
-  Btn6Row1      = 25,
-  Btn7Row1      = 26,
-  Btn8Row1      = 27,
-  Master        = 28,
-  Stop          = 29,
-  Setup         = 30,
-  Layout        = 31,
-  Convert       = 35,
-  Grid1_4       = 36,
-  Grid1_4T      = 37,
-  Grid1_8       = 38,
-  Grid1_8T      = 39,
-  Grid1_16      = 40,
-  Grid1_16T     = 41,
-  Grid1_32      = 42,
-  Grid1_32T     = 43,
-  NavigateLeft  = 44,
+  Btn1Row1 = 20,
+  Btn2Row1 = 21,
+  Btn3Row1 = 22,
+  Btn4Row1 = 23,
+  Btn5Row1 = 24,
+  Btn6Row1 = 25,
+  Btn7Row1 = 26,
+  Btn8Row1 = 27,
+  Master = 28,
+  Stop = 29,
+  Setup = 30,
+  Layout = 31,
+  Convert = 35,
+  Grid1_4 = 36,
+  Grid1_4T = 37,
+  Grid1_8 = 38,
+  Grid1_8T = 39,
+  Grid1_16 = 40,
+  Grid1_16T = 41,
+  Grid1_32 = 42,
+  Grid1_32T = 43,
+  NavigateLeft = 44,
   NavigateRight = 45,
-  NavigateUp    = 46,
-  NavigateDown  = 47,
-  Select        = 48,
-  Shift         = 49,
-  Note          = 50,
-  Session       = 51,
-  AddEffect     = 52,
-  AddTrack      = 53,
-  OctaveDown    = 54,
-  OctaveUp      = 55,
-  Repeat        = 56,
-  Accent        = 57,
-  Scales        = 58,
-  User          = 59,
-  Solo          = 61,
-  Mute          = 60,
-  In            = 62,
-  Out           = 63,
-  Play          = 85,
-  Rec           = 86,
-  New           = 87,
-  Duplicate     = 88,
-  Automation    = 89,
-  FixedLength   = 90,
-  Btn1Row2      = 102,
-  Btn2Row2      = 103,
-  Btn3Row2      = 104,
-  Btn4Row2      = 105,
-  Btn5Row2      = 106,
-  Btn6Row2      = 107,
-  Btn7Row2      = 108,
-  Btn8Row2      = 109,
-  Device        = 110,
-  Browse        = 111,
-  Track         = 112,
-  Clip          = 113,
-  Volume        = 114,
-  PanSend       = 115,
-  Quantize      = 116,
-  Double        = 117,
-  Delete        = 118,
-  Undo          = 119,
+  NavigateUp = 46,
+  NavigateDown = 47,
+  Select = 48,
+  Shift = 49,
+  Note = 50,
+  Session = 51,
+  AddEffect = 52,
+  AddTrack = 53,
+  OctaveDown = 54,
+  OctaveUp = 55,
+  Repeat = 56,
+  Accent = 57,
+  Scales = 58,
+  User = 59,
+  Solo = 61,
+  Mute = 60,
+  In = 62,
+  Out = 63,
+  Play = 85,
+  Rec = 86,
+  New = 87,
+  Duplicate = 88,
+  Automation = 89,
+  FixedLength = 90,
+  Btn1Row2 = 102,
+  Btn2Row2 = 103,
+  Btn3Row2 = 104,
+  Btn4Row2 = 105,
+  Btn5Row2 = 106,
+  Btn6Row2 = 107,
+  Btn7Row2 = 108,
+  Btn8Row2 = 109,
+  Device = 110,
+  Browse = 111,
+  Track = 112,
+  Clip = 113,
+  Volume = 114,
+  PanSend = 115,
+  Quantize = 116,
+  Double = 117,
+  Delete = 118,
+  Undo = 119,
 
   TouchEncoder1 = 128,
   TouchEncoder2,
@@ -250,8 +253,8 @@ enum class Push2::Button : uint8_t
 
 enum class Push2::Encoder : uint8_t
 {
-  Main     = 14,
-  Main2    = 15,
+  Main = 14,
+  Main2 = 15,
   Encoder1 = 71,
   Encoder2 = 72,
   Encoder3 = 73,
@@ -267,9 +270,7 @@ enum class Push2::Encoder : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-Push2::Push2()
-  : m_pMidiOut(new RtMidiOut)
-  , m_pMidiIn(new RtMidiIn)
+Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 {
   std::string portName;
   unsigned nPorts = m_pMidiOut->getPortCount();
@@ -390,7 +391,7 @@ void Push2::init()
   initDisplay();
 
   // Leds
-  std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
+  std::fill(std::begin(m_leds), std::end(m_leds), 0);
   m_isDirtyLeds = true;
 }
 
@@ -411,7 +412,7 @@ bool Push2::sendDisplayData()
 
   for (uint8_t row = 0; row < m_displays[0].numberOfRows(); row++)
   {
-    sysexHeader[3]       = 0x18 + row;
+    sysexHeader[3] = 0x18 + row;
     uint8_t nCharsPerRow = m_displays[0].numberOfCharsPerRow();
     tRawData data(m_displays[0].numberOfCharsPerRow() * kPush_nDisplays);
     for (uint8_t i = 0; i < kPush_nDisplays; i++)
@@ -462,10 +463,10 @@ void Push2::setLedImpl(Led led_, const util::LedColor& color_)
   else
   {
     uint8_t currentVal = m_leds[ledIndex];
-    uint8_t newVal     = color_.mono();
+    uint8_t newVal = color_.mono();
 
     m_leds[ledIndex] = newVal;
-    m_isDirtyLeds    = m_isDirtyLeds || (currentVal != newVal);
+    m_isDirtyLeds = m_isDirtyLeds || (currentVal != newVal);
   }
 }
 
@@ -473,8 +474,8 @@ void Push2::setLedImpl(Led led_, const util::LedColor& color_)
 
 bool Push2::isRGBLed(Led led_) const noexcept
 {
-  if (Led::Undo < led_ || (Led::Btn1Row1 <= led_ && Led::Btn8Row1 >= led_) ||
-                          (Led::Btn1Row2 <= led_ && Led::Btn8Row2 >= led_) )
+  if (Led::Undo < led_ || (Led::Btn1Row1 <= led_ && Led::Btn8Row1 >= led_)
+      || (Led::Btn1Row2 <= led_ && Led::Btn8Row2 >= led_))
   {
     //\todo handle RG leds
     return true;
@@ -574,7 +575,7 @@ Push2::Led Push2::led(Device::Button btn_) const noexcept
 
 Push2::Led Push2::led(Device::Pad pad_) const noexcept
 {
-  uint8_t pad    = static_cast<unsigned>(pad_);
+  uint8_t pad = static_cast<unsigned>(pad_);
   unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
   if (pad < 64)
   {
@@ -731,7 +732,7 @@ uint8_t Push2::getColorIndex(const util::LedColor& color_)
     double currentDistance = ledColor.distance(kPush_colors[i]);
     if (currentDistance < minDistance)
     {
-      colorIndex  = i;
+      colorIndex = i;
       minDistance = currentDistance;
     }
     if (minDistance == 0)
@@ -767,7 +768,7 @@ void Push2::onPolyPressure(PolyPressure msg_)
 
 void Push2::onControlChange(ControlChange msg_)
 {
-  uint8_t cc    = msg_.getControl();
+  uint8_t cc = msg_.getControl();
   uint8_t value = msg_.getValue();
 
   Device::Encoder changedEncoder = deviceEncoder(static_cast<Encoder>(cc));
@@ -825,22 +826,22 @@ void Push2::onUSysExNonRT(sl::midi::USysExNonRT msg_)
 
 void Push2::processNote(uint8_t note_, uint8_t velocity_)
 {
-  if(note_<=10)
+  if (note_ <= 10)
   {
     // Touch encoders
     uint8_t offset = static_cast<uint8_t>(Button::TouchEncoder1);
-    Device::Button btn = deviceButton(static_cast<Button>(note_+offset));
-    buttonChanged(btn, (velocity_>0), m_shiftPressed);
+    Device::Button btn = deviceButton(static_cast<Button>(note_ + offset));
+    buttonChanged(btn, (velocity_ > 0), m_shiftPressed);
   }
-  else if(note_==12)
+  else if (note_ == 12)
   {
     // Pitch bend
   }
-  else if(note_>=36 && note_<=99)
+  else if (note_ >= 36 && note_ <= 99)
   {
     // Pads
     Device::Pad pad = static_cast<Device::Pad>(note_ - 36);
-    padChanged(pad, (velocity_>0), m_shiftPressed);
+    padChanged(pad, (velocity_ > 0), m_shiftPressed);
   }
 }
 

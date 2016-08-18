@@ -59,10 +59,10 @@ using namespace std::placeholders;
 void PyClient::disconnected()
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onDisconnected)
+    if (m_onDisconnected)
     {
       m_onDisconnected();
     }
@@ -78,10 +78,10 @@ void PyClient::disconnected()
 void PyClient::buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_)
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onButtonChanged)
+    if (m_onButtonChanged)
     {
       m_onButtonChanged(button_, buttonState_, shiftPressed_);
     }
@@ -97,10 +97,10 @@ void PyClient::buttonChanged(Device::Button button_, bool buttonState_, bool shi
 void PyClient::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onEncoderChanged)
+    if (m_onEncoderChanged)
     {
       m_onEncoderChanged(encoder_, valueIncreased_, shiftPressed_);
     }
@@ -116,10 +116,10 @@ void PyClient::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bo
 void PyClient::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onPadChanged)
+    if (m_onPadChanged)
     {
       m_onPadChanged(pad_, value_, shiftPressed_);
     }
@@ -135,10 +135,10 @@ void PyClient::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onKeyChanged)
+    if (m_onKeyChanged)
     {
       m_onKeyChanged(key_, value_, shiftPressed_);
     }
@@ -154,10 +154,10 @@ void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 void PyClient::initDevice()
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onInitDevice)
+    if (m_onInitDevice)
     {
       m_onInitDevice();
     }
@@ -173,10 +173,10 @@ void PyClient::initDevice()
 void PyClient::render()
 {
   GILLock gilLock;
-  
+
   try
   {
-    if(m_onRender)
+    if (m_onRender)
     {
       m_onRender();
     }
@@ -191,7 +191,7 @@ void PyClient::render()
 
 void PyClient::setLed(Device::Button btn_, const util::LedColor& color_)
 {
-  if(device())
+  if (device())
   {
     device()->setLed(btn_, color_);
   }
@@ -201,7 +201,7 @@ void PyClient::setLed(Device::Button btn_, const util::LedColor& color_)
 
 void PyClient::setLed(Device::Pad pad_, const util::LedColor& color_)
 {
-  if(device())
+  if (device())
   {
     device()->setLed(pad_, color_);
   }
@@ -211,13 +211,13 @@ void PyClient::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 void PyClient::setLed(Device::Key key_, const util::LedColor& color_)
 {
-  if(device())
+  if (device())
   {
     device()->setLed(key_, color_);
   }
 }
 
 //--------------------------------------------------------------------------------------------------
-  
+
 } // namespace cabl
 } // namespace sl

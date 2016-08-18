@@ -22,7 +22,7 @@ int main(int argc, const char* argv[])
 
   std::cout << "Type 'q' and hit ENTER to quit." << std::endl;
 
-  while ( std::cin.get() != 'q')
+  while (std::cin.get() != 'q')
   {
     std::this_thread::yield();
   }

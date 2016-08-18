@@ -9,7 +9,7 @@
 
 namespace
 {
-  uint16_t kMAX3421EnputBufferSize = 512; // Size of the input buffer
+uint16_t kMAX3421EnputBufferSize = 512; // Size of the input buffer
 }
 
 namespace sl

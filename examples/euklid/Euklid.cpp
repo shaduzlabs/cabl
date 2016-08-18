@@ -11,10 +11,10 @@
 
 #include <unmidify.hpp>
 
-#include <gfx/LCDDisplay.h>
 #include <devices/ni/MaschineMK1.h>
 #include <devices/ni/MaschineMK2.h>
 #include <devices/ni/MaschineMikroMK2.h>
+#include <gfx/LCDDisplay.h>
 
 namespace
 {
@@ -23,18 +23,15 @@ static const uint8_t kEuklidDefaultPulses = 4;
 static const uint8_t kEuklidDefaultOffset = 0;
 static const uint8_t kEuklidNumTracks = 3;
 
-static const sl::util::LedColor kEuklidColor_Track[3] = {
-  { 60,0,0,80 },{ 0,60,0,80 },{ 0,0,60,80 }
-};
-static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3] = {
-  { 127,0,0,127 },{ 0,127,0,127 },{ 0,0,127,127 }
-};
+static const sl::util::LedColor kEuklidColor_Track[3]
+  = {{60, 0, 0, 80}, {0, 60, 0, 80}, {0, 0, 60, 80}};
+static const sl::util::LedColor kEuklidColor_Track_CurrentStep[3]
+  = {{127, 0, 0, 127}, {0, 127, 0, 127}, {0, 0, 127, 127}};
 
-static const sl::util::LedColor kEuklidColor_Black         (  0,   0,   0,   0);
+static const sl::util::LedColor kEuklidColor_Black(0, 0, 0, 0);
 
-static const sl::util::LedColor kEuklidColor_Step_Empty    (35, 35, 35,  20);
-static const sl::util::LedColor kEuklidColor_Step_Empty_Current    (127, 127, 127,  50);
-
+static const sl::util::LedColor kEuklidColor_Step_Empty(35, 35, 35, 20);
+static const sl::util::LedColor kEuklidColor_Step_Empty_Current(127, 127, 127, 50);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -67,7 +64,7 @@ Euklid::Euklid()
     m_sequences[i].calculate(m_lengths[i], m_pulses[i]);
     m_sequences[i].rotate(m_rotates[i]);
   }
-  
+
   m_pMidiout->openVirtualPort("Euklid");
 }
 
@@ -151,19 +148,19 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
   else if (button_ == Device::Button::Control && buttonState_)
   {
     setScreenPage(screenPage() == Euklid::ScreenPage::Configuration
-                                  ? Euklid::ScreenPage::Sequencer
-                                  : Euklid::ScreenPage::Configuration);
+                    ? Euklid::ScreenPage::Sequencer
+                    : Euklid::ScreenPage::Configuration);
   }
-  else if(button_ >= Device::Button::Pad1 && button_ <= Device::Button::Pad16 && buttonState_)
+  else if (button_ >= Device::Button::Pad1 && button_ <= Device::Button::Pad16 && buttonState_)
   {
-    uint8_t padIndex = static_cast<uint8_t>(button_) - static_cast<uint8_t>(Device::Button::Pad1 );
+    uint8_t padIndex = static_cast<uint8_t>(button_) - static_cast<uint8_t>(Device::Button::Pad1);
     m_sequences[m_currentTrack].toggleStep(padIndex);
   }
   else
   {
     return;
   }
-  
+
   requestDeviceUpdate();
 }
 
@@ -172,17 +169,12 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
 void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   uint8_t step = (shiftPressed_ ? 5 : 1);
-  switch(encoder_)
+  switch (encoder_)
   {
     case Device::Encoder::Encoder1:
     {
-      m_lengths[m_currentTrack] = encoderValue(
-        valueIncreased_,
-        step,
-        m_lengths[m_currentTrack],
-        1,
-        16
-      );
+      m_lengths[m_currentTrack]
+        = encoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
@@ -195,11 +187,7 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
     case Device::Encoder::Encoder2:
     {
       m_pulses[m_currentTrack] = encoderValue(
-        valueIncreased_,
-        step,
-        m_pulses[m_currentTrack],
-        0, m_lengths[m_currentTrack]
-      );
+        valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
@@ -207,12 +195,7 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
     case Device::Encoder::Encoder3:
     {
       m_rotates[m_currentTrack] = encoderValue(
-        valueIncreased_,
-        step,
-        m_rotates[m_currentTrack],
-        0,
-        m_lengths[m_currentTrack]
-      );
+        valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
@@ -247,7 +230,6 @@ void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
     m_sequences[m_currentTrack].toggleStep(idx);
     requestDeviceUpdate();
   }
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -263,16 +245,15 @@ void Euklid::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
     m_sequences[m_currentTrack].toggleStep(padIndex);
     requestDeviceUpdate();
   }
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Euklid::updateClock()
 {
-  float quarterDuration = 60000.0f/m_bpm;
+  float quarterDuration = 60000.0f / m_bpm;
   float delayQuarterNote = quarterDuration / 4.0f;
-  float shuffleDelay = delayQuarterNote * (m_shuffle/300.0f);
+  float shuffleDelay = delayQuarterNote * (m_shuffle / 300.0f);
   m_delayEven = static_cast<uint16_t>(delayQuarterNote + shuffleDelay);
   m_delayOdd = static_cast<uint16_t>(delayQuarterNote - shuffleDelay);
 }
@@ -311,14 +292,13 @@ void Euklid::play()
       }
       if (m_sequences[i].next())
       {
-  /*      MidiMessage* m = new NoteOn(0, note.value(), 127);
-        NoteOn noteObj(0, note.value(), 127);
-        std::vector<uint8_t> msg(noteObj.data());
-        m_pMidiout->sendMessage(&msg);
-     //   device()->sendMidiMsg(msg);*/
+        /*      MidiMessage* m = new NoteOn(0, note.value(), 127);
+              NoteOn noteObj(0, note.value(), 127);
+              std::vector<uint8_t> msg(noteObj.data());
+              m_pMidiout->sendMessage(&msg);
+           //   device()->sendMidiMsg(msg);*/
       }
     }
-    
   }
 }
 
@@ -329,50 +309,34 @@ void Euklid::updateGUI()
   static Canvas::Color s_colorWhite = Canvas::Color::White;
   static LCDDisplay::Align s_alignCenter = LCDDisplay::Align::Center;
 
-  std::string strTrackName = "TRACK " + std::to_string(m_currentTrack+1);
-  
+  std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);
+
   device()->displayGraphic(0)->white();
   device()->displayGraphic(0)->printStr(32, 52, "E U K L I D");
   device()->displayGraphic(0)->drawFilledRect(0, 52, 28, 6, s_colorWhite, s_colorWhite);
   device()->displayGraphic(0)->drawFilledRect(100, 52, 28, 6, s_colorWhite, s_colorWhite);
-  
+
   device()->displayLCD(0)->setText("AB", 0);
-  
+
 
   device()->displayLCD(0)->setText(strTrackName, 1);
-  device()->displayLCD(0)->setText("{EUKLID}", 2,s_alignCenter);
+  device()->displayLCD(0)->setText("{EUKLID}", 2, s_alignCenter);
 
   device()->displayLCD(1)->setText("Length", 1, s_alignCenter);
   device()->displayLCD(1)->setValue(
-    static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps,
-    0
-  );
-  device()->displayLCD(1)->setText(
-    static_cast<int>(m_lengths[m_currentTrack]),
-    2,
-    s_alignCenter
-  );
+    static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  device()->displayLCD(1)->setText(static_cast<int>(m_lengths[m_currentTrack]), 2, s_alignCenter);
 
   device()->displayLCD(2)->setText("Density", 1);
   device()->displayLCD(2)->setValue(
-    static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps,
-    0
-  );
+    static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
   device()->displayLCD(2)->setText(
-    static_cast<double>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps,
-    2,
-    s_alignCenter
-  );
-  
+    static_cast<double>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 2, s_alignCenter);
+
   device()->displayLCD(3)->setText("Rotation", 1);
   device()->displayLCD(3)->setValue(
-    static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps,
-    0
-  );
-  device()->displayLCD(3)->setText(
-    static_cast<int>(m_rotates[m_currentTrack]),
-    2,s_alignCenter
-  );
+    static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
+  device()->displayLCD(3)->setText(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
 
   device()->displayLCD(4)->setText("BPM", 1, s_alignCenter);
   device()->displayLCD(4)->setValue(static_cast<float>(m_bpm) / 255.0, 0);
@@ -381,9 +345,9 @@ void Euklid::updateGUI()
   device()->displayLCD(5)->setText("Shuffle", 1, s_alignCenter);
   device()->displayLCD(5)->setValue(static_cast<float>(m_shuffle) / 100, 0);
   device()->displayLCD(5)->setText(static_cast<int>(m_shuffle), 2, s_alignCenter);
-  
-//  device()->displayLCD(3)->setText(m_rotates[m_currentTrack], 2);
-  
+
+  //  device()->displayLCD(3)->setText(m_rotates[m_currentTrack], 2);
+
   switch (m_screenPage)
   {
     case ScreenPage::Configuration:
@@ -406,31 +370,31 @@ void Euklid::updateGroupLeds()
 {
   switch (m_currentTrack)
   {
-  case 0:
-    device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
-    device()->setLed(Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
-    device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
-    device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
-    break;
-  case 1:
-    device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
-    device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
-    device()->setLed(Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
-    device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
-    break;
-  case 2:
-    device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
-    device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
-    device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
-    device()->setLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
-    break;
+    case 0:
+      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
+      device()->setLed(Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
+      device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
+      device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
+      break;
+    case 1:
+      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
+      device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
+      device()->setLed(Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
+      device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
+      break;
+    case 2:
+      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
+      device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
+      device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
+      device()->setLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
+      break;
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Euklid::updatePads()
-{  
+{
   for (uint8_t t = 0; t < kEuklidNumTracks; t++)
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
@@ -484,11 +448,11 @@ void Euklid::updatePads()
 
 void Euklid::drawConfigurationPage()
 {
-  if(m_encoderState != EncoderState::Speed && m_encoderState != EncoderState::Shuffle)
+  if (m_encoderState != EncoderState::Speed && m_encoderState != EncoderState::Shuffle)
   {
     m_encoderState = EncoderState::Speed;
   }
-  
+
 
   device()->displayGraphic(0)->printStr(5, 2, " BPM   Shuffle");
   device()->displayGraphic(0)->printStr(10, 12, std::to_string(m_bpm).c_str());
@@ -501,23 +465,22 @@ void Euklid::drawConfigurationPage()
   device()->setLed(Device::Button::DisplayButton2, 0);
   device()->setLed(Device::Button::DisplayButton3, 0);
   device()->setLed(Device::Button::Control, 255);
-  
-  
-  
+
+
   switch (m_encoderState)
   {
     case EncoderState::Shuffle:
     {
-      device()->displayGraphic(0)->drawFilledRect(41, 0, 52, 20, Canvas::Color::Invert,
-                                                  Canvas::Color::Invert);
+      device()->displayGraphic(0)->drawFilledRect(
+        41, 0, 52, 20, Canvas::Color::Invert, Canvas::Color::Invert);
       device()->setLed(Device::Button::F2, 255);
       device()->setLed(Device::Button::DisplayButton2, 255);
       break;
     }
     case EncoderState::Speed:
     {
-      device()->displayGraphic(0)->drawFilledRect(0, 0, 40, 20, Canvas::Color::Invert,
-                                                  Canvas::Color::Invert);
+      device()->displayGraphic(0)->drawFilledRect(
+        0, 0, 40, 20, Canvas::Color::Invert, Canvas::Color::Invert);
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
       break;
@@ -542,13 +505,7 @@ void Euklid::drawSequencerPage()
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      device()->displayGraphic(0)->drawRect(
-        n * 8,
-        15 + (12 * i),
-        7,
-        7,
-        Canvas::Color::White
-      );
+      device()->displayGraphic(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, Canvas::Color::White);
     }
   }
 
@@ -564,24 +521,24 @@ void Euklid::drawSequencerPage()
   {
     case EncoderState::Pulses:
     {
-      device()->displayGraphic(0)->drawFilledRect(43, 0, 42, 10, Canvas::Color::Invert,
-                                                  Canvas::Color::Invert);
-        device()->setLed(Device::Button::F2, 255);
-        device()->setLed(Device::Button::DisplayButton2, 255);
+      device()->displayGraphic(0)->drawFilledRect(
+        43, 0, 42, 10, Canvas::Color::Invert, Canvas::Color::Invert);
+      device()->setLed(Device::Button::F2, 255);
+      device()->setLed(Device::Button::DisplayButton2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
-      device()->displayGraphic(0)->drawFilledRect(86, 0, 40, 10, Canvas::Color::Invert,
-                                                  Canvas::Color::Invert);
+      device()->displayGraphic(0)->drawFilledRect(
+        86, 0, 40, 10, Canvas::Color::Invert, Canvas::Color::Invert);
       device()->setLed(Device::Button::F3, 255);
       device()->setLed(Device::Button::DisplayButton3, 255);
       break;
     }
     case EncoderState::Length:
     {
-      device()->displayGraphic(0)->drawFilledRect(0, 0, 42, 10, Canvas::Color::Invert,
-                                                  Canvas::Color::Invert);
+      device()->displayGraphic(0)->drawFilledRect(
+        0, 0, 42, 10, Canvas::Color::Invert, Canvas::Color::Invert);
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
       break;
@@ -599,13 +556,12 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        device()->displayGraphic(0)->drawFilledRect((k % m_lengths[t]) * 8, 15 + (12 * t), 7,
-                                                           7, Canvas::Color::White,
-                                                           Canvas::Color::White);
+        device()->displayGraphic(0)->drawFilledRect(
+          (k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, Canvas::Color::White, Canvas::Color::White);
       }
     }
-    device()->displayGraphic(0)->drawRect((pos * 8) + 1, 16 + (12 * t), 5, 5,
-                                                 Canvas::Color::Invert);
+    device()->displayGraphic(0)->drawRect(
+      (pos * 8) + 1, 16 + (12 * t), 5, 5, Canvas::Color::Invert);
   }
 }
 
@@ -618,16 +574,16 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
   {
     case EncoderState::Pulses:
     {
-      m_pulses[m_currentTrack] = encoderValue(valueIncreased_, step, m_pulses[m_currentTrack], 0,
-                                                 m_lengths[m_currentTrack]);
+      m_pulses[m_currentTrack] = encoderValue(
+        valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case EncoderState::Rotate:
     {
-      m_rotates[m_currentTrack] = encoderValue(valueIncreased_, step, m_rotates[m_currentTrack],
-                                                  0, m_lengths[m_currentTrack]);
+      m_rotates[m_currentTrack] = encoderValue(
+        valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
@@ -654,7 +610,7 @@ void Euklid::setEncoder(bool valueIncreased_, bool shiftPressed_)
     default:
       break;
   }
-  
+
   requestDeviceUpdate();
 }
 
@@ -685,7 +641,7 @@ void Euklid::togglePlay()
 
 void Euklid::changeTrack(uint8_t track_)
 {
-  if(track_==0xFF)
+  if (track_ == 0xFF)
   {
     m_currentTrack++;
     if (m_currentTrack >= kEuklidNumTracks)
@@ -704,7 +660,7 @@ void Euklid::changeTrack(uint8_t track_)
 
 void Euklid::nextTrack()
 {
-  if (m_currentTrack >= (kEuklidNumTracks -1))
+  if (m_currentTrack >= (kEuklidNumTracks - 1))
   {
     m_currentTrack = 0;
   }
@@ -737,11 +693,11 @@ uint8_t Euklid::encoderValue(
 {
   if (valueIncreased_ && ((currentValue_ + step_) <= maxValue_))
   {
-    return currentValue_+step_;
+    return currentValue_ + step_;
   }
   else if (!valueIncreased_ && ((currentValue_ - step_) >= minValue_))
   {
-    return currentValue_-step_;
+    return currentValue_ - step_;
   }
   return currentValue_;
 }
@@ -752,22 +708,38 @@ Device::Pad Euklid::pad(uint8_t padIndex_)
 {
   switch (padIndex_)
   {
-    case 0:  return Device::Pad::Pad13;
-    case 1:  return Device::Pad::Pad14;
-    case 2:  return Device::Pad::Pad15;
-    case 3:  return Device::Pad::Pad16;
-    case 4:  return Device::Pad::Pad9;
-    case 5:  return Device::Pad::Pad10;
-    case 6:  return Device::Pad::Pad11;
-    case 7:  return Device::Pad::Pad12;
-    case 8:  return Device::Pad::Pad5;
-    case 9:  return Device::Pad::Pad6;
-    case 10: return Device::Pad::Pad7;
-    case 11: return Device::Pad::Pad8;
-    case 12: return Device::Pad::Pad1;
-    case 13: return Device::Pad::Pad2;
-    case 14: return Device::Pad::Pad3;
-    case 15: return Device::Pad::Pad4;
+    case 0:
+      return Device::Pad::Pad13;
+    case 1:
+      return Device::Pad::Pad14;
+    case 2:
+      return Device::Pad::Pad15;
+    case 3:
+      return Device::Pad::Pad16;
+    case 4:
+      return Device::Pad::Pad9;
+    case 5:
+      return Device::Pad::Pad10;
+    case 6:
+      return Device::Pad::Pad11;
+    case 7:
+      return Device::Pad::Pad12;
+    case 8:
+      return Device::Pad::Pad5;
+    case 9:
+      return Device::Pad::Pad6;
+    case 10:
+      return Device::Pad::Pad7;
+    case 11:
+      return Device::Pad::Pad8;
+    case 12:
+      return Device::Pad::Pad1;
+    case 13:
+      return Device::Pad::Pad2;
+    case 14:
+      return Device::Pad::Pad3;
+    case 15:
+      return Device::Pad::Pad4;
   }
   return Device::Pad::Unknown;
 }
@@ -777,23 +749,40 @@ uint8_t Euklid::padIndex(Device::Pad pad_)
 {
   switch (pad_)
   {
-    case Device::Pad::Pad13: return 0;
-    case Device::Pad::Pad14: return 1;
-    case Device::Pad::Pad15: return 2;
-    case Device::Pad::Pad16: return 3;
-    case Device::Pad::Pad9:  return 4;
-    case Device::Pad::Pad10: return 5;
-    case Device::Pad::Pad11: return 6;
-    case Device::Pad::Pad12: return 7;
-    case Device::Pad::Pad5:  return 8;
-    case Device::Pad::Pad6:  return 9;
-    case Device::Pad::Pad7:  return 10;
-    case Device::Pad::Pad8:  return 11;
-    case Device::Pad::Pad1:  return 12;
-    case Device::Pad::Pad2:  return 13;
-    case Device::Pad::Pad3:  return 14;
-    case Device::Pad::Pad4:  return 15;
-    default: return 0;
+    case Device::Pad::Pad13:
+      return 0;
+    case Device::Pad::Pad14:
+      return 1;
+    case Device::Pad::Pad15:
+      return 2;
+    case Device::Pad::Pad16:
+      return 3;
+    case Device::Pad::Pad9:
+      return 4;
+    case Device::Pad::Pad10:
+      return 5;
+    case Device::Pad::Pad11:
+      return 6;
+    case Device::Pad::Pad12:
+      return 7;
+    case Device::Pad::Pad5:
+      return 8;
+    case Device::Pad::Pad6:
+      return 9;
+    case Device::Pad::Pad7:
+      return 10;
+    case Device::Pad::Pad8:
+      return 11;
+    case Device::Pad::Pad1:
+      return 12;
+    case Device::Pad::Pad2:
+      return 13;
+    case Device::Pad::Pad3:
+      return 14;
+    case Device::Pad::Pad4:
+      return 15;
+    default:
+      return 0;
   }
   return 0;
 }

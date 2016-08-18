@@ -28,7 +28,6 @@ class KompleteKontrolBase : public Device
 {
 
 public:
-
   KompleteKontrolBase();
   ~KompleteKontrolBase() override;
 
@@ -43,8 +42,7 @@ public:
   bool tick() override;
 
 private:
-
-  enum class Led    : uint16_t;
+  enum class Led : uint16_t;
   enum class Button : uint8_t;
 
   static constexpr uint8_t kKK_nButtons = 37;
@@ -57,60 +55,66 @@ private:
   bool sendLeds();
   bool read();
 
-  void processButtons( const Transfer& );
+  void processButtons(const Transfer&);
 
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Key) const noexcept;
   Led led(Device::Button) const noexcept;
 
-  Device::Button deviceButton( Button btn_ ) const noexcept;
-  bool isButtonPressed( Button button ) const noexcept;
-  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+  Device::Button deviceButton(Button btn_) const noexcept;
+  bool isButtonPressed(Button button) const noexcept;
+  bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
   virtual unsigned numKeys() const = 0;
   virtual unsigned ledDataSize() const = 0;
   virtual uint8_t* ledsKeysData() = 0;
 
-  static void midiInCallback(double timeStamp, std::vector<unsigned char> *message, void *userData);
+  static void midiInCallback(double timeStamp, std::vector<unsigned char>* message, void* userData);
 
-  GDisplayDummy               m_displayDummy;
-  tRawData                    m_leds;
-  tRawData                    m_buttons;
-  std::bitset<kKK_nButtons>   m_buttonStates;
-  uint16_t                    m_encoderValues[kKK_nEncoders];
+  GDisplayDummy m_displayDummy;
+  tRawData m_leds;
+  tRawData m_buttons;
+  std::bitset<kKK_nButtons> m_buttonStates;
+  uint16_t m_encoderValues[kKK_nEncoders];
 
-  bool                        m_isDirtyLeds;
-  bool                        m_isDirtyKeyLeds;
+  bool m_isDirtyLeds;
+  bool m_isDirtyKeyLeds;
 
-  uint8_t                     m_firstOctave;
+  uint8_t m_firstOctave;
 
-  LCDDisplayKompleteKontrol   m_displays[kKK_nDisplays];
+  LCDDisplayKompleteKontrol m_displays[kKK_nDisplays];
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  tPtr<RtMidiOut>     m_pMidiOut;
-  tPtr<RtMidiIn>      m_pMidiIn;
+  tPtr<RtMidiOut> m_pMidiOut;
+  tPtr<RtMidiIn> m_pMidiIn;
 #endif
 };
 
 //--------------------------------------------------------------------------------------------------
 
-template<uint8_t NKEYS>
+template <uint8_t NKEYS>
 class KompleteKontrol final : public KompleteKontrolBase
 {
 public:
-
   static constexpr uint8_t kKK_keysLedDataSize = NKEYS * 3;
 
-  unsigned numKeys() const override { return NKEYS; }
-  unsigned ledDataSize() const override { return kKK_keysLedDataSize;  }
+  unsigned numKeys() const override
+  {
+    return NKEYS;
+  }
+  unsigned ledDataSize() const override
+  {
+    return kKK_keysLedDataSize;
+  }
 
 private:
+  uint8_t* ledsKeysData() override
+  {
+    return &m_ledsKeys[0];
+  }
 
-  uint8_t* ledsKeysData() override { return &m_ledsKeys[0]; }
-
-  uint8_t  m_ledsKeys[kKK_keysLedDataSize];
-
+  uint8_t m_ledsKeys[kKK_keysLedDataSize];
 };
 
 //--------------------------------------------------------------------------------------------------

@@ -9,8 +9,8 @@
 
 #include <array>
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #ifdef __APPLE__
 #define __MACOSX_CORE__ 1
@@ -30,7 +30,6 @@ namespace cabl
 class DeviceHandleMIDI : public DeviceHandleImpl
 {
 public:
-
   DeviceHandleMIDI(const DeviceDescriptor&);
   ~DeviceHandleMIDI();
 
@@ -42,17 +41,13 @@ public:
   void readAsync(uint8_t endpoint_, DeviceHandle::tCbRead) override;
 
   static void onMidiMessage(
-    double timeStamp_,
-    std::vector<unsigned char> *pMessage_,
-    void *pUserData_
-  );
+    double timeStamp_, std::vector<unsigned char>* pMessage_, void* pUserData_);
 
 private:
-  
-  RtMidiIn                        m_midiIn;
-  RtMidiOut                       m_midiOut;
- 
-  DeviceHandle::tCbRead           m_cbRead;
+  RtMidiIn m_midiIn;
+  RtMidiOut m_midiOut;
+
+  DeviceHandle::tCbRead m_cbRead;
 };
 
 //--------------------------------------------------------------------------------------------------

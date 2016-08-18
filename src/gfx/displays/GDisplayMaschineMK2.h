@@ -21,42 +21,38 @@ namespace cabl
 class GDisplayMaschineMK2 : public GDisplay
 {
 public:
- 
-    //! Constructor
-    /*!
+  //! Constructor
+  /*!
      \param width_  Display width in pixels
      \param height_ Display height in pixels
      \param height_ Number of data chunks (Default value is 8)
      */
-    GDisplayMaschineMK2();
+  GDisplayMaschineMK2();
 
-    void white() override;
+  void white() override;
 
-    void black() override;
-    
+  void black() override;
+
 protected:
-
-    //! Set a pixel
-    /*!
+  //! Set a pixel
+  /*!
      \param x_               The X coordinate of the pixel
      \param y_               The Y coordinate of the pixel
      \param color_           The pixel color (white, black, invert)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-    void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override;
-    
-    //! Get the pixel value
-    /*!
+  void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override;
+
+  //! Get the pixel value
+  /*!
      \param x_               The X coordinate of the pixel
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-    Color pixelImpl(uint16_t x_, uint16_t y_ ) const override;
-
+  Color pixelImpl(uint16_t x_, uint16_t y_) const override;
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // cabl
 } // sl
-

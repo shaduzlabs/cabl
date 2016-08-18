@@ -10,8 +10,8 @@
 #include <cstdint>
 #include <string>
 
-#include "util/Types.h"
 #include "util/Log.h"
+#include "util/Types.h"
 
 #include "DeviceDescriptor.h"
 #include "DeviceHandle.h"
@@ -52,13 +52,13 @@ public:
 
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
   using tCbHotplug = std::function<void(const DeviceDescriptor&, bool)>;
-  
+
   Driver(Type type_);
   virtual ~Driver();
 
   tCollDeviceDescriptor enumerate();
   tPtr<DeviceHandle> connect(const DeviceDescriptor&);
-  void setHotplugCallback( tCbHotplug );
+  void setHotplugCallback(tCbHotplug);
 
 private:
   tPtr<DriverImpl> m_pImpl;

@@ -19,11 +19,11 @@
 
 namespace
 {
-static const uint8_t      kMASMK2_epDisplay    = 0x08;
-static const uint8_t      kMASMK2_epOut        = 0x01;
-static const uint8_t      kMASMK2_epInput      = 0x84;
-static const std::string  kMASMK2_midiOutName  = "Maschine Controller MK2";
-static const unsigned     kMASMK2_padThreshold = 200;
+static const uint8_t kMASMK2_epDisplay = 0x08;
+static const uint8_t kMASMK2_epOut = 0x01;
+static const uint8_t kMASMK2_epInput = 0x84;
+static const std::string kMASMK2_midiOutName = "Maschine Controller MK2";
+static const unsigned kMASMK2_padThreshold = 200;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -33,10 +33,11 @@ namespace sl
 namespace cabl
 {
 namespace devices
-{ 
+{
 
 //--------------------------------------------------------------------------------------------------
 
+// clang-format off
 enum class MaschineMK2::Led : uint8_t{
   Control,
   Step,
@@ -81,7 +82,7 @@ enum class MaschineMK2::Led : uint8_t{
   Rec,
   Erase,
   Shift,
-  
+
   Pad13, Pad13R = Pad13, Pad13G, Pad13B,
   Pad14, Pad14R = Pad14, Pad14G, Pad14B,
   Pad15, Pad15R = Pad15, Pad15G, Pad15B,
@@ -98,7 +99,7 @@ enum class MaschineMK2::Led : uint8_t{
   Pad2,  Pad2R  = Pad2,  Pad2G,  Pad2B,
   Pad3,  Pad3R  = Pad3,  Pad3G,  Pad3B,
   Pad4,  Pad4R  = Pad4,  Pad4G,  Pad4B,
-  
+
   GroupA, GroupAR1 = GroupA, GroupAG1, GroupAB1, GroupAR2, GroupAG2, GroupAB2,
   GroupB, GroupBR1 = GroupB, GroupBG1, GroupBB1, GroupBR2, GroupBG2, GroupBB2,
   GroupC, GroupCR1 = GroupC, GroupCG1, GroupCB1, GroupCR2, GroupCG2, GroupCB2,
@@ -110,10 +111,12 @@ enum class MaschineMK2::Led : uint8_t{
 
   Unknown,
 };
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------
 
-enum class MaschineMK2::Button : uint8_t{
+enum class MaschineMK2::Button : uint8_t
+{
   DisplayButton1,
   DisplayButton2,
   DisplayButton3,
@@ -167,7 +170,7 @@ enum class MaschineMK2::Button : uint8_t{
   Select,
   Solo,
   Mute,
-  
+
   NotUsed1,
   NotUsed2,
   NotUsed3,
@@ -176,7 +179,7 @@ enum class MaschineMK2::Button : uint8_t{
   NotUsed6,
   NotUsed7,
   NotUsed8,
-  
+
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -192,22 +195,22 @@ MaschineMK2::MaschineMK2()
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   std::string portName;
   unsigned nPorts = m_pMidiout->getPortCount();
-  for ( unsigned int i=0; i<nPorts; i++ )
+  for (unsigned int i = 0; i < nPorts; i++)
   {
     try
     {
       portName = m_pMidiout->getPortName(i);
-      if(portName == kMASMK2_midiOutName)
+      if (portName == kMASMK2_midiOutName)
       {
         m_pMidiout->openPort(i);
       }
     }
-    catch (RtMidiError &error) 
+    catch (RtMidiError& error)
     {
       M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
     }
   }
-  if(!m_pMidiout->isPortOpen())
+  if (!m_pMidiout->isPortOpen())
   {
     m_pMidiout.reset(nullptr);
   }
@@ -218,7 +221,6 @@ MaschineMK2::MaschineMK2()
 
 MaschineMK2::~MaschineMK2()
 {
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -240,7 +242,7 @@ void MaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 void MaschineMK2::sendMidiMsg(tRawData midiMsg_)
 {
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-  if(m_pMidiout)
+  if (m_pMidiout)
   {
     m_pMidiout->sendMessage(&midiMsg_);
   }
@@ -318,9 +320,9 @@ void MaschineMK2::init()
   m_displays[1].white();
 
   // Leds
-  std::fill( std::begin( m_ledsButtons ), std::end( m_ledsButtons ), 0 );
-  std::fill( std::begin( m_ledsGroups ), std::end( m_ledsGroups ), 0 );
-  std::fill( std::begin( m_ledsPads ), std::end( m_ledsPads ), 0 );
+  std::fill(std::begin(m_ledsButtons), std::end(m_ledsButtons), 0);
+  std::fill(std::begin(m_ledsGroups), std::end(m_ledsGroups), 0);
+  std::fill(std::begin(m_ledsPads), std::end(m_ledsPads), 0);
   m_isDirtyButtonLeds = true;
   m_isDirtyGroupLeds = true;
   m_isDirtyPadLeds = true;
@@ -344,15 +346,14 @@ bool MaschineMK2::sendFrame(uint8_t displayIndex_)
   }
 
   uint8_t chunkByte = 0;
-  for(uint8_t chunk = 0; chunk < 8; chunk++)
+  for (uint8_t chunk = 0; chunk < 8; chunk++)
   {
-    uint8_t firstByte = 0xE0| displayIndex_;
+    uint8_t firstByte = 0xE0 | displayIndex_;
     chunkByte = chunk * 8;
     const uint8_t* ptr = m_displays[displayIndex_].ptr(chunk * 256);
-    if(!writeToDeviceHandle(
-      Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
-      kMASMK2_epDisplay)
-    )
+    if (!writeToDeviceHandle(
+          Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
+          kMASMK2_epDisplay))
     {
       return false;
     }
@@ -368,7 +369,7 @@ bool MaschineMK2::sendLeds()
 {
   if (m_isDirtyButtonLeds)
   {
-    if(!writeToDeviceHandle(Transfer({0x82}, &m_ledsButtons[0], 32), kMASMK2_epOut))
+    if (!writeToDeviceHandle(Transfer({0x82}, &m_ledsButtons[0], 32), kMASMK2_epOut))
     {
       return false;
     }
@@ -376,7 +377,7 @@ bool MaschineMK2::sendLeds()
   }
   if (m_isDirtyGroupLeds)
   {
-    if(!writeToDeviceHandle(Transfer({0x81}, &m_ledsGroups[0], 57), kMASMK2_epOut))
+    if (!writeToDeviceHandle(Transfer({0x81}, &m_ledsGroups[0], 57), kMASMK2_epOut))
     {
       return false;
     }
@@ -384,7 +385,7 @@ bool MaschineMK2::sendLeds()
   }
   if (m_isDirtyPadLeds)
   {
-    if(!writeToDeviceHandle(Transfer({0x80}, &m_ledsPads[0], 49), kMASMK2_epOut))
+    if (!writeToDeviceHandle(Transfer({0x80}, &m_ledsPads[0], 49), kMASMK2_epOut))
     {
       return false;
     }
@@ -431,7 +432,7 @@ void MaschineMK2::processButtons(const Transfer& input_)
     {
       uint8_t btn = (i * 8) + k;
       Button currentButton(static_cast<Button>(btn));
-      if(currentButton>Button::Mute)
+      if (currentButton > Button::Mute)
       {
         continue;
       }
@@ -446,39 +447,38 @@ void MaschineMK2::processButtons(const Transfer& input_)
         changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-      //    std::copy(&input_[1],&input_[kMASMK2_buttonsDataSize],m_buttons.begin());
+          //    std::copy(&input_[1],&input_[kMASMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
           return;
         }
       }
     }
   }
-  
+
   // Now process the encoder data
   uint8_t currValue = input_.data()[kMASMK2_buttonsDataSize];
   if (currValue != m_encoderValues[0])
   {
-    bool valueIncreased = (
-      (m_encoderValues[0] < currValue) || ((m_encoderValues[0] == 0x0f) && (currValue == 0x00)))
+    bool valueIncreased
+      = ((m_encoderValues[0] < currValue) || ((m_encoderValues[0] == 0x0f) && (currValue == 0x00)))
         && (!((m_encoderValues[0] == 0x0) && (currValue == 0x0f)));
     m_encoderValues[0] = currValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
-  for (uint8_t encIndex = 0, i = kMASMK2_buttonsDataSize+1; encIndex < 8; i+=2, encIndex++)
+  for (uint8_t encIndex = 0, i = kMASMK2_buttonsDataSize + 1; encIndex < 8; i += 2, encIndex++)
   {
-    Device::Encoder encoder = static_cast<Device::Encoder>(
-      static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex
-    );
-    uint16_t value = (input_.data()[i]) | (input_.data()[i+1] << 8);
-    uint16_t hValue = input_.data()[i+1];
-    if(m_encoderValues[encIndex+1] != value)
+    Device::Encoder encoder
+      = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
+    uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    uint16_t hValue = input_.data()[i + 1];
+    if (m_encoderValues[encIndex + 1] != value)
     {
-      uint16_t prevHValue = (m_encoderValues[encIndex+1] &0xF00 )>> 8 ;
+      uint16_t prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
       bool valueIncreased
         = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
           && (!((prevHValue == 0) && (hValue == 3)));
-      m_encoderValues[encIndex+1] = value;
+      m_encoderValues[encIndex + 1] = value;
       encoderChanged(encoder, valueIncreased, shiftPressed);
     }
   }
@@ -500,7 +500,7 @@ void MaschineMK2::processPads(const Transfer& input_)
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Pad::pad; \
+    btn = Device::Pad::pad;    \
     break
 
     switch (pad)
@@ -530,8 +530,9 @@ void MaschineMK2::processPads(const Transfer& input_)
       m_padsStatus[pad] = true;
       padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
-    else{
-      if(m_padsStatus[pad])
+    else
+    {
+      if (m_padsStatus[pad])
       {
         m_padsStatus[pad] = false;
         padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
@@ -561,11 +562,8 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       m_ledsPads[ledIndex - kFirstPadIndex] = color_.red();
       m_ledsPads[ledIndex - kFirstPadIndex + 1] = color_.green();
       m_ledsPads[ledIndex - kFirstPadIndex + 2] = color_.blue();
-      m_isDirtyPadLeds = m_isDirtyPadLeds || (
-        currentR != color_.red() || 
-        currentG != color_.green() || 
-        currentB != color_.blue()
-      );
+      m_isDirtyPadLeds = m_isDirtyPadLeds || (currentR != color_.red() || currentG != color_.green()
+                                               || currentB != color_.blue());
     }
     else
     {
@@ -581,15 +579,12 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
       m_ledsGroups[ledIndex - firstGroupIndex + 4] = color_.green();
       m_ledsGroups[ledIndex - firstGroupIndex + 5] = color_.blue();
 
-      m_isDirtyGroupLeds = m_isDirtyGroupLeds || (
-        currentR != color_.red() || 
-        currentG != color_.green() || 
-        currentB != color_.blue()
-      );
+      m_isDirtyGroupLeds
+        = m_isDirtyGroupLeds
+          || (currentR != color_.red() || currentG != color_.green() || currentB != color_.blue());
     }
-
   }
-  else 
+  else
   {
     uint8_t currentVal = m_ledsGroups[ledIndex];
     uint8_t newVal = color_.mono();
@@ -611,12 +606,27 @@ void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
 bool MaschineMK2::isRGBLed(Led led_) const noexcept
 {
 
-  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_ ||
-      Led::GroupE == led_ || Led::GroupF == led_ || Led::GroupG == led_ || Led::GroupH == led_ ||
-      Led::Pad1   == led_ || Led::Pad2   == led_ || Led::Pad3   == led_ || Led::Pad4   == led_ ||
-      Led::Pad5   == led_ || Led::Pad6   == led_ || Led::Pad7   == led_ || Led::Pad8   == led_ ||
-      Led::Pad9   == led_ || Led::Pad10  == led_ || Led::Pad11  == led_ || Led::Pad12  == led_ ||
-      Led::Pad13  == led_ || Led::Pad14  == led_ || Led::Pad15  == led_ || Led::Pad16  == led_  )
+  if (Led::GroupA == led_ || Led::GroupB == led_ || Led::GroupC == led_ || Led::GroupD == led_
+      || Led::GroupE == led_
+      || Led::GroupF == led_
+      || Led::GroupG == led_
+      || Led::GroupH == led_
+      || Led::Pad1 == led_
+      || Led::Pad2 == led_
+      || Led::Pad3 == led_
+      || Led::Pad4 == led_
+      || Led::Pad5 == led_
+      || Led::Pad6 == led_
+      || Led::Pad7 == led_
+      || Led::Pad8 == led_
+      || Led::Pad9 == led_
+      || Led::Pad10 == led_
+      || Led::Pad11 == led_
+      || Led::Pad12 == led_
+      || Led::Pad13 == led_
+      || Led::Pad14 == led_
+      || Led::Pad15 == led_
+      || Led::Pad16 == led_)
   {
     return true;
   }
@@ -694,7 +704,7 @@ MaschineMK2::Led MaschineMK2::led(Device::Button btn_) const noexcept
 
 MaschineMK2::Led MaschineMK2::led(Device::Pad pad_) const noexcept
 {
-#define M_PAD_CASE(idPad)     \
+#define M_PAD_CASE(idPad)  \
   case Device::Pad::idPad: \
     return Led::idPad
 

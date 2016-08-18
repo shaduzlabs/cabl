@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #include <Usb.h>
 #include <confdescparser.h>

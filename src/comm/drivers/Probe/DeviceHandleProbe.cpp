@@ -8,8 +8,8 @@
 #include "comm/drivers/Probe/DeviceHandleProbe.h"
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #endif
 
 namespace sl
@@ -33,7 +33,6 @@ DeviceHandleProbe::~DeviceHandleProbe()
 
 void DeviceHandleProbe::disconnect()
 {
-  
 }
 
 //--------------------------------------------------------------------------------------------------

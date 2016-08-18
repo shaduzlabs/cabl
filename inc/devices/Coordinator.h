@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <map>
 #include <atomic>
+#include <map>
 #include <thread>
 
 #include "comm/DeviceDescriptor.h"
-#include "devices/Device.h"
 #include "comm/Driver.h"
+#include "devices/Device.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -37,19 +37,19 @@ public:
   using tDriverPtr = std::shared_ptr<Driver>;
   using tCollDrivers = std::map<Driver::Type, tDriverPtr>;
   using tCbDevicesListChanged = std::function<void(tCollDeviceDescriptor)>;
-  using tCollCbDevicesListChanged = std::map<tClientId,tCbDevicesListChanged>;
-  
+  using tCollCbDevicesListChanged = std::map<tClientId, tCbDevicesListChanged>;
+
   static Coordinator& instance()
   {
     static Coordinator instance;
     return instance;
   }
-  
+
   ~Coordinator();
 
   tClientId registerClient(tCbDevicesListChanged);
   void unregisterClient(tClientId);
-  
+
   void run();
 
   tCollDeviceDescriptor enumerate(bool forceScan_ = false);
@@ -57,13 +57,12 @@ public:
   tDevicePtr connect(const DeviceDescriptor&);
 
 private:
-
   Coordinator();
 
   void scan();
   bool checkAndAddDeviceDescriptor(const DeviceDescriptor&);
   void devicesListChanged();
-  
+
   tDriverPtr driver(Driver::Type);
 
   std::thread m_cablThread;
@@ -78,7 +77,7 @@ private:
   tCollCbDevicesListChanged m_collCbDevicesListChanged;
   tCollDeviceDescriptor m_collDeviceDescriptors;
   tCollDevices m_collDevices;
-  
+
   static std::atomic<unsigned> s_clientCount;
 };
 

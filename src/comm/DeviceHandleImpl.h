@@ -24,17 +24,18 @@ class DeviceHandleImpl
 {
 
 public:
-
   virtual ~DeviceHandleImpl() = default;
 
   virtual void disconnect() = 0;
 
-  virtual bool read( Transfer&, uint8_t ) = 0;
-  virtual bool write( const Transfer&, uint8_t ) = 0;
+  virtual bool read(Transfer&, uint8_t) = 0;
+  virtual bool write(const Transfer&, uint8_t) = 0;
 
-  virtual void readAsync(uint8_t, DeviceHandle::tCbRead) {}
+  virtual void readAsync(uint8_t, DeviceHandle::tCbRead)
+  {
+  }
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // cabl

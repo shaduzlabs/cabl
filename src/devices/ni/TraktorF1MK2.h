@@ -27,7 +27,6 @@ class TraktorF1MK2 : public Device
 {
 
 public:
-
   TraktorF1MK2();
 
   void setLed(Device::Button, const util::LedColor&) override;
@@ -41,8 +40,7 @@ public:
   bool tick() override;
 
 private:
-
-  enum class Led    : uint16_t;
+  enum class Led : uint16_t;
   enum class Button : uint8_t;
 
   static constexpr uint8_t kF1MK2_nButtons = 27;
@@ -54,28 +52,28 @@ private:
   bool sendLedsAndDisplay();
   bool read();
 
-  void processButtons( const Transfer& );
+  void processButtons(const Transfer&);
 
   void setLedImpl(Led, const util::LedColor&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(Device::Pad) const noexcept;
 
-  Device::Button deviceButton( Button btn_ ) const noexcept;
-  bool isButtonPressed( Button button ) const noexcept;
-  bool isButtonPressed( const Transfer&, Button button_) const noexcept;
+  Device::Button deviceButton(Button btn_) const noexcept;
+  bool isButtonPressed(Button button) const noexcept;
+  bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
-  GDisplayDummy               m_displayDummy;
-  LCDDisplay7Segments         m_lcdDisplay;
+  GDisplayDummy m_displayDummy;
+  LCDDisplay7Segments m_lcdDisplay;
 
-  std::array<uint8_t, kF1MK2_buttonsDataSize>     m_buttons;
-  std::array<uint8_t, kF1MK2_nLeds>               m_leds;
+  std::array<uint8_t, kF1MK2_buttonsDataSize> m_buttons;
+  std::array<uint8_t, kF1MK2_nLeds> m_leds;
 
-  std::bitset<kF1MK2_nButtons>  m_buttonStates;
-  uint16_t                      m_potentiometersValues[kF1MK2_nPotentiometers];
-  uint8_t                       m_encoderValue;
+  std::bitset<kF1MK2_nButtons> m_buttonStates;
+  uint16_t m_potentiometersValues[kF1MK2_nPotentiometers];
+  uint8_t m_encoderValue;
 
-  bool                          m_isDirtyLeds;
+  bool m_isDirtyLeds;
 };
 
 //--------------------------------------------------------------------------------------------------

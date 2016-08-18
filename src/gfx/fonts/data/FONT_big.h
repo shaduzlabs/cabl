@@ -12,6 +12,8 @@
     Additional info : sees http://en.wikipedia.org/wiki/Code_page_437
 */
 
+// clang-format off
+
   // #0 ' '
   B8(00000000),
   B8(00000000),
@@ -1301,3 +1303,5 @@
   B8(11011111),
   B8(00000000),
   B8(00000000)
+
+  // clang-format on

@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <functional>
-#include <map>
 #include "comm/DeviceDescriptor.h"
 #include "util/Types.h"
+#include <functional>
+#include <map>
 
 namespace sl
 {

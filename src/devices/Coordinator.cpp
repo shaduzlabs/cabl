@@ -52,35 +52,34 @@ void Coordinator::unregisterClient(tClientId clientId_)
 {
   m_collCbDevicesListChanged.erase(clientId_);
 }
-  
+
 //--------------------------------------------------------------------------------------------------
 
 void Coordinator::run()
 {
-  bool expected=false;
-  if (!m_running.compare_exchange_strong(expected,true))
+  bool expected = false;
+  if (!m_running.compare_exchange_strong(expected, true))
   {
     return;
   }
-  
+
   scan();
-  
-  m_cablThread = std::thread([this]()
+
+  m_cablThread = std::thread([this]() {
+    while (m_running)
     {
-      while (m_running)
+      std::lock_guard<std::mutex> lock(m_mtxDevices);
+      for (const auto& device : m_collDevices)
       {
-        std::lock_guard<std::mutex> lock(m_mtxDevices);
-        for(const auto& device : m_collDevices)
+        if (device.second)
         {
-          if(device.second)
-          {
-            device.second->onTick();
-            //! \todo Check tick() result
-          }
+          device.second->onTick();
+          //! \todo Check tick() result
         }
-        std::this_thread::yield();
       }
-    });
+      std::this_thread::yield();
+    }
+  });
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -152,12 +151,10 @@ Coordinator::Coordinator()
 {
   M_LOG("Controller Abstraction Library v. " << Lib::version());
   auto usbDriver = driver(Driver::Type::LibUSB);
-  
-  usbDriver->setHotplugCallback([this](DeviceDescriptor deviceDescriptor_, bool plugged_)
-    {
-      scan();
-    });
-  
+
+  usbDriver->setHotplugCallback(
+    [this](DeviceDescriptor deviceDescriptor_, bool plugged_) { scan(); });
+
   run();
 }
 
@@ -168,7 +165,7 @@ void Coordinator::scan()
   std::lock_guard<std::mutex> lock(m_mtxDeviceDescriptors);
   tCollDeviceDescriptor deviceDescriptors{m_collDeviceDescriptors};
   m_collDeviceDescriptors.clear();
-  
+
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   for (const auto& deviceDescriptor : driver(Driver::Type::HIDAPI)->enumerate())
   {
@@ -198,16 +195,16 @@ void Coordinator::scan()
   }
 
   std::sort(m_collDeviceDescriptors.begin(), m_collDeviceDescriptors.end());
-  
+
   {
     std::lock_guard<std::mutex> lock(m_mtxDevices);
     auto it = m_collDevices.begin();
     while (it != m_collDevices.end())
     {
       bool found{false};
-      for(const auto& deviceDescriptor : m_collDeviceDescriptors)
+      for (const auto& deviceDescriptor : m_collDeviceDescriptors)
       {
-        if(deviceDescriptor == it->first)
+        if (deviceDescriptor == it->first)
         {
           found = true;
           break;
@@ -225,24 +222,27 @@ void Coordinator::scan()
 
   m_scanDone = true;
 
-  if(m_collDeviceDescriptors.size() != deviceDescriptors.size() || !std::equal(m_collDeviceDescriptors.begin(),m_collDeviceDescriptors.end(), deviceDescriptors.begin()))
+  if (m_collDeviceDescriptors.size() != deviceDescriptors.size()
+      || !std::equal(m_collDeviceDescriptors.begin(),
+           m_collDeviceDescriptors.end(),
+           deviceDescriptors.begin()))
   {
     devicesListChanged();
   }
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool Coordinator::checkAndAddDeviceDescriptor(const sl::cabl::DeviceDescriptor& deviceDescriptor)
 {
-    if ((!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
-        || std::find(m_collDeviceDescriptors.begin(), m_collDeviceDescriptors.end(), deviceDescriptor) != m_collDeviceDescriptors.end())
-    {
-      return false; // unknown
-    }
-    m_collDeviceDescriptors.push_back(deviceDescriptor);
-    return true;
+  if ((!DeviceFactory::instance().isKnownDevice(deviceDescriptor))
+      || std::find(m_collDeviceDescriptors.begin(), m_collDeviceDescriptors.end(), deviceDescriptor)
+           != m_collDeviceDescriptors.end())
+  {
+    return false; // unknown
+  }
+  m_collDeviceDescriptors.push_back(deviceDescriptor);
+  return true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -251,9 +251,9 @@ void Coordinator::devicesListChanged()
 {
   M_LOG("[Coordinator]: The devices list has changed");
   auto devices = enumerate();
-  for(const auto d : m_collCbDevicesListChanged)
+  for (const auto d : m_collCbDevicesListChanged)
   {
-    if(d.second)
+    if (d.second)
     {
       d.second(devices);
     }

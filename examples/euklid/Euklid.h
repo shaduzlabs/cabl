@@ -29,7 +29,6 @@ using namespace cabl;
 class Euklid : public Client
 {
 public:
-
   enum class EncoderState
   {
     Length,
@@ -46,23 +45,23 @@ public:
   };
 
   Euklid();
-  
+
   void initDevice() override;
   void render() override;
-  
+
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_) override;
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
   void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed) override;
-    
+
   void updateClock();
-  
+
   void play();
 
   void updateGUI();
   void updateGroupLeds();
   void updatePads();
-  
+
   void drawConfigurationPage();
   void drawSequencerPage();
 
@@ -71,7 +70,10 @@ public:
     m_encoderState = encoderState_;
   }
 
-  ScreenPage screenPage() const{ return m_screenPage; }
+  ScreenPage screenPage() const
+  {
+    return m_screenPage;
+  }
   void setScreenPage(ScreenPage screenPage_)
   {
     m_screenPage = screenPage_;
@@ -84,19 +86,16 @@ public:
   void changeTrack(uint8_t track_ = 0xFF);
   void nextTrack();
   void prevTrack();
-  
+
 private:
-  
-  uint8_t encoderValue(
-    bool valueIncreased_,
+  uint8_t encoderValue(bool valueIncreased_,
     uint8_t step_,
     uint8_t currentValue_,
     uint8_t minValue_,
-    uint8_t maxValue_
-  );
+    uint8_t maxValue_);
   Device::Pad pad(uint8_t padIndex_);
   uint8_t padIndex(Device::Pad pad_);
-  
+
   Sequence<uint16_t> m_sequences[3];
 
   std::future<void> m_clockFuture;
@@ -115,10 +114,9 @@ private:
 
   RtMidiOut* m_pMidiout;
 
-  uint8_t   m_quarterNote;
-  uint16_t  m_delayEven;
-  uint16_t  m_delayOdd;
-  
+  uint8_t m_quarterNote;
+  uint16_t m_delayEven;
+  uint16_t m_delayOdd;
 };
 
 } // namespace sl

@@ -8,15 +8,15 @@
 #include "devices/ni/TraktorF1MK2.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
-#include "util/Functions.h"
 #include "gfx/LCDDisplay.h"
+#include "util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
 
 namespace
 {
-  static const uint8_t kF1MK2_epOut     = 0x02;
-  static const uint8_t kF1MK2_epInput   = 0x84;
+static const uint8_t kF1MK2_epOut = 0x02;
+static const uint8_t kF1MK2_epInput = 0x84;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -43,6 +43,7 @@ namespace devices
       -------
 */
 
+// clang-format off
 enum class TraktorF1MK2::Led : uint16_t
 {
   Display2_segDP,
@@ -96,6 +97,7 @@ enum class TraktorF1MK2::Led : uint16_t
 
   Unknown,
 };
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------
 
@@ -133,15 +135,13 @@ enum class TraktorF1MK2::Button : uint8_t
   Stop3,
   Stop2,
   Stop1,
-  
+
   None,
 };
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::TraktorF1MK2()
-  : m_lcdDisplay(2)
-  , m_isDirtyLeds(true)
+TraktorF1MK2::TraktorF1MK2() : m_lcdDisplay(2), m_isDirtyLeds(true)
 {
 }
 
@@ -163,7 +163,7 @@ void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 void TraktorF1MK2::sendMidiMsg(tRawData midiMsg_)
 {
- //!\todo Use KompleteKontrol hardware midi port
+  //!\todo Use KompleteKontrol hardware midi port
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ GDisplay* TraktorF1MK2::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* TraktorF1MK2::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0,0);
+  static LCDDisplay s_dummyLCDDisplay(0, 0);
   if (displayIndex_ > 0)
   {
     return &s_dummyLCDDisplay;
@@ -214,29 +214,29 @@ bool TraktorF1MK2::tick()
 void TraktorF1MK2::init()
 {
   std::fill(m_leds.begin(), m_leds.end(), 0);
-  writeToDeviceHandle(Transfer({ 0xA0, 0x00, 0x00 }), kF1MK2_epOut);
+  writeToDeviceHandle(Transfer({0xA0, 0x00, 0x00}), kF1MK2_epOut);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool TraktorF1MK2::sendLedsAndDisplay()
 {
-  if(m_lcdDisplay.isDirty() || true)
+  if (m_lcdDisplay.isDirty() || true)
   {
     const tRawData& displayData = m_lcdDisplay.displayData();
-    for(size_t i = 0; i < displayData.size(); i++)
+    for (size_t i = 0; i < displayData.size(); i++)
     {
-      for(uint8_t j = 0; j < 8; j++)
+      for (uint8_t j = 0; j < 8; j++)
       {
-        size_t displayIndex = (displayData.size()-1 - i);
-        m_leds[(displayIndex*8)+j] = (((1 << j) & displayData[i] ) > 0) ? 0x7f : 0x00;
+        size_t displayIndex = (displayData.size() - 1 - i);
+        m_leds[(displayIndex * 8) + j] = (((1 << j) & displayData[i]) > 0) ? 0x7f : 0x00;
       }
     }
     m_isDirtyLeds = true;
   }
   if (m_isDirtyLeds)
   {
-    if(!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], kF1MK2_nLeds), kF1MK2_epOut))
+    if (!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], kF1MK2_nLeds), kF1MK2_epOut))
     {
       return false;
     }
@@ -259,7 +259,7 @@ bool TraktorF1MK2::read()
   {
     processButtons(input);
   }
-  
+
   return true;
 }
 
@@ -293,25 +293,25 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
       }
     }
   }
-  
+
   // Now process the pot/fader data
   uint8_t currentValue = input_.data()[kF1MK2_buttonsDataSize];
   if (currentValue != m_encoderValue)
   {
-    bool valueIncreased = ((static_cast<uint8_t>(m_encoderValue) < currentValue) ||
-      ((m_encoderValue == 0xff) && (currentValue == 0x00)))
-        && (!((m_encoderValue == 0x0) && (currentValue == 0xff)));
+    bool valueIncreased = ((static_cast<uint8_t>(m_encoderValue) < currentValue)
+                            || ((m_encoderValue == 0xff) && (currentValue == 0x00)))
+                          && (!((m_encoderValue == 0x0) && (currentValue == 0xff)));
     m_encoderValue = currentValue;
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
-  for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize+1; potIndex < 8; i+=2, potIndex++)
+  for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize + 1; potIndex < 8; i += 2, potIndex++)
   {
     Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
-      static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex + (potIndex>3?4:0)
-    );
-    uint16_t value = (input_.data()[i]) | (input_.data()[i+1] << 8);
-    if(m_potentiometersValues[potIndex] != value)
+      static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex
+      + (potIndex > 3 ? 4 : 0));
+    uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    if (m_potentiometersValues[potIndex] != value)
     {
       m_potentiometersValues[potIndex] = value;
       potentiometerChanged(potentiometer, value, shiftPressed);
@@ -329,7 +329,7 @@ void TraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
   {
     return;
   }
-  
+
   if (isRGBLed(led_))
   {
     uint8_t currentB = m_leds[ledIndex];
@@ -340,8 +340,8 @@ void TraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
     m_leds[ledIndex + 1] = 0x7F & color_.red();
     m_leds[ledIndex + 2] = 0x7F & color_.green();
 
-    m_isDirtyLeds = m_isDirtyLeds ||
-     (currentR != color_.red() || currentG != color_.green() || currentB != color_.blue());
+    m_isDirtyLeds = m_isDirtyLeds || (currentR != color_.red() || currentG != color_.green()
+                                       || currentB != color_.blue());
   }
   else
   {
@@ -383,15 +383,15 @@ TraktorF1MK2::Led TraktorF1MK2::led(Device::Button btn_) const noexcept
     M_LED_CASE(Capture);
     M_LED_CASE(Quant);
     M_LED_CASE(Sync);
-    M_LED_CASE(Pad1); 
-    M_LED_CASE(Pad2); 
-    M_LED_CASE(Pad3); 
-    M_LED_CASE(Pad4); 
-    M_LED_CASE(Pad5); 
-    M_LED_CASE(Pad6); 
-    M_LED_CASE(Pad7); 
-    M_LED_CASE(Pad8); 
-    M_LED_CASE(Pad9); 
+    M_LED_CASE(Pad1);
+    M_LED_CASE(Pad2);
+    M_LED_CASE(Pad3);
+    M_LED_CASE(Pad4);
+    M_LED_CASE(Pad5);
+    M_LED_CASE(Pad6);
+    M_LED_CASE(Pad7);
+    M_LED_CASE(Pad8);
+    M_LED_CASE(Pad9);
     M_LED_CASE(Pad10);
     M_LED_CASE(Pad11);
     M_LED_CASE(Pad12);
@@ -416,7 +416,7 @@ TraktorF1MK2::Led TraktorF1MK2::led(Device::Button btn_) const noexcept
 
 TraktorF1MK2::Led TraktorF1MK2::led(Device::Pad pad_) const noexcept
 {
-#define M_PAD_CASE(idPad)     \
+#define M_PAD_CASE(idPad)  \
   case Device::Pad::idPad: \
     return Led::idPad
 
@@ -489,7 +489,7 @@ Device::Button TraktorF1MK2::deviceButton(Button btn_) const noexcept
     M_BTN_CASE(Stop3);
     M_BTN_CASE(Stop2);
     M_BTN_CASE(Stop1);
-    
+
     default:
     {
       return Device::Button::Unknown;
@@ -509,10 +509,7 @@ bool TraktorF1MK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool TraktorF1MK2::isButtonPressed(
-  const Transfer& transfer_, 
-  Button button_
-) const noexcept
+bool TraktorF1MK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);

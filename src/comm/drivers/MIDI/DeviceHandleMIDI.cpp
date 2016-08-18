@@ -23,7 +23,6 @@ DeviceHandleMIDI::DeviceHandleMIDI(const DeviceDescriptor& deviceDescriptor_)
   }
   catch (RtMidiError e)
   {
-
   }
 }
 
@@ -45,13 +44,12 @@ void DeviceHandleMIDI::disconnect()
   }
   catch (RtMidiError e)
   {
-
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleMIDI::read( Transfer& transfer_, uint8_t /* endpoint_ */)
+bool DeviceHandleMIDI::read(Transfer& transfer_, uint8_t /* endpoint_ */)
 {
   m_midiIn.getMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.data())));
   return transfer_;
@@ -59,17 +57,17 @@ bool DeviceHandleMIDI::read( Transfer& transfer_, uint8_t /* endpoint_ */)
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandleMIDI::write( const Transfer& transfer_, uint8_t /* endpoint_ */)
+bool DeviceHandleMIDI::write(const Transfer& transfer_, uint8_t /* endpoint_ */)
 {
   try
   {
     m_midiOut.sendMessage(const_cast<std::vector<unsigned char>*>(&(transfer_.data())));
   }
-  catch(RtMidiError)
+  catch (RtMidiError)
   {
     return false;
   }
-  
+
   return true;
 }
 
@@ -84,18 +82,15 @@ void DeviceHandleMIDI::readAsync(uint8_t /* endpoint_ */, DeviceHandle::tCbRead 
 //--------------------------------------------------------------------------------------------------
 
 void DeviceHandleMIDI::onMidiMessage(
-  double timeStamp_,
-  std::vector<unsigned char> *pMessage_,
-  void *pUserData_
-)
+  double timeStamp_, std::vector<unsigned char>* pMessage_, void* pUserData_)
 {
-  if(nullptr == pMessage_ || nullptr == pUserData_)
+  if (nullptr == pMessage_ || nullptr == pUserData_)
   {
     return;
   }
 
   DeviceHandleMIDI* pSelf = static_cast<DeviceHandleMIDI*>(pUserData_);
-  pSelf->m_cbRead(tRawData{pMessage_->begin(),pMessage_->end()});
+  pSelf->m_cbRead(tRawData{pMessage_->begin(), pMessage_->end()});
 }
 
 //--------------------------------------------------------------------------------------------------

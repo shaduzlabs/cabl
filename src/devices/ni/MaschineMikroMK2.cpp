@@ -16,17 +16,17 @@
 #include "gfx/displays/GDisplayDummy.h"
 
 //!\todo delete debug includes
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 //--------------------------------------------------------------------------------------------------
 
 namespace
 {
-static const uint8_t  kMikroMK2_epDisplay     = 0x08;
-static const uint8_t  kMikroMK2_epOut         = 0x01;
-static const uint8_t  kMikroMK2_epInput       = 0x84;
-static const unsigned kMikroMK2_padThreshold  =  200;
+static const uint8_t kMikroMK2_epDisplay = 0x08;
+static const uint8_t kMikroMK2_epOut = 0x01;
+static const uint8_t kMikroMK2_epInput = 0x84;
+static const unsigned kMikroMK2_padThreshold = 200;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -40,6 +40,7 @@ namespace devices
 
 //--------------------------------------------------------------------------------------------------
 
+// clang-format off
 enum class MaschineMikroMK2::Led : uint8_t
 {
   F1,
@@ -70,7 +71,7 @@ enum class MaschineMikroMK2::Led : uint8_t
   Select,
   Solo,
   Mute,
-  
+
   Pad13, Pad13R = Pad13, Pad13G, Pad13B,
   Pad14, Pad14R = Pad14, Pad14G, Pad14B,
   Pad15, Pad15R = Pad15, Pad15G, Pad15B,
@@ -90,6 +91,7 @@ enum class MaschineMikroMK2::Led : uint8_t
 
   Unknown,
 };
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------
 
@@ -134,11 +136,8 @@ enum class MaschineMikroMK2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMikroMK2::MaschineMikroMK2()
-  : m_padsStatus(0)
-  , m_isDirtyLeds(false)
+MaschineMikroMK2::MaschineMikroMK2() : m_padsStatus(0), m_isDirtyLeds(false)
 {
-
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -159,7 +158,7 @@ void MaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 void MaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
 {
- //!\todo Use MaschineMikroMK2 virtual midi port
+  //!\todo Use MaschineMikroMK2 virtual midi port
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -220,9 +219,9 @@ void MaschineMikroMK2::init()
   // Display
   initDisplay();
   m_display.white();
-  
+
   // Leds
-  std::fill( std::begin( m_leds ), std::end( m_leds ), 0 );
+  std::fill(std::begin(m_leds), std::end(m_leds), 0);
   m_isDirtyLeds = true;
 }
 
@@ -242,10 +241,9 @@ bool MaschineMikroMK2::sendFrame()
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
     const uint8_t* ptr = m_display.ptr(chunk * 256);
-    if(!writeToDeviceHandle(
-      Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
-      kMikroMK2_epDisplay)
-    )
+    if (!writeToDeviceHandle(
+          Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
+          kMikroMK2_epDisplay))
     {
       return false;
     }
@@ -258,9 +256,9 @@ bool MaschineMikroMK2::sendFrame()
 
 bool MaschineMikroMK2::sendLeds()
 {
-//  if (m_isDirtyLeds)
+  //  if (m_isDirtyLeds)
   {
-    if(!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
+    if (!writeToDeviceHandle(Transfer({0x80}, &m_leds[0], 78), kMikroMK2_epOut))
     {
       return false;
     }
@@ -289,15 +287,15 @@ bool MaschineMikroMK2::read()
     {
       processPads(input);
     }
-/*
-        std::cout << std::setfill('0') << std::internal;
+    /*
+            std::cout << std::setfill('0') << std::internal;
 
-        for( int i = 0; i < input.getSize(); i++ )
-        {
-          std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
-        }
+            for( int i = 0; i < input.getSize(); i++ )
+            {
+              std::cout << std::hex << std::setw(2) << (int)input[i] <<  std::dec << " " ;
+            }
 
-        std::cout << std::endl << std::endl;*/
+            std::cout << std::endl << std::endl;*/
   }
   return true;
 }
@@ -327,7 +325,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
         changedButton = deviceButton(currentButton);
         if (changedButton != Device::Button::Unknown)
         {
-      //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
+          //    std::copy(&input_[1],&input_[kMikroMK2_buttonsDataSize],m_buttons.begin());
           buttonChanged(changedButton, buttonPressed, shiftPressed);
         }
       }
@@ -338,10 +336,10 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
   uint8_t currentEncoderValue = input_.data()[kMikroMK2_buttonsDataSize];
   if (m_encoderValue != currentEncoderValue)
   {
-    bool valueIncreased = ((m_encoderValue < currentEncoderValue) || 
-      ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
-        && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-      encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    bool valueIncreased = ((m_encoderValue < currentEncoderValue)
+                            || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
+                          && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
+    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
     m_encoderValue = currentEncoderValue;
   }
 }
@@ -362,7 +360,7 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
 
 #define M_PAD_CASE(value, pad) \
   case value:                  \
-    btn = Device::Pad::pad; \
+    btn = Device::Pad::pad;    \
     break
 
     switch (pad)
@@ -392,8 +390,9 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
       m_padsStatus[pad] = true;
       padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
-    else{
-      if(m_padsStatus[pad])
+    else
+    {
+      if (m_padsStatus[pad])
       {
         m_padsStatus[pad] = false;
         padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
@@ -408,7 +407,7 @@ void MaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
-  if(Led::Unknown == led_)
+  if (Led::Unknown == led_)
   {
     return;
   }
@@ -423,8 +422,8 @@ void MaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
     m_leds[ledIndex + 1] = color_.green();
     m_leds[ledIndex + 2] = color_.blue();
 
-    m_isDirtyLeds = m_isDirtyLeds ||
-     (currentR != color_.red() || currentG != color_.green() || currentB != color_.blue());
+    m_isDirtyLeds = m_isDirtyLeds || (currentR != color_.red() || currentG != color_.green()
+                                       || currentB != color_.blue());
   }
   else
   {
@@ -440,12 +439,20 @@ void MaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
 
 bool MaschineMikroMK2::isRGBLed(Led led_) const noexcept
 {
-  if (Led::Group == led_ || Led::Pad1  == led_ || Led::Pad2  == led_ || Led::Pad3  == led_ ||
-      Led::Pad4  == led_ || Led::Pad5  == led_ || Led::Pad6  == led_ || Led::Pad7  == led_ ||
-      Led::Pad8  == led_ || Led::Pad9  == led_ || Led::Pad10 == led_ || Led::Pad11 == led_ ||
-      Led::Pad12 == led_ || Led::Pad13 == led_ || Led::Pad14 == led_ || Led::Pad15 == led_ || 
-      Led::Pad16 == led_
-  )
+  if (Led::Group == led_ || Led::Pad1 == led_ || Led::Pad2 == led_ || Led::Pad3 == led_
+      || Led::Pad4 == led_
+      || Led::Pad5 == led_
+      || Led::Pad6 == led_
+      || Led::Pad7 == led_
+      || Led::Pad8 == led_
+      || Led::Pad9 == led_
+      || Led::Pad10 == led_
+      || Led::Pad11 == led_
+      || Led::Pad12 == led_
+      || Led::Pad13 == led_
+      || Led::Pad14 == led_
+      || Led::Pad15 == led_
+      || Led::Pad16 == led_)
   {
     return true;
   }
@@ -504,7 +511,7 @@ MaschineMikroMK2::Led MaschineMikroMK2::led(Device::Button btn_) const noexcept
 
 MaschineMikroMK2::Led MaschineMikroMK2::led(Device::Pad pad_) const noexcept
 {
-#define M_PAD_CASE(idPad)     \
+#define M_PAD_CASE(idPad)  \
   case Device::Pad::idPad: \
     return Led::idPad
 
@@ -593,10 +600,7 @@ bool MaschineMikroMK2::isButtonPressed(Button button_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-bool MaschineMikroMK2::isButtonPressed(
-  const Transfer& transfer_, 
-  Button button_
-) const noexcept
+bool MaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_) const noexcept
 {
   uint8_t buttonPos = static_cast<uint8_t>(button_);
   return ((transfer_[1 + (buttonPos >> 3)] & (1 << (buttonPos % 8))) != 0);

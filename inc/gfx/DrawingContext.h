@@ -7,10 +7,10 @@
 
 #pragma once
 
+#include "util/Types.h"
 #include <array>
 #include <atomic>
 #include <stdint.h>
-#include "util/Types.h"
 
 namespace sl
 {
@@ -23,16 +23,16 @@ namespace cabl
   \brief The canvas base class
 
 */
-class DrawingContext{
+class DrawingContext
+{
 
 public:
-
   /**
    * @defgroup DrawingContext DrawingContext
    * @{
    */
 
-//--------------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------------
 
   /**
    * @defgroup Lifetime Constructor and destructor
@@ -56,11 +56,13 @@ public:
   }
 
   //! Destructor
-  virtual ~DrawingContext(){}
+  virtual ~DrawingContext()
+  {
+  }
 
   /** @} */ // End of group Lifetime
 
-//--------------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------------
 
   unsigned width() const
   {
@@ -94,19 +96,21 @@ public:
 
   void clear()
   {
-    std::fill( m_data.begin(), m_data.end(), 0x00 );
+    std::fill(m_data.begin(), m_data.end(), 0x00);
     m_dirty = true;
   }
 
-  tRawData& data() { return m_data; }
+  tRawData& data()
+  {
+    return m_data;
+  }
 
 private:
-
-  unsigned            m_width{0};
-  unsigned            m_height{0};
-  unsigned            m_bytesPerPixel{1};
-  std::atomic<bool>   m_dirty{true};
-  tRawData            m_data; //!< The raw data
+  unsigned m_width{0};
+  unsigned m_height{0};
+  unsigned m_bytesPerPixel{1};
+  std::atomic<bool> m_dirty{true};
+  tRawData m_data; //!< The raw data
 };
 
 //--------------------------------------------------------------------------------------------------

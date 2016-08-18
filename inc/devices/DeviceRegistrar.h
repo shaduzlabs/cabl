@@ -11,8 +11,10 @@
 
 //--------------------------------------------------------------------------------------------------
 // Use this macro in the header file of a new device class, after the class declaration
-#define M_REGISTER_DEVICE_CLASS(clsName,name,type,vid,pid)                                         \
-static DeviceRegistrar<clsName> registrar_##clsName = DeviceRegistrar<clsName>({name,type,vid,pid})
+#define M_REGISTER_DEVICE_CLASS(clsName, name, type, vid, pid) \
+  \
+static DeviceRegistrar<clsName>                                \
+    registrar_##clsName = DeviceRegistrar<clsName>({name, type, vid, pid})
 
 //--------------------------------------------------------------------------------------------------
 
@@ -32,20 +34,15 @@ class Device;
 
 //--------------------------------------------------------------------------------------------------
 
-template<class T>
+template <class T>
 class DeviceRegistrar
 {
 public:
   DeviceRegistrar(const DeviceDescriptor& deviceDescriptor_)
   {
-    //Register the factory function for a specific device descriptor
-    DeviceFactory::instance().registerClass(
-      deviceDescriptor_,
-      [](void) -> std::shared_ptr<Device>
-      {
-        return std::shared_ptr<Device>(new T);
-      }
-    );
+    // Register the factory function for a specific device descriptor
+    DeviceFactory::instance().registerClass(deviceDescriptor_,
+      [](void) -> std::shared_ptr<Device> { return std::shared_ptr<Device>(new T); });
   }
 };
 

@@ -26,7 +26,7 @@ namespace devices
 bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 {
 #if !ARDUINO
-  if(writeToDeviceHandle(Transfer(sysexMessage_.data()), 0))
+  if (writeToDeviceHandle(Transfer(sysexMessage_.data()), 0))
   {
     return true;
   }
@@ -37,11 +37,11 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
   unsigned msgIndex = 0;
   int bytesToSend = sysexMessage_.data().size();
 
-  while(bytesToSend > 0)
+  while (bytesToSend > 0)
   {
-    message[0] = (nCable << 4) | 0x04;  // Start/continue
+    message[0] = (nCable << 4) | 0x04; // Start/continue
 
-    switch(bytesToSend)
+    switch (bytesToSend)
     {
       case 1: // End with one byte
       {
@@ -74,8 +74,8 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
         break;
       }
     }
-    
-    if(!writeToDeviceHandle(Transfer(message), 0x02))
+
+    if (!writeToDeviceHandle(Transfer(message), 0x02))
     {
       return false;
     }

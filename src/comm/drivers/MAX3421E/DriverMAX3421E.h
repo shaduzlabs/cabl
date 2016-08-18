@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 namespace sl
 {
@@ -20,13 +20,11 @@ namespace cabl
 class DriverMAX3421E : public DriverImpl
 {
 public:
-
   DriverMAX3421E();
   ~DriverMAX3421E() override;
-  
-  Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
 
+  Driver::tCollDeviceDescriptor enumerate() override;
+  tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) override;
 };
 
 //--------------------------------------------------------------------------------------------------

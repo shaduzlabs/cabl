@@ -10,6 +10,8 @@
     Character set   : 45 (minus) to 90 (Z)
 */
 
+// clang-format off
+
   0x02,// #45 '-'
   0x00,// #46 '.'
   0x00,// #47 '/'
@@ -56,3 +58,5 @@
   0x00,// #88 'X'
   0x00,// #89 'Y'
   0x00,// #90 'Z'
+
+  // clang-format on

@@ -29,7 +29,7 @@ public:
 
   virtual Driver::tCollDeviceDescriptor enumerate() = 0;
   virtual tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) = 0;
-  virtual void setHotplugCallback( Driver::tCbHotplug ) {};
+  virtual void setHotplugCallback(Driver::tCbHotplug){};
 };
 
 //--------------------------------------------------------------------------------------------------

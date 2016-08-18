@@ -13,6 +13,8 @@
     Designer tool   : http://jsfiddle.net/zmtmsjra/2/
 */
 
+// clang-format off
+
   0x0000,// #0 ' '
   0x0578,// #1 smiley (transparent)
   0x0578,// #2 smiley (matte)
@@ -142,3 +144,5 @@
   0x0580,// #126 '~'
   0x540c,// #127 home
   0x4850, // #128 shaduzLABS
+
+  // clang-format on

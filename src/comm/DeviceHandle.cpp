@@ -12,13 +12,12 @@ namespace sl
 {
 namespace cabl
 {
-  
-//--------------------------------------------------------------------------------------------------
- 
-DeviceHandle::DeviceHandle( tPtr<DeviceHandleImpl> pDeviceHandle_ )
-  :m_pImpl(std::move(pDeviceHandle_))
-{
 
+//--------------------------------------------------------------------------------------------------
+
+DeviceHandle::DeviceHandle(tPtr<DeviceHandleImpl> pDeviceHandle_)
+  : m_pImpl(std::move(pDeviceHandle_))
+{
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -37,16 +36,16 @@ void DeviceHandle::disconnect()
 
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandle::read( Transfer& transfer_, uint8_t endpoint_ )
+bool DeviceHandle::read(Transfer& transfer_, uint8_t endpoint_)
 {
-  return m_pImpl->read( transfer_, endpoint_ );
+  return m_pImpl->read(transfer_, endpoint_);
 }
-  
+
 //--------------------------------------------------------------------------------------------------
 
-bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_ )
+bool DeviceHandle::write(const Transfer& transfer_, uint8_t endpoint_)
 {
-  return m_pImpl->write( transfer_, endpoint_ );
+  return m_pImpl->write(transfer_, endpoint_);
 }
 
 //--------------------------------------------------------------------------------------------------

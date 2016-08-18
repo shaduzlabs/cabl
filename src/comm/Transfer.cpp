@@ -12,44 +12,42 @@ namespace sl
 {
 namespace cabl
 {
-  
+
 //--------------------------------------------------------------------------------------------------
 
 Transfer::Transfer()
 {
-
 }
-  
+
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( uint16_t length_ )
+Transfer::Transfer(uint16_t length_)
 {
   m_data.resize(length_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( tRawData data_ )
-  : m_data(std::move(data_))
+Transfer::Transfer(tRawData data_) : m_data(std::move(data_))
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( const tRawData& header_, const tRawData& data_ )
+Transfer::Transfer(const tRawData& header_, const tRawData& data_)
 {
-  m_data.resize(header_.size()+data_.size());
-  std::copy(header_.begin(),header_.end(),m_data.begin());
-  std::copy(data_.begin(),data_.end(),&m_data[header_.size()]);
+  m_data.resize(header_.size() + data_.size());
+  std::copy(header_.begin(), header_.end(), m_data.begin());
+  std::copy(data_.begin(), data_.end(), &m_data[header_.size()]);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer( const tRawData& header_, const uint8_t* pData_, size_t dataLength_ )
+Transfer::Transfer(const tRawData& header_, const uint8_t* pData_, size_t dataLength_)
 {
-  m_data.resize(header_.size()+dataLength_);
-  std::copy(header_.begin(),header_.end(),m_data.begin());
-  std::copy(pData_,pData_+dataLength_,&m_data[header_.size()]);
+  m_data.resize(header_.size() + dataLength_);
+  std::copy(header_.begin(), header_.end(), m_data.begin());
+  std::copy(pData_, pData_ + dataLength_, &m_data[header_.size()]);
 }
 
 /*
@@ -88,23 +86,23 @@ Transfer::~Transfer()
 {
   reset();
 }
-  
+
 //--------------------------------------------------------------------------------------------------
 
 void Transfer::reset()
-{  
+{
   m_data.clear();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Transfer::setData( const uint8_t* data_, size_t length_ )
+void Transfer::setData(const uint8_t* data_, size_t length_)
 {
-  if( length_ == 0 || data_ == nullptr )
+  if (length_ == 0 || data_ == nullptr)
     return;
-  
-  m_data.resize( length_ );
-  std::copy(data_,(data_+length_),m_data.begin());
+
+  m_data.resize(length_);
+  std::copy(data_, (data_ + length_), m_data.begin());
 }
 
 //--------------------------------------------------------------------------------------------------

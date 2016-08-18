@@ -48,7 +48,7 @@ void DeviceHandleSAM3XE::disconnect()
 bool DeviceHandleSAM3XE::read(Transfer& transfer_, uint8_t endpoint_)
 {
   int nBytesRead = 0;
-  int result     = m_pUsb->inTransfer(m_deviceAddress, endpoint_, nBytesRead, m_inputBuffer.data());
+  int result = m_pUsb->inTransfer(m_deviceAddress, endpoint_, nBytesRead, m_inputBuffer.data());
 
   if ((0 == result) && (nBytesRead > 0))
   {
@@ -88,9 +88,9 @@ uint32_t DeviceHandleSAM3XE::Init(uint32_t parent_, uint32_t port_, uint32_t low
 {
   uint8_t buf[sizeof(USB_DEVICE_DESCRIPTOR)];
 
-  uint32_t retCode           = 0;
-  UsbDevice* pDevice         = nullptr;
-  EpInfo* pEpInfo_old        = nullptr;
+  uint32_t retCode = 0;
+  UsbDevice* pDevice = nullptr;
+  EpInfo* pEpInfo_old = nullptr;
   uint32_t nOfConfigurations = 0;
 
   if (m_deviceAddress)
@@ -99,7 +99,7 @@ uint32_t DeviceHandleSAM3XE::Init(uint32_t parent_, uint32_t port_, uint32_t low
   }
 
   AddressPool& addrPool = m_pUsb->GetAddressPool();
-  pDevice               = addrPool.GetUsbDevicePtr(0);
+  pDevice = addrPool.GetUsbDevicePtr(0);
 
   if (!pDevice)
   {
@@ -110,11 +110,11 @@ uint32_t DeviceHandleSAM3XE::Init(uint32_t parent_, uint32_t port_, uint32_t low
     return USB_ERROR_EPINFO_IS_NULL;
   }
 
-  pEpInfo_old       = pDevice->epinfo;
-  pDevice->epinfo   = m_epInfo;
+  pEpInfo_old = pDevice->epinfo;
+  pDevice->epinfo = m_epInfo;
   pDevice->lowspeed = lowspeed_;
-  retCode           = m_pUsb->getDevDescr(0, 0, sizeof(USB_DEVICE_DESCRIPTOR), static_cast<uint8_t*>(buf));
-  pDevice->epinfo   = pEpInfo_old;
+  retCode = m_pUsb->getDevDescr(0, 0, sizeof(USB_DEVICE_DESCRIPTOR), static_cast<uint8_t*>(buf));
+  pDevice->epinfo = pEpInfo_old;
 
   if (retCode != 0)
   {
@@ -236,7 +236,7 @@ uint32_t DeviceHandleSAM3XE::Release()
   m_pUsb->GetAddressPool().FreeAddress(m_deviceAddress);
 
   m_deviceAddress = 0;
-  m_ready         = false;
+  m_ready = false;
 
   return 0;
 }
@@ -257,7 +257,7 @@ void DeviceHandleSAM3XE::EndpointXtract(uint32_t conf_,
   const USB_ENDPOINT_DESCRIPTOR* pEp_)
 {
   M_LOG("EndpointXtract conf: " << conf << " iface: " << iface << " proto: " << proto_);
-  uint8_t index        = 0;
+  uint8_t index = 0;
   uint8_t pollInterval = 1;
 
   bConfNum = conf;
@@ -266,7 +266,7 @@ void DeviceHandleSAM3XE::EndpointXtract(uint32_t conf_,
       && (pEp_->bEndpointAddress & 0x80) == 0x80)
   {
     // Interrupt In endpoint found
-    index                    = 1;
+    index = 1;
     epInfo[index].bmNakPower = USB_NAK_NOWAIT;
     M_LOG("Found Interrupt EP, index #%u\r\n", index);
   }

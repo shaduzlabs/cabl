@@ -66,7 +66,8 @@ int cbHotplug(
   }
   else if (LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT == event_)
   {
-    // Device name and serial number are unknown because stringDescriptor cannot be used (pHandle is null)
+    // Device name and serial number are unknown because stringDescriptor cannot be used (pHandle is
+    // null)
     sl::cabl::DeviceDescriptor deviceDescriptor(
       "", sl::cabl::DeviceDescriptor::Type::USB, descriptor.idVendor, descriptor.idProduct, "");
 
@@ -102,8 +103,8 @@ DriverLibUSB::DriverLibUSB() : m_usbThreadRunning(true)
 #endif
 
   libusb_hotplug_register_callback(m_pContext,
-    static_cast<libusb_hotplug_event>(LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED
-                                      | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
+    static_cast<libusb_hotplug_event>(
+      LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
     static_cast<libusb_hotplug_flag>(0),
     LIBUSB_HOTPLUG_MATCH_ANY,
     LIBUSB_HOTPLUG_MATCH_ANY,
@@ -112,14 +113,13 @@ DriverLibUSB::DriverLibUSB() : m_usbThreadRunning(true)
     this,
     m_pHotplugHandle);
 
-  m_usbThread = std::thread([this]()
+  m_usbThread = std::thread([this]() {
+    while (m_usbThreadRunning)
     {
-      while (m_usbThreadRunning)
-      {
-        libusb_handle_events(m_pContext);
-        //      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-      }
-    });
+      libusb_handle_events(m_pContext);
+      //      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+  });
 
   M_LOG("[LibUSB] initialization");
 }
@@ -206,8 +206,7 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
     libusb_device* device = devices[i];
     struct libusb_device_descriptor descriptor;
     libusb_get_device_descriptor(device, &descriptor);
-    if (descriptor.idVendor != device_.vendorId()
-        || descriptor.idProduct != device_.productId())
+    if (descriptor.idVendor != device_.vendorId() || descriptor.idProduct != device_.productId())
     {
       continue;
     }

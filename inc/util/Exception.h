@@ -19,10 +19,9 @@ namespace util
 class Exception : public std::exception
 {
 public:
-
-  Exception(std::string errorMessage_)
-    : m_errorMessage(std::move(errorMessage_))
-  {}
+  Exception(std::string errorMessage_) : m_errorMessage(std::move(errorMessage_))
+  {
+  }
 
   const char* what() const noexcept override
   {
@@ -35,9 +34,7 @@ public:
   }
 
 private:
-
   std::string m_errorMessage;
-
 };
 
 //--------------------------------------------------------------------------------------------------

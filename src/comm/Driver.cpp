@@ -6,14 +6,14 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "comm/Driver.h"
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandle.h"
+#include "comm/DriverImpl.h"
 
 #include "comm/drivers/Probe/DriverProbe.h"
 
-#if defined (__SAM3X8E__)
+#if defined(__SAM3X8E__)
 #include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
-#elif defined (__MAX3421E__)
+#elif defined(__MAX3421E__)
 #include "comm/drivers/MAX3421E/DriverMAX3421E.h"
 #else
 #include "comm/drivers/HIDAPI/DriverHIDAPI.h"
@@ -30,62 +30,61 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-Driver::Driver( Type type_ )
+Driver::Driver(Type type_)
 {
-  switch( type_ )
+  switch (type_)
   {
-#if defined (__SAM3X8E__)
+#if defined(__SAM3X8E__)
     case Type::SAM3X8E:
-      m_pImpl.reset( new DriverSAM3X8E );
+      m_pImpl.reset(new DriverSAM3X8E);
       break;
-#elif defined (__MAX3421E__)
+#elif defined(__MAX3421E__)
     case Type::MAX3421E:
-      m_pImpl.reset( new DriverMAX3421E );
+      m_pImpl.reset(new DriverMAX3421E);
       break;
 #else
     case Type::HIDAPI:
-      m_pImpl.reset( new DriverHIDAPI );
+      m_pImpl.reset(new DriverHIDAPI);
       break;
     case Type::LibUSB:
-      m_pImpl.reset( new DriverLibUSB );
+      m_pImpl.reset(new DriverLibUSB);
       break;
     case Type::MIDI:
-      m_pImpl.reset( new DriverMIDI );
+      m_pImpl.reset(new DriverMIDI);
       break;
 #endif
     case Type::Probe:
     default:
-      m_pImpl.reset( new DriverProbe );
+      m_pImpl.reset(new DriverProbe);
       break;
-    }
+  }
 }
-  
+
 //--------------------------------------------------------------------------------------------------
-  
+
 Driver::~Driver()
 {
-
 }
-  
+
 //--------------------------------------------------------------------------------------------------
-  
+
 Driver::tCollDeviceDescriptor Driver::enumerate()
 {
   return m_pImpl->enumerate();
 }
-  
+
 //--------------------------------------------------------------------------------------------------
-  
-tPtr<DeviceHandle> Driver::connect( const DeviceDescriptor& device_  )
+
+tPtr<DeviceHandle> Driver::connect(const DeviceDescriptor& device_)
 {
-  return tPtr<DeviceHandle>( new DeviceHandle(m_pImpl->connect( device_ )));
+  return tPtr<DeviceHandle>(new DeviceHandle(m_pImpl->connect(device_)));
 }
 
 //--------------------------------------------------------------------------------------------------
-  
-void Driver::setHotplugCallback( Driver::tCbHotplug cbHotplug_)
+
+void Driver::setHotplugCallback(Driver::tCbHotplug cbHotplug_)
 {
-  m_pImpl->setHotplugCallback( cbHotplug_ );
+  m_pImpl->setHotplugCallback(cbHotplug_);
 }
 
 //--------------------------------------------------------------------------------------------------

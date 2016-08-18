@@ -17,11 +17,11 @@
 
 //--------------------------------------------------------------------------------------------------
 
-#include "devices/DeviceRegistrar.h"
-#include "comm/DeviceHandle.h"
 #include "comm/DeviceDescriptor.h"
-#include "util/LedColor.h"
+#include "comm/DeviceHandle.h"
+#include "devices/DeviceRegistrar.h"
 #include "gfx/DrawingContext.h"
+#include "util/LedColor.h"
 
 namespace sl
 {
@@ -38,8 +38,7 @@ class Device
 {
 
 public:
-
-// clang-format off
+  // clang-format off
 
   enum class Button : uint8_t
   {
@@ -255,7 +254,7 @@ public:
     Unknown,
   };
 
-// clang-format on
+  // clang-format on
 
   using tCbRender = std::function<void(void)>;
   using tCbDisconnect = std::function<void(void)>;
@@ -282,21 +281,27 @@ public:
   void setDeviceHandle(tPtr<DeviceHandle> pDeviceHandle_)
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    m_pDeviceHandle  = std::move(pDeviceHandle_);
+    m_pDeviceHandle = std::move(pDeviceHandle_);
   }
-  
+
   void resetDeviceHandle()
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    m_pDeviceHandle  = nullptr;
+    m_pDeviceHandle = nullptr;
   }
 
   virtual void init() = 0;
 
   virtual GDisplay* displayGraphic(size_t displayIndex_) = 0;
   virtual LCDDisplay* displayLCD(size_t displayIndex_) = 0;
-  virtual size_t numOfGraphicDisplays() { return 0; }
-  virtual size_t numOfLCDDisplays() { return 0; }
+  virtual size_t numOfGraphicDisplays()
+  {
+    return 0;
+  }
+  virtual size_t numOfLCDDisplays()
+  {
+    return 0;
+  }
 
   virtual DrawingContext& drawingContext(size_t contextIndex_)
   {
@@ -324,7 +329,7 @@ public:
   {
     m_cbRender = cbRender_;
   }
-  
+
   void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_)
   {
     m_cbButtonChanged = cbButtonChanged_;
@@ -355,43 +360,42 @@ public:
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     return static_cast<bool>(m_pDeviceHandle);
   }
-  
-protected:
 
+protected:
   virtual bool tick() = 0;
 
-  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_ )
+  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_)
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    
-    if(m_pDeviceHandle)
+
+    if (m_pDeviceHandle)
     {
       return m_pDeviceHandle->write(transfer_, endpoint_);
     }
-    
+
     return false;
   }
 
   bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_)
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    if(m_pDeviceHandle)
+    if (m_pDeviceHandle)
     {
       return m_pDeviceHandle->read(transfer_, endpoint_);
     }
-    
+
     return false;
   }
-  
+
   void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    if(m_pDeviceHandle)
+    if (m_pDeviceHandle)
     {
       return m_pDeviceHandle->readAsync(endpoint_, cbRead_);
     }
   }
-  
+
 
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
   {
@@ -436,23 +440,23 @@ protected:
 private:
   bool onTick()
   {
-    if(!hasDeviceHandle())
+    if (!hasDeviceHandle())
     {
       return false;
     }
-    
+
     render();
-	if (!m_connected)
-	{
+    if (!m_connected)
+    {
       return true;
-	}
+    }
     return tick();
   }
 
   void onConnect()
   {
     init();
-	m_connected = true;
+    m_connected = true;
   }
 
   void onDisconnect()
@@ -464,7 +468,7 @@ private:
       m_cbDisconnect();
     }
   }
-  
+
   void render()
   {
     if (m_cbRender)
@@ -473,9 +477,9 @@ private:
     }
   }
 
-  bool			   m_connected{ false };
-  tCbDisconnect    m_cbDisconnect;
-  tCbRender        m_cbRender;
+  bool m_connected{false};
+  tCbDisconnect m_cbDisconnect;
+  tCbRender m_cbRender;
 
   tCbButtonChanged m_cbButtonChanged;
   tCbEncoderChanged m_cbEncoderChanged;
@@ -483,7 +487,7 @@ private:
   tCbKeyChanged m_cbKeyChanged;
   tCbPotentiometerChanged m_cbPotentiometerChanged;
 
-  std::mutex         m_mtxDeviceHandle;
+  std::mutex m_mtxDeviceHandle;
   tPtr<DeviceHandle> m_pDeviceHandle;
 
   friend class Coordinator;

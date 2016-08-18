@@ -12,8 +12,8 @@
 #include "devices/Device.h"
 #include "devices/DeviceFactory.h"
 
-#include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
 #include "comm/drivers/SAM3X8E/DeviceHandleSAM3X8E.h"
+#include "comm/drivers/SAM3X8E/DriverSAM3X8E.h"
 
 #include "util/Version.h"
 

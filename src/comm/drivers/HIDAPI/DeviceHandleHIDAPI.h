@@ -9,8 +9,8 @@
 
 #include <array>
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #include <hidapi.h>
 
@@ -24,21 +24,19 @@ namespace cabl
 class DeviceHandleHIDAPI : public DeviceHandleImpl
 {
 public:
-
   DeviceHandleHIDAPI(hid_device*);
   ~DeviceHandleHIDAPI();
 
   void disconnect() override;
 
-  bool read( Transfer&, uint8_t ) override;
-  bool write( const Transfer& , uint8_t) override;
+  bool read(Transfer&, uint8_t) override;
+  bool write(const Transfer&, uint8_t) override;
 
   static constexpr unsigned kInputBufferSize{512};
-  
-private:
 
+private:
   std::array<uint8_t, kInputBufferSize> m_inputBuffer;
-  hid_device*                           m_pCurrentDevice;
+  hid_device* m_pCurrentDevice;
 };
 
 //--------------------------------------------------------------------------------------------------

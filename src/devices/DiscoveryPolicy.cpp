@@ -22,25 +22,25 @@ namespace devices
 
 bool DiscoveryPolicy::matches(const DeviceDescriptor& deviceDescriptor_)
 {
-  if(type != DeviceDescriptor::Type::Unknown && type != deviceDescriptor_.type() )
+  if (type != DeviceDescriptor::Type::Unknown && type != deviceDescriptor_.type())
   {
     return false;
   }
-  if(vendorId != 0 && vendorId != deviceDescriptor_.vendorId() )
+  if (vendorId != 0 && vendorId != deviceDescriptor_.vendorId())
   {
     return false;
   }
-  if(productId != 0 && productId != deviceDescriptor_.productId() )
+  if (productId != 0 && productId != deviceDescriptor_.productId())
   {
     return false;
   }
-  
-  if(name != "*")
+
+  if (name != "*")
   {
-    std::regex expression( name );
+    std::regex expression(name);
     std::smatch match;
-    std::regex_match( deviceDescriptor_.name(), match, expression );
-    if ( match.size() < 1 )
+    std::regex_match(deviceDescriptor_.name(), match, expression);
+    if (match.size() < 1)
     {
       return false;
     }

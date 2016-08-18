@@ -45,7 +45,7 @@ bool DeviceHandleHIDAPI::read(Transfer& transfer_, uint8_t)
 {
   int nBytesRead = hid_read(m_pCurrentDevice, m_inputBuffer.data(), kInputBufferSize);
 
-  if(nBytesRead ==0)
+  if (nBytesRead == 0)
   {
     // No data available
     return true;

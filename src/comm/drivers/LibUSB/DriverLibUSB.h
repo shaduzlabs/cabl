@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #include <atomic>
 #include <thread>
@@ -25,15 +25,13 @@ namespace cabl
 class DriverLibUSB : public DriverImpl
 {
 public:
-
-
   DriverLibUSB();
   ~DriverLibUSB() override;
 
   Driver::tCollDeviceDescriptor enumerate() override;
   tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) override;
 
-  void setHotplugCallback( Driver::tCbHotplug ) override;
+  void setHotplugCallback(Driver::tCbHotplug) override;
 
   void hotplug(const DeviceDescriptor&, bool);
 

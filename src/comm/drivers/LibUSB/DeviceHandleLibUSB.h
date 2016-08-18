@@ -9,8 +9,8 @@
 
 #include <array>
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #include <libusb.h>
 
@@ -25,7 +25,6 @@ namespace cabl
 class DeviceHandleLibUSB : public DeviceHandleImpl
 {
 public:
-
   DeviceHandleLibUSB(libusb_device_handle*);
   ~DeviceHandleLibUSB();
 
@@ -37,16 +36,15 @@ public:
   void readAsync(uint8_t endpoint_, DeviceHandle::tCbRead) override;
 
   static constexpr unsigned kInputBufferSize{512};
-  
-private:
 
+private:
   void readAsyncImpl(uint8_t endpoint_);
   static void __stdcall cbTransfer(libusb_transfer*);
 
   std::array<uint8_t, kInputBufferSize> m_inputBuffer;
-  libusb_device_handle*                 m_pCurrentDevice;
-  
-  DeviceHandle::tCbRead                 m_cbRead;
+  libusb_device_handle* m_pCurrentDevice;
+
+  DeviceHandle::tCbRead m_cbRead;
 };
 
 //--------------------------------------------------------------------------------------------------

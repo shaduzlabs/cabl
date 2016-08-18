@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
-#include <thread>
 #include <algorithm>
+#include <thread>
 
 #include <RtMidi.h>
 #include <unmidify.hpp>
@@ -26,13 +26,11 @@ namespace cabl
 class DriverMIDI : public DriverImpl
 {
 public:
-
   DriverMIDI();
   ~DriverMIDI() override;
 
   Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
-
+  tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) override;
 };
 
 //--------------------------------------------------------------------------------------------------

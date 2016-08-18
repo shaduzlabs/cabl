@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DriverImpl.h"
 #include "comm/DeviceHandleImpl.h"
+#include "comm/DriverImpl.h"
 
 #include <hidapi.h>
 
@@ -20,15 +20,13 @@ namespace cabl
 class DriverHIDAPI : public DriverImpl
 {
 public:
-  
   DriverHIDAPI();
   ~DriverHIDAPI() override;
-  
+
   Driver::tCollDeviceDescriptor enumerate() override;
-  tPtr<DeviceHandleImpl>        connect(const DeviceDescriptor&) override;
-  
+  tPtr<DeviceHandleImpl> connect(const DeviceDescriptor&) override;
 };
-  
+
 //--------------------------------------------------------------------------------------------------
 
 } // cabl
