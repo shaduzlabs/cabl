@@ -2,6 +2,7 @@ message (STATUS "Checking for HIDAPI...")
 find_path(
   HIDAPI_INCLUDE_DIRS hidapi.h
   PATH_SUFFIXES hidapi
+  HINTS /tmp/hidapi-master/hidapi # for travis-ci linux build
 )
 
 if(NOT WIN32)
