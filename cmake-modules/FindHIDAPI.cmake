@@ -13,6 +13,7 @@ if(NOT WIN32)
     PATHS
       /usr/lib
       /usr/local/lib
+      /tmp/hidapi-master/_local_install/lib # for travis-ci linux build
     )
 
 endif()
