@@ -4,17 +4,20 @@ sudo: false
 matrix:
   include:
 
+    # 2/ Linux Clang Builds
     - os: linux
       compiler: clang
       addons: &clang37
         apt:
           sources: ['llvm-toolchain-precise-3.7', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.7', 'gfortran', 'libusb-1.0-0-dev', 'libhidapi-dev']
+          packages: ['clang-3.7', 'gfortran', 'libusb-1.0-0-dev']
       env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
 
     - os: linux
       compiler: clang
       addons: *clang37
+        apt:
+          packages: ['libusb-1.0-0-dev']
       env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
 
 
@@ -23,12 +26,14 @@ matrix:
       addons: &clang38
         apt:
           sources: ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.8', 'gfortran']
+          packages: ['clang-3.8', 'gfortran', 'libusb-1.0-0-dev']
       env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
 
     - os: linux
       compiler: clang
       addons: *clang38
+        apt:
+          packages: ['libusb-1.0-0-dev']
       env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
 
 
@@ -38,12 +43,14 @@ matrix:
       addons: &gcc49
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9', 'gcc-4.9', 'gfortran-4.9']
+          packages: ['g++-4.9', 'gcc-4.9', 'gfortran-4.9', 'libusb-1.0-0-dev']
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='Release'
 
     - os: linux
       compiler: gcc
       addons: *gcc49
+        apt:
+          packages: ['libusb-1.0-0-dev']
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='Debug'
 
 
@@ -52,12 +59,14 @@ matrix:
       addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+          packages: ['g++-5', 'gcc-5', 'gfortran-5', 'libusb-1.0-0-dev']
       env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release'
 
     - os: linux
       compiler: gcc
       addons: *gcc5
+        apt:
+          packages: ['libusb-1.0-0-dev']
       env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
 
 
@@ -84,7 +93,7 @@ matrix:
       env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
 
 
-    # 4/ OSX GCC5 Builds
+    # 4/ OSX GCC Builds
     - os: osx
       osx_image: xcode6.4
       compiler: gcc
