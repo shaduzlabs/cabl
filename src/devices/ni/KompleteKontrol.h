@@ -97,7 +97,7 @@ template <uint8_t NKEYS>
 class KompleteKontrol final : public KompleteKontrolBase
 {
 public:
-  static constexpr uint8_t kKK_keysLedDataSize = NKEYS * 3;
+  static constexpr unsigned kKK_keysLedDataSize = NKEYS * 3U;
 
   unsigned numKeys() const override
   {
