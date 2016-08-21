@@ -399,6 +399,7 @@ set(
 )
 
 if(BUILD_SHARED_LIBS)
+  message(STATUS "BUILD_SHARED_LIBS is ON")
   add_library( cabl SHARED ${cabl_ALL} )
   set_target_properties(
     cabl
@@ -430,6 +431,7 @@ if(BUILD_SHARED_LIBS)
 endif(BUILD_SHARED_LIBS)
 
 if(BUILD_STATIC_LIBS)
+  message(STATUS "BUILD_STATIC_LIBS is ON")
   add_library( cabl-static STATIC ${cabl_ALL} )
   set_target_properties(
     cabl-static
