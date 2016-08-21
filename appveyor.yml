@@ -13,7 +13,7 @@ before_build:
 
     cd build
 
-    cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release ..
+    cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..
 build:
   project: c:\SLBuild\cabl\build\cabl.sln
   verbosity: normal
