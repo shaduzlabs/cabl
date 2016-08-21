@@ -53,7 +53,7 @@ matrix:
       addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['g++-5', 'gcc-5', 'gfortran-5', 'libudev-dev', 'libjack-dev', 'libasound2-dev', 'libboost-python-dev']
       env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release'
 
     - os: linux
@@ -199,6 +199,15 @@ install:
       make
     else
       brew install rtmidi
+    fi
+    
+  ############################################################################
+  # Install Boost.python
+  ############################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew install boost --with-python
+      brew install boost-python
     fi
 
 
