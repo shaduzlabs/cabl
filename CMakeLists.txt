@@ -532,7 +532,7 @@ if( UNIX )
     endif(BUILD_STATIC_LIBS)
 
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/app          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/client        DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
