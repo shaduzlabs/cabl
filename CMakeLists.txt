@@ -21,11 +21,40 @@ set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
 set(DEBUG_SUFFIX          "_d")
 
-# The version number.
+# Version ---------------------------------------------------------------------------------------- #
+
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
 set (CABL_VERSION_MICRO 3)
 set (CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
+
+configure_file (
+  "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
+  "${PROJECT_BINARY_DIR}/cabl-config.h"
+)
+
+# Dependencies ----------------------------------------------------------------------------------- #
+
+find_package(Doxygen)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
+  addHIDAPI()
+  addLibUSB()
+  addRtMidi()
+else()
+  find_package(HIDAPI REQUIRED)
+  find_package(LibUSB REQUIRED)
+  find_package(RtMidi REQUIRED)
+endif()
+
+addUnmidify()
+
+find_package(Boost  COMPONENTS python)
+if(Boost_PYTHON_FOUND)
+  find_package(PythonLibs)
+endif()
+
+# Options ---------------------------------------------------------------------------------------- #
 
 option(BUILD_SHARED_LIBS "build as shared library" OFF)
 option(BUILD_STATIC_LIBS "build as static library" ON)
@@ -39,15 +68,9 @@ endif()
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 
 option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
-option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
+option(CABL_DOCS      "Build cabl docs"      ${DOXYGEN_FOUND})
 option(CABL_PYTHON    "Build python binding" ${IS_CABL})
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
-  "${PROJECT_BINARY_DIR}/cabl-config.h"
-)
-include_directories("${PROJECT_BINARY_DIR}")
 
 # OSX specific ----------------------------------------------------------------------------------- #
 
@@ -64,27 +87,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
-  addHIDAPI()
-  addLibUSB()
-  addRtMidi()
-else()
-  find_package(HIDAPI REQUIRED)
-  find_package(LibUSB REQUIRED)
-  find_package(RtMidi REQUIRED)
-endif()
-
-find_package(Boost  COMPONENTS python)
-if(Boost_PYTHON_FOUND)
-  find_package(PythonLibs)
-endif()
-
-# Unmidify --------------------------------------------------------------------------------------- #
-
-addUnmidify()
-
-
 # Includes --------------------------------------------------------------------------------------- #
+
+include_directories("${PROJECT_BINARY_DIR}")
 
 set(
   inc_client_INCLUDES
@@ -519,6 +524,7 @@ configure_file (
 endif()
 
 # Unit tests ------------------------------------------------------------------------------------- #
+
 if(${CABL_TEST})
   add_subdirectory(test)
 endif()
@@ -526,7 +532,6 @@ endif()
 # Documentation (doxygen) ------------------------------------------------------------------------ #
 
 if(${CABL_DOCS})
-  find_package(Doxygen)
 
   if(NOT DOXYGEN_FOUND)
 
