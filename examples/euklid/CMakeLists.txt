@@ -46,4 +46,10 @@ set_target_properties(
     OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
 )
 
+if(RTMIDI_LOCAL_BUILD)
+  target_link_libraries( ${PROJECT_NAME} PUBLIC rtmidi)
+else()
+  target_link_libraries( ${PROJECT_NAME} PUBLIC ${RTMIDI_LIBRARIES})
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static)
