@@ -170,6 +170,7 @@ install:
       ./autogen.sh && ./configure --prefix=`pwd`/_local_install
       make
       make install
+      export PKG_CONFIG_PATH="`pwd`/_local_install/lib/pkgconfig:$PKG_CONFIG_PATH"
     else
       brew install libusb
     fi
