@@ -50,15 +50,20 @@ option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON    "Build python binding" ${IS_CABL})
+option(CABL_TIDY      "Clang-tidy target"    ${IS_CABL})
 
 # Dependencies ----------------------------------------------------------------------------------- #
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ( ${CABL_FORCE_BUILD_DEPENDENCIES} AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin") )
   addLibUSB()
+else()
+  find_package(LibUSB REQUIRED)
+endif()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
   addHIDAPI()
   addRtMidi()
 else()
-  find_package(LibUSB REQUIRED)
   find_package(HIDAPI REQUIRED)
   find_package(RtMidi REQUIRED)
 endif()
@@ -84,6 +89,15 @@ if(${CABL_DOCS})
     set(CABL_DOCS OFF)
   endif()
 endif()
+
+# If clang-tidy is not available, just display a warning and skip the analysis target
+#if(${CABL_TIDY})
+#  find_package(clang-tidy)
+#  if(NOT CLANG_TIDY_FOUND)
+#    message(WARNING "Clang-tidy has not been found, the analysis target will not be created.")
+#    set(CABL_TIDY OFF)
+#  endif()
+#endif()
 
 # OSX specific ----------------------------------------------------------------------------------- #
 
@@ -577,6 +591,17 @@ if(${CABL_DOCS})
   endif()
 endif()
 
+# Clang-tidy ------------------------------------------------------------------------------------- #
+
+# add_custom_target(
+#   clang-tidy
+#   COMMAND /usr/local/bin/clang-tidy
+#   ${cabl_ALL}
+#   -config=''
+#   --
+#   -std=c++14
+#   $<TARGET_PROPERTY:cabl-static,INTERFACE_INCLUDE_DIRECTORIES>
+# )
 
 # Examples --------------------------------------------------------------------------------------- #
 if(CABL_EXAMPLES)
