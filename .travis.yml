@@ -206,6 +206,7 @@ install:
   ############################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew unlink boost
       brew install boost --with-python
       brew install boost-python
     fi
