@@ -162,10 +162,11 @@ function (addLibUSB)
         OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
     )
 
+    target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS})
     if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/msvc)
+      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/msvc)
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/Xcode)
+      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/Xcode)
     endif()
 
   endif()
