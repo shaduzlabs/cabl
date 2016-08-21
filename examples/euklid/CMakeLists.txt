@@ -47,3 +47,9 @@ set_target_properties(
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static)
+
+if(RTMIDI_LOCAL_BUILD)
+  target_link_libraries( ${PROJECT_NAME} PUBLIC rtmidi)
+else()
+  target_link_libraries( ${PROJECT_NAME} PUBLIC ${RTMIDI_LIBRARIES})
+endif()
