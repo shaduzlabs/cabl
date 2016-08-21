@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #######
 
-set (CMAKE_C_FLAGS "$CMAKE_C_FLAGS -fPIC")
-set (CMAKE_CXX_FLAGS "$CMAKE_CXX_FLAGS -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 if( CMAKE_CXX_COMPILER_ID MATCHES "GNU|AppleClang|Clang" )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=256 -std=c++11")
