@@ -82,7 +82,7 @@ if(${CABL_DOCS})
   if(NOT DOXYGEN_FOUND)
     message(WARNING "Doxygen has not been found, the documentation will not be created.")
     set(CABL_DOCS OFF)
-  else()
+  endif()
 endif()
 
 # OSX specific ----------------------------------------------------------------------------------- #
