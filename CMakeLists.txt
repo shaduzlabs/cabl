@@ -257,7 +257,6 @@ set(
 set(
   src_devices_SRCS
     src/devices/Coordinator.cpp
-    src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
     src/devices/DiscoveryPolicy.cpp
 )
@@ -342,11 +341,6 @@ set(
     src/util/Version.cpp
 )
 
-set(
-  src_SRCS
-    src/cabl.cpp
-)
-
 source_group("src\\client"           FILES ${src_client_SRCS})
 source_group("src\\comm"             FILES ${src_comm_SRCS})
 #source_group("src\\comm\\drivers")
@@ -368,8 +362,6 @@ source_group("src\\gfx\\fonts"       FILES ${src_gfx_fonts_SRCS})
 source_group("src\\gfx\\fonts\\data" FILES ${src_gfx_fonts_data_SRCS})
 
 source_group("src\\util"             FILES ${src_util_SRCS})
-
-source_group("src"                   FILES ${src_SRCS})
 
 set(
   cabl_SRCS
@@ -417,10 +409,22 @@ if(BUILD_SHARED_LIBS)
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
 
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries( cabl PUBLIC rtmidi libusb hidapi)
+  if(LIBUSB_LOCAL_BUILD)
+    target_link_libraries( cabl PUBLIC libusb)
   else()
-    target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+    target_link_libraries( cabl PUBLIC ${LIBUSB_LIBRARIES})
+  endif()
+
+  if(HIDAPI_LOCAL_BUILD)
+    target_link_libraries( cabl PUBLIC hidapi)
+  else()
+    target_link_libraries( cabl PUBLIC ${HIDAPI_LIBRARIES})
+  endif()
+
+  if(RTMIDI_LOCAL_BUILD)
+    target_link_libraries( cabl PUBLIC rtmidi)
+  else()
+    target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES})
   endif()
 
 endif(BUILD_SHARED_LIBS)
@@ -435,10 +439,22 @@ if(BUILD_STATIC_LIBS)
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
 
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries( cabl-static PUBLIC rtmidi libusb hidapi)
+  if(LIBUSB_LOCAL_BUILD)
+    target_link_libraries( cabl-static PUBLIC libusb)
   else()
-    target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+    target_link_libraries( cabl-static PUBLIC ${LIBUSB_LIBRARIES})
+  endif()
+
+  if(HIDAPI_LOCAL_BUILD)
+    target_link_libraries( cabl-static PUBLIC hidapi)
+  else()
+    target_link_libraries( cabl-static PUBLIC ${HIDAPI_LIBRARIES})
+  endif()
+
+  if(RTMIDI_LOCAL_BUILD)
+    target_link_libraries( cabl-static PUBLIC rtmidi)
+  else()
+    target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES})
   endif()
 
 endif(BUILD_STATIC_LIBS)
@@ -466,14 +482,26 @@ if(CABL_PYTHON)
         PREFIX              ""
     )
 
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-      target_link_libraries( pycabl PUBLIC rtmidi libusb hidapi)
+    if(LIBUSB_LOCAL_BUILD)
+      target_link_libraries( pycabl PUBLIC libusb)
     else()
-      target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES} ${LIBUSB_LIBRARIES} ${HIDAPI_LIBRARIES})
+      target_link_libraries( pycabl PUBLIC ${LIBUSB_LIBRARIES})
+    endif()
+
+    if(HIDAPI_LOCAL_BUILD)
+      target_link_libraries( pycabl PUBLIC hidapi)
+    else()
+      target_link_libraries( pycabl PUBLIC ${HIDAPI_LIBRARIES})
+    endif()
+
+    if(RTMIDI_LOCAL_BUILD)
+      target_link_libraries( pycabl PUBLIC rtmidi)
+    else()
+      target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES})
     endif()
 
     target_link_libraries( pycabl PUBLIC ${Boost_PYTHON_LIBRARY} ${PYTHON_LIBRARIES})
-    target_include_directories(pycabl PUBLIC ${PYTHON_INCLUDE_DIRS})
+    target_include_directories(pycabl PUBLIC ${PYTHON_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
   endif()
 endif()
 
