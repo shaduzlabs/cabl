@@ -200,7 +200,7 @@ install:
     else
       brew install rtmidi
     fi
-    
+
   ############################################################################
   # Install Boost.python
   ############################################################################
@@ -261,5 +261,5 @@ script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build
   - cd build
-  - CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+  - CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON
   - make -j 2 check
