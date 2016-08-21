@@ -10,14 +10,14 @@ matrix:
       addons: &clang37
         apt:
           sources: ['llvm-toolchain-precise-3.7', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.7', 'gfortran', 'libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['clang-3.7', 'gfortran', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
 
     - os: linux
       compiler: clang
       addons: &clang37
         apt:
-          packages: ['libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
 
 
@@ -26,14 +26,14 @@ matrix:
       addons: &clang38
         apt:
           sources: ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.8', 'gfortran', 'libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['clang-3.8', 'gfortran', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
 
     - os: linux
       compiler: clang
       addons: &clang38
         apt:
-          packages: ['libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
 
 
@@ -43,14 +43,14 @@ matrix:
       addons: &gcc49
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9', 'gcc-4.9', 'gfortran-4.9', 'libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['g++-4.9', 'gcc-4.9', 'gfortran-4.9', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='Release'
 
     - os: linux
       compiler: gcc
       addons: &gcc49
         apt:
-          packages: ['libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' BUILD_TYPE='Debug'
 
 
@@ -59,14 +59,14 @@ matrix:
       addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5', 'libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['g++-5', 'gcc-5', 'gfortran-5', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release'
 
     - os: linux
       compiler: gcc
       addons: &gcc5
         apt:
-          packages: ['libusb-1.0-0-dev', 'libudev-dev', 'libjack-dev', 'libasound2-dev']
+          packages: ['libudev-dev', 'libjack-dev', 'libasound2-dev']
       env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
 
 
@@ -162,7 +162,15 @@ install:
   # Install LibUSB
   ############################################################################
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O /tmp/libusb-1.0.tar.gz
+      cd /tmp
+      tar -zxvf libusb-1.0.tar.gz
+      cd libusb-1.0.20
+      ./autogen.sh && ./configure --prefix=`pwd`/_local_install
+      make
+      make install
+    else
       brew install libusb
     fi
 

@@ -55,6 +55,7 @@ else (LIBUSB_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
       /usr/local/include
       /opt/local/include
       /sw/include
+      /tmp/libusb-1.0.20/_local_install/include # for travis-ci linux build
 	PATH_SUFFIXES
 	  libusb-1.0
   )
@@ -67,6 +68,7 @@ else (LIBUSB_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
       /usr/local/lib
       /opt/local/lib
       /sw/lib
+      /tmp/libusb-1.0.20/_local_install/lib # for travis-ci linux build
   )
 
   set(LIBUSB_INCLUDE_DIRS
