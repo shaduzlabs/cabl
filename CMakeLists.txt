@@ -33,53 +33,66 @@ configure_file (
   "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
 
-# Dependencies ----------------------------------------------------------------------------------- #
-
-find_package(Doxygen)
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
-  addHIDAPI()
-  addLibUSB()
-  addRtMidi()
-else()
-  find_package(HIDAPI REQUIRED)
-  find_package(LibUSB REQUIRED)
-  find_package(RtMidi REQUIRED)
-endif()
-
-addUnmidify()
-
-find_package(Boost  COMPONENTS python)
-if(Boost_PYTHON_FOUND)
-  find_package(PythonLibs)
-endif()
-
 # Options ---------------------------------------------------------------------------------------- #
 
 option(BUILD_SHARED_LIBS "build as shared library" OFF)
 option(BUILD_STATIC_LIBS "build as static library" ON)
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  set(IS_CABL TRUE)
+  set(IS_CABL ON)
 else()
-  set(IS_CABL FALSE)
+  set(IS_CABL OFF)
 endif()
 
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 
 option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
-option(CABL_DOCS      "Build cabl docs"      ${DOXYGEN_FOUND})
+option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON    "Build python binding" ${IS_CABL})
+
+# Dependencies ----------------------------------------------------------------------------------- #
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
+  addLibUSB()
+  addHIDAPI()
+  addRtMidi()
+else()
+  find_package(LibUSB REQUIRED)
+  find_package(HIDAPI REQUIRED)
+  find_package(RtMidi REQUIRED)
+endif()
+
+addUnmidify()
+
+# If Boost.python is not available, just display a warning and skip the python wrapper target
+if(${CABL_PYTHON})
+  find_package(Boost COMPONENTS python)
+  if(Boost_PYTHON_FOUND)
+    find_package(PythonLibs REQUIRED)
+  else()
+    message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
+    set(CABL_PYTHON OFF)
+  endif()
+endif()
+
+# If Doxygen is not available, just display a warning and skip the documentation target
+if(${CABL_DOCS})
+  find_package(Doxygen)
+  if(NOT DOXYGEN_FOUND)
+    message(WARNING "Doxygen has not been found, the documentation will not be created.")
+    set(CABL_DOCS OFF)
+  else()
+endif()
 
 # OSX specific ----------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(CMAKE_MACOSX_RPATH ON)
-  set(CMAKE_SKIP_BUILD_RPATH FALSE)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  set(CMAKE_SKIP_BUILD_RPATH OFF)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH OFF)
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
   list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
   if("${isSystemDir}" STREQUAL "-1")
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
