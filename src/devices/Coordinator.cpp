@@ -6,10 +6,12 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/Coordinator.h"
-#include "devices/DeviceFactory.h"
+
+#include <algorithm>
 
 #include "cabl.h"
 #include "comm/drivers/LibUSB/DriverLibUSB.h"
+#include "devices/DeviceFactory.h"
 
 //--------------------------------------------------------------------------------------------------
 

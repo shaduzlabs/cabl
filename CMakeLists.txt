@@ -36,6 +36,8 @@ else()
   set(IS_CABL FALSE)
 endif()
 
+option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
+
 option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
 option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
@@ -62,7 +64,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
   addHIDAPI()
   addLibUSB()
   addRtMidi()
@@ -70,10 +72,11 @@ else()
   find_package(HIDAPI REQUIRED)
   find_package(LibUSB REQUIRED)
   find_package(RtMidi REQUIRED)
-  find_package(Boost  COMPONENTS python)
-  if(Boost_PYTHON_FOUND)
-    find_package(PythonLibs)
-  endif()
+endif()
+
+find_package(Boost  COMPONENTS python)
+if(Boost_PYTHON_FOUND)
+  find_package(PythonLibs)
 endif()
 
 # Unmidify --------------------------------------------------------------------------------------- #
