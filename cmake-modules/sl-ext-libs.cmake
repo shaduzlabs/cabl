@@ -1,4 +1,4 @@
-
+4
         ##########    Copyright (C) 2015 Vincenzo Pacella
         ##      ##    Distributed under MIT license, see file LICENSE
         ##      ##    or <http://opensource.org/licenses/MIT>
@@ -14,7 +14,7 @@ function (addRtMidi)
   if(DEFINED RTMIDI_INCLUDE_DIRS)
     message(STATUS "RtMidi is already available")
   else()
-    checkout_external_project(rtmidi https://github.com/thestk/rtmidi.git master)
+    checkout_external_project(rtmidi https://github.com/thestk/rtmidi.git a8d1414acb968d06d975a9b17c8d97a476f1e5c0)
     set(RTMIDI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi PARENT_SCOPE)
     set(RTMIDI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/rtmidi/src/rtmidi)
     message(STATUS "RtMidi path: ${RTMIDI_INCLUDE_DIRS}")
@@ -29,18 +29,6 @@ function (addRtMidi)
     if(APPLE)
       target_link_libraries(rtmidi PUBLIC "-framework CoreFoundation" "-framework IOKit")
       target_link_libraries(rtmidi PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)
-      set_target_properties(
-        rtmidi
-        PROPERTIES
-          COMPILE_DEFINITIONS __MACOSX_CORE__
-      )
-    elseif(WIN32)
-      target_link_libraries(rtmidi PUBLIC winmm.lib)
-      set_target_properties(
-        rtmidi
-        PROPERTIES
-          COMPILE_DEFINITIONS __WINDOWS_MM__
-      )
     endif()
 
     set_target_properties(
@@ -49,6 +37,14 @@ function (addRtMidi)
         OUTPUT_NAME         "rtmidi"
         OUTPUT_NAME_DEBUG   "rtmidi${DEBUG_SUFFIX}"
     )
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set_target_properties(
+      rtmidi
+      PROPERTIES
+        COMPILE_DEFINITIONS __MACOSX_CORE__
+    )
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   endif()
 endfunction()
 
@@ -60,7 +56,7 @@ function (addCatch)
   if(DEFINED CATCH_INCLUDE_DIRS)
     message(STATUS "Catch is already available")
   else()
-    checkout_external_project(catch https://github.com/philsquared/Catch.git master)
+    checkout_external_project(catch https://github.com/philsquared/Catch.git 35f510545d55a831372d3113747bf1314ff4f2ef)
     set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include PARENT_SCOPE)
     set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include)
     message(STATUS "Catch path: ${CATCH_INCLUDE_DIRS}")
@@ -105,7 +101,7 @@ function (addLibUSB)
   if(DEFINED LIBUSB_INCLUDE_DIRS)
     message(STATUS "libUSB is already available")
   else()
-    checkout_external_project(libusb https://github.com/libusb/libusb.git master)
+    checkout_external_project(libusb https://github.com/libusb/libusb.git v1.0.21-rc2)
     set(LIBUSB_BASE_DIR ${CMAKE_BINARY_DIR}/libusb/src/libusb/)
     set(LIBUSB_INCLUDE_DIRS ${LIBUSB_BASE_DIR}/libusb ${LIBUSB_BASE_DIR}/libusb/os PARENT_SCOPE)
     set(LIBUSB_INCLUDE_DIRS ${LIBUSB_BASE_DIR}/libusb ${LIBUSB_BASE_DIR}/libusb/os)
@@ -165,11 +161,10 @@ function (addLibUSB)
         OUTPUT_NAME_DEBUG   "libusb${DEBUG_SUFFIX}"
     )
 
-    target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS})
     if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/msvc)
+      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/msvc)
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-      target_include_directories(libusb PRIVATE ${LIBUSB_BASE_DIR}/Xcode)
+      target_include_directories(libusb PUBLIC ${LIBUSB_INCLUDE_DIRS} ${LIBUSB_BASE_DIR}/Xcode)
     endif()
 
   endif()
@@ -182,7 +177,7 @@ function (addHIDAPI)
   if(DEFINED HIDAPI_INCLUDE_DIRS)
     message(STATUS "HIDAPI is already available: ${HIDAPI_INCLUDE_DIRS}")
   else()
-    checkout_external_project(hidapi https://github.com/signal11/hidapi.git master)
+    checkout_external_project(hidapi https://github.com/signal11/hidapi.git b5b2e1779b6cd2edda3066bbbf0921a2d6b1c3c0)
     set(HIDAPI_BASE_DIR ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/)
     set(HIDAPI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi PARENT_SCOPE)
     set(HIDAPI_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/hidapi/src/hidapi/hidapi)
