@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 0.0.{build}
 configuration:
 - Release
 - Debug
@@ -42,3 +42,16 @@ artifacts:
   name: cabl (static)
 - path: build-$(PLATFORM)/$(CONFIGURATION)/cabl.dll
   name: cabl (dll)
+deploy:
+- provider: Environment
+  name: cabl-win-x64
+  on:
+    branch: develop
+    CONFIGURATION: Release
+    PLATFORM: x64
+- provider: Environment
+  name: cabl-win-x86
+  on:
+    branch: develop
+    CONFIGURATION: Release
+    PLATFORM: Win32

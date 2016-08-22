@@ -19,7 +19,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
-set(DEBUG_SUFFIX          "")
+set(DEBUG_SUFFIX          "_d")
 
 # Version ---------------------------------------------------------------------------------------- #
 
@@ -32,6 +32,17 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
   "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
+
+if($ENV{APPVEYOR})
+  if(${APPVEYOR_REPO_BRANCH} STREQUAL "master")
+    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}")
+  if($ENV{APPVEYOR_REPO_BRANCH} STREQUAL "develop")
+    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}-dev")
+  else()
+    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}-fb")
+  endif()
+  execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
+endif()
 
 # Options ---------------------------------------------------------------------------------------- #
 
