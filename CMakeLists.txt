@@ -23,10 +23,24 @@ set(DEBUG_SUFFIX          "_d")
 
 # Version ---------------------------------------------------------------------------------------- #
 
+# Get the name of the current git branch
+execute_process(
+  COMMAND git rev-parse --abbrev-ref HEAD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  OUTPUT_VARIABLE GIT_BRANCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
 set (CABL_VERSION_MICRO 3)
-set (CABL_VERSION_STRING ${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO})
+if(${GIT_BRANCH} STREQUAL "master")
+  set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
+elseif(${GIT_BRANCH} STREQUAL "develop")
+  set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}-dev")
+else()
+  set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}-fb")
+endif()
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
@@ -34,15 +48,11 @@ configure_file (
 )
 
 if($ENV{APPVEYOR})
-  if($ENV{APPVEYOR_REPO_BRANCH} STREQUAL "master")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}")
-  elseif($ENV{APPVEYOR_REPO_BRANCH} STREQUAL "develop")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}-dev")
-  else()
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}-fb")
-  endif()
+  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}")
   execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
 endif()
+
+message(STATUS "Building cabl v. ${CABL_VERSION_STRING}")
 
 # Options ---------------------------------------------------------------------------------------- #
 
