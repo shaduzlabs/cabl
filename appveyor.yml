@@ -3,7 +3,7 @@ configuration:
 - Release
 - Debug
 platform:
-- x86
+- Win32
 - x64
 clone_folder: c:\SLBuild\cabl
 init:
