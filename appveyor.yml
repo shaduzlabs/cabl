@@ -20,7 +20,7 @@ before_build:
 
     echo "Building %CONFIGURATION% - %PLATFORM%"
 
-    if %PLATFORM% == x86 (cmake -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..) else (cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..)
+    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..) else (cmake -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..)
 build:
   project: c:\SLBuild\cabl\build\cabl.sln
   verbosity: normal
