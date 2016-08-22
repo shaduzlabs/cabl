@@ -1,5 +1,10 @@
 version: 1.0.{build}
-configuration: Release
+configuration:
+- Release
+- Debug
+platform:
+- x86
+- x64
 clone_folder: c:\SLBuild\cabl
 init:
 - cmd: choco install doxygen.install
@@ -13,7 +18,9 @@ before_build:
 
     cd build
 
-    cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..
+    echo "Building %CONFIGURATION% - %PLATFORM%"
+
+    if %PLATFORM% == x86 (cmake -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..) else (cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..)
 build:
   project: c:\SLBuild\cabl\build\cabl.sln
   verbosity: normal
