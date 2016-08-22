@@ -154,16 +154,7 @@ install:
   # Install LibUSB
   ############################################################################
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O /tmp/libusb-1.0.tar.gz
-      cd /tmp
-      tar -zxvf libusb-1.0.tar.gz
-      cd libusb-1.0.20
-      ./autogen.sh && ./configure --prefix=`pwd`/_local_install
-      make
-      make install
-      export PKG_CONFIG_PATH="`pwd`/_local_install/lib/pkgconfig:$PKG_CONFIG_PATH"
-    else
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew install libusb
     fi
 
@@ -172,16 +163,7 @@ install:
   # Install HIDAPI
   ############################################################################
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      wget https://github.com/signal11/hidapi/archive/master.zip -O /tmp/hidapi.zip
-      unzip /tmp/hidapi.zip -d /tmp
-      cd /tmp/hidapi-master
-      ./bootstrap
-      ./configure --prefix=`pwd`/_local_install
-      make
-      make install
-      export PKG_CONFIG_PATH="`pwd`/_local_install/lib/pkgconfig:$PKG_CONFIG_PATH"
-    else
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew install hidapi
     fi
 
@@ -190,14 +172,7 @@ install:
   # Install RtMIDI
   ############################################################################
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      wget http://www.music.mcgill.ca/~gary/rtmidi/release/rtmidi-2.1.0.tar.gz -O /tmp/rtmidi.tar.gz
-      cd /tmp
-      tar -xvf rtmidi.tar.gz
-      cd rtmidi-2.1.0
-      ./configure --with-jack --with-alsa
-      make
-    else
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew install rtmidi
     fi
 
@@ -262,6 +237,6 @@ script:
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build
   - cd build
-  - CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON
+  - CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON
   - make -j 2
   - make -j 2 check
