@@ -8,25 +8,26 @@ platform:
 clone_folder: c:\SLBuild\cabl
 init:
 - cmd: choco install doxygen.install
-before_build:
+build_script:
 - cmd: >-
     echo Running cmake...
 
+    echo Building %CONFIGURATION% - %PLATFORM%
+
     cd c:\SLBuild\cabl
 
-    mkdir build
+    mkdir build-%PLATFORM%
 
-    cd build
+    pushd build-%PLATFORM%
 
-    echo "Building %CONFIGURATION% - %PLATFORM%"
+    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..) else (cmake -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..)
 
-    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..) else (cmake -DCMAKE_BUILD_TYPE='%CONFIGURATION%' ..)
-build:
-  project: c:\SLBuild\cabl\build\cabl.sln
-  verbosity: normal
+    cd ..
+
+    cmake --build build-%PLATFORM% --config %CONFIGURATION%
 before_test:
 - cmd: >-
-    cd c:\SLBuild\cabl\build\test\Release\
+    cd c:\SLBuild\cabl\build-%PLATFORM%\test\%CONFIGURATION%\
 
     unit-tests.exe -s -r junit -o test-report.junit.xml
 after_test:
@@ -35,4 +36,9 @@ after_test:
 
     $wc = New-Object 'System.Net.WebClient'
 
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build\test\Release\test-report.junit.xml))
+    $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml))
+artifacts:
+- path: build-$(PLATFORM)/$(CONFIGURATION)/cabl.lib
+  name: cabl (static)
+- path: build-$(PLATFORM)/$(CONFIGURATION)/cabl.dll
+  name: cabl (dll)

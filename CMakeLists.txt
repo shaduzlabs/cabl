@@ -19,7 +19,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
-set(DEBUG_SUFFIX          "_d")
+set(DEBUG_SUFFIX          "")
 
 # Version ---------------------------------------------------------------------------------------- #
 
