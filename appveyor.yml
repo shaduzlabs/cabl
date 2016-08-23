@@ -26,13 +26,18 @@ build_script:
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION%
 
-    cd build-%PLATFORM%
+    xcopy inc build-%PLATFORM%/%CONFIGURATION%/ /e
 
-    cd %CONFIGURATION%
+    mkdir artifacts-%CONFIGURATION%
 
-    if %PLATFORM% == x64 (ren cabl* cabl-64*)
+    cd build-%PLATFORM%/%CONFIGURATION%/
+
+    if %PLATFORM% == x64 (7z a -tzip cabl-win-64.zip -r *) else (7z a -tzip cabl-win-32.zip -r *)
+
+    move /y *.zip ../../artifacts-%CONFIGURATION%
 
     cd ../../
+
 before_test:
 - cmd: >-
     cd c:\SLBuild\cabl\build-%PLATFORM%\test\%CONFIGURATION%\
@@ -46,25 +51,19 @@ after_test:
 
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml))
 artifacts:
-- path: build-Win32/$(CONFIGURATION)/cabl.lib
-  name: cabl (static - 32bit)
-- path: build-Win32/$(CONFIGURATION)/cabl.dll
-  name: cabl (dll - 32bit)
-- path: build-x64/$(CONFIGURATION)/cabl-x64.lib
-  name: cabl (static - 64bit)
-- path: build-x64/$(CONFIGURATION)/cabl-x64.lib
-  name: cabl (dll - 64bit)
-- path: inc
-  name: include
+- path: Release-artifacts/cabl-win-32.zip
+  name: cabl (32bit)
+- path: Release-artifacts/cabl-win-64.zip
+  name: cabl (64bit)
 deploy:
 - provider: Environment
-  name: cabl-win-x64
+  name: cabl-win-64
   on:
     branch: develop
     CONFIGURATION: Release
     PLATFORM: x64
 - provider: Environment
-  name: cabl-win-x86
+  name: cabl-win-32
   on:
     branch: develop
     CONFIGURATION: Release
