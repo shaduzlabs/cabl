@@ -23,48 +23,65 @@ set(DEBUG_SUFFIX          "_d")
 
 # Version ---------------------------------------------------------------------------------------- #
 
+string(TIMESTAMP CABL_BUILD_DATE "%Y-%m-%d")
+
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
 set (CABL_VERSION_MICRO 3)
 set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
 
+if($ENV{APPVEYOR})
+  set (CABL_BUILD_HOST "Appveyor")
+  set (CABL_BUILD_NUMBER ".$ENV{APPVEYOR_BUILD_NUMBER}")
+  set (CABL_GIT_BRANCH $ENV{APPVEYOR_REPO_BRANCH})
+  execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
+elseif($ENV{TRAVIS})
+  set (CABL_BUILD_HOST "Travis-CI")
+  set (CABL_BUILD_NUMBER ".$ENV{TRAVIS_BUILD_NUMBER}")
+  set (CABL_GIT_BRANCH $ENV{APPVEYOR_REPO_BRANCH})
+else()
+  set (CABL_BUILD_HOST "a local machine")
+  set (CABL_BUILD_NUMBER "")
+  execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    OUTPUT_VARIABLE CABL_GIT_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+endif()
+
+if(${CABL_GIT_BRANCH} STREQUAL "master")
+  set(CABL_BUILD_TYPE "release version")
+  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}${CABL_BUILD_NUMBER}")
+elseif(${CABL_GIT_BRANCH} STREQUAL "develop")
+  set(CABL_BUILD_TYPE "development version")
+  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}${CABL_BUILD_NUMBER}-dev")
+else()
+  set(CABL_BUILD_TYPE "development version from feature branch: ${GIT_BRANCH}")
+  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}${CABL_BUILD_NUMBER}-fb")
+endif()
+
+message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
+
 configure_file (
-  "${PROJECT_SOURCE_DIR}/inc/cabl-config.h.in"
+  "${CMAKE_CURRENT_LIST_DIR}/inc/cabl-config.h.in"
   "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
 
 if($ENV{APPVEYOR})
-  if($ENV{APPVEYOR_REPO_BRANCH} STREQUAL "develop")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-dev")
-  elseif(NOT $ENV{APPVEYOR_REPO_BRANCH} STREQUAL "master")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-fb")
-  endif()
-  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{APPVEYOR_BUILD_NUMBER}")
   execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
 elseif($ENV{TRAVIS})
-  if($ENV{TRAVIS_BRANCH} STREQUAL "develop")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-dev")
-  elseif(NOT $ENV{TRAVIS_BRANCH} STREQUAL "master")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-fb")
-  endif()
-  set (CABL_VERSION_STRING "${CABL_VERSION_STRING}.$ENV{TRAVIS_BUILD_NUMBER}")
-else()
-  # Get the name of the current git branch
-  execute_process(
-    COMMAND git rev-parse --abbrev-ref HEAD
-    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-    OUTPUT_VARIABLE GIT_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
-  if(${GIT_BRANCH} STREQUAL "develop")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-dev")
-  elseif(NOT ${GIT_BRANCH} STREQUAL "master")
-    set (CABL_VERSION_STRING "${CABL_VERSION_STRING}-fb")
+  set(CABL_DEPLOY_TARGET $ENV{CABL_DEPLOY_TARGET})
+  if(NOT CABL_DEPLOY_TARGET STREQUAL "")
+    message(STATUS "Deploying package ${CABL_DEPLOY_TARGET}")
+    configure_file (
+      "${CMAKE_CURRENT_LIST_DIR}/support/travis/deploy-bintray.json.in"
+      "${PROJECT_BINARY_DIR}/deploy-bintray.json"
+    )
   endif()
 endif()
 
-message(STATUS "Building cabl v. ${CABL_VERSION_STRING}")
+message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
 
 # Options ---------------------------------------------------------------------------------------- #
 
