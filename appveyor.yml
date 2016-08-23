@@ -26,17 +26,19 @@ build_script:
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION%
 
-    xcopy inc build-%PLATFORM%/%CONFIGURATION%/ /e
+    mkdir build-%PLATFORM%\%CONFIGURATION%\include
+    
+    xcopy inc build-%PLATFORM%\%CONFIGURATION%\include /e /y /I
 
     mkdir artifacts-%CONFIGURATION%
 
-    cd build-%PLATFORM%/%CONFIGURATION%/
+    cd build-%PLATFORM%\%CONFIGURATION%\
 
     if %PLATFORM% == x64 (7z a -tzip cabl-win-64.zip -r *) else (7z a -tzip cabl-win-32.zip -r *)
 
-    move /y *.zip ../../artifacts-%CONFIGURATION%
+    move /y *.zip ..\..\artifacts-%CONFIGURATION%
 
-    cd ../../
+    cd ..\..\
 
 before_test:
 - cmd: >-
