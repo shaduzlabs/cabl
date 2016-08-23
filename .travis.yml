@@ -265,10 +265,27 @@ script:
 - mkdir build
 - cd build
 - CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON
+- cd ..
 - cmake --build build --config $BUILD_TYPE
 - cmake --build build --config $BUILD_TYPE --target check
+
+after_success:
+- |
+  if [[ -z "$CABL_DEPLOY_TARGET" ]; then
+    echo "Deploying package $CABL_DEPLOY_TARGET"
+    mkdir build/$CABL_DEPLOY_TARGET
+    mkdir build/deploy
+    cp build/Release/pycabl* build/$CABL_DEPLOY_TARGET
+    cp build/Release/cabl* build/$CABL_DEPLOY_TARGET
+    cp -r inc build/$CABL_DEPLOY_TARGET
+    cd build
+    zip -r $CABL_DEPLOY_TARGET $CABL_DEPLOY_TARGET
+    mv $CABL_DEPLOY_TARGET.zip deploy
+    cd ..
+  fi
 dd:
   secure: aKv6alVASLaSfNVPKSplpaX1jTDGlI1foG3z3Hc2vbntkdX5yiLfKShz4QdYxD4FKXqIo1v6NP8LiHfwm1tmXJJKEkA2EncMqPl1L8OMFp03288i+0o9B2juLrFV6tig1c9uA80GuakX2royJ0vM74IHG+tf5sHbZbKD6ag+CaGyiSOci9Ps5j3TL0NbBdsmw1FWU1SR8ntvD8UmB7w/viSmIbZ9s1/AaoGcVn3Q+Nqn2VdzPZFWwHMNsRc15qvvSjZ0jsC/bNlshm5AsdqDaLE/3rrCki0q8OPyXJu3G0rNEqqB1iPKm/6arCzZu+150hXLzuuzg1FTvB+LSywFmbzaMPuClgpsGOraY3YNKVkx7e1jMkn+ou1oK+ogEl2kHShrbS/rUDMpQxxkLTpwEJ3W6DqvZQ04n7lIVfWKdPWhU0JDXHsipIN6oIkvl7X3wyif2Iol4zczaFSlpEa+HxmZRyU12K5dmqr7p7I54qAA4uF/xKZQvBhaz39Yr9s40TNUcsufXlJD6rzLoBxX03MW+ai6D1Q+SlN4qxym7PZn9HTuSNEMtwDG7xKdHLqrhJY/vBBN4SjWE8xFG0HSBhkhX9d/z/wHA32pHENJfEFG4agS+im/MQqXtxCAd1NiPQkZ/BZXoESNyJTTBkFpW81zJLoIGIKhwIQk4ek4Tb4=
+
 deploy:
   provider: bintray
   file: ./build/deploy-bintray.json

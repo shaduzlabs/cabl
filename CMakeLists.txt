@@ -38,7 +38,7 @@ if($ENV{APPVEYOR})
 elseif($ENV{TRAVIS})
   set (CABL_BUILD_HOST "Travis-CI")
   set (CABL_BUILD_NUMBER ".$ENV{TRAVIS_BUILD_NUMBER}")
-  set (CABL_GIT_BRANCH $ENV{APPVEYOR_REPO_BRANCH})
+  set (CABL_GIT_BRANCH $ENV{TRAVIS_BRANCH})
 else()
   set (CABL_BUILD_HOST "a local machine")
   set (CABL_BUILD_NUMBER "")
@@ -73,7 +73,7 @@ if($ENV{APPVEYOR})
 elseif($ENV{TRAVIS})
   set(CABL_DEPLOY_TARGET $ENV{CABL_DEPLOY_TARGET})
   if(NOT CABL_DEPLOY_TARGET STREQUAL "")
-    message(STATUS "Deploying package ${CABL_DEPLOY_TARGET}")
+    message(STATUS "Package ${CABL_DEPLOY_TARGET} will be deployed")
     configure_file (
       "${CMAKE_CURRENT_LIST_DIR}/support/travis/deploy-bintray.json.in"
       "${PROJECT_BINARY_DIR}/deploy-bintray.json"
