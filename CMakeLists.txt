@@ -72,7 +72,7 @@ if($ENV{APPVEYOR})
   execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
 elseif($ENV{TRAVIS})
   set(CABL_DEPLOY_TARGET $ENV{CABL_DEPLOY_TARGET})
-  if(NOT CABL_DEPLOY_TARGET STREQUAL "")
+  if(CABL_DEPLOY_TARGET)
     message(STATUS "Package ${CABL_DEPLOY_TARGET} will be deployed")
     configure_file (
       "${CMAKE_CURRENT_LIST_DIR}/support/travis/deploy-bintray.json.in"
