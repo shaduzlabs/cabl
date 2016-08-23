@@ -26,7 +26,11 @@ build_script:
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION%
 
-    if %PLATFORM% == x64 (ren build-%PLATFORM%/%CONFIGURATION%/cabl* build-%PLATFORM%/%CONFIGURATION%/cabl-64*)
+    pushd build-%PLATFORM%/%CONFIGURATION%/
+
+    if %PLATFORM% == x64 (ren cabl* cabl-64*)
+
+    cd ../../
 before_test:
 - cmd: >-
     cd c:\SLBuild\cabl\build-%PLATFORM%\test\%CONFIGURATION%\
