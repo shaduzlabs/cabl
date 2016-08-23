@@ -1,4 +1,4 @@
-version: 0.0.{build}
+version: configuring.{build}
 configuration:
 - Release
 - Debug
@@ -25,6 +25,8 @@ build_script:
     cd ..
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION%
+
+    if %PLATFORM% == x64 (ren build-%PLATFORM%/%CONFIGURATION%/cabl* build-%PLATFORM%/%CONFIGURATION%/cabl-64*)
 before_test:
 - cmd: >-
     cd c:\SLBuild\cabl\build-%PLATFORM%\test\%CONFIGURATION%\
@@ -38,10 +40,16 @@ after_test:
 
     $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml))
 artifacts:
-- path: build-$(PLATFORM)/$(CONFIGURATION)/cabl.lib
-  name: cabl (static)
-- path: build-$(PLATFORM)/$(CONFIGURATION)/cabl.dll
-  name: cabl (dll)
+- path: build-Win32/$(CONFIGURATION)/cabl.lib
+  name: cabl (static - 32bit)
+- path: build-Win32/$(CONFIGURATION)/cabl.dll
+  name: cabl (dll - 32bit)
+- path: build-x64/$(CONFIGURATION)/cabl-x64.lib
+  name: cabl (static - 64bit)
+- path: build-x64/$(CONFIGURATION)/cabl-x64.lib
+  name: cabl (dll - 64bit)
+- path: inc
+  name: include
 deploy:
 - provider: Environment
   name: cabl-win-x64
