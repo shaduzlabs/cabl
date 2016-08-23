@@ -26,7 +26,9 @@ build_script:
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION%
 
-    pushd build-%PLATFORM%/%CONFIGURATION%/
+    cd build-%PLATFORM%
+
+    cd %CONFIGURATION%
 
     if %PLATFORM% == x64 (ren cabl* cabl-64*)
 
