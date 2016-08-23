@@ -271,15 +271,15 @@ script:
 
 after_success:
 - |
-  if [[ -z "$CABL_DEPLOY_TARGET" ]; then
+  if [ -n "${CABL_DEPLOY_TARGET+set}" ]; then
     echo "Deploying package $CABL_DEPLOY_TARGET"
     mkdir build/$CABL_DEPLOY_TARGET
     mkdir build/deploy
     cp build/Release/pycabl* build/$CABL_DEPLOY_TARGET
-    cp build/Release/cabl* build/$CABL_DEPLOY_TARGET
+    cp build/Release/libcabl* build/$CABL_DEPLOY_TARGET
     cp -r inc build/$CABL_DEPLOY_TARGET
     cd build
-    zip -r $CABL_DEPLOY_TARGET $CABL_DEPLOY_TARGET
+    zip -r $CABL_DEPLOY_TARGET.zip $CABL_DEPLOY_TARGET
     mv $CABL_DEPLOY_TARGET.zip deploy
     cd ..
   fi

@@ -61,8 +61,6 @@ else()
   set (CABL_VERSION_STRING "${CABL_VERSION_STRING}${CABL_BUILD_NUMBER}-fb")
 endif()
 
-message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
-
 configure_file (
   "${CMAKE_CURRENT_LIST_DIR}/inc/cabl-config.h.in"
   "${PROJECT_BINARY_DIR}/cabl-config.h"
@@ -81,6 +79,7 @@ elseif($ENV{TRAVIS})
   endif()
 endif()
 
+set(CABL_BUILD_DESCRIPTION "cabl v. ${CABL_VERSION_STRING} - ${CABL_BUILD_TYPE} built on ${CABL_BUILD_HOST}")
 message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
 
 # Options ---------------------------------------------------------------------------------------- #
