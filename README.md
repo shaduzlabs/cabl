@@ -1,6 +1,6 @@
 # CABL / Controller ABstraction Layer #
 --------------------
-[![Build Status](https://travis-ci.org/shaduzlabs/cabl.svg?branch=develop)](https://travis-ci.org/shaduzlabs/cabl) [![Build status](https://ci.appveyor.com/api/projects/status/7pfqx8o4df2oy09t?svg=true)](https://ci.appveyor.com/project/shaduzlabs/cabl)
+[![Build Status](https://travis-ci.org/shaduzlabs/cabl.svg?branch=develop)](https://travis-ci.org/shaduzlabs/cabl) [![Build status](https://ci.appveyor.com/api/projects/status/7pfqx8o4df2oy09t?svg=true)](https://ci.appveyor.com/project/shaduzlabs/cabl)[![Coverage Status](https://coveralls.io/repos/github/shaduzlabs/cabl/badge.svg)](https://coveralls.io/github/shaduzlabs/cabl)
 
 ## Supported platforms ##
 
@@ -25,8 +25,8 @@
 
 ### OSX ###
 Make sure the following packages/applications are installed:
-- [Homebrew]:(http://brew.sh/)
-- [CMake]:(http://www.cmake.org/)
+- [Homebrew ](http://brew.sh/)
+- [CMake](http://www.cmake.org/) (>=3.4)
 - Xcode (>= 6.4) or GCC (>= 4.9)
 
 Then install libUSB (>=1.0.20), HIDAPI (>= 0.8.0) and RtMIDI (>=2.1.0) if needed:
@@ -57,7 +57,7 @@ Please have a look at the CMake appendix for more CMake options.
 
 ### Linux ###
 Make sure the following packages/applications are installed:
-- [CMake]:(http://www.cmake.org/)
+- [CMake](http://www.cmake.org/) (>=3.4)
 - Clang (>= 3.7) or GCC (>= 4.9)
 
 Then install libUSB (>=1.0.20), HIDAPI (>= 0.8.0) and RtMIDI (>=2.1.0) if needed (depending on your linux distribution and dependency manager, the command below might look slightly different):
@@ -87,7 +87,7 @@ Please have a look at the CMake appendix for more CMake options.
 
 ### Windows ###
 Make sure the following packages/applications are installed:
-- [CMake]:(http://www.cmake.org/)
+- [CMake](http://www.cmake.org/) (>=3.4)
 - Visual Studio 2015 or above
 
 If you want to build the documentation, you'll need to install Doxygen.
