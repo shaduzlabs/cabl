@@ -569,15 +569,13 @@ endif()
 # OS X and Linux --------------------------------------------------------------------------------- #
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  if(BUILD_SHARED_LIBS)
+  if(BUILD_SHARED_LIBS AND NOT COVERALLS)
     target_link_libraries( cabl PUBLIC pthread)
-  endif(BUILD_SHARED_LIBS)
+  endif()
 
   if(BUILD_STATIC_LIBS)
     target_link_libraries( cabl-static PUBLIC pthread)
-  endif(BUILD_STATIC_LIBS)
-#  target_include_directories( cabl PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
-#  target_include_directories( cabl-static PRIVATE /usr/include/hidapi /usr/include/libusb-1.0)
+  endif()
 endif()
 
 if( UNIX )
