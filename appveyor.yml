@@ -1,7 +1,7 @@
 version: configuring.{build}
 configuration:
-- Release
 - Debug
+- Release
 platform:
 - Win32
 - x64
