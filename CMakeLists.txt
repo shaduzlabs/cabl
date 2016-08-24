@@ -582,13 +582,13 @@ if( UNIX )
 
   if(${IS_CABL})
 
-    if(BUILD_SHARED_LIBS)
+    if(BUILD_SHARED_LIBS AND NOT COVERALLS)
       install (TARGETS    cabl             DESTINATION lib)
-    endif(BUILD_SHARED_LIBS)
+    endif()
 
     if(BUILD_STATIC_LIBS)
       install (TARGETS    cabl-static      DESTINATION lib)
-    endif(BUILD_STATIC_LIBS)
+    endif()
 
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
     install (DIRECTORY  inc/client       DESTINATION "include/${LIBRARY_FOLDER_NAME}")
