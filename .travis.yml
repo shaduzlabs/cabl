@@ -280,8 +280,8 @@ after_success:
     cp build/Release/pycabl* build/$CABL_DEPLOY_TARGET
     cp build/Release/libcabl* build/$CABL_DEPLOY_TARGET
     cp build/Release/cabl* build/$CABL_DEPLOY_TARGET
-    cp build/cabl-config.h build/$CABL_DEPLOY_TARGET
-    rm build/$CABL_DEPLOY_TARGET/cabl-config.h.in
+    cp build/cabl-config.h build/$CABL_DEPLOY_TARGET/inc
+    rm build/$CABL_DEPLOY_TARGET/inc/cabl-config.h.in
     cp -r inc build/$CABL_DEPLOY_TARGET
     cd build
     zip -r $CABL_DEPLOY_TARGET.zip $CABL_DEPLOY_TARGET
