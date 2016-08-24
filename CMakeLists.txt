@@ -68,6 +68,7 @@ configure_file (
 
 if($ENV{APPVEYOR})
   execute_process(COMMAND appveyor UpdateBuild -Version ${CABL_VERSION_STRING})
+  set(ENV{APPVEYOR_BUILD_VERSION} "${CABL_VERSION_STRING}")
 elseif($ENV{TRAVIS})
   set(CABL_DEPLOY_TARGET $ENV{CABL_DEPLOY_TARGET})
   if(CABL_DEPLOY_TARGET)
