@@ -34,7 +34,7 @@ build_script:
 
     cd build-%PLATFORM%\%CONFIGURATION%\
 
-    if %PLATFORM% == x64 (7z a -tzip cabl-win-64_%APPVEYOR_BUILD_VERSION%.zip -r *) else (7z a -tzip cabl-win-32_%APPVEYOR_BUILD_VERSION%.zip -r *)
+    7z a -tzip cabl-win.zip -r *
 
     move /y *.zip ..\..\artifacts-%CONFIGURATION%
 
@@ -57,6 +57,14 @@ artifacts:
   name: cabl (32bit)
 - path: artifacts-Release/cabl-win-64_*.zip
   name: cabl (64bit)
+before_deploy:
+- cmd: >-
+    cd artifacts-%CONFIGURATION%
+
+    if %PLATFORM% == x64 (ren cabl-win.zip cabl-win-64_%APPVEYOR_BUILD_VERSION%.zip) else (ren cabl-win.zip cabl-win-32_%APPVEYOR_BUILD_VERSION%.zip)
+
+    cd ..
+
 deploy:
 - provider: Environment
   name: cabl-win-64
