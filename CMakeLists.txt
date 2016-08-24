@@ -21,6 +21,28 @@ set(LIBRARY_FILE_NAME     "cabl")
 set(LIBRARY_FOLDER_NAME   "cabl")
 set(DEBUG_SUFFIX          "_d")
 
+# Options ---------------------------------------------------------------------------------------- #
+
+option(BUILD_SHARED_LIBS "build as shared library" OFF)
+option(BUILD_STATIC_LIBS "build as static library" ON)
+
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+  set(IS_CABL ON)
+else()
+  set(IS_CABL OFF)
+endif()
+
+option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
+
+option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
+option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
+option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
+option(CABL_PYTHON    "Build python binding" ${IS_CABL})
+option(CABL_TIDY      "Clang-tidy target"    ${IS_CABL})
+
+option(COVERALLS "Turn on coveralls support" OFF)
+option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+
 # Version ---------------------------------------------------------------------------------------- #
 
 string(TIMESTAMP CABL_BUILD_DATE "%Y-%m-%d")
@@ -78,29 +100,15 @@ elseif($ENV{TRAVIS})
       "${PROJECT_BINARY_DIR}/deploy-bintray.json"
     )
   endif()
+
+  set(COVERAGE_BUILD $ENV{COVERAGE_BUILD})
+  if(COVERAGE_BUILD)
+    set(COVERALLS ${COVERAGE_BUILD})
+  endif()
 endif()
 
 set(CABL_BUILD_DESCRIPTION "cabl v. ${CABL_VERSION_STRING} - ${CABL_BUILD_TYPE} built on ${CABL_BUILD_HOST}")
 message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
-
-# Options ---------------------------------------------------------------------------------------- #
-
-option(BUILD_SHARED_LIBS "build as shared library" OFF)
-option(BUILD_STATIC_LIBS "build as static library" ON)
-
-if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  set(IS_CABL ON)
-else()
-  set(IS_CABL OFF)
-endif()
-
-option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
-
-option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
-option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
-option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
-option(CABL_PYTHON    "Build python binding" ${IS_CABL})
-option(CABL_TIDY      "Clang-tidy target"    ${IS_CABL})
 
 # Dependencies ----------------------------------------------------------------------------------- #
 
@@ -448,7 +456,7 @@ set(
     ${cabl_SRCS}
 )
 
-if(BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS AND NOT COVERALLS)
   message(STATUS "BUILD_SHARED_LIBS is ON")
   add_library( cabl SHARED ${cabl_ALL} )
   set_target_properties(
@@ -478,7 +486,7 @@ if(BUILD_SHARED_LIBS)
     target_link_libraries( cabl PUBLIC ${RTMIDI_LIBRARIES})
   endif()
 
-endif(BUILD_SHARED_LIBS)
+endif()
 
 if(BUILD_STATIC_LIBS)
   message(STATUS "BUILD_STATIC_LIBS is ON")
@@ -509,9 +517,9 @@ if(BUILD_STATIC_LIBS)
     target_link_libraries( cabl-static PUBLIC ${RTMIDI_LIBRARIES})
   endif()
 
-endif(BUILD_STATIC_LIBS)
+endif()
 
-if(CABL_PYTHON)
+if(CABL_PYTHON AND NOT COVERALLS)
   set(
     cabl_python_SRCS
       src/py/pyCabl.cpp
@@ -529,6 +537,7 @@ if(CABL_PYTHON)
       pycabl
       PROPERTIES
         VERSION             "${CABL_VERSION_STRING}"
+        SOVERSION           "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}"
         OUTPUT_NAME         "py${LIBRARY_FILE_NAME}"
         SUFFIX              ".so"
         PREFIX              ""
@@ -633,7 +642,23 @@ endif()
 # Unit tests ------------------------------------------------------------------------------------- #
 
 if(${CABL_TEST})
+  enable_testing(true)
   add_subdirectory(test)
+endif()
+
+# Coveralls -------------------------------------------------------------------------------------- #
+
+if(COVERALLS)
+  message(STATUS "Coverage build enabled")
+  addCoverallsCMake()
+  list(APPEND CMAKE_MODULE_PATH "${COVERALLS_CMAKE_PATH}")
+  include(Coveralls)
+  coveralls_turn_on_coverage()
+  coveralls_setup(
+    "${cabl_ALL}"
+    ${COVERALLS_UPLOAD}
+    "${COVERALLS_CMAKE_PATH}"
+  )
 endif()
 
 # Documentation (doxygen) ------------------------------------------------------------------------ #
@@ -671,6 +696,7 @@ if(${CABL_DOCS})
   endif()
 endif()
 
+
 # Clang-tidy ------------------------------------------------------------------------------------- #
 
 # add_custom_target(
@@ -684,6 +710,6 @@ endif()
 # )
 
 # Examples --------------------------------------------------------------------------------------- #
-if(CABL_EXAMPLES)
+if(CABL_EXAMPLES AND NOT COVERALLS)
   add_subdirectory(examples)
 endif()

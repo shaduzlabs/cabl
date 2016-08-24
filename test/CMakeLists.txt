@@ -10,7 +10,6 @@
 # ------------------------------------------------------------------------------------------------ #
 
 project(unit-tests)
-enable_testing(true)
 
 # Dependencies ----------------------------------------------------------------------------------- #
 addCatch()
@@ -40,10 +39,14 @@ add_executable(
   ${Test_FILES}
 )
 
+if(COVERALLS)
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES LINK_FLAGS " -Wall -fprofile-arcs -ftest-coverage")
+endif()
+
 target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS})
 
-add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
-
 target_link_libraries(${PROJECT_NAME} cabl-static)
+
+add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
