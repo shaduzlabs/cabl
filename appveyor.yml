@@ -59,7 +59,7 @@ artifacts:
   name: cabl (64bit)
 before_deploy:
 - cmd: >-
-    cd artifacts-%CONFIGURATION%
+    cd c:\SLBuild\cabl\artifacts-%CONFIGURATION%
 
     if %PLATFORM% == x64 (ren cabl-win.zip cabl-win-64_%APPVEYOR_BUILD_VERSION%.zip) else (ren cabl-win.zip cabl-win-32_%APPVEYOR_BUILD_VERSION%.zip)
 
