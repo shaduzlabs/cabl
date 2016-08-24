@@ -1,0 +1,404 @@
+<html>
+ <head>
+  <title>7-Segments LCD Display Utility</title>
+  <style type="text/css">
+   #container {
+    display:inline-block;
+    background: #222;
+    padding:20px;
+   }
+   #character-designer {
+    margin-top:20px;
+    display:inline-block;
+   }
+   #value{
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    color: #00cc00;
+    background: #444;
+    padding:8px;
+    display:inline-block;
+    vertical-align: top;
+    width:130px;
+    border:1px solid #fff;
+   }
+  </style>
+ </head>
+ <body>
+  <div id="container">
+  <div id="select-wrapper">
+    <select onchange="selectDesigner()" id="designer-selector">
+      <option value="1" selected="selected">7 Segments</option>
+      <option value="2">16 Segments</option>
+      <option value="3">3 x 5 Pixels</option>
+      <option value="4">5 x 7 Pixels</option>
+      <option value="5">8 x 8 Pixels</option>
+     </select>
+   </div>
+   <canvas id="character-designer" width="400" height="450">Your browser does not support HTML5 Canvas.</canvas>
+   <div id="value"></div>
+  </div>
+  <script type="text/javascript">
+
+function Segment() 
+{
+  this.x = 0;
+  this.y = 0;
+  this.w = 0;
+  this.h = 0;
+  this.color = '#777';
+  this.angle = 0;
+  this.selected = true;
+  this.value = 0;
+}
+
+function addRect(x, y, w, h, value, angle) 
+{
+  var rect = new Segment;
+  rect.x = (x / g_scale) + g_xOffset;
+  rect.y = (y / g_scale) + g_yOffset;
+  rect.w = w / g_scale;
+  rect.h = h / g_scale;
+  rect.angle = typeof angle !== 'undefined' ? angle : 0;
+  rect.value = value;
+  rect.selected = false;
+  g_collSegments.push(rect);
+  g_canvasValid = false;
+}
+
+var g_collSegments = [];
+
+var g_canvasWidth;
+var g_canvasHeight;
+
+var g_redrawIntervalMs = 20;
+
+var g_context;
+var g_canvas;
+
+var g_contextGhost;
+var g_canvasGhost;
+
+var g_scale = 1;
+var g_xOffset = 80;
+var g_yOffset = 00;
+
+var g_colorSelected = "#ff0000";
+
+var g_paddingValue = 0;
+
+var g_canvasValid = false;
+
+var g_nRows;
+var g_nCols;
+var g_matrixMode;
+
+var offsetx, offsety;
+var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
+
+function init()
+{
+  g_canvas = document.getElementById('character-designer');
+  g_canvasHeight = g_canvas.height;
+  g_canvasWidth = g_canvas.width;
+  g_context = g_canvas.getContext('2d');
+
+  g_canvasGhost = document.createElement('canvas');
+  g_canvasGhost.height = g_canvasHeight;
+  g_canvasGhost.width = g_canvasWidth;
+  g_contextGhost = g_canvasGhost.getContext('2d');
+
+  g_canvas.onselectstart = function()
+  {
+    return false;
+  }
+
+  setInterval(draw, g_redrawIntervalMs);
+
+  g_canvas.onmousedown = fnMouseDown;
+
+  selectDesigner();
+}
+
+function draw7SegmentsCharacter()
+{
+/*      A
+     -------
+    |       |
+  F |       | B
+    |   G   |
+     -------
+    |       |
+  E |       | C
+    |   D   |
+     ------- 
+*/
+  g_collSegments = [];
+
+  var i = 0;
+
+  addRect(260, 370,  30,  30, 1 << (i++)); // DP
+  addRect( 40, 200, 180,  20, 1 << (i++)); // G
+  addRect(220, 220,  20, 160, 1 << (i++)); // C
+  addRect(220,  40,  20, 160, 1 << (i++)); // B
+  addRect( 40,  20, 180,  20, 1 << (i++)); // A
+  addRect( 20,  40,  20, 160, 1 << (i++)); // F
+  addRect( 20, 220,  20, 160, 1 << (i++)); // E
+  addRect( 40, 380, 180,  20, 1 << (i++)); // D 
+
+  g_paddingValue = 2;
+  g_matrixMode = false;
+  g_nRows = 1;
+  g_nCols = 8;
+}
+
+function draw16SegmentsCharacter()
+{
+/*     A     B
+     ----- -----
+    |\    |    /|
+    | \   |   / |  
+  H | I\ J| K/  | C
+    |   \ | /   |
+    |  L \|/  M |      
+     ----- -----
+    |    /|\    |
+    |   / | \   | 
+  G | N/ O| P\  | D
+    | /   |   \ |
+    |/    |    \|
+     ----- ----- 
+       F     E
+*/        
+  g_collSegments = [];
+
+  var i = 0;
+  
+  addRect( 40,  20, 100,  20, 1 << (i++)     ); // A 
+  addRect(160,  20, 100,  20, 1 << (i++)     ); // B
+  addRect(260,  40,  20, 160, 1 << (i++)     ); // C
+  addRect(260, 220,  20, 160, 1 << (i++)     ); // D
+  addRect(160, 380, 100,  20, 1 << (i++)     ); // E
+  addRect( 40, 380, 100,  20, 1 << (i++)     ); // F
+  addRect( 20, 220,  20, 160, 1 << (i++)     ); // G
+  addRect( 20,  40,  20, 160, 1 << (i++)     ); // H
+
+  addRect( 80,  50,  20, 140, 1 << (i++), -30); // I
+  addRect(140,  40,  20, 160, 1 << (i++)     ); // J
+  addRect(200,  50,  20, 140, 1 << (i++),  30); // K
+  addRect( 40, 200, 100,  20, 1 << (i++)     ); // L
+  addRect(160, 200, 100,  20, 1 << (i++)     ); // M
+  addRect( 80, 230,  20, 140, 1 << (i++),  30); // N
+  addRect(140, 220,  20, 160, 1 << (i++)     ); // O
+  addRect(200, 230,  20, 140, 1 << (i++), -30); // P
+
+  g_paddingValue = 4;
+  g_matrixMode = false;
+  g_nRows = 1;
+  g_nCols = 8;
+}
+
+
+function drawPixelsCharacter(width, height)
+{
+/*     A     B
+     ----- -----
+    |\    |    /|
+    | \   |   / |  
+  H | I\ J| K/  | C
+    |   \ | /   |
+    |  L \|/  M |      
+     ----- -----
+    |    /|\    |
+    |   / | \   | 
+  G | N/ O| P\  | D
+    | /   |   \ |
+    |/    |    \|
+     ----- ----- 
+       F     E
+*/        
+  g_collSegments = [];
+
+  var i = 0;
+  
+  var pixelWidth  = 20;
+  var pixelHeight = 28;
+
+  var pixelDistance  = 5;
+
+  for(var k=0; k<height;k++)
+  {
+    for(var j=0; j<width;j++)
+    {
+      addRect( 40 + (j*(pixelWidth+pixelDistance)),  20 + (k*(pixelHeight+pixelDistance)), pixelWidth,  pixelHeight, 1 << (i++));
+    }
+    i = 0;
+  }
+  g_paddingValue = 4;
+  g_matrixMode = true;
+  g_nRows = height;
+  g_nCols = width;
+}
+
+function clear(c)
+{
+  c.clearRect(0, 0, g_canvasWidth, g_canvasHeight);
+}
+
+function draw()
+{
+  if (g_canvasValid == false)
+  {
+    clear(g_context);
+    var l = g_collSegments.length;
+    for (var i = 0; i < l; i++)
+    {
+      drawshape(g_context, g_collSegments[i], g_collSegments[i].selected ? g_colorSelected : g_collSegments[i].color );
+    }
+
+    g_canvasValid = true;
+  }
+}
+
+function drawshape(context, shape, color)
+{
+  context.save();
+  context.fillStyle = color;
+
+  var cx = shape.x + (shape.w * 0.5);
+  var cy = shape.y + (shape.h * 0.5);
+  context.translate(cx, cy);
+  context.rotate(shape.angle * Math.PI / 180);
+  context.translate(-cx, -cy);
+  context.fillRect(shape.x, shape.y, shape.w, shape.h);
+  context.restore();
+
+  if(!shape.selected)
+  {
+    return;
+  }
+
+  context.save();
+  context.fillStyle = color;
+
+  var x = shape.x / 10;
+  var y = shape.y / 10;
+  var w = shape.w / 10;
+  var h = shape.h / 10;
+  cx = x + (w * 0.5);
+  cy = y + (h * 0.5);
+  context.translate(cx, cy);
+  context.rotate(shape.angle * Math.PI / 180);
+  context.translate(-cx, -cy);
+  context.fillRect(x, y, w, h);
+  context.restore();
+}
+
+function selectDesigner()
+{
+  var selectElement = document.getElementById("designer-selector");
+  var designer = selectElement.options[selectElement.selectedIndex].value;
+  if(designer==1)
+  {
+    draw7SegmentsCharacter();
+  }
+  else if(designer==2)
+  {
+    draw16SegmentsCharacter();
+  }
+  else if(designer==3)
+  {
+    drawPixelsCharacter(3,5);
+  }
+  else if(designer==4)
+  {
+    drawPixelsCharacter(5,7);
+  }
+  else if(designer==5)
+  {
+    drawPixelsCharacter(8,8);
+  }
+  getValue();
+}
+
+function fnMouseDown(e)
+{
+  var rect = g_canvas.getBoundingClientRect();
+  var mouseX = e.pageX - rect.left;
+  var mouseY = e.pageY - rect.top;
+
+  var l = g_collSegments.length;
+  for (var i = l - 1; i >= 0; i--)
+  {
+    drawshape(g_contextGhost, g_collSegments[i], 0xffffff);
+    var imageData = g_contextGhost.getImageData(mouseX, mouseY, 1, 1);
+    var index = (mouseX + mouseY * imageData.width) * 4;
+    if (imageData.data[3] > 0) 
+    {
+      segment = g_collSegments[i];
+      if (segment.selected)
+      {
+        segment.selected = false;
+      } 
+      else 
+      {
+        segment.selected = true;
+      }
+
+      getValue();
+      g_canvasValid = false;
+      clear(g_contextGhost);
+      return;
+    }
+
+  }
+  clear(g_contextGhost);
+  g_canvasValid = false;
+}
+
+function getValue()
+{
+  if(!g_matrixMode)
+  {
+    var l = g_collSegments.length;
+    var value = 0;
+    for (var i = l - 1; i >= 0; i--)
+    {
+      if (g_collSegments[i].selected)
+      {
+        value += g_collSegments[i].value;
+      }
+    }
+    document.getElementById("value").innerHTML = "0x" + pad(value.toString(16), g_paddingValue);
+  }
+  else
+  {
+    var i = 0;
+    var strValues = "";
+    for(var row=0; row < g_nRows; row++)
+    {
+      var value = 0;
+      for ( var col = 0; col < g_nCols ; col++)
+      {
+        if (g_collSegments[i].selected)
+        {
+          value += g_collSegments[i].value;
+        }
+        i++;
+      }
+      var strValue = pad(value.toString(2), 8);
+      strValues += "B8(" + strValue.split("").reverse().join("") + "),<br/>";
+    }
+    document.getElementById("value").innerHTML = strValues;
+  }
+}
+
+function pad(str, max)
+{
+  str = str.toString();
+  return str.length < max ? pad("0" + str, max) : str;
+}
+
+init();
+  </script>
+ </body>
+</html>

@@ -1,0 +1,30 @@
+{
+    "package": {
+        "name": "@CABL_DEPLOY_TARGET@",
+        "repo": "cabl",
+        "subject": "shaduzlabs",
+        "desc": "I was pushed completely automatically :)",
+        "website_url": "www.shaduzlabs.com",
+        "issue_tracker_url": "https://github.com/shaduzlabs/cabl/issues",
+        "vcs_url": "https://github.com/shaduzlabs/cabl.git",
+        "github_use_tag_release_notes": false,
+        "licenses": ["MIT"],
+        "labels": ["c++", "libusb", "cabl"],
+        "public_download_numbers": false,
+        "public_stats": false
+    },
+
+    "version": {
+        "name": "@CABL_VERSION_STRING@",
+        "desc": "@CABL_BUILD_DESCRIPTION@",
+        "released": "@CABL_BUILD_DATE@",
+        "vcs_tag": "@CABL_VERSION_STRING@",
+        "gpgSign": false
+    },
+
+    "files":
+        [
+        {"includePattern": "build/deploy/(.*)", "uploadPattern": "$1"}
+        ],
+    "publish": false
+}

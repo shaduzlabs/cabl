@@ -1,0 +1,28 @@
+# Build products
+build/
+artifacts/
+ipch/
+.env/
+cmake_install.cmake
+Makefile
+
+# Mac specific
+*.DS_Store
+xcuserdata/
+project.xcworkspace/
+*.pbxuser
+
+# Windows specific
+*.bak
+*.opt
+*.user
+*.suo
+*.sdf
+*.ncb
+*.opensdf
+
+# Temporary files
+*~
+
+# Documentation
+docs/
