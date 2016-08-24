@@ -26,5 +26,5 @@
         [
         {"includePattern": "build/deploy/(.*)", "uploadPattern": "$1"}
         ],
-    "publish": true
+    "publish": false
 }
