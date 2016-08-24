@@ -94,7 +94,7 @@ matrix:
   - os: linux
     compiler: gcc
     addons: *4
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON'
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5
 
 
   # 4/ OSX Clang Builds
