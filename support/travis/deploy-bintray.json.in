@@ -24,7 +24,7 @@
 
     "files":
         [
-        {"includePattern": "build/deploy/(.*)", "uploadPattern": "$1"}
+        {"includePattern": "build/deploy/(.*)([.]zip)", "uploadPattern": "$1_@CABL_VERSION_STRING@$2"}
         ],
     "publish": false
 }
