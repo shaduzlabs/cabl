@@ -38,7 +38,6 @@ option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
 option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON    "Build python binding" ${IS_CABL})
-option(CABL_TIDY      "Clang-tidy target"    ${IS_CABL})
 
 option(COVERALLS "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
@@ -108,7 +107,20 @@ elseif($ENV{TRAVIS})
 endif()
 
 set(CABL_BUILD_DESCRIPTION "cabl v. ${CABL_VERSION_STRING} - ${CABL_BUILD_TYPE} built on ${CABL_BUILD_HOST}")
-message(STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION}")
+
+MESSAGE( STATUS "                                   ")
+MESSAGE( STATUS "                            __       ___       ")
+MESSAGE( STATUS "                           /\\ \\     /\\_ \\      ")
+MESSAGE( STATUS "               ___     __  \\ \\ \\____\\//\\ \\     ")
+MESSAGE( STATUS "              /'___\\ /'__`\\ \\ \\ '__`\\ \\ \\ \\    ")
+MESSAGE( STATUS "             /\\ \\__//\\ \\L\\.\\_\\ \\ \\L\\ \\ \\_\\ \\_  ")
+MESSAGE( STATUS "             \\ \\____\\ \\__/.\\_\\\\ \\_,__/ /\\____\\ ")
+MESSAGE( STATUS "              \\/____/\\/__/\\/_/ \\/___/  \\/____/ ")
+MESSAGE( STATUS "               Controller ABstraction Library                      ")
+
+MESSAGE( STATUS "                                  v. ${CABL_VERSION_STRING}")
+MESSAGE( STATUS "                                               ")
+message( STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION} ")
 
 # Dependencies ----------------------------------------------------------------------------------- #
 
@@ -147,15 +159,6 @@ if(${CABL_DOCS})
     set(CABL_DOCS OFF)
   endif()
 endif()
-
-# If clang-tidy is not available, just display a warning and skip the analysis target
-#if(${CABL_TIDY})
-#  find_package(clang-tidy)
-#  if(NOT CLANG_TIDY_FOUND)
-#    message(WARNING "Clang-tidy has not been found, the analysis target will not be created.")
-#    set(CABL_TIDY OFF)
-#  endif()
-#endif()
 
 # OSX specific ----------------------------------------------------------------------------------- #
 
@@ -640,6 +643,7 @@ endif()
 # Unit tests ------------------------------------------------------------------------------------- #
 
 if(${CABL_TEST})
+  addCatch()
   enable_testing(true)
   add_subdirectory(test)
 endif()
@@ -694,20 +698,12 @@ if(${CABL_DOCS})
   endif()
 endif()
 
-
-# Clang-tidy ------------------------------------------------------------------------------------- #
-
-# add_custom_target(
-#   clang-tidy
-#   COMMAND /usr/local/bin/clang-tidy
-#   ${cabl_ALL}
-#   -config=''
-#   --
-#   -std=c++14
-#   $<TARGET_PROPERTY:cabl-static,INTERFACE_INCLUDE_DIRECTORIES>
-# )
-
 # Examples --------------------------------------------------------------------------------------- #
 if(CABL_EXAMPLES AND NOT COVERALLS)
   add_subdirectory(examples)
 endif()
+
+# Clang-tidy and Clang-format -------------------------------------------------------------------- #
+
+include(clang-tools)
+clangTidyTarget(cabl-static)
