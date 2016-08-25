@@ -72,7 +72,7 @@ bool DeviceHandleLibUSB::read(Transfer& transfer_, uint8_t endpoint_)
 bool DeviceHandleLibUSB::write(const Transfer& transfer_, uint8_t endpoint_)
 {
   int nBytesWritten = 0;
-  if (transfer_ == true)
+  if (static_cast<bool>(transfer_) == true)
   {
     int result = libusb_bulk_transfer(m_pCurrentDevice, // Device handle
       endpoint_,                                        // Endpoint
