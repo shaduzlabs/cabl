@@ -44,17 +44,14 @@ add_executable(
   ${Test_FILES}
 )
 
-add_test(NAME ${PROJECT_NAME}-runner
-        COMMAND ${PROJECT_NAME} -s -b
-        CONFIGURATIONS Debug Release
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+if(COVERALLS)
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES LINK_FLAGS " -Wall -fprofile-arcs -ftest-coverage")
+endif()
 
-set_target_properties(
-  ${PROJECT_NAME}
-  PROPERTIES
-    OUTPUT_NAME           ${PROJECT_NAME}
-    OUTPUT_NAME_DEBUG     ${PROJECT_NAME}${DEBUG_SUFFIX}
-)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} cabl-static)
+
+add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
+
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
