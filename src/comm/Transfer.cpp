@@ -44,38 +44,8 @@ Transfer::Transfer(const tRawData& header_, const uint8_t* pData_, size_t dataLe
   std::copy(pData_, pData_ + dataLength_, &m_data[header_.size()]);
 }
 
-/*
-
-Transfer::Transfer( const std::initializer_list<uint8_t>& data_, uint8_t endpoint_ )
-  : Transfer( data_.size(), endpoint_ )
-{
-  uint16_t i = 0;
-  for( const auto& byte : data_ )
-  {
-    m_pData[i++]= byte;
-  }
-}
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer(
-  const std::initializer_list<uint8_t>& header_,
-  const uint8_t* data_,
-  uint16_t length,
-  uint8_t endpoint_
-)
-  : Transfer( ( header_.size() + length ), endpoint_ )
-{
-  uint16_t i = 0;
-  for( const auto& byte : header_ )
-  {
-    m_pData[i++] = byte;
-  }
-
-  memcpy( ( m_pData.get() + i ), data_, m_length );
-
-}
-//--------------------------------------------------------------------------------------------------
-*/
 Transfer::~Transfer()
 {
   reset();
@@ -107,8 +77,10 @@ void Transfer::reset()
 void Transfer::setData(const uint8_t* data_, size_t length_)
 {
   if (length_ == 0 || data_ == nullptr)
+  {
     return;
-
+  }
+  
   m_data.resize(length_);
   std::copy(data_, (data_ + length_), m_data.begin());
 }

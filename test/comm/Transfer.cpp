@@ -67,6 +67,17 @@ TEST_CASE("Transfer comparison", "[comm/Transfer]")
   CHECK_FALSE(t1 == t3);
   CHECK_FALSE(t1 == t4);
   CHECK_FALSE(t1 != t5);
+  
+  t1.setData(nullptr,20);
+  CHECK(t1 == t5);
+  
+  t1.setData(t4.data().data(),0);
+  CHECK(t1 == t5);
+
+  t1.setData(t4.data().data(),t4.size());
+  CHECK(t1 != t5);
+  CHECK(t1 == t4);
+  CHECK(t1.size() == t4.size());
 }
 
 //--------------------------------------------------------------------------------------------------
