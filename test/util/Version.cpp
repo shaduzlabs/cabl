@@ -99,13 +99,14 @@ TEST_CASE("Conversion to string", "[util/Version]")
   CHECK(version_1_2.toString() == "1.2.0");
   CHECK(version_1.toString() == "1.0.0");
 
-  CHECK(version_empty.toString() == "0.0.0");
+  CHECK(static_cast<std::string>(version_empty) == "0.0.0");
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Version comparison", "[util/Version]")
 {
+  Version version_2_3_4(2, 3, 4);
   Version version_1_2_3(1, 2, 3);
   Version version_1_2_4(1, 2, 4);
   Version version_1_2(1, 2);
@@ -117,18 +118,26 @@ TEST_CASE("Version comparison", "[util/Version]")
   CHECK(version_1 < version_1_2);
   CHECK(version_1 < version_1_2_3);
   CHECK(version_1 >= version_null);
+  CHECK(version_null <= version_1);
   CHECK(version_1 > version_null);
   CHECK(version_1 != version_null);
   CHECK(version_1 != version_1_2);
   CHECK(version_1 != version_1_2_3);
+  CHECK(version_1_2 <= version_1_2);
+  CHECK(version_1_2 <= version_1_3);
+  CHECK(version_1_2_3 < version_2_3_4);
+  CHECK(version_2_3_4 > version_1_2_3);
   CHECK_FALSE(version_1 > version_1_2);
   CHECK_FALSE(version_1 == version_1_2);
   CHECK_FALSE(version_1 == version_1_2_3);
   CHECK_FALSE(version_1 >= version_1_3);
   CHECK_FALSE(version_1 == version_null);
 
+  CHECK(version_1_2_4 > version_1_2_3);
   CHECK(version_1_2_3 < version_1_2_4);
   CHECK(version_1_2_4 >= version_1_2_3);
+  CHECK(version_1_2_3 <= version_1_2_4);
+  CHECK(version_1_2_3 <= version_1_2_3);
 }
 
 //--------------------------------------------------------------------------------------------------

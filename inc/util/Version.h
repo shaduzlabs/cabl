@@ -24,7 +24,7 @@ public:
     , m_vMicro( vMicro_ )
   {}
 
-  operator bool() const{ return ( m_vMajor + m_vMinor + m_vMicro ) > 0; }
+  operator bool() const;
 
   unsigned getMajor() const { return m_vMajor; }
   unsigned getMinor() const { return m_vMinor; }
