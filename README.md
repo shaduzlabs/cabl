@@ -1,6 +1,6 @@
 # CABL / Controller ABstraction Layer #
 --------------------
-[![Build Status](https://travis-ci.org/shaduzlabs/cabl.svg?branch=develop)](https://travis-ci.org/shaduzlabs/cabl) [![Build status](https://ci.appveyor.com/api/projects/status/7pfqx8o4df2oy09t?svg=true)](https://ci.appveyor.com/project/shaduzlabs/cabl)[![Coverage Status](https://coveralls.io/repos/github/shaduzlabs/cabl/badge.svg)](https://coveralls.io/github/shaduzlabs/cabl)
+[![Build Status](https://travis-ci.org/shaduzlabs/cabl.svg?branch=develop)](https://travis-ci.org/shaduzlabs/cabl) [![Build status](https://ci.appveyor.com/api/projects/status/7pfqx8o4df2oy09t/branch/develop?svg=true)](https://ci.appveyor.com/project/shaduzlabs/cabl/branch/develop) [![Coverage Status](https://coveralls.io/repos/github/shaduzlabs/cabl/badge.svg?branch=develop)](https://coveralls.io/github/shaduzlabs/cabl?branch=develop)
 
 ## Supported platforms ##
 
