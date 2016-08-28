@@ -27,7 +27,7 @@ namespace test
 // | 0000000000000000 |
 //  ------------------
 
-TEST_CASE("Constructors, reset, bool operator", "[gfx/Canvas]")
+TEST_CASE("Canvas Constructor", "[gfx/Canvas]")
 {
   Canvas c(16, 5, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
   CHECK(c.width() == 16);
