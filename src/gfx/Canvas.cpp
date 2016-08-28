@@ -5,11 +5,13 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
+#include "gfx/Canvas.h"
+
+#include<algorithm>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "gfx/Canvas.h"
 
 #include "gfx/Font.h"
 #include "gfx/fonts/FontBig.h"

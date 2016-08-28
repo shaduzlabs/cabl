@@ -60,6 +60,13 @@ bool Transfer::operator!=(const Transfer& other_) const
 
 //--------------------------------------------------------------------------------------------------
 
+void Transfer::reset()
+{
+  m_data.clear();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void Transfer::setData(const uint8_t* data_, size_t length_)
 {
   if (length_ == 0 || data_ == nullptr)
