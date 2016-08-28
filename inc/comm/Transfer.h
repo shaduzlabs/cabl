@@ -22,7 +22,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class Transfer
+class Transfer final
 {
     
 public:
@@ -33,8 +33,6 @@ public:
   Transfer( tRawData data_ );
   Transfer( const tRawData& header_, const tRawData& data_ );
   Transfer( const tRawData& header_, const uint8_t* pData_, size_t dataLength_ );
-  
-  virtual ~Transfer();
   
   bool operator == (const Transfer& other_) const;
   bool operator != (const Transfer& other_) const;

@@ -56,9 +56,7 @@ public:
   }
 
   //! Destructor
-  virtual ~DrawingContext()
-  {
-  }
+  virtual ~DrawingContext() = default;
 
   /** @} */ // End of group Lifetime
 

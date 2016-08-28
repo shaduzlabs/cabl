@@ -111,7 +111,7 @@ public:
   Canvas(uint16_t width_, uint16_t height_, Allocation alloc_);
 
   //! Destructor
-  virtual ~Canvas();
+  virtual ~Canvas() = default;
 
   /** @} */ // End of group Lifetime
 

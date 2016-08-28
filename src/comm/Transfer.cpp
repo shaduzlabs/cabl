@@ -46,13 +46,6 @@ Transfer::Transfer(const tRawData& header_, const uint8_t* pData_, size_t dataLe
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::~Transfer()
-{
-  reset();
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool Transfer::operator==(const Transfer& other_) const
 {
   return (m_data == other_.m_data);
@@ -63,13 +56,6 @@ bool Transfer::operator==(const Transfer& other_) const
 bool Transfer::operator!=(const Transfer& other_) const
 {
   return !(operator==(other_));
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Transfer::reset()
-{
-  m_data.clear();
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ class Transfer;
 
 */
 
-class Driver
+class Driver final
 {
 
 public:
@@ -54,7 +54,6 @@ public:
   using tCbHotplug = std::function<void(const DeviceDescriptor&, bool)>;
 
   Driver(Type type_);
-  virtual ~Driver();
 
   tCollDeviceDescriptor enumerate();
   tPtr<DeviceHandle> connect(const DeviceDescriptor&);

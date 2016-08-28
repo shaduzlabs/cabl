@@ -78,25 +78,16 @@ Canvas::Canvas(uint16_t width_, uint16_t height_, Allocation allocationType_)
 
 //--------------------------------------------------------------------------------------------------
 
-
-Canvas::~Canvas()
-{
-  // delete[] m_data;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Canvas::invert()
 {
-  for (uint16_t i = 0; i < m_canvasSizeInBytes; i++)
-    m_data[i] = ~m_data[i];
+  std::for_each(m_data.begin(), m_data.end(), [](uint8_t &pixel_){ pixel_ = ~pixel_; });
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::fillPattern(uint8_t value_)
 {
-  memset(m_data.data(), value_, m_canvasSizeInBytes);
+  std::fill(m_data.begin(), m_data.end(), value_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -218,8 +209,10 @@ void Canvas::drawLine(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, Co
 
 void Canvas::Canvas::drawLineVertical(uint16_t x_, uint16_t y_, uint16_t l_, Color color_)
 {
-  for (uint16_t y = y_; y < y_ + l_; y++)
+  for (unsigned y = y_; y < y_ + l_; y++)
+  {
     setPixel(x_, y, color_);
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

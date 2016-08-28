@@ -48,9 +48,9 @@ public:
 
 private:
 
-  unsigned m_vMajor;
-  unsigned m_vMinor;
-  unsigned m_vMicro;
+  unsigned m_vMajor{0U};
+  unsigned m_vMinor{0U};
+  unsigned m_vMicro{0U};
 };
 
 } // namespace util

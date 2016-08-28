@@ -42,7 +42,7 @@ public:
   GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation);
 
   //! Destructor
-  virtual ~GDisplay();
+  virtual ~GDisplay() = default;
 
   /** @} */ // End of group Lifetime
 
@@ -147,7 +147,6 @@ private:
   tCollFlags m_pChunksDirtyFlags; //!< Chunk-specific dirty flags
   uint8_t m_numDisplayChunks;     //!< Number of display chunks
 
-  //   uint32_t                m_uFrameSizeInBytes;                    //!< Frame size in bytes
 };
 
 //--------------------------------------------------------------------------------------------------
