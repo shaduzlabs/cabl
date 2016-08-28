@@ -59,7 +59,7 @@ int cbHotplug(
       descriptor.idProduct,
       strSerialNum);
 
-    if (pDriver)
+    if (pDriver != nullptr)
     {
       pDriver->hotplug(deviceDescriptor, true);
     }
@@ -71,7 +71,7 @@ int cbHotplug(
     sl::cabl::DeviceDescriptor deviceDescriptor(
       "", sl::cabl::DeviceDescriptor::Type::USB, descriptor.idVendor, descriptor.idProduct, "");
 
-    if (pDriver)
+    if (pDriver != nullptr)
     {
       pDriver->hotplug(deviceDescriptor, false);
     }
@@ -84,7 +84,8 @@ int cbHotplug(
 }
 
 //--------------------------------------------------------------------------------------------------
-}
+
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -263,5 +264,5 @@ void DriverLibUSB::hotplug(const DeviceDescriptor& deviceDescriptor_, bool plugg
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

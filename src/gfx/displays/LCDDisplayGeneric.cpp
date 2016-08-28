@@ -8,7 +8,7 @@
 #include "gfx/displays/LCDDisplayGeneric.h"
 
 #include <cmath>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #ifndef ARDUINO
 #include <algorithm>
@@ -27,12 +27,6 @@ LCDDisplayGeneric::LCDDisplayGeneric() : LCDDisplay(kLCDKK_numCols, kLCDKK_numRo
 {
   data().resize(kLCDKK_numRows * kLCDKK_numCols);
   clear();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplayGeneric::~LCDDisplayGeneric()
-{
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -179,5 +173,5 @@ std::string LCDDisplayGeneric::alignText(const std::string& string_, Align align
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

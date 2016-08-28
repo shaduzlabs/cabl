@@ -28,7 +28,7 @@ class Transfer final
 public:
   
   Transfer() = default;
-  Transfer( uint16_t length_ );
+  explicit Transfer( uint16_t length_ );
   
   Transfer( tRawData data_ );
   Transfer( const tRawData& header_, const tRawData& data_ );
@@ -74,5 +74,5 @@ private:
   
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

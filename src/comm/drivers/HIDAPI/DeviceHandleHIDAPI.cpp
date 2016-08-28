@@ -74,5 +74,5 @@ bool DeviceHandleHIDAPI::write(const Transfer& transfer_, uint8_t)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

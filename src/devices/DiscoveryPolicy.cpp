@@ -50,6 +50,6 @@ bool DiscoveryPolicy::matches(const DeviceDescriptor& deviceDescriptor_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

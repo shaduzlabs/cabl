@@ -17,12 +17,12 @@
 
 namespace
 {
-static const std::string kKK_midiPortName = "KOMPLETE KONTROL S";
-static const uint8_t kKK_ledsDataSize = 25;
+const std::string kKK_midiPortName = "KOMPLETE KONTROL S";
+const uint8_t kKK_ledsDataSize = 25;
 
-static const uint8_t kKK_epOut = 0x02;
-static const uint8_t kKK_epInput = 0x84;
-}
+const uint8_t kKK_epOut = 0x02;
+const uint8_t kKK_epInput = 0x84;
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -837,6 +837,6 @@ void KompleteKontrolBase::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

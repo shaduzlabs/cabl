@@ -7,8 +7,9 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include "Canvas.h"
-#include <stdint.h>
 
 namespace sl
 {
@@ -151,5 +152,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

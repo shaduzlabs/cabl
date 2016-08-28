@@ -26,11 +26,11 @@
 
 namespace
 {
-static const uint8_t kPush_epOut = 0x01;
-static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
+const uint8_t kPush_epOut = 0x01;
+const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 // clang-format off
-static const std::vector<sl::util::ColorRGB> kPush_colors{
+const std::vector<sl::util::ColorRGB> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -62,7 +62,7 @@ static const std::vector<sl::util::ColorRGB> kPush_colors{
   {  63,  49,   0 }, { 179,  95,   0 }, {  75,  21,   2 },
 };
 // clang-format on
-}
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -820,6 +820,6 @@ void Push::processNote(uint8_t note_, uint8_t velocity_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

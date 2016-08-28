@@ -17,7 +17,7 @@ namespace
 const uint16_t kMikro_displayWidth = 128;       // Width of the display in pixels
 const uint16_t kMikro_displayHeight = 64;       // Height of the display in pixels
 const uint16_t kMikro_nOfDisplayDataChunks = 4; // N. of display data chunks
-}
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -103,5 +103,5 @@ GDisplay::Color GDisplayMaschineMikro::pixelImpl(uint16_t x_, uint16_t y_) const
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

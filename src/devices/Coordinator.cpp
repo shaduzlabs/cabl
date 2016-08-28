@@ -276,6 +276,6 @@ Coordinator::tDriverPtr Coordinator::driver(Driver::Type tDriver_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

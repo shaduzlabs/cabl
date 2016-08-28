@@ -11,7 +11,7 @@ namespace
 {
 uint16_t kLibUSBReadTimeout = 2;   // Timeout of a input bulk transfer  (0 = NO timeout)
 uint16_t kLibUSBWriteTimeout = 50; // Timeout of a output bulk transfer (0 = NO timeout)
-}
+} // namespace
 
 namespace sl
 {
@@ -139,5 +139,5 @@ void DeviceHandleLibUSB::cbTransfer(libusb_transfer* pTransfer_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

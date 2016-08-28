@@ -102,6 +102,6 @@ M_REGISTER_DEVICE_CLASS(MaschineMK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0x
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

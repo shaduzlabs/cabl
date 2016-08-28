@@ -26,12 +26,12 @@
 
 namespace
 {
-static const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
-static const uint8_t kPush_epOut = 0x01;
-static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
+const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
+const uint8_t kPush_epOut = 0x01;
+const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 // clang-format off
-static const std::vector<sl::util::ColorRGB> kPush_colors{
+const std::vector<sl::util::ColorRGB> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -63,7 +63,7 @@ static const std::vector<sl::util::ColorRGB> kPush_colors{
   {   0,   0, 255 }, {   0, 255,   0 }, {  25, 128,   0 },
 };
 // clang-format on
-}
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -857,6 +857,6 @@ void Push2::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

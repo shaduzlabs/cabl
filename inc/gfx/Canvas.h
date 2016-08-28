@@ -8,7 +8,7 @@
 #pragma once
 
 #include "util/Types.h"
-#include <stdint.h>
+#include <cstdint>
 
 namespace sl
 {
@@ -413,5 +413,5 @@ inline const uint8_t* Canvas::ptr(uint16_t offset) const
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

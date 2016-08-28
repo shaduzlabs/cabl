@@ -18,20 +18,20 @@
 
 namespace
 {
-static const uint8_t kEuklidDefaultSteps = 16;
-static const uint8_t kEuklidDefaultPulses = 4;
-static const uint8_t kEuklidDefaultOffset = 0;
-static const uint8_t kEuklidNumTracks = 3;
+const uint8_t kEuklidDefaultSteps = 16;
+const uint8_t kEuklidDefaultPulses = 4;
+const uint8_t kEuklidDefaultOffset = 0;
+const uint8_t kEuklidNumTracks = 3;
 
-static const sl::util::ColorRGB kEuklidColor_Track[3]
+const sl::util::ColorRGB kEuklidColor_Track[3]
   = {{60, 0, 0, 80}, {0, 60, 0, 80}, {0, 0, 60, 80}};
-static const sl::util::ColorRGB kEuklidColor_Track_CurrentStep[3]
+const sl::util::ColorRGB kEuklidColor_Track_CurrentStep[3]
   = {{127, 0, 0, 127}, {0, 127, 0, 127}, {0, 0, 127, 127}};
 
-static const sl::util::ColorRGB kEuklidColor_Black(0, 0, 0, 0);
+const sl::util::ColorRGB kEuklidColor_Black(0, 0, 0, 0);
 
-static const sl::util::ColorRGB kEuklidColor_Step_Empty(35, 35, 35, 20);
-static const sl::util::ColorRGB kEuklidColor_Step_Empty_Current(127, 127, 127, 50);
+const sl::util::ColorRGB kEuklidColor_Step_Empty(35, 35, 35, 20);
+const sl::util::ColorRGB kEuklidColor_Step_Empty_Current(127, 127, 127, 50);
 }
 
 //--------------------------------------------------------------------------------------------------

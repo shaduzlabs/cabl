@@ -58,6 +58,6 @@ void DeviceFactory::registerClass(const DeviceDescriptor& deviceDescriptor_, tFn
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

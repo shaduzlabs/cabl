@@ -98,13 +98,13 @@ void output(std::ostream& os, std::pair<Begin, Last>&& data)
 
 //--------------------------------------------------------------------------------------------------
 
-inline void output(std::ostream&, None)
+inline void output(std::ostream& /*unused*/, None /*unused*/)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-} // util
-} // sl
+} // namespace util
+} // namespace sl
 
 #endif

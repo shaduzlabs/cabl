@@ -38,7 +38,7 @@ template <class T>
 class DeviceRegistrar
 {
 public:
-  DeviceRegistrar(const DeviceDescriptor& deviceDescriptor_)
+  explicit DeviceRegistrar(const DeviceDescriptor& deviceDescriptor_)
   {
     // Register the factory function for a specific device descriptor
     DeviceFactory::instance().registerClass(deviceDescriptor_,
@@ -48,6 +48,6 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

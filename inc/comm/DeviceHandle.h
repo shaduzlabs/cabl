@@ -30,7 +30,7 @@ class DeviceHandle
 public:
   using tCbRead = std::function<void(Transfer)>;
 
-  DeviceHandle(tPtr<DeviceHandleImpl>);
+  explicit DeviceHandle(tPtr<DeviceHandleImpl>);
   ~DeviceHandle();
 
   void disconnect();
@@ -46,5 +46,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

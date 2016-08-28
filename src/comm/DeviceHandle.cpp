@@ -57,5 +57,5 @@ void DeviceHandle::readAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

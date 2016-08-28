@@ -8,7 +8,7 @@
 #pragma once
 
 #include <future>
-#include <stdint.h>
+#include <cstdint>
 
 #include <cabl.h>
 

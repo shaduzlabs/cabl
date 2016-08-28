@@ -86,6 +86,6 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

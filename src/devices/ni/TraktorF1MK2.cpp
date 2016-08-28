@@ -15,9 +15,9 @@
 
 namespace
 {
-static const uint8_t kF1MK2_epOut = 0x02;
-static const uint8_t kF1MK2_epInput = 0x84;
-}
+const uint8_t kF1MK2_epOut = 0x02;
+const uint8_t kF1MK2_epInput = 0x84;
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -517,6 +517,6 @@ bool TraktorF1MK2::isButtonPressed(const Transfer& transfer_, Button button_) co
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

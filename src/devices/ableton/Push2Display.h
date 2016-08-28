@@ -74,6 +74,6 @@ M_REGISTER_DEVICE_CLASS(
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

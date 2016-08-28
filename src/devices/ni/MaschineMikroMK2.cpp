@@ -23,11 +23,11 @@
 
 namespace
 {
-static const uint8_t kMikroMK2_epDisplay = 0x08;
-static const uint8_t kMikroMK2_epOut = 0x01;
-static const uint8_t kMikroMK2_epInput = 0x84;
-static const unsigned kMikroMK2_padThreshold = 200;
-}
+const uint8_t kMikroMK2_epDisplay = 0x08;
+const uint8_t kMikroMK2_epOut = 0x01;
+const uint8_t kMikroMK2_epInput = 0x84;
+const unsigned kMikroMK2_padThreshold = 200;
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -608,6 +608,6 @@ bool MaschineMikroMK2::isButtonPressed(const Transfer& transfer_, Button button_
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

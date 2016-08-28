@@ -66,5 +66,5 @@ bool DeviceHandleProbe::write(const Transfer& transfer_, uint8_t endpoint_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

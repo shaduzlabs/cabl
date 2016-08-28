@@ -46,6 +46,7 @@ public:
     , m_serialNumber(serialNumber_)
     , m_portIdIn(portIdIn_)
     , m_portIdOut(portIdOut_)
+    , m_local( false )
   {
   }
 
@@ -159,10 +160,10 @@ private:
   tSerialNumber m_serialNumber;
   unsigned m_portIdIn;
   unsigned m_portIdOut;
-  bool m_local;
+  bool m_local{false};
 };
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

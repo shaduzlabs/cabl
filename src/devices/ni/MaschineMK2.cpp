@@ -19,12 +19,12 @@
 
 namespace
 {
-static const uint8_t kMASMK2_epDisplay = 0x08;
-static const uint8_t kMASMK2_epOut = 0x01;
-static const uint8_t kMASMK2_epInput = 0x84;
-static const std::string kMASMK2_midiOutName = "Maschine Controller MK2";
-static const unsigned kMASMK2_padThreshold = 200;
-}
+const uint8_t kMASMK2_epDisplay = 0x08;
+const uint8_t kMASMK2_epOut = 0x01;
+const uint8_t kMASMK2_epInput = 0x84;
+const std::string kMASMK2_midiOutName = "Maschine Controller MK2";
+const unsigned kMASMK2_padThreshold = 200;
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -822,6 +822,6 @@ bool MaschineMK2::isButtonPressed(const Transfer& transfer_, Button button_) con
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

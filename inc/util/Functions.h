@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace sl
 {
@@ -36,5 +36,5 @@ T max(T x, T y, T z)
   return (max > z) ? max : z;
 }
 
-} // util
-} // sl
+} // namespace util
+} // namespace sl

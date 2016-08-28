@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include "util/Types.h"
 #include <array>
 #include <atomic>
-#include <stdint.h>
+#include <cstdint>
+
+#include "util/Types.h"
 
 namespace sl
 {
@@ -113,5 +114,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

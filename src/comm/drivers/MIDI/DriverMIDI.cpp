@@ -151,5 +151,5 @@ tPtr<DeviceHandleImpl> DriverMIDI::connect(const DeviceDescriptor& device_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

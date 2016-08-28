@@ -8,7 +8,7 @@
 #include "gfx/displays/LCDDisplayKompleteKontrol.h"
 
 #include <cmath>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #ifndef ARDUINO
 #include <algorithm>
@@ -18,11 +18,11 @@
 
 namespace
 {
-static const uint8_t kLCDKK_numDotsPerRow = 7;
-static const uint16_t kLCDDisplayKK_FontData[] = {
+const uint8_t kLCDKK_numDotsPerRow = 7;
+const uint16_t kLCDDisplayKK_FontData[] = {
 #include "gfx/fonts/data/FONT_16-seg.h"
 };
-}
+} // namespace
 
 namespace sl
 {
@@ -245,5 +245,5 @@ void LCDDisplayKompleteKontrol::resetDots(uint8_t row_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

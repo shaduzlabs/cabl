@@ -53,7 +53,7 @@ public:
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
   using tCbHotplug = std::function<void(const DeviceDescriptor&, bool)>;
 
-  Driver(Type type_);
+  explicit Driver(Type type_);
 
   tCollDeviceDescriptor enumerate();
   tPtr<DeviceHandle> connect(const DeviceDescriptor&);
@@ -65,5 +65,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

@@ -24,9 +24,8 @@
 
 namespace
 {
-
-static const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
-}
+const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -194,6 +193,6 @@ void Push2Display::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

@@ -41,5 +41,5 @@ tPtr<DeviceHandleImpl> DriverProbe::connect(const DeviceDescriptor&)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

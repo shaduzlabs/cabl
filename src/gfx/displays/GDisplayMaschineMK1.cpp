@@ -13,11 +13,10 @@
 
 namespace
 {
-
 const uint16_t kMASMK1_displayWidth = 255;        // Width of the display in pixels
 const uint16_t kMASMK1_displayHeight = 64;        // Height of the display in pixels
 const uint16_t kMASMK1_nOfDisplayDataChunks = 22; // N. of display data chunks
-}
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -167,5 +166,5 @@ GDisplay::Color GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_) const
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

@@ -20,13 +20,13 @@
 
 namespace
 {
-static const uint8_t kMASMK1_epDisplay = 0x08;
-static const uint8_t kMASMK1_epOut = 0x01;
-static const uint8_t kMASMK1_epInputPads = 0x84;
-static const uint8_t kMASMK1_epInputButtonsAndDials = 0x81;
-static const uint8_t kMASMK1_defaultDisplaysBacklight = 0x5C;
-static const unsigned kMASMK1_padThreshold = 200;
-}
+const uint8_t kMASMK1_epDisplay = 0x08;
+const uint8_t kMASMK1_epOut = 0x01;
+const uint8_t kMASMK1_epInputPads = 0x84;
+const uint8_t kMASMK1_epInputButtonsAndDials = 0x81;
+const uint8_t kMASMK1_defaultDisplaysBacklight = 0x5C;
+const unsigned kMASMK1_padThreshold = 200;
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -827,6 +827,6 @@ bool MaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) con
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl

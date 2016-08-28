@@ -8,7 +8,7 @@
 #include "gfx/displays/LCDDisplay7Segments.h"
 
 #include <cmath>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #ifndef ARDUINO
 #include <algorithm>
@@ -18,10 +18,10 @@
 
 namespace
 {
-static const uint8_t kLCDDisplay7S_FontData[] = {
+const uint8_t kLCDDisplay7S_FontData[] = {
 #include "gfx/fonts/data/FONT_7-seg.h"
 };
-}
+} // namespace
 
 //--------------------------------------------------------------------------------------------------
 
@@ -35,12 +35,6 @@ namespace cabl
 LCDDisplay7Segments::LCDDisplay7Segments(uint8_t numCharacters_) : LCDDisplay(numCharacters_, 1)
 {
   data().resize(numCharacters_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay7Segments::~LCDDisplay7Segments()
-{
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -187,5 +181,5 @@ void LCDDisplay7Segments::resetDots(uint8_t row_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

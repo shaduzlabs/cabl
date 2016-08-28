@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "gfx/LCDDisplay.h"
 
@@ -21,7 +21,7 @@ class LCDDisplayGeneric : public LCDDisplay
 public:
   LCDDisplayGeneric();
 
-  ~LCDDisplayGeneric();
+  ~LCDDisplayGeneric() = default;
 
   void clear() override;
 
@@ -48,5 +48,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

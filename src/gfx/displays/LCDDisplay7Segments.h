@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "gfx/LCDDisplay.h"
 
@@ -19,9 +19,9 @@ class LCDDisplay7Segments : public LCDDisplay
 {
 
 public:
-  LCDDisplay7Segments(uint8_t);
+  explicit LCDDisplay7Segments(uint8_t);
 
-  ~LCDDisplay7Segments();
+  ~LCDDisplay7Segments() = default;
 
   void clear() override;
 
@@ -47,5 +47,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

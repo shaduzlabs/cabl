@@ -37,10 +37,9 @@ Driver::tCollDeviceDescriptor DriverHIDAPI::enumerate()
 {
   M_LOG("[HIDAPI] enumerate");
   Driver::tCollDeviceDescriptor collDeviceDescriptor;
-  struct hid_device_info* devices;
 
-  devices = hid_enumerate(0x0, 0x0);
-  while (devices)
+  auto devices = hid_enumerate(0x0, 0x0);
+  while (devices != nullptr)
   {
     std::string strSerialNumber;
     if (devices->serial_number != nullptr)
@@ -96,5 +95,5 @@ tPtr<DeviceHandleImpl> DriverHIDAPI::connect(const DeviceDescriptor& device_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

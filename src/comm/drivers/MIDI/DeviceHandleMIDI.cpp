@@ -95,5 +95,5 @@ void DeviceHandleMIDI::onMidiMessage(
 
 //--------------------------------------------------------------------------------------------------
 
-} // cabl
-} // sl
+} // namespace cabl
+} // namespace sl

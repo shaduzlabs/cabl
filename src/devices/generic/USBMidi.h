@@ -28,37 +28,37 @@ class USBMidi : public midi::Unmidify, public Device
 {
 
 public:
-  void onNoteOff(NoteOff msg) override
+  void onNoteOff(NoteOff /*msg_*/) override
   {
   }
-  void onNoteOn(NoteOn msg) override
+  void onNoteOn(NoteOn /*msg_*/) override
   {
   }
-  void onPolyPressure(PolyPressure msg) override
+  void onPolyPressure(PolyPressure /*msg_*/) override
   {
   }
-  void onControlChange(ControlChange msg) override
+  void onControlChange(ControlChange /*msg_*/) override
   {
   }
-  void onProgramChange(ProgramChange msg) override
+  void onProgramChange(ProgramChange /*msg_*/) override
   {
   }
-  void onChannelPressure(ChannelPressure msg) override
+  void onChannelPressure(ChannelPressure /*msg_*/) override
   {
   }
-  void onPitchBend(PitchBend msg) override
+  void onPitchBend(PitchBend /*msg_*/) override
   {
   }
-  void onClock(Clock msg_) override
+  void onClock(Clock /*msg_*/) override
   {
   }
-  void onSysEx(SysEx msg_) override
+  void onSysEx(SysEx /*msg_*/) override
   {
   }
-  void onUSysExRT(USysExRT msg_) override
+  void onUSysExRT(USysExRT /*msg_*/) override
   {
   }
-  void onUSysExNonRT(USysExNonRT msg_) override
+  void onUSysExNonRT(USysExNonRT /*msg_*/) override
   {
   }
 
@@ -69,6 +69,6 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
-} // cabl
-} // sl
+} // namespace devices
+} // namespace cabl
+} // namespace sl
