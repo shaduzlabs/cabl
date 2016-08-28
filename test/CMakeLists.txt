@@ -43,6 +43,7 @@ set(
   Test_FILES
     ${test_SRCS}
     ${test_comm_SRCS}
+    ${test_gfx_SRCS}
     ${test_util_SRCS}
 )
 
