@@ -24,6 +24,11 @@ set(
 )
 
 set(
+  test_gfx_SRCS
+    gfx/Canvas.cpp
+)
+
+set(
   test_util_SRCS
     util/ColorRGB.cpp
     util/Version.cpp
@@ -31,6 +36,7 @@ set(
 
 source_group(""                  FILES ${test_SRCS})
 source_group("comm"              FILES ${test_comm_SRCS})
+source_group("gfx"               FILES ${test_gfx_SRCS})
 source_group("util"              FILES ${test_util_SRCS})
 
 set(
