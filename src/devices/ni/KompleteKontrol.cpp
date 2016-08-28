@@ -319,14 +319,14 @@ KompleteKontrolBase::~KompleteKontrolBase()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLed(Device::Button btn_, const util::LedColor& color_)
+void KompleteKontrolBase::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLed(Device::Key key_, const util::LedColor& color_)
+void KompleteKontrolBase::setLed(Device::Key key_, const util::ColorRGB& color_)
 {
   setLedImpl(led(key_), color_);
 }
@@ -526,7 +526,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLedImpl(Led led_, const util::LedColor& color_)
+void KompleteKontrolBase::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   static const uint8_t kFirstKeyIndex = static_cast<uint16_t>(Led::Key1);
   uint16_t ledIndex = static_cast<uint16_t>(led_);

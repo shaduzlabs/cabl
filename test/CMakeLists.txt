@@ -25,6 +25,7 @@ set(
 
 set(
   test_util_SRCS
+    util/ColorRGB.cpp
     util/Version.cpp
 )
 

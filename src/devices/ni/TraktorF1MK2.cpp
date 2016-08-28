@@ -147,14 +147,14 @@ TraktorF1MK2::TraktorF1MK2() : m_lcdDisplay(2), m_isDirtyLeds(true)
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void TraktorF1MK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -321,7 +321,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLedImpl(Led led_, const util::LedColor& color_)
+void TraktorF1MK2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   uint16_t ledIndex = static_cast<uint16_t>(led_);
 

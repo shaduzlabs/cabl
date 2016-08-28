@@ -28,10 +28,10 @@ public:
   Push2Display();
   ~Push2Display() override;
 
-  void setLed(Device::Button, const util::LedColor&) override
+  void setLed(Device::Button, const util::ColorRGB&) override
   {
   }
-  void setLed(Device::Pad, const util::LedColor&) override
+  void setLed(Device::Pad, const util::ColorRGB&) override
   {
   }
   void sendMidiMsg(tRawData) override

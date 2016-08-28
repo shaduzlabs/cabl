@@ -31,7 +31,7 @@ static const uint8_t kPush_epOut = 0x01;
 static const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 // clang-format off
-static const std::vector<sl::util::RGBColor> kPush_colors{
+static const std::vector<sl::util::ColorRGB> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -323,14 +323,14 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLed(Device::Button btn_, const util::LedColor& color_)
+void Push2::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void Push2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -444,7 +444,7 @@ bool Push2::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLedImpl(Led led_, const util::LedColor& color_)
+void Push2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -715,11 +715,9 @@ Device::Encoder Push2::deviceEncoder(Encoder enc_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-uint8_t Push2::getColorIndex(const util::LedColor& color_)
+uint8_t Push2::getColorIndex(const util::ColorRGB& color_)
 {
-  util::RGBColor ledColor(color_.colorRGB());
-
-  auto it = m_colorsCache.find(ledColor);
+  auto it = m_colorsCache.find(color_);
   if (it != m_colorsCache.end())
   {
     return it->second;
@@ -729,7 +727,7 @@ uint8_t Push2::getColorIndex(const util::LedColor& color_)
   double minDistance = std::numeric_limits<double>::max();
   for (uint8_t i = 0; i < kPush_colors.size(); i++)
   {
-    double currentDistance = ledColor.distance(kPush_colors[i]);
+    double currentDistance = color_.distance(kPush_colors[i]);
     if (currentDistance < minDistance)
     {
       colorIndex = i;
@@ -740,7 +738,7 @@ uint8_t Push2::getColorIndex(const util::LedColor& color_)
       break;
     }
   }
-  m_colorsCache.emplace(std::move(ledColor), colorIndex);
+  m_colorsCache.emplace(std::move(color_), colorIndex);
   return colorIndex;
 }
 

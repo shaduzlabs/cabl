@@ -142,14 +142,14 @@ MaschineMikroMK2::MaschineMikroMK2() : m_padsStatus(0), m_isDirtyLeds(false)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void MaschineMikroMK2::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void MaschineMikroMK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -403,7 +403,7 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::setLedImpl(Led led_, const util::LedColor& color_)
+void MaschineMikroMK2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 

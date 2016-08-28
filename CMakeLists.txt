@@ -212,12 +212,10 @@ set(
 
 set(
   inc_util_INCLUDES
-    inc/util/Exception.h
+    inc/util/ColorRGB.h
     inc/util/Functions.h
-    inc/util/LedColor.h
     inc/util/Log.h
     inc/util/Macros.h
-    inc/util/RGBColor.h
     inc/util/Types.h
     inc/util/Version.h
 )
@@ -398,6 +396,7 @@ set(
 
 set(
   src_util_SRCS
+    src/util/ColorRGB.cpp
     src/util/Functions.cpp
     src/util/Version.cpp
 )

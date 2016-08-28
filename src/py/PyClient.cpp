@@ -189,7 +189,7 @@ void PyClient::render()
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setLed(Device::Button btn_, const util::LedColor& color_)
+void PyClient::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   if (device())
   {
@@ -199,7 +199,7 @@ void PyClient::setLed(Device::Button btn_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setLed(Device::Pad pad_, const util::LedColor& color_)
+void PyClient::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   if (device())
   {
@@ -209,7 +209,7 @@ void PyClient::setLed(Device::Pad pad_, const util::LedColor& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setLed(Device::Key key_, const util::LedColor& color_)
+void PyClient::setLed(Device::Key key_, const util::ColorRGB& color_)
 {
   if (device())
   {

@@ -21,7 +21,7 @@
 #include "comm/DeviceHandle.h"
 #include "devices/DeviceRegistrar.h"
 #include "gfx/DrawingContext.h"
-#include "util/LedColor.h"
+#include "util/ColorRGB.h"
 
 namespace sl
 {
@@ -309,12 +309,12 @@ public:
     return s_dummyContext;
   }
 
-  virtual void setLed(Button, const util::LedColor&) = 0;
+  virtual void setLed(Button, const util::ColorRGB&) = 0;
 
-  virtual void setLed(Pad, const util::LedColor&)
+  virtual void setLed(Pad, const util::ColorRGB&)
   {
   }
-  virtual void setLed(Key, const util::LedColor&)
+  virtual void setLed(Key, const util::ColorRGB&)
   {
   }
 

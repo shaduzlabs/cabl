@@ -142,6 +142,6 @@ TEST_CASE("Version comparison", "[util/Version]")
 
 //--------------------------------------------------------------------------------------------------
 
-} // test
-} // util
-} // sl
+} // namespace test
+} // namespace util
+} // namespace sl

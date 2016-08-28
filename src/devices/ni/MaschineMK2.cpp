@@ -225,14 +225,14 @@ MaschineMK2::~MaschineMK2()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK2::setLed(Device::Button btn_, const util::LedColor& color_)
+void MaschineMK2::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK2::setLed(Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -543,7 +543,7 @@ void MaschineMK2::processPads(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK2::setLedImpl(Led led_, const util::LedColor& color_)
+void MaschineMK2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   static const uint8_t kFirstPadIndex = static_cast<uint8_t>(Led::Pad13);
   uint8_t ledIndex = static_cast<uint8_t>(led_);

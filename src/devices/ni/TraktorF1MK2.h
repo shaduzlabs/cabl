@@ -29,8 +29,8 @@ class TraktorF1MK2 : public Device
 public:
   TraktorF1MK2();
 
-  void setLed(Device::Button, const util::LedColor&) override;
-  void setLed(Device::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::ColorRGB&) override;
+  void setLed(Device::Pad, const util::ColorRGB&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -54,7 +54,7 @@ private:
 
   void processButtons(const Transfer&);
 
-  void setLedImpl(Led, const util::LedColor&);
+  void setLedImpl(Led, const util::ColorRGB&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(Device::Pad) const noexcept;

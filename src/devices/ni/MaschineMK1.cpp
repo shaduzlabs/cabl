@@ -190,14 +190,14 @@ MaschineMK1::~MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed(Device::Button btn_, const util::LedColor& color_)
+void MaschineMK1::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed(Device::Pad pad_, const util::LedColor& color_)
+void MaschineMK1::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 {
   setLedImpl(led(pad_), color_);
 }
@@ -581,7 +581,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLedImpl(Led led_, const util::LedColor& color_)
+void MaschineMK1::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 

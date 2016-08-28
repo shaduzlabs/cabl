@@ -580,9 +580,9 @@ BOOST_PYTHON_MODULE(pycabl)
  */
   //--------------------------------------------------------------------------------------------------
 
-  void (PyClient::*setLed_btn)(Device::Button, const util::LedColor&) = &PyClient::setLed;
-  void (PyClient::*setLed_pad)(Device::Pad, const util::LedColor&) = &PyClient::setLed;
-  void (PyClient::*setLed_key)(Device::Key, const util::LedColor&) = &PyClient::setLed;
+  void (PyClient::*setLed_btn)(Device::Button, const util::ColorRGB&) = &PyClient::setLed;
+  void (PyClient::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &PyClient::setLed;
+  void (PyClient::*setLed_key)(Device::Key, const util::ColorRGB&) = &PyClient::setLed;
 
   class_<PyClient, boost::noncopyable>("Client", init<object, object, object>())
     .def("enumerateDevices", &enumerateDevices)
@@ -621,9 +621,9 @@ BOOST_PYTHON_MODULE(pycabl)
 
   /*
 
-  void (Device::*setLed_btn)(Device::Button, const util::LedColor&) = &Device::setLed;
-  void (Device::*setLed_pad)(Device::Pad, const util::LedColor&) = &Device::setLed;
-  void (Device::*setLed_key)(Device::Key, const util::LedColor&) = &Device::setLed;
+  void (Device::*setLed_btn)(Device::Button, const util::ColorRGB&) = &Device::setLed;
+  void (Device::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &Device::setLed;
+  void (Device::*setLed_key)(Device::Key, const util::ColorRGB&) = &Device::setLed;
 
   class_<Device, boost::noncopyable>("Device")
     .def("setLedButton", pure_virtual(setLed_btn))
@@ -645,22 +645,16 @@ BOOST_PYTHON_MODULE(pycabl)
 
   //--------------------------------------------------------------------------------------------------
 
-  class_<util::LedColor>("LedColor", init<uint8_t>())
+  class_<util::ColorRGB>("ColorRGB", init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
     .def(self_ns::str(self_ns::self))
-    .def("colorRGB", &util::LedColor::colorRGB)
-    .def("red", &util::LedColor::red)
-    .def("green", &util::LedColor::green)
-    .def("blue", &util::LedColor::blue)
-    .def("mono", &util::LedColor::mono);
-
-  //--------------------------------------------------------------------------------------------------
-
-  class_<util::RGBColor>("RGBColor", init<uint8_t, uint8_t, uint8_t>())
-    .def(self_ns::str(self_ns::self))
-    .def("distance", &util::RGBColor::distance)
-    .def("getValue", &util::RGBColor::getValue);
+    .def("distance", &util::ColorRGB::distance)
+    .def("getValue", &util::ColorRGB::getValue)
+    .def("red", &util::ColorRGB::red)
+    .def("green", &util::ColorRGB::green)
+    .def("blue", &util::ColorRGB::blue)
+    .def("mono", &util::ColorRGB::mono);
 
   //--------------------------------------------------------------------------------------------------
 

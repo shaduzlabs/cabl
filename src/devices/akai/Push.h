@@ -29,8 +29,8 @@ class Push : public USBMidi
 public:
   Push();
 
-  void setLed(Device::Button, const util::LedColor&) override;
-  void setLed(Device::Pad, const util::LedColor&) override;
+  void setLed(Device::Button, const util::ColorRGB&) override;
+  void setLed(Device::Pad, const util::ColorRGB&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -58,7 +58,7 @@ private:
   bool sendDisplayData();
   bool sendLeds();
 
-  void setLedImpl(Led, const util::LedColor&);
+  void setLedImpl(Led, const util::ColorRGB&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(Device::Pad) const noexcept;
@@ -66,7 +66,7 @@ private:
   Device::Button deviceButton(Button) const noexcept;
   Device::Encoder deviceEncoder(Encoder) const noexcept;
 
-  uint8_t getColorIndex(const util::LedColor&);
+  uint8_t getColorIndex(const util::ColorRGB&);
 
   void onNoteOff(NoteOff msg) override;
   void onNoteOn(NoteOn msg) override;
@@ -93,7 +93,7 @@ private:
 
   bool m_isDirtyLeds;
 
-  std::map<util::RGBColor, uint8_t> m_colorsCache;
+  std::map<util::ColorRGB, uint8_t> m_colorsCache;
 };
 
 //--------------------------------------------------------------------------------------------------

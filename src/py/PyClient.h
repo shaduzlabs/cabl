@@ -78,9 +78,9 @@ public:
     m_onKeyChanged = fn_;
   }
 
-  void setLed(Device::Button, const util::LedColor&);
-  void setLed(Device::Pad, const util::LedColor&);
-  void setLed(Device::Key, const util::LedColor&);
+  void setLed(Device::Button, const util::ColorRGB&);
+  void setLed(Device::Pad, const util::ColorRGB&);
+  void setLed(Device::Key, const util::ColorRGB&);
 
   GDisplay* displayGraphic(size_t displayIndex_)
   {
