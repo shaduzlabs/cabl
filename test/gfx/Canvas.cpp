@@ -11,8 +11,8 @@
 #include <iostream>
 
 
-#include <gfx/displays/GDisplayMaschineMk1.h>
-#include <gfx/displays/GDisplayMaschineMk2.h>
+#include <gfx/displays/GDisplayMaschineMK1.h>
+#include <gfx/displays/GDisplayMaschineMK2.h>
 #include <gfx/displays/GDisplayMaschineMikro.h>
 
 namespace sl
