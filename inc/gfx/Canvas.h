@@ -7,8 +7,10 @@
 
 #pragma once
 
-#include "util/Types.h"
 #include <cstdint>
+#include <string>
+
+#include "util/Types.h"
 
 namespace sl
 {
@@ -112,6 +114,24 @@ public:
 
   //! Destructor
   virtual ~Canvas() = default;
+
+  //! Get the Canvas width in pixels
+  /*!
+   \return         The Canvas width in pixels
+   */
+  uint16_t width() const noexcept
+  {
+    return m_width;
+  }
+
+  //! Get the Canvas height in pixels
+  /*!
+   \return         The Canvas height in pixels
+   */
+  uint16_t height() const noexcept
+  {
+    return m_height;
+  }
 
   /** @} */ // End of group Lifetime
 
@@ -341,23 +361,7 @@ public:
    * @{
    */
 
-  //! Get the Canvas width in pixels
-  /*!
-   \return         The Canvas width in pixels
-   */
-  uint16_t width() const noexcept
-  {
-    return m_width;
-  }
-
-  //! Get the Canvas height in pixels
-  /*!
-   \return         The Canvas height in pixels
-   */
-  uint16_t height() const noexcept
-  {
-    return m_height;
-  }
+  virtual std::string string(std::string black_ = " ", std::string white_ = "0") const;
 
   /** @} */ // End of group Utility
 

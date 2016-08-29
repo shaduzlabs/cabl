@@ -7,11 +7,10 @@
 
 #include "gfx/Canvas.h"
 
-#include<algorithm>
+#include <algorithm>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "gfx/Font.h"
 #include "gfx/fonts/FontBig.h"
@@ -82,7 +81,7 @@ Canvas::Canvas(uint16_t width_, uint16_t height_, Allocation allocationType_)
 
 void Canvas::invert()
 {
-  std::for_each(m_data.begin(), m_data.end(), [](uint8_t &pixel_){ pixel_ = ~pixel_; });
+  std::for_each(m_data.begin(), m_data.end(), [](uint8_t& pixel_) { pixel_ = ~pixel_; });
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -97,10 +96,14 @@ void Canvas::fillPattern(uint8_t value_)
 void Canvas::setPixel(uint16_t x_, uint16_t y_, Color color_)
 {
   if (x_ >= width() || y_ >= height() || color_ == Color::None)
+  {
     return;
+  }
 
   if (color_ == Color::Random)
+  {
     color_ = static_cast<Color>(util::randomRange(0, 2));
+  }
 
   uint16_t byteIndex = (m_canvasWidthInBytes * y_) + (x_ >> 3);
 
@@ -128,7 +131,9 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, Color color_)
 Canvas::Color Canvas::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
+  {
     return Color::Black;
+  }
 
   return (m_data[(m_canvasWidthInBytes * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
                                                                                      : Color::White;
@@ -194,15 +199,23 @@ void Canvas::drawLine(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, Co
     if (e >= 0)
     {
       if (bSwapped)
+      {
         x = x + s1;
+      }
       else
+      {
         y = y + s2;
+      }
       e = e - ((int)dx << 1);
     }
     if (bSwapped)
+    {
       y = y + s2;
+    }
     else
+    {
       x = x + s1;
+    }
     e = e + ((int)dy << 1);
   }
 }
@@ -222,7 +235,9 @@ void Canvas::Canvas::drawLineVertical(uint16_t x_, uint16_t y_, uint16_t l_, Col
 void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, Color color_)
 {
   for (uint16_t x = x_; x < x_ + l_; x++)
+  {
     setPixel(x, y_, color_);
+  }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -271,13 +286,21 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
   { // Handle awkward all-on-same-line case as its own thing
     a = b = x0_;
     if (x1_ < a)
+    {
       a = x1_;
+    }
     else if (x1_ > b)
+    {
       b = x1_;
+    }
     if (x2_ < a)
+    {
       a = x2_;
+    }
     else if (x2_ > b)
+    {
       b = x2_;
+    }
     drawLineHorizontal(a, y0_, b - a + 1, color_);
     return;
   }
@@ -293,9 +316,13 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
   // in the second loop...which also avoids a /0 error here if y0=y1
   // (flat-topped triangle).
   if (y1_ == y2_)
+  {
     last = y1_; // Include y1 scanline
+  }
   else
+  {
     last = y1_ - 1; // Skip it
+  }
 
   for (y = y0_; y <= last; y++)
   {
@@ -308,7 +335,9 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
      b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
      */
     if (a > b)
+    {
       M_SWAP(a, b);
+    }
     drawLineHorizontal(a, y, b - a + 1, color_);
   }
 
@@ -347,15 +376,24 @@ void Canvas::drawFilledRect(
   uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_, Color fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
+  {
     return;
+  }
 
   drawLineHorizontal(x_, y_, w_, color_);
   drawLineHorizontal(x_, y_ + h_ - 1, w_, color_);
-  drawLineVertical(x_, y_, h_, color_);
-  drawLineVertical(x_ + w_ - 1, y_, h_, color_);
+  if (h_ <= 2)
+  {
+    return;
+  }
+
+  drawLineVertical(x_, y_ + 1, h_ - 2, color_);
+  drawLineVertical(x_ + w_ - 1, y_ + 1, h_ - 2, color_);
 
   if (fillColor_ == Color::None)
+  {
     return;
+  }
 
   if (w_ > h_)
   {
@@ -389,7 +427,9 @@ void Canvas::drawFilledRectRounded(
   uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_, Color fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
+  {
     return;
+  }
 
   uint16_t smallestSide = (w_ >= h_) ? h_ : w_;
   uint16_t rOffset = 2 * r_;
@@ -414,8 +454,10 @@ void Canvas::drawFilledRectRounded(
   drawFilledCircle(
     (x_ + r_), (y_ + h_ - r_ - 1), r_, color_, fillColor_, CircleType::QuarterBottomLeft);
 
-  if (fillColor_ == Color::None)
+  if (fillColor_ == Color::None || h_ <= 2 || w_ <= 2)
+  {
     return;
+  }
 
   drawFilledRect((x_ + r_), (y_ + 1), (w_ - rOffset), r_, fillColor_, fillColor_);
 
@@ -437,7 +479,9 @@ void Canvas::drawFilledCircle(
   uint16_t x_, uint16_t y_, uint16_t r_, Color color_, Color fillColor_, CircleType type_)
 {
   if ((x_ >= m_width) || (y_ >= m_height) || r_ == 0)
+  {
     return;
+  }
 
   int x, y, rX0, rX1, rY0, rY1;
   rX0 = rY0 = -r_;
@@ -504,7 +548,9 @@ void Canvas::drawBitmap(
   uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const uint8_t* pBitmap_, Color color_)
 {
   if ((x_ >= m_width) || (y_ >= m_height))
+  {
     return;
+  }
 
   uint16_t drawableHeight = ((y_ + h_) > m_height) ? (m_height - y_) : h_;
   uint16_t drawableWidth = ((x_ + w_) > m_width) ? (m_width - x_) : w_;
@@ -533,7 +579,9 @@ void Canvas::draw(const Canvas& c_,
 {
   if ((xDest_ >= m_width) || (yDest_ >= m_height) || (xSource_ >= c_.width())
       || (ySource_ >= c_.height()))
+  {
     return;
+  }
 
   uint16_t width = (w_ <= c_.width() && w_ > 0) ? w_ : c_.width();
   uint16_t height = (h_ <= c_.height() && h_ > 0) ? h_ : c_.height();
@@ -558,7 +606,9 @@ void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color co
   uint8_t c = c_ - pFont_->firstChar();
 
   if ((x_ >= m_width) || (y_ >= m_height) || c > pFont_->lastChar() || c_ < pFont_->firstChar())
+  {
     return;
+  }
 
   for (uint8_t y = 0; y < pFont_->height(); y++)
   {
@@ -605,11 +655,15 @@ void Canvas::printStr(
 {
   uint8_t charWidth = pFont_->charSpacing() + spacing_;
   if (y_ >= m_height || x_ > m_width)
+  {
     return;
+  }
   for (unsigned i = 0; static_cast<unsigned>(pStr_[i]) != 0; i++)
   {
     if (x_ > (m_width + charWidth))
+    {
       return;
+    }
     printChar(x_, y_, pStr_[i], pFont_, color_);
     x_ += charWidth;
   }
@@ -634,6 +688,30 @@ void Canvas::setDefaultFont(FontType font_)
     default:
       break;
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+std::string Canvas::string(std::string black_, std::string white_) const
+{
+  std::string displayContent = "\n";
+  for (int row = 0; row < m_height; row++)
+  {
+    for (int col = 0; col < m_width; col++)
+    {
+      if (pixel(col, row) == Color::Black)
+      {
+        displayContent += black_;
+      }
+      else
+      {
+        displayContent += white_;
+      }
+    }
+    displayContent += "\n";
+  }
+  displayContent.pop_back();
+  return displayContent;
 }
 
 //--------------------------------------------------------------------------------------------------
