@@ -40,7 +40,7 @@ GDisplayMaschineMikro::GDisplayMaschineMikro()
 
 void GDisplayMaschineMikro::white()
 {
-  fillPattern(0x0);
+  fillPattern(0xFF);
   m_isDirty = true;
 }
 
@@ -48,7 +48,7 @@ void GDisplayMaschineMikro::white()
 
 void GDisplayMaschineMikro::black()
 {
-  fillPattern(0xFF);
+  fillPattern(0x00);
   m_isDirty = true;
 }
 
@@ -95,8 +95,9 @@ void GDisplayMaschineMikro::setPixelImpl(
 GDisplay::Color GDisplayMaschineMikro::pixelImpl(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
+  {
     return Color::Black;
-
+  }
   return ((data()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0 ? Color::Black
                                                                         : Color::White;
 }

@@ -9,6 +9,12 @@
 
 #include <gfx/Canvas.h>
 #include <iostream>
+
+
+#include <gfx/displays/GDisplayMaschineMk1.h>
+#include <gfx/displays/GDisplayMaschineMk2.h>
+#include <gfx/displays/GDisplayMaschineMikro.h>
+
 namespace sl
 {
 namespace cabl
@@ -36,7 +42,7 @@ bool matchColorForAllPixels(const Canvas& canvas_, Canvas::Color color_)
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas constructor", "[gfx/Canvas]")
+TEST_CASE("Canvas: constructor", "[gfx/Canvas]")
 {
   Canvas c(16, 5, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
   CHECK(c.width() == 16);
@@ -45,7 +51,7 @@ TEST_CASE("Canvas constructor", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas convenience functions", "[gfx/Canvas]")
+TEST_CASE("Canvas: convenience functions", "[gfx/Canvas]")
 {
   Canvas c(16, 5, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
 
@@ -64,7 +70,7 @@ TEST_CASE("Canvas convenience functions", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas pixel functions", "[gfx/Canvas]")
+TEST_CASE("Canvas: pixel functions", "[gfx/Canvas]")
 {
   Canvas c(16, 5, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
 
@@ -75,11 +81,54 @@ TEST_CASE("Canvas pixel functions", "[gfx/Canvas]")
   CHECK_FALSE(matchColorForAllPixels(c, Canvas::Color::Black));
   c.setPixel(5, 2, Canvas::Color::Black);
   CHECK(matchColorForAllPixels(c, Canvas::Color::Black));
+
+  c.setPixel(50, 2, Canvas::Color::Black);
+  CHECK(matchColorForAllPixels(c, Canvas::Color::Black));
+
+  c.setPixel(5, 20, Canvas::Color::Black);
+  CHECK(matchColorForAllPixels(c, Canvas::Color::Black));
+
+  c.setPixel(5, 2, Canvas::Color::None);
+  CHECK(matchColorForAllPixels(c, Canvas::Color::Black));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas drawing: rectangles", "[gfx/Canvas]")
+TEST_CASE("Canvas: allocation types and displays", "[gfx/Canvas]")
+{
+  std::string expected;
+
+  GDisplayMaschineMikro c_0;
+  c_0.black();
+  CHECK(matchColorForAllPixels(c_0, Canvas::Color::Black));
+  c_0.invert();
+  CHECK(matchColorForAllPixels(c_0, Canvas::Color::White));
+  c_0.invert();
+  c_0.white();
+  CHECK(matchColorForAllPixels(c_0, Canvas::Color::White));
+  
+  GDisplayMaschineMK1 c_1;
+  c_1.black();
+  CHECK(matchColorForAllPixels(c_1, Canvas::Color::Black));
+  c_1.invert();
+  CHECK(matchColorForAllPixels(c_1, Canvas::Color::White));
+  c_1.invert();
+  c_1.white();
+  CHECK(matchColorForAllPixels(c_1, Canvas::Color::White));
+
+  GDisplayMaschineMK2 c_2;
+  c_2.black();
+  CHECK(matchColorForAllPixels(c_2, Canvas::Color::Black));
+  c_2.invert();
+  CHECK(matchColorForAllPixels(c_2, Canvas::Color::White));
+  c_2.invert();
+  c_2.white();
+  CHECK(matchColorForAllPixels(c_2, Canvas::Color::White));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("Canvas: drawing rectangles", "[gfx/Canvas]")
 {
   Canvas c(16, 9, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
   std::string expected;
@@ -182,7 +231,7 @@ TEST_CASE("Canvas drawing: rectangles", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas drawing: triangles", "[gfx/Canvas]")
+TEST_CASE("Canvas: drawing triangles", "[gfx/Canvas]")
 {
   Canvas c(16, 9, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
   std::string expected;
@@ -231,7 +280,7 @@ TEST_CASE("Canvas drawing: triangles", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas drawing: circles", "[gfx/Canvas]")
+TEST_CASE("Canvas: drawing circles", "[gfx/Canvas]")
 {
   Canvas c(16, 9, Canvas::Allocation::OneBytePacksOneRowOfEightPixels);
   std::string expected;
@@ -247,6 +296,19 @@ TEST_CASE("Canvas drawing: circles", "[gfx/Canvas]")
              "\n░░░░░█░░░░░█░░░░"
              "\n░░░░░██░░░██░░░░"
              "\n░░░░░░░███░░░░░░";
+  CHECK(c.string("░", "█") == expected);
+
+  c.white();
+  c.drawFilledCircle(8, 4, 4, Canvas::Color::Black, Canvas::Color::Black);
+  expected = "\n███████░░░██████"
+             "\n█████░░░░░░░████"
+             "\n█████░░░░░░░████"
+             "\n████░░░░░░░░░███"
+             "\n████░░░░░░░░░███"
+             "\n████░░░░░░░░░███"
+             "\n█████░░░░░░░████"
+             "\n█████░░░░░░░████"
+             "\n███████░░░██████";
   CHECK(c.string("░", "█") == expected);
 }
 

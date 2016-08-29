@@ -391,6 +391,8 @@ private:
   uint16_t m_height;            //!< Canvas height in pixels
 
   Font* m_pFont; //!< The current font
+  
+  Allocation  m_allocationType{Allocation::None};
 };
 
 

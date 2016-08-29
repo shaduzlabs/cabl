@@ -39,7 +39,7 @@ GDisplayMaschineMK1::GDisplayMaschineMK1()
 
 void GDisplayMaschineMK1::white()
 {
-  fillPattern(0xff);
+  fillPattern(0x00);
   m_isDirty = true;
 }
 
@@ -47,7 +47,7 @@ void GDisplayMaschineMK1::white()
 
 void GDisplayMaschineMK1::black()
 {
-  fillPattern(0x0);
+  fillPattern(0xff);
   m_isDirty = true;
 }
 

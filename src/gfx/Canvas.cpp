@@ -38,9 +38,9 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 Canvas::Canvas(uint16_t width_, uint16_t height_, Allocation allocationType_)
-  : m_width(width_), m_height(height_), m_pFont(FontNormal::get())
+  : m_width(width_), m_height(height_), m_pFont(FontNormal::get()), m_allocationType(allocationType_)
 {
-  switch (allocationType_)
+  switch (m_allocationType)
   {
     case Allocation::TwoBytesPackThreePixelsInARow:
     {
@@ -75,6 +75,7 @@ Canvas::Canvas(uint16_t width_, uint16_t height_, Allocation allocationType_)
     }
   }
   m_data.resize(m_canvasSizeInBytes);
+  fillPattern(0);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -133,6 +134,12 @@ Canvas::Color Canvas::pixel(uint16_t x_, uint16_t y_) const
   if (x_ >= width() || y_ >= height())
   {
     return Color::Black;
+  }
+  
+  if(m_allocationType == Allocation::OneBytePacksOneColOfEightPixels)
+  {
+    return ((m_data[x_ + (m_width * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0 ? Color::Black
+                                                                        : Color::White;
   }
 
   return (m_data[(m_canvasWidthInBytes * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
