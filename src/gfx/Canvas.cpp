@@ -62,22 +62,19 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
   }
 
   util::ColorRGB oldColor = pixel(x_, y_);
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + ( 3 * x_) ;
 
-  bool isWhite{color_.active()};
   if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
-    isWhite = !oldColor.active();
-  }
-  uint16_t byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
-
-
-  if (isWhite)
-  {
-    data()[byteIndex] |= (0x80 >> (x_ & 7));
+    data()[byteIndex] = ~oldColor.red();
+    data()[byteIndex + 1] = ~oldColor.green();
+    data()[byteIndex + 2] = ~oldColor.blue();
   }
   else
   {
-    data()[byteIndex] &= (~0x80 >> (x_ & 7));
+    data()[byteIndex] = color_.red();
+    data()[byteIndex + 1] = color_.green();
+    data()[byteIndex + 2] = color_.blue();
   }
 }
 
@@ -89,13 +86,9 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
   {
     return {};
   }
-
-  if ((data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
-  {
-    return {0};
-  }
-
-  return {0xff};
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_) ;
+  
+  return {data()[byteIndex], data()[byteIndex + 1], data()[byteIndex + 2] };
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -459,7 +452,7 @@ void Canvas::circleFilled(uint16_t x_,
   const util::ColorRGB& fillColor_,
   CircleType type_)
 {
-  if ((x_ >= m_width) || (y_ >= m_height) || r_ == 0)
+  if (r_ == 0)
   {
     return;
   }
@@ -562,21 +555,23 @@ void Canvas::canvas(const Canvas& c_,
   uint16_t w_,
   uint16_t h_)
 {
-  if ((xDest_ >= m_width) || (yDest_ >= m_height) || (xSource_ >= c_.width())
-      || (ySource_ >= c_.height()))
+  uint16_t cw = c_.width();
+  uint16_t ch = c_.height();
+  
+  if ((xDest_ >= m_width) || (yDest_ >= m_height) || (xSource_ >= cw) || (ySource_ >= ch))
   {
     return;
   }
 
-  uint16_t width = (w_ <= c_.width() && w_ > 0) ? w_ : c_.width();
-  uint16_t height = (h_ <= c_.height() && h_ > 0) ? h_ : c_.height();
+  uint16_t width = (w_ <= cw && w_ > 0) ? w_ : cw;
+  uint16_t height = (h_ <= ch && h_ > 0) ? h_ : ch;
 
   uint16_t drawableHeight = ((yDest_ + height) > m_height) ? (m_height - yDest_) : height;
   uint16_t drawableWidth = ((xDest_ + width) > m_width) ? (m_width - xDest_) : width;
 
-  for (uint8_t j = 0; j < drawableHeight; j++)
+  for (uint16_t j = 0; j < drawableHeight; j++)
   {
-    for (uint8_t i = 0; i < drawableWidth; i++)
+    for (uint16_t i = 0; i < drawableWidth; i++)
     {
       setPixel(xDest_ + i, yDest_ + j, c_.pixel(xSource_ + i, ySource_ + j));
     }
@@ -646,8 +641,7 @@ void Canvas::initialize()
 
 uint16_t Canvas::canvasWidthInBytes() const
 {
-  uint16_t canvasWitdhInBytes = 1 + ((m_width - 1) >> 3);
-  return canvasWitdhInBytes;
+  return m_width * 3;
 }
 
 //--------------------------------------------------------------------------------------------------

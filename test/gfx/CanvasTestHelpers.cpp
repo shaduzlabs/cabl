@@ -51,6 +51,7 @@ bool compare(const Canvas* c1_, const Canvas* c2_)
     {
       if (c1_->pixel(x, y) != c2_->pixel(x, y))
       {
+        std::cout << x << ":"<< y << " " << c1_->pixel(x, y) << " != " << c2_->pixel(x, y) << std::endl;
         return false;
       }
     }
@@ -61,7 +62,7 @@ bool compare(const Canvas* c1_, const Canvas* c2_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool writePng(const Canvas* c_, const std::string& fileName_)
+bool pngWrite(const Canvas* c_, const std::string& fileName_)
 {
   std::vector<uint8_t> pixels(c_->width() * c_->height() * 4);
   for (unsigned y = 0; y < c_->height(); y++)
@@ -93,7 +94,7 @@ bool writePng(const Canvas* c_, const std::string& fileName_)
 
 //--------------------------------------------------------------------------------------------------
 
-bool readPng(Canvas* c_, const std::string& fileName_)
+bool pngRead(Canvas* c_, const std::string& fileName_)
 {
   std::vector<unsigned char> png;
   std::vector<unsigned char> pixels;
@@ -121,30 +122,6 @@ bool readPng(Canvas* c_, const std::string& fileName_)
     }
   }
   return true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-std::string CanvasTestHelper::displayContent(const Canvas& c_)
-{
-  std::string displayContent = "\n";
-  for (int row = 0; row < c_.height(); row++)
-  {
-    for (int col = 0; col < c_.width(); col++)
-    {
-      if (c_.pixel(col, row) == util::ColorRGB(0))
-      {
-        displayContent += "░";
-      }
-      else
-      {
-        displayContent += "█";
-      }
-    }
-    displayContent += "\n";
-  }
-  displayContent.pop_back();
-  return displayContent;
 }
 
 //--------------------------------------------------------------------------------------------------

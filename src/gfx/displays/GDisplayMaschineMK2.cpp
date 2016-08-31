@@ -81,7 +81,7 @@ void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, const util::Col
   {
     isWhite = !oldColor.active();
   }
-  uint16_t byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
   
   if(isWhite)
   {

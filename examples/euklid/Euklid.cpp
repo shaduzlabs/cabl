@@ -306,12 +306,20 @@ void Euklid::play()
 
 void Euklid::updateGUI()
 {
+  for (unsigned j = 0; j < device()->displayGraphic(0)->width(); j++)
+  {
+    for (unsigned i = 0; i < device()->displayGraphic(0)->height(); i++)
+    {
+      device()->displayGraphic(0)->setPixel(j, i, {static_cast<uint8_t>(j), 0, 0});
+    }
+  }
+  return;
   static util::ColorRGB s_colorWhite{0xff};
   static LCDDisplay::Align s_alignCenter = LCDDisplay::Align::Center;
 
   std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);
 
-  device()->displayGraphic(0)->white();
+  device()->displayGraphic(0)->black();
   device()->displayGraphic(0)->text(32, 52, "E U K L I D",s_colorWhite, "normal");
   device()->displayGraphic(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
   device()->displayGraphic(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);

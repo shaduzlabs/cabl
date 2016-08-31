@@ -20,13 +20,17 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-bool matchColorForAllPixels(const Canvas* /*canvas_*/, const util::ColorRGB& /*color_*/);
+void lines(Canvas* /*c_*/);
 
-bool compare(const Canvas* /*c1_*/, const Canvas* /*c2_*/);
+void circles(Canvas* /*c_*/);
 
-bool pngWrite(const Canvas* /*c_*/, const std::string& /*fileName_*/);
+void triangles(Canvas* /*c_*/);
 
-bool pngRead(Canvas* /*c_*/, const std::string& /*fileName_*/);
+void rectangles(Canvas* /*c_*/);
+
+void text(Canvas* /*c_*/);
+
+void canvas(Canvas* /*c_*/);
 
 //--------------------------------------------------------------------------------------------------
 

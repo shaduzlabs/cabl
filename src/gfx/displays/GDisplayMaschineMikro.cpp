@@ -82,7 +82,7 @@ void GDisplayMaschineMikro::setPixelImpl(
   {
     isWhite = !oldColor.active();
   }
-  uint16_t byteIndex = (width() * (y_ >> 3)) + x_;
+  unsigned byteIndex = (width() * (y_ >> 3)) + x_;
   
 
   if(isWhite)

@@ -22,11 +22,6 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-namespace test
-{
-class CanvasTestHelper;
-}
-
 class Font;
 
 //--------------------------------------------------------------------------------------------------
@@ -53,15 +48,6 @@ public:
    * @ingroup Canvas
    * @{
    */
-
-  //! The font size enum
-  enum class FontType
-  {
-    Default, //!< No font size specified
-    Small,   //!< 3x5 pixels font
-    Normal,  //!< 5x7 pixels font
-    Big,     //!< 8x8 pixels font
-  };
 
   //! The circle types
   enum class CircleType
@@ -350,7 +336,6 @@ protected:
   }
 
 private:
-  friend class test::CanvasTestHelper;
 
   tRawData m_data; //!< The raw Canvas data
 

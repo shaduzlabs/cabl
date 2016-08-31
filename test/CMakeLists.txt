@@ -28,6 +28,8 @@ set(
 set(
   test_gfx_SRCS
     gfx/Canvas.cpp
+    gfx/CanvasTestFunctions.cpp
+    gfx/CanvasTestFunctions.h
     gfx/CanvasTestHelpers.cpp
     gfx/CanvasTestHelpers.h
 )

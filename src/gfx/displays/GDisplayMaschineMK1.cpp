@@ -76,9 +76,9 @@ void GDisplayMaschineMK1::setPixelImpl(
   }
 
   util::ColorRGB oldColor = pixelImpl(x_, y_);
-  uint16_t byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
   uint8_t pixelValue{0};
-  if(color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
     util::ColorRGB newColor = oldColor;
     newColor.invert();
@@ -88,7 +88,7 @@ void GDisplayMaschineMK1::setPixelImpl(
   {
     pixelValue = (static_cast<uint8_t>((color_.mono() / 255.0) * 31 + 0.5f));
   }
- 
+
   switch (x_ % 3)
   {
     case 0:
@@ -124,7 +124,7 @@ util::ColorRGB GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_) const
   }
 
   uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
-  uint16_t byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
   uint8_t pixelValue{0};
   switch (blockIndex)
   {
@@ -137,8 +137,6 @@ util::ColorRGB GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_) const
       break;
     case 2:
       pixelValue = ~(static_cast<uint8_t>(((data()[byteIndex + 1] & 0x1F) / 31.0) * 255));
-      break;
-    default:
       break;
   }
 
