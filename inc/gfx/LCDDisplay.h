@@ -159,7 +159,7 @@ public:
   }
 
   //! Reset the global dirty flag
-  virtual void resetDirtyFlags()
+  virtual void resetDirtyFlags() const
   {
     m_isDirty = false;
   }
@@ -183,7 +183,7 @@ public:
     return m_numRows;
   }
 
-  void setDirty(bool isDirty_)
+  void setDirty(bool isDirty_) const
   {
     m_isDirty = isDirty_;
   }
@@ -201,7 +201,7 @@ protected:
   }
 
 private:
-  bool m_isDirty;
+  mutable bool m_isDirty;
   uint8_t m_numCharsPerRow;
   uint8_t m_numRows;
 

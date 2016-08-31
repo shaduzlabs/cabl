@@ -29,11 +29,24 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMikro::GDisplayMaschineMikro()
-  : GDisplay(kMikro_displayWidth,
-      kMikro_displayHeight,
-      kMikro_nOfDisplayDataChunks,
-      Allocation::OneBytePacksOneColOfEightPixels)
+  : GDisplay(kMikro_displayWidth, kMikro_displayHeight, kMikro_nOfDisplayDataChunks)
 {
+  initialize();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMikro::initializeImpl()
+{
+  data().resize(canvasWidthInBytesImpl() * (1 + ((height() - 1) >> 3)));
+  black();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+uint16_t GDisplayMaschineMikro::canvasWidthInBytesImpl() const
+{
+  return width();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -92,6 +105,20 @@ void GDisplayMaschineMikro::setPixelImpl(
 
 //--------------------------------------------------------------------------------------------------
 
+void GDisplayMaschineMikro::setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_)
+{
+  if(color_.mono() > 127U)
+  {
+    setPixelImpl(x_, y_, Color::White, bSetDirtyChunk_);
+  }
+  else
+  {
+    setPixelImpl(x_, y_, Color::Black, bSetDirtyChunk_);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 GDisplay::Color GDisplayMaschineMikro::pixelImpl(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
@@ -100,6 +127,23 @@ GDisplay::Color GDisplayMaschineMikro::pixelImpl(uint16_t x_, uint16_t y_) const
   }
   return ((data()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0 ? Color::Black
                                                                         : Color::White;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+util::ColorRGB GDisplayMaschineMikro::pixelRGBImpl(uint16_t x_, uint16_t y_) const
+{
+  if (x_ >= width() || y_ >= height())
+  {
+    return {0,0,0,0};
+  }
+
+  if(((data()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0 )
+  {
+    return {0,0,0,0};
+  }
+  
+  return  {0xff,0xff,0xff,0xff};
 }
 
 //--------------------------------------------------------------------------------------------------

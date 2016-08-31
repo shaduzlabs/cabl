@@ -19,7 +19,7 @@ namespace cabl
 class GDisplayDummy : public GDisplay
 {
 public:
-  GDisplayDummy() : GDisplay(0, 0, 0, Canvas::Allocation::None)
+  GDisplayDummy() : GDisplay(0, 0, 0)
   {
   }
 
@@ -27,9 +27,18 @@ public:
   {
   }
 
+  void setPixel(uint16_t, uint16_t, util::ColorRGB) override
+  {
+  }
+
   Color pixel(uint16_t, uint16_t) const override
   {
     return Color::None;
+  }
+
+  util::ColorRGB pixelRGB(uint16_t, uint16_t) const override
+  {
+    return {0,0,0,0};
   }
 
   bool isDirty() const override
@@ -42,7 +51,7 @@ public:
     return false;
   }
 
-  void resetDirtyFlags() override
+  void resetDirtyFlags() const override
   {
   }
 
@@ -147,13 +156,33 @@ public:
   }
 
 protected:
+  //! Initialize the display
+  void initializeImpl() override
+  {
+  }
+
+  //! \return The width of the display in bytes
+  uint16_t canvasWidthInBytesImpl() const override
+  {
+    return 0U;
+  }
+
   void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override
+  {
+  }
+  
+  void setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_ = true) override
   {
   }
 
   Color pixelImpl(uint16_t x_, uint16_t y_) const override
   {
     return Color::None;
+  }
+  
+  util::ColorRGB pixelRGBImpl(uint16_t x_, uint16_t y_) const override
+  {
+    return {0,0,0,0};
   }
 };
 

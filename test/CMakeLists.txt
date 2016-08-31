@@ -11,6 +11,8 @@
 
 include_directories( ${CATCH_INCLUDE_DIRS} )
 
+addlodepng()
+
 project(unit-tests)
 
 set(
@@ -26,6 +28,7 @@ set(
 set(
   test_gfx_SRCS
     gfx/Canvas.cpp
+    gfx/CanvasTestHelper.h
 )
 
 set(
@@ -52,13 +55,17 @@ add_executable(
   ${Test_FILES}
 )
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CABL_ROOT_DIR}/support/test-data $<TARGET_FILE_DIR:${PROJECT_NAME}>/test-data
+)
+
 if(COVERALLS)
   set_target_properties ( ${PROJECT_NAME} PROPERTIES LINK_FLAGS " -Wall -fprofile-arcs -ftest-coverage")
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(${PROJECT_NAME} cabl-static)
+target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
 
 add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 

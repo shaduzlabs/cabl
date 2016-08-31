@@ -130,12 +130,12 @@ bool Push2Display::tick()
 void Push2Display::init()
 {
   // Leds
-  m_display.clear();
+  m_display.black();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-bool Push2Display::sendDisplayData()
+bool Push2Display::sendDisplayData() const
 {
   bool result = true;
   writeToDeviceHandle(
@@ -143,7 +143,7 @@ bool Push2Display::sendDisplayData()
       {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
     0x01);
 
-  for (unsigned offset = 0; offset < m_display.size(); offset += 16384)
+  for (unsigned offset = 0; offset < m_display.data().size(); offset += 16384)
   {
     if (!writeToDeviceHandle(
           Transfer({m_display.data().begin() + offset, m_display.data().begin() + offset + 16384}),
@@ -152,7 +152,7 @@ bool Push2Display::sendDisplayData()
       return false;
     }
   }
-  m_display.setDirty(false);
+  m_display.resetDirtyFlags();
   return result;
 }
 

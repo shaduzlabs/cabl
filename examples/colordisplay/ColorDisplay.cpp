@@ -144,7 +144,7 @@ void ColorDisplay::updateDisplay()
   {
     nTick = 0;
 
-    uint8_t* pDrawingContext = m_pDevice->drawingContext(0).data().data();
+    uint8_t* pDrawingContext = m_pDevice->displayGraphic(0).data().data();
     uint8_t* pPNG = m_pngImage.data();
     for (unsigned col = 0; col < m_pngWidth; col++)
     {

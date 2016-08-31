@@ -9,11 +9,14 @@ cmake_minimum_required (VERSION 2.8.0)
 
 project (cabl)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
+set(CABL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
+set(CABL_BUILD_DIR ${CMAKE_BINARY_DIR})
+
+list(APPEND CMAKE_MODULE_PATH "${CABL_ROOT_DIR}/cmake-modules")
 include(sl-main)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/support/windows/cmake")
+  list(APPEND CMAKE_MODULE_PATH "${CABL_ROOT_DIR}/support/windows/cmake")
   include(GenerateProductVersion)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
@@ -65,7 +68,7 @@ else()
   set (CABL_BUILD_NUMBER "")
   execute_process(
     COMMAND git rev-parse --abbrev-ref HEAD
-    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    WORKING_DIRECTORY ${CABL_ROOT_DIR}
     OUTPUT_VARIABLE CABL_GIT_BRANCH
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
@@ -83,7 +86,7 @@ else()
 endif()
 
 configure_file (
-  "${CMAKE_CURRENT_LIST_DIR}/inc/cabl-config.h.in"
+  "${CABL_ROOT_DIR}/inc/cabl-config.h.in"
   "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
 
@@ -95,7 +98,7 @@ elseif($ENV{TRAVIS})
   if(CABL_DEPLOY_TARGET)
     message(STATUS "Package ${CABL_DEPLOY_TARGET} will be deployed")
     configure_file (
-      "${CMAKE_CURRENT_LIST_DIR}/support/travis/deploy-bintray.json.in"
+      "${CABL_ROOT_DIR}/support/travis/deploy-bintray.json.in"
       "${PROJECT_BINARY_DIR}/deploy-bintray.json"
     )
   endif()
@@ -204,7 +207,6 @@ set(
 set(
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
-    inc/gfx/DrawingContext.h
     inc/gfx/Font.h
     inc/gfx/GDisplay.h
     inc/gfx/LCDDisplay.h
@@ -356,6 +358,7 @@ set(
 
 set(
   src_gfx_displays_SRCS
+    src/gfx/displays/GDisplayDummy.h
     src/gfx/displays/GDisplayMaschineMikro.h
     src/gfx/displays/GDisplayMaschineMikro.cpp
     src/gfx/displays/GDisplayMaschineMK1.h
@@ -672,7 +675,7 @@ if(${CABL_DOCS})
 
   else()
 
-    set( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/support/doxygen/Doxyfile.in )
+    set( doxyfile_in          ${CABL_ROOT_DIR}/support/doxygen/Doxyfile.in )
     set( doxyfile             ${PROJECT_BINARY_DIR}/Doxyfile                          )
 
     set( doxy_project_name    ${PROJECT_NAME}                                         )

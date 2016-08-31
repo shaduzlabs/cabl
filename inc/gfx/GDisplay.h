@@ -40,10 +40,11 @@ public:
      \param height_ Display height in pixels
      \param numDisplayChunks_ Number of data chunks (Default value is 8)
      */
-  GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_, Allocation);
+  GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_);
 
   //! Destructor
   virtual ~GDisplay() = default;
+
 
   /** @} */ // End of group Lifetime
 
@@ -63,13 +64,29 @@ public:
      */
   void setPixel(uint16_t x_, uint16_t y_, Color color_) override;
 
+  //! Set a pixel
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \param color_           The pixel color (RGB + Monochrome)
+   */
+  void setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_) override;
+
   //! Get the pixel value
   /*!
-     \param x_               The X coordinate of the pixel
-     \param y_               The Y coordinate of the pixel
-     \return                 The color of the selected pixel
-     */
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \return                 The color of the selected pixel
+   */
   Color pixel(uint16_t x_, uint16_t y_) const override;
+
+  //! Get the pixel value as an RGB color
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \return                 The color of the selected pixel
+   */
+  util::ColorRGB pixelRGB(uint16_t x_, uint16_t y_) const override;
 
   /** @} */ // End of group Primitives
 
@@ -99,7 +116,7 @@ public:
   virtual bool isChunkDirty(uint8_t chunk_) const;
 
   //! Reset the global dirty flag and the chunk-specific dirty flags
-  virtual void resetDirtyFlags();
+  virtual void resetDirtyFlags() const;
 
   /** @} */ // End of group Access
 
@@ -123,6 +140,13 @@ public:
   //--------------------------------------------------------------------------------------------------
 
 protected:
+  void initialize() override;
+  virtual void initializeImpl() = 0;
+
+  uint16_t canvasWidthInBytes() const override;
+  virtual uint16_t canvasWidthInBytesImpl() const = 0;
+
+
   //! Set a pixel (implementation)
   /*!
      \param x_               The X coordinate of the pixel
@@ -132,22 +156,37 @@ protected:
      */
   virtual void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_) = 0;
 
+  //! Set a pixel (implementation)
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \param color_           The pixel color (RGB + Monochrome)
+   */
+  virtual void setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_) = 0;
+
   //! Get the pixel value (implementation)
   /*!
-     \param x_               The X coordinate of the pixel
-     \param y_               The Y coordinate of the pixel
-     \return                 The color of the selected pixel
-     */
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \return                 The color of the selected pixel
+   */
   virtual Color pixelImpl(uint16_t x_, uint16_t y_) const = 0;
+
+  //! Get the pixel value (implementation)
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \return                 The color of the selected pixel
+   */
+  virtual util::ColorRGB pixelRGBImpl(uint16_t x_, uint16_t y_) const = 0;
 
   virtual void setDirtyChunks(uint16_t yStart_, uint16_t yEnd_ = 0xFFFF);
 
-  volatile bool m_isDirty; //!< Global 'dirty' flag
+  mutable volatile bool m_isDirty; //!< Global 'dirty' flag
 
 private:
-  tCollFlags m_pChunksDirtyFlags; //!< Chunk-specific dirty flags
+  mutable tCollFlags m_pChunksDirtyFlags; //!< Chunk-specific dirty flags
   uint8_t m_numDisplayChunks;     //!< Number of display chunks
-
 };
 
 //--------------------------------------------------------------------------------------------------

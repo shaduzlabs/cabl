@@ -11,6 +11,7 @@
 #include <string>
 
 #include "util/Types.h"
+#include "util/ColorRGB.h"
 
 namespace sl
 {
@@ -18,6 +19,11 @@ namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
+
+namespace test
+{
+class CanvasTestHelper;
+}
 
 class Font;
 
@@ -79,21 +85,6 @@ public:
     QuarterBottomLeft,  //!< Quarter of circle (bottom left)
   };
 
-
-  //! The allocation type
-  enum class Allocation
-  {
-    None,
-
-    // B&W
-    OneBytePacksOneRowOfEightPixels, //!< 1 bit per pixel, 1 byte packs a row of 8 pixels
-    OneBytePacksOneColOfEightPixels, //!< 1 bit per pixel, 1 byte packs a column of 8 pixels
-    TwoBytesPackThreePixelsInARow,   //!< 3 pixels each 2 bytes
-
-    // Color
-    RGB565, //!< 2 bytes per pixel (RGB565)
-  };
-
   /** @} */ // End of group Types
 
   //--------------------------------------------------------------------------------------------------
@@ -110,7 +101,7 @@ public:
    \param height_ Canvas height in pixels
    \param alloc_  Number of data chunks (Default value is 8)
    */
-  Canvas(uint16_t width_, uint16_t height_, Allocation alloc_);
+  Canvas(uint16_t width_, uint16_t height_);
 
   //! Destructor
   virtual ~Canvas() = default;
@@ -176,6 +167,14 @@ public:
    */
   virtual void setPixel(uint16_t x_, uint16_t y_, Color color_);
 
+  //! Set a pixel
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \param color_           The pixel color (RGB + Monochrome)
+   */
+  virtual void setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_);
+
   //! Get the pixel value
   /*!
    \param x_               The X coordinate of the pixel
@@ -184,6 +183,14 @@ public:
    */
   virtual Color pixel(uint16_t x_, uint16_t y_) const;
 
+  //! Get the pixel value as an RGB color
+  /*!
+   \param x_               The X coordinate of the pixel
+   \param y_               The Y coordinate of the pixel
+   \return                 The color of the selected pixel
+   */
+  virtual util::ColorRGB pixelRGB(uint16_t x_, uint16_t y_) const;
+  
   //! Draw a line
   /*!
    \param x0_              The X coordinate of the first point
@@ -353,46 +360,34 @@ public:
 
   /** @} */ // End of group Access
 
-  //--------------------------------------------------------------------------------------------------
-
-  /**
-   * @defgroup Utility Utility/debug functions
-   * @ingroup Canvas
-   * @{
-   */
-
-  virtual std::string string(std::string black_ = " ", std::string white_ = "0") const;
-
-  /** @} */ // End of group Utility
-
   /** @} */ // End of group Canvas
 
   //--------------------------------------------------------------------------------------------------
 
-protected:
-  tRawData& data()
-  {
-    return m_data;
-  }
   const tRawData& data() const
   {
     return m_data;
   }
-  uint16_t canvasWidthInBytes() const noexcept
+
+protected:
+  virtual void initialize();
+
+  virtual uint16_t canvasWidthInBytes() const;
+
+  tRawData& data()
   {
-    return m_canvasWidthInBytes;
+    return m_data;
   }
 
 private:
+  friend class test::CanvasTestHelper;
+
   tRawData m_data; //!< The raw Canvas data
-  uint16_t m_canvasWidthInBytes;
-  uint32_t m_canvasSizeInBytes; //!< Frame size in bytes
-  uint16_t m_width;             //!< Canvas width in pixels
-  uint16_t m_height;            //!< Canvas height in pixels
+
+  uint16_t m_width;  //!< Canvas width in pixels
+  uint16_t m_height; //!< Canvas height in pixels
 
   Font* m_pFont; //!< The current font
-  
-  Allocation  m_allocationType{Allocation::None};
 };
 
 

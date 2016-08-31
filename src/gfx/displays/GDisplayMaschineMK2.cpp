@@ -28,11 +28,25 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 GDisplayMaschineMK2::GDisplayMaschineMK2()
-  : GDisplay(kMASMK2_displayWidth,
-      kMASMK2_displayHeight,
-      kMASMK2_nOfDisplayDataChunks,
-      Allocation::OneBytePacksOneRowOfEightPixels)
+  : GDisplay(kMASMK2_displayWidth, kMASMK2_displayHeight, kMASMK2_nOfDisplayDataChunks)
 {
+  initialize();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK2::initializeImpl()
+{
+  data().resize(canvasWidthInBytesImpl() * height());
+  black();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+uint16_t GDisplayMaschineMK2::canvasWidthInBytesImpl() const
+{
+  uint16_t canvasWitdhInBytes = 1 + ((width() - 1) >> 3);
+  return canvasWitdhInBytes;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -90,13 +104,46 @@ void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, b
 
 //--------------------------------------------------------------------------------------------------
 
+void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_)
+{
+  if(color_.mono() > 127U)
+  {
+    setPixelImpl(x_, y_, Color::White, bSetDirtyChunk_);
+  }
+  else
+  {
+    setPixelImpl(x_, y_, Color::Black, bSetDirtyChunk_);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 GDisplay::Color GDisplayMaschineMK2::pixelImpl(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
+  {
     return Color::Black;
-
+  }
+  
   return (data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
                                                                                      : Color::White;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+util::ColorRGB GDisplayMaschineMK2::pixelRGBImpl(uint16_t x_, uint16_t y_) const
+{
+  if (x_ >= width() || y_ >= height())
+  {
+    return {0,0,0,0};
+  }
+
+  if( (data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 )
+  {
+    return {0,0,0,0};
+  }
+  
+  return  {0xff,0xff,0xff,0xff};
 }
 
 //--------------------------------------------------------------------------------------------------

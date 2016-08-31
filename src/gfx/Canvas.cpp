@@ -37,45 +37,10 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas::Canvas(uint16_t width_, uint16_t height_, Allocation allocationType_)
-  : m_width(width_), m_height(height_), m_pFont(FontNormal::get()), m_allocationType(allocationType_)
+Canvas::Canvas(uint16_t width_, uint16_t height_)
+  : m_width(width_), m_height(height_), m_pFont(FontNormal::get())
 {
-  switch (m_allocationType)
-  {
-    case Allocation::TwoBytesPackThreePixelsInARow:
-    {
-      m_canvasWidthInBytes = (m_width / 3) * 2;
-      m_canvasSizeInBytes = (m_canvasWidthInBytes * height_);
-      break;
-    }
-    case Allocation::OneBytePacksOneColOfEightPixels:
-    {
-      m_canvasWidthInBytes = m_width;
-      m_canvasSizeInBytes = (m_canvasWidthInBytes * (1 + ((m_height - 1) >> 3)));
-      break;
-    }
-    case Allocation::OneBytePacksOneRowOfEightPixels:
-    {
-      m_canvasWidthInBytes = (1 + ((m_width - 1) >> 3));
-      m_canvasSizeInBytes = (m_canvasWidthInBytes * height_);
-      break;
-    }
-    case Allocation::RGB565:
-    {
-      m_canvasWidthInBytes = 2 * m_width;
-      m_canvasSizeInBytes = (m_canvasWidthInBytes * height_);
-      break;
-    }
-    case Allocation::None:
-    default:
-    {
-      m_canvasWidthInBytes = 0;
-      m_canvasSizeInBytes = 0;
-      break;
-    }
-  }
-  m_data.resize(m_canvasSizeInBytes);
-  fillPattern(0);
+  initialize();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -106,7 +71,7 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, Color color_)
     color_ = static_cast<Color>(util::randomRange(0, 2));
   }
 
-  uint16_t byteIndex = (m_canvasWidthInBytes * y_) + (x_ >> 3);
+  uint16_t byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
 
   switch (color_)
   {
@@ -129,21 +94,46 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, Color color_)
 
 //--------------------------------------------------------------------------------------------------
 
+void Canvas::setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_)
+{
+  if(color_.mono()>127)
+  {
+    setPixel(x_, y_, Color::Black);
+  }
+  else
+  {
+    setPixel(x_, y_, Color::White);
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 Canvas::Color Canvas::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
     return Color::Black;
   }
-  
-  if(m_allocationType == Allocation::OneBytePacksOneColOfEightPixels)
+
+  return (m_data[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
+                                                                                     : Color::White;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+util::ColorRGB Canvas::pixelRGB(uint16_t x_, uint16_t y_) const
+{
+  if (x_ >= width() || y_ >= height())
   {
-    return ((m_data[x_ + (m_width * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0 ? Color::Black
-                                                                        : Color::White;
+    return {0,0,0,0};
   }
 
-  return (m_data[(m_canvasWidthInBytes * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
-                                                                                     : Color::White;
+  if( (m_data[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 )
+  {
+    return {0,0,0,0};
+  }
+  
+  return  {0xff,0xff,0xff,0xff};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -699,26 +689,18 @@ void Canvas::setDefaultFont(FontType font_)
 
 //--------------------------------------------------------------------------------------------------
 
-std::string Canvas::string(std::string black_, std::string white_) const
+void Canvas::initialize()
 {
-  std::string displayContent = "\n";
-  for (int row = 0; row < m_height; row++)
-  {
-    for (int col = 0; col < m_width; col++)
-    {
-      if (pixel(col, row) == Color::Black)
-      {
-        displayContent += black_;
-      }
-      else
-      {
-        displayContent += white_;
-      }
-    }
-    displayContent += "\n";
-  }
-  displayContent.pop_back();
-  return displayContent;
+  m_data.resize(canvasWidthInBytes() * m_height);
+  black();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+uint16_t Canvas::canvasWidthInBytes() const
+{
+  uint16_t canvasWitdhInBytes = 1 + ((m_width - 1) >> 3);
+  return canvasWitdhInBytes;
 }
 
 //--------------------------------------------------------------------------------------------------

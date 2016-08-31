@@ -11,6 +11,7 @@
 #include <map>
 
 #include "devices/Device.h"
+#include "gfx/displays/GDisplayPush2.h"
 
 namespace sl
 {
@@ -40,15 +41,11 @@ public:
 
   GDisplay* displayGraphic(size_t displayIndex_) override;
   LCDDisplay* displayLCD(size_t displayIndex_) override;
-  DrawingContext& drawingContext(size_t /*contextIndex_*/) override
-  {
-    return m_display;
-  }
 
   bool tick() override;
 
 private:
-  bool sendDisplayData();
+  bool sendDisplayData() const;
 
   void processNote(uint8_t note_, uint8_t velocity_);
   static void midiInCallback(double timeStamp, std::vector<unsigned char>* message, void* userData);
@@ -64,7 +61,7 @@ private:
 
   bool m_shiftPressed;
 
-  DrawingContext m_display{1024, 160, 2};
+  GDisplayPush2 m_display;
 };
 
 //--------------------------------------------------------------------------------------------------

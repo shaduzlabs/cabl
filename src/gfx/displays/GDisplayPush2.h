@@ -34,6 +34,12 @@ public:
   void black() override;
 
 protected:
+  //! Initialize the display
+  void initializeImpl() override;
+
+  //! \return The width of the display in bytes
+  uint16_t canvasWidthInBytesImpl() const override;
+
   //! Set a pixel
   /*!
      \param x_               The X coordinate of the pixel
@@ -43,6 +49,15 @@ protected:
      */
   void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override;
 
+  //! Set a pixel
+  /*!
+     \param x_               The X coordinate of the pixel
+     \param y_               The Y coordinate of the pixel
+     \param color_           The pixel color (RGB + monochrome)
+     \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
+     */
+  void setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_ = true) override;
+
   //! Get the pixel value
   /*!
      \param x_               The X coordinate of the pixel
@@ -50,6 +65,14 @@ protected:
      \return                 The color of the selected pixel
      */
   Color pixelImpl(uint16_t x_, uint16_t y_) const override;
+  
+  //! Get the pixel value as an RGB color
+  /*!
+     \param x_               The X coordinate of the pixel
+     \param y_               The Y coordinate of the pixel
+     \return                 The color of the selected pixel
+     */
+  util::ColorRGB pixelRGBImpl(uint16_t x_, uint16_t y_) const override;
 };
 
 //--------------------------------------------------------------------------------------------------

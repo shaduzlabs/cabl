@@ -11,7 +11,6 @@
 
 #include "devices/DeviceFactory.h"
 
-#include "gfx/DrawingContext.h"
 #include "gfx/GDisplay.h"
 #include "gfx/LCDDisplay.h"
 

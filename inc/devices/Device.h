@@ -20,7 +20,6 @@
 #include "comm/DeviceDescriptor.h"
 #include "comm/DeviceHandle.h"
 #include "devices/DeviceRegistrar.h"
-#include "gfx/DrawingContext.h"
 #include "util/ColorRGB.h"
 
 namespace sl
@@ -303,12 +302,6 @@ public:
     return 0;
   }
 
-  virtual DrawingContext& drawingContext(size_t contextIndex_)
-  {
-    static DrawingContext s_dummyContext{0, 0, 0};
-    return s_dummyContext;
-  }
-
   virtual void setLed(Button, const util::ColorRGB&) = 0;
 
   virtual void setLed(Pad, const util::ColorRGB&)
@@ -364,7 +357,7 @@ public:
 protected:
   virtual bool tick() = 0;
 
-  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_)
+  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_) const
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
 
@@ -376,7 +369,7 @@ protected:
     return false;
   }
 
-  bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_)
+  bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_) const
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     if (m_pDeviceHandle)
@@ -387,7 +380,7 @@ protected:
     return false;
   }
 
-  void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_)
+  void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_) const
   {
     std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
     if (m_pDeviceHandle)
@@ -487,7 +480,7 @@ private:
   tCbKeyChanged m_cbKeyChanged;
   tCbPotentiometerChanged m_cbPotentiometerChanged;
 
-  std::mutex m_mtxDeviceHandle;
+  mutable std::mutex m_mtxDeviceHandle;
   tPtr<DeviceHandle> m_pDeviceHandle;
 
   friend class Coordinator;
