@@ -32,7 +32,7 @@ public:
     {
       for (int col = 0; col < c_.m_width; col++)
       {
-        if (c_.pixel(col, row) == Canvas::Color::Black)
+        if (c_.pixel(col, row) == util::ColorRGB(0))
         {
           displayContent += "░";
         }

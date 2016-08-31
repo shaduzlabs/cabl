@@ -5,16 +5,11 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "gfx/GDisplay.h"
 
-#include "gfx/Font.h"
-#include "gfx/fonts/FontBig.h"
-#include "gfx/fonts/FontNormal.h"
-#include "gfx/fonts/FontSmall.h"
+#include <cstdio>
+#include <cstdlib>
+#include <string>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -57,30 +52,16 @@ uint16_t GDisplay::canvasWidthInBytes() const
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplay::setPixel(uint16_t x_, uint16_t y_, Color color_)
+void GDisplay::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
 {
   setPixelImpl(x_, y_, color_, true);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplay::setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_)
-{
-  setPixelImpl(x_, y_, color_, true);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-GDisplay::Color GDisplay::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplay::pixel(uint16_t x_, uint16_t y_) const
 {
   return pixelImpl(x_, y_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-util::ColorRGB GDisplay::pixelRGB(uint16_t x_, uint16_t y_) const
-{
-  return pixelRGBImpl(x_, y_);
 }
 
 //--------------------------------------------------------------------------------------------------

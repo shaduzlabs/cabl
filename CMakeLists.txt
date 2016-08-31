@@ -208,6 +208,7 @@ set(
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
     inc/gfx/Font.h
+    inc/gfx/FontManager.h
     inc/gfx/GDisplay.h
     inc/gfx/LCDDisplay.h
 )
@@ -394,6 +395,7 @@ set(
 set(
   src_gfx_SRCS
     src/gfx/Canvas.cpp
+    src/gfx/FontManager.cpp
     src/gfx/GDisplay.cpp
 )
 
@@ -406,7 +408,6 @@ set(
 
 source_group("src\\client"           FILES ${src_client_SRCS})
 source_group("src\\comm"             FILES ${src_comm_SRCS})
-#source_group("src\\comm\\drivers")
 
 source_group("src\\comm\\drivers\\HIDAPI"    FILES ${src_comm_drivers_HIDAPI_SRCS})
 source_group("src\\comm\\drivers\\LibUSB"    FILES ${src_comm_drivers_LibUSB_SRCS})

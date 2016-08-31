@@ -7,17 +7,18 @@
 
 #pragma once
 
-#ifndef SL_FONT_NORMAL_H
-#define SL_FONT_NORMAL_H
-
 #include <gfx/Font.h>
+
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
 
-class FontNormal : public FontBase<FontNormal>
+//--------------------------------------------------------------------------------------------------
+
+class FontNormal : public Font
 {
 
 public:
@@ -65,5 +66,3 @@ public:
 
 } // namespace cabl
 } // namespace sl
-
-#endif // SL_FONT_NORMAL_H

@@ -18,7 +18,7 @@ namespace util
 
 Version::operator bool() const
 {
-  return ( m_vMajor + m_vMinor + m_vMicro ) > 0;
+  return (m_vMajor + m_vMinor + m_vMicro) > 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -69,12 +69,12 @@ bool Version::operator>=(const Version& other_) const
   {
     return m_vMajor > other_.m_vMajor;
   }
-  
+
   if (m_vMinor != other_.m_vMinor)
   {
     return m_vMinor > other_.m_vMinor;
   }
-  
+
   return m_vMicro >= other_.m_vMicro;
 }
 
@@ -86,12 +86,12 @@ bool Version::operator>(const Version& other_) const
   {
     return m_vMajor > other_.m_vMajor;
   }
-  
+
   if (m_vMinor != other_.m_vMinor)
   {
     return m_vMinor > other_.m_vMinor;
   }
-  
+
   return m_vMicro > other_.m_vMicro;
 }
 
@@ -103,12 +103,12 @@ bool Version::operator<=(const Version& other_) const
   {
     return m_vMajor < other_.m_vMajor;
   }
-  
+
   if (m_vMinor != other_.m_vMinor)
   {
     return m_vMinor < other_.m_vMinor;
   }
-  
+
   return m_vMicro <= other_.m_vMicro;
 }
 
@@ -120,12 +120,12 @@ bool Version::operator<(const Version& other_) const
   {
     return m_vMajor < other_.m_vMajor;
   }
-  
+
   if (m_vMinor != other_.m_vMinor)
   {
     return m_vMinor < other_.m_vMinor;
   }
-  
+
   return m_vMicro < other_.m_vMicro;
 }
 

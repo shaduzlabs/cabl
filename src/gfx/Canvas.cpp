@@ -12,11 +12,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "gfx/Font.h"
-#include "gfx/fonts/FontBig.h"
-#include "gfx/fonts/FontNormal.h"
-#include "gfx/fonts/FontSmall.h"
-
 #include "util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
@@ -38,7 +33,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 Canvas::Canvas(uint16_t width_, uint16_t height_)
-  : m_width(width_), m_height(height_), m_pFont(FontNormal::get())
+  : m_width(width_), m_height(height_), m_pFont(FontManager::instance().getDefaultFont())
 {
   initialize();
 }
@@ -59,86 +54,54 @@ void Canvas::fillPattern(uint8_t value_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::setPixel(uint16_t x_, uint16_t y_, Color color_)
+void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
 {
-  if (x_ >= width() || y_ >= height() || color_ == Color::None)
+  if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
 
-  if (color_ == Color::Random)
-  {
-    color_ = static_cast<Color>(util::randomRange(0, 2));
-  }
+  util::ColorRGB oldColor = pixel(x_, y_);
 
+  bool isWhite{color_.active()};
+  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  {
+    isWhite = !oldColor.active();
+  }
   uint16_t byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
 
-  switch (color_)
+
+  if (isWhite)
   {
-    case Color::White:
-      m_data[byteIndex] |= (0x80 >> (x_ & 7));
-      break;
-
-    case Color::Black:
-      m_data[byteIndex] &= (~0x80 >> (x_ & 7));
-      break;
-
-    case Color::Invert:
-      m_data[byteIndex] ^= (0x80 >> (x_ & 7));
-      break;
-
-    default:
-      break;
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Canvas::setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_)
-{
-  if(color_.mono()>127)
-  {
-    setPixel(x_, y_, Color::Black);
+    data()[byteIndex] |= (0x80 >> (x_ & 7));
   }
   else
   {
-    setPixel(x_, y_, Color::White);
+    data()[byteIndex] &= (~0x80 >> (x_ & 7));
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas::Color Canvas::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
-    return Color::Black;
+    return {};
   }
 
-  return (m_data[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 ? Color::Black
-                                                                                     : Color::White;
+  if ((data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
+  {
+    return {0};
+  }
+
+  return {0xff};
 }
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB Canvas::pixelRGB(uint16_t x_, uint16_t y_) const
-{
-  if (x_ >= width() || y_ >= height())
-  {
-    return {0,0,0,0};
-  }
-
-  if( (m_data[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0 )
-  {
-    return {0,0,0,0};
-  }
-  
-  return  {0xff,0xff,0xff,0xff};
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Canvas::drawLine(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, Color color_)
+void Canvas::drawLine(
+  uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_)
 {
   int32_t e;
   int32_t dx, dy;
@@ -219,7 +182,8 @@ void Canvas::drawLine(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, Co
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::Canvas::drawLineVertical(uint16_t x_, uint16_t y_, uint16_t l_, Color color_)
+void Canvas::Canvas::drawLineVertical(
+  uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
 {
   for (unsigned y = y_; y < y_ + l_; y++)
   {
@@ -229,7 +193,7 @@ void Canvas::Canvas::drawLineVertical(uint16_t x_, uint16_t y_, uint16_t l_, Col
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, Color color_)
+void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
 {
   for (uint16_t x = x_; x < x_ + l_; x++)
   {
@@ -239,8 +203,13 @@ void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, Color col
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawTriangle(
-  uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, uint16_t x2_, uint16_t y2_, Color color_)
+void Canvas::drawTriangle(uint16_t x0_,
+  uint16_t y0_,
+  uint16_t x1_,
+  uint16_t y1_,
+  uint16_t x2_,
+  uint16_t y2_,
+  const util::ColorRGB& color_)
 {
   drawLine(x0_, y0_, x1_, y1_, color_);
   drawLine(x1_, y1_, x2_, y2_, color_);
@@ -255,8 +224,8 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
   uint16_t y1_,
   uint16_t x2_,
   uint16_t y2_,
-  Color color_,
-  Color fillColor_)
+  const util::ColorRGB& color_,
+  const util::ColorRGB& fillColor_)
 {
   // Original Author: Adafruit Industries (Adafruit GFX library)
 
@@ -362,15 +331,20 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawRect(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_)
+void Canvas::drawRect(
+  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_)
 {
-  drawFilledRect(x_, y_, w_, h_, color_, Color::None);
+  drawFilledRect(x_, y_, w_, h_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledRect(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_, Color fillColor_)
+void Canvas::drawFilledRect(uint16_t x_,
+  uint16_t y_,
+  uint16_t w_,
+  uint16_t h_,
+  const util::ColorRGB& color_,
+  const util::ColorRGB& fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
   {
@@ -387,7 +361,7 @@ void Canvas::drawFilledRect(
   drawLineVertical(x_, y_ + 1, h_ - 2, color_);
   drawLineVertical(x_ + w_ - 1, y_ + 1, h_ - 2, color_);
 
-  if (fillColor_ == Color::None)
+  if (fillColor_.transparent())
   {
     return;
   }
@@ -413,15 +387,20 @@ void Canvas::drawFilledRect(
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::drawRectRounded(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_)
+  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_)
 {
-  drawFilledRectRounded(x_, y_, w_, h_, r_, color_, Color::None);
+  drawFilledRectRounded(x_, y_, w_, h_, r_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledRectRounded(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_, Color fillColor_)
+void Canvas::drawFilledRectRounded(uint16_t x_,
+  uint16_t y_,
+  uint16_t w_,
+  uint16_t h_,
+  uint16_t r_,
+  const util::ColorRGB& color_,
+  const util::ColorRGB& fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
   {
@@ -451,7 +430,7 @@ void Canvas::drawFilledRectRounded(
   drawFilledCircle(
     (x_ + r_), (y_ + h_ - r_ - 1), r_, color_, fillColor_, CircleType::QuarterBottomLeft);
 
-  if (fillColor_ == Color::None || h_ <= 2 || w_ <= 2)
+  if (fillColor_.transparent() || h_ <= 2 || w_ <= 2)
   {
     return;
   }
@@ -465,15 +444,20 @@ void Canvas::drawFilledRectRounded(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawCircle(uint16_t x_, uint16_t y_, uint16_t r_, Color color_, CircleType type_)
+void Canvas::drawCircle(
+  uint16_t x_, uint16_t y_, uint16_t r_, const util::ColorRGB& color_, CircleType type_)
 {
-  drawFilledCircle(x_, y_, r_, color_, Color::None, type_);
+  drawFilledCircle(x_, y_, r_, color_, {}, type_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledCircle(
-  uint16_t x_, uint16_t y_, uint16_t r_, Color color_, Color fillColor_, CircleType type_)
+void Canvas::drawFilledCircle(uint16_t x_,
+  uint16_t y_,
+  uint16_t r_,
+  const util::ColorRGB& color_,
+  const util::ColorRGB& fillColor_,
+  CircleType type_)
 {
   if ((x_ >= m_width) || (y_ >= m_height) || r_ == 0)
   {
@@ -531,7 +515,7 @@ void Canvas::drawFilledCircle(
       {
         setPixel((x + x_), (y + y_), color_);
       }
-      else if (fillColor_ != Color::None && (xysq < rsq))
+      else if (!fillColor_.transparent() && (xysq < rsq))
       {
         setPixel((x + x_), (y + y_), fillColor_);
       }
@@ -541,8 +525,12 @@ void Canvas::drawFilledCircle(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawBitmap(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const uint8_t* pBitmap_, Color color_)
+void Canvas::drawBitmap(uint16_t x_,
+  uint16_t y_,
+  uint16_t w_,
+  uint16_t h_,
+  const uint8_t* pBitmap_,
+  const util::ColorRGB& color_)
 {
   if ((x_ >= m_width) || (y_ >= m_height))
   {
@@ -597,21 +585,22 @@ void Canvas::draw(const Canvas& c_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color color_)
+void Canvas::printChar(
+  uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_)
 {
+  const Font* pFont = FontManager::instance().getFont(font_);
+  uint8_t c = c_ - pFont->firstChar();
 
-  uint8_t c = c_ - pFont_->firstChar();
-
-  if ((x_ >= m_width) || (y_ >= m_height) || c > pFont_->lastChar() || c_ < pFont_->firstChar())
+  if ((x_ >= m_width) || (y_ >= m_height) || c > pFont->lastChar() || c_ < pFont->firstChar())
   {
     return;
   }
 
-  for (uint8_t y = 0; y < pFont_->height(); y++)
+  for (uint8_t y = 0; y < pFont->height(); y++)
   {
-    for (uint8_t x = 0; x < pFont_->height(); x++)
+    for (uint8_t x = 0; x < pFont->height(); x++)
     {
-      if (pFont_->pixel(c, x, y))
+      if (pFont->pixel(c, x, y))
       {
         setPixel((x_ + x), y_ + y, color_);
       }
@@ -621,36 +610,15 @@ void Canvas::printChar(uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color co
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::printStr(
-  uint16_t x_, uint16_t y_, const char* pStr_, FontType font_, Color color_, uint8_t spacing_)
+void Canvas::printStr(uint16_t x_,
+  uint16_t y_,
+  const char* pStr_,
+  const util::ColorRGB& color_,
+  const std::string& font_,
+  uint8_t spacing_)
 {
-  Font* pFont;
-  switch (font_)
-  {
-    case FontType::Small:
-      pFont = FontSmall::get();
-      break;
-    case FontType::Normal:
-      pFont = FontNormal::get();
-      break;
-    case FontType::Big:
-      pFont = FontBig::get();
-      break;
-    case FontType::Default:
-    default:
-      pFont = m_pFont;
-      break;
-  }
-
-  printStr(x_, y_, pStr_, pFont, color_, spacing_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Canvas::printStr(
-  uint16_t x_, uint16_t y_, const char* pStr_, Font* pFont_, Color color_, uint8_t spacing_)
-{
-  uint8_t charWidth = pFont_->charSpacing() + spacing_;
+  const Font* pFont = FontManager::instance().getFont(font_);
+  uint8_t charWidth = pFont->charSpacing() + spacing_;
   if (y_ >= m_height || x_ > m_width)
   {
     return;
@@ -661,29 +629,8 @@ void Canvas::printStr(
     {
       return;
     }
-    printChar(x_, y_, pStr_[i], pFont_, color_);
+    printChar(x_, y_, pStr_[i], color_, font_);
     x_ += charWidth;
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Canvas::setDefaultFont(FontType font_)
-{
-  switch (font_)
-  {
-    case FontType::Small:
-      m_pFont = FontSmall::get();
-      break;
-    case FontType::Normal:
-      m_pFont = FontNormal::get();
-      break;
-    case FontType::Big:
-      m_pFont = FontBig::get();
-      break;
-    case FontType::Default:
-    default:
-      break;
   }
 }
 

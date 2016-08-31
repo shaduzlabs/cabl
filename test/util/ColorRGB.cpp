@@ -60,21 +60,20 @@ TEST_CASE("Getters/setters", "[util/ColorRGB]")
   CHECK(color.blue() == 44);
   CHECK(color.mono() == 55);
   CHECK(color.getValue() == 0x16212C);
-  
+
   color.black();
   CHECK(color.red() == 0);
   CHECK(color.green() == 0);
   CHECK(color.blue() == 0);
   CHECK(color.mono() == 0);
   CHECK(color.getValue() == 0);
-  
+
   color.white();
   CHECK(color.red() == 255);
   CHECK(color.green() == 255);
   CHECK(color.blue() == 255);
   CHECK(color.mono() == 255);
   CHECK(color.getValue() == 0xFFFFFF);
-  
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ TEST_CASE("Distance", "[util/ColorRGB]")
   ColorRGB color1;
   ColorRGB color2;
   ColorRGB color3(127);
-  
+
   color1.black();
   color2.white();
   CHECK(color2.distance(color1) == color1.distance(color2));
@@ -112,7 +111,7 @@ TEST_CASE("Comparison", "[util/ColorRGB]")
 
 TEST_CASE("Streaming", "[util/ColorRGB]")
 {
-  ColorRGB color(11,33,55,77);
+  ColorRGB color(11, 33, 55, 77);
   std::stringstream os;
   os << color;
   CHECK(os.str() == "11,33,55,77");

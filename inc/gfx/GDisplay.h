@@ -58,27 +58,11 @@ public:
 
   //! Set a pixel
   /*!
-     \param x_               The X coordinate of the pixel
-     \param y_               The Y coordinate of the pixel
-     \param color_           The pixel color (white, black, invert)
-     */
-  void setPixel(uint16_t x_, uint16_t y_, Color color_) override;
-
-  //! Set a pixel
-  /*!
    \param x_               The X coordinate of the pixel
    \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  void setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_) override;
-
-  //! Get the pixel value
-  /*!
-   \param x_               The X coordinate of the pixel
-   \param y_               The Y coordinate of the pixel
-   \return                 The color of the selected pixel
-   */
-  Color pixel(uint16_t x_, uint16_t y_) const override;
+  void setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_) override;
 
   //! Get the pixel value as an RGB color
   /*!
@@ -86,7 +70,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  util::ColorRGB pixelRGB(uint16_t x_, uint16_t y_) const override;
+  util::ColorRGB pixel(uint16_t x_, uint16_t y_) const override;
 
   /** @} */ // End of group Primitives
 
@@ -146,23 +130,15 @@ protected:
   uint16_t canvasWidthInBytes() const override;
   virtual uint16_t canvasWidthInBytesImpl() const = 0;
 
-
-  //! Set a pixel (implementation)
-  /*!
-     \param x_               The X coordinate of the pixel
-     \param y_               The Y coordinate of the pixel
-     \param color_           The pixel color (white, black, invert)
-     \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
-     */
-  virtual void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_) = 0;
-
   //! Set a pixel (implementation)
   /*!
    \param x_               The X coordinate of the pixel
    \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  virtual void setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_) = 0;
+  virtual void setPixelImpl(
+    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+    = 0;
 
   //! Get the pixel value (implementation)
   /*!
@@ -170,15 +146,7 @@ protected:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual Color pixelImpl(uint16_t x_, uint16_t y_) const = 0;
-
-  //! Get the pixel value (implementation)
-  /*!
-   \param x_               The X coordinate of the pixel
-   \param y_               The Y coordinate of the pixel
-   \return                 The color of the selected pixel
-   */
-  virtual util::ColorRGB pixelRGBImpl(uint16_t x_, uint16_t y_) const = 0;
+  virtual util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const = 0;
 
   virtual void setDirtyChunks(uint16_t yStart_, uint16_t yEnd_ = 0xFFFF);
 
@@ -186,7 +154,7 @@ protected:
 
 private:
   mutable tCollFlags m_pChunksDirtyFlags; //!< Chunk-specific dirty flags
-  uint8_t m_numDisplayChunks;     //!< Number of display chunks
+  uint8_t m_numDisplayChunks;             //!< Number of display chunks
 };
 
 //--------------------------------------------------------------------------------------------------

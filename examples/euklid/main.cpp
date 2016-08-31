@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include <stdio.h>
+#include <cstdio>
 #include <thread>
 
 #include "Euklid.h"

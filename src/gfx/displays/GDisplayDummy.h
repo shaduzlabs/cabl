@@ -23,20 +23,11 @@ public:
   {
   }
 
-  void setPixel(uint16_t, uint16_t, Color) override
+  void setPixel(uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void setPixel(uint16_t, uint16_t, util::ColorRGB) override
-  {
-  }
-
-  Color pixel(uint16_t, uint16_t) const override
-  {
-    return Color::None;
-  }
-
-  util::ColorRGB pixelRGB(uint16_t, uint16_t) const override
+  util::ColorRGB pixel(uint16_t, uint16_t) const override
   {
     return {0,0,0,0};
   }
@@ -80,53 +71,53 @@ public:
   {
   }
 
-  void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, Color) override
+  void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawLineVertical(uint16_t, uint16_t, uint16_t, Color) override
+  void drawLineVertical(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawLineHorizontal(uint16_t, uint16_t, uint16_t, Color) override
+  void drawLineHorizontal(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawTriangle(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, Color) override
+  void drawTriangle(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
   void drawFilledTriangle(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, Color, Color) override
+    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, Color) override
+  void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawFilledRect(uint16_t, uint16_t, uint16_t, uint16_t, Color, Color) override
+  void drawFilledRect(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawRectRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, Color) override
+  void drawRectRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
   void drawFilledRectRounded(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, Color, Color) override
+    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawCircle(uint16_t, uint16_t, uint16_t, Color, CircleType) override
+  void drawCircle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, CircleType) override
   {
   }
 
-  void drawFilledCircle(uint16_t, uint16_t, uint16_t, Color, Color, CircleType) override
+  void drawFilledCircle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
   {
   }
 
-  void drawBitmap(uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, Color) override
+  void drawBitmap(uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
   {
   }
 
@@ -134,19 +125,11 @@ public:
   {
   }
 
-  void printChar(uint16_t, uint16_t, char, Font*, Color) override
+  void printChar(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
   {
   }
 
-  void printStr(uint16_t, uint16_t, const char*, FontType, Color, uint8_t) override
-  {
-  }
-
-  void printStr(uint16_t, uint16_t, const char*, Font*, Color, uint8_t) override
-  {
-  }
-
-  void setDefaultFont(FontType) override
+  void printStr(uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
   {
   }
 
@@ -166,21 +149,12 @@ protected:
   {
     return 0U;
   }
-
-  void setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_ = true) override
+  
+  void setPixelImpl(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override
   {
   }
   
-  void setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_ = true) override
-  {
-  }
-
-  Color pixelImpl(uint16_t x_, uint16_t y_) const override
-  {
-    return Color::None;
-  }
-  
-  util::ColorRGB pixelRGBImpl(uint16_t x_, uint16_t y_) const override
+  util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const override
   {
     return {0,0,0,0};
   }

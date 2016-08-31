@@ -7,17 +7,18 @@
 
 #pragma once
 
-#ifndef SL_FONT_BIG_H
-#define SL_FONT_BIG_H
-
 #include <gfx/Font.h>
+
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
 
-class FontBig : public FontBase<FontBig>
+//--------------------------------------------------------------------------------------------------
+
+class FontBig : public Font
 {
 
 public:
@@ -65,5 +66,3 @@ public:
 
 } // namespace cabl
 } // namespace sl
-
-#endif // SL_FONT_BIG_H

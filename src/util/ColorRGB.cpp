@@ -15,6 +15,18 @@ namespace util
 
 //--------------------------------------------------------------------------------------------------
 
+ColorRGB::ColorRGB() : m_blendMode(BlendMode::Transparent)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
+ColorRGB::ColorRGB(BlendMode blendMode_) : m_blendMode(blendMode_)
+{
+}
+
+//--------------------------------------------------------------------------------------------------
+
 ColorRGB::ColorRGB(uint8_t mono_) : m_red(mono_), m_green(mono_), m_blue(mono_), m_mono(mono_)
 {
 }
@@ -40,37 +52,56 @@ ColorRGB::ColorRGB(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_)
 
 double ColorRGB::distance(const ColorRGB& other_) const
 {
-  return sqrt(std::pow(((m_red - other_.m_red) * 0.299), 2.0)
-              + std::pow(((m_green - other_.m_green) * 0.587), 2.0)
-              + std::pow(((m_blue - other_.m_blue) * 0.114), 2.0));
+  return sqrt(std::pow(((red() - other_.red()) * 0.299), 2.0)
+              + std::pow(((green() - other_.green()) * 0.587), 2.0)
+              + std::pow(((blue() - other_.blue()) * 0.114), 2.0));
 }
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned ColorRGB::red() const
+uint8_t ColorRGB::red() const
 {
-  return m_red;
+  return ( m_blendMode == BlendMode::Invert ) ? ~m_red : m_red;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned ColorRGB::green() const
+uint8_t ColorRGB::green() const
 {
-  return m_green;
+  return ( m_blendMode == BlendMode::Invert ) ? ~m_green : m_green;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned ColorRGB::blue() const
+uint8_t ColorRGB::blue() const
 {
-  return m_blue;
+  return ( m_blendMode == BlendMode::Invert ) ? ~m_blue : m_blue;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-unsigned ColorRGB::mono() const
+uint8_t ColorRGB::mono() const
 {
-  return m_mono;
+  return ( m_blendMode == BlendMode::Invert ) ? ~m_mono : m_mono;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool ColorRGB::active() const
+{
+  return mono() > 127;
+}
+//--------------------------------------------------------------------------------------------------
+
+ColorRGB::BlendMode ColorRGB::blendMode() const
+{
+  return m_blendMode;
+}
+//--------------------------------------------------------------------------------------------------
+
+bool ColorRGB::transparent() const
+{
+  return m_blendMode == BlendMode::Transparent;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -103,9 +134,17 @@ void ColorRGB::setMono(uint8_t mono_)
 
 //--------------------------------------------------------------------------------------------------
 
+void ColorRGB::setBlendMode(BlendMode blendMode_)
+{
+  m_blendMode = blendMode_;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void ColorRGB::black()
 {
   m_red = m_blue = m_green = m_mono = 0;
+  m_blendMode = BlendMode::Normal;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -113,13 +152,21 @@ void ColorRGB::black()
 void ColorRGB::white()
 {
   m_red = m_blue = m_green = m_mono = 0xFF;
+  m_blendMode = BlendMode::Normal;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void ColorRGB::invert()
+{
+  m_blendMode = BlendMode::Invert;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool ColorRGB::operator==(const ColorRGB& other_) const
 {
-  return (m_red == other_.m_red) && (m_green == other_.m_green) && (m_blue == other_.m_blue);
+  return (m_red == other_.m_red) && (m_green == other_.m_green) && (m_blue == other_.m_blue) && (m_mono == other_.m_mono) && (m_blendMode == other_.m_blendMode);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -133,29 +180,30 @@ bool ColorRGB::operator!=(const ColorRGB& other_) const
 
 bool ColorRGB::operator<(const ColorRGB& other_) const
 {
-  return getValue() < other_.getValue();
+  return getValue() < other_.getValue() && m_mono < other_.m_mono && m_blendMode <= other_.m_blendMode;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool ColorRGB::operator<=(const ColorRGB& other_) const
 {
-  return getValue() <= other_.getValue();
+  return getValue() <= other_.getValue() && m_mono <= other_.m_mono && m_blendMode <= other_.m_blendMode;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool ColorRGB::operator>(const ColorRGB& other_) const
 {
-  return getValue() > other_.getValue();
+  return getValue() > other_.getValue() && m_mono > other_.m_mono && m_blendMode >= other_.m_blendMode;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 bool ColorRGB::operator>=(const ColorRGB& other_) const
 {
-  return getValue() >= other_.getValue();
+  return getValue() >= other_.getValue() && m_mono >= other_.m_mono && m_blendMode >= other_.m_blendMode;
 }
+
 //--------------------------------------------------------------------------------------------------
 
 unsigned ColorRGB::getValue() const

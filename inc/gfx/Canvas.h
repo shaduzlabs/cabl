@@ -10,8 +10,10 @@
 #include <cstdint>
 #include <string>
 
-#include "util/Types.h"
 #include "util/ColorRGB.h"
+#include "util/Types.h"
+
+#include "gfx/FontManager.h"
 
 namespace sl
 {
@@ -59,16 +61,6 @@ public:
     Small,   //!< 3x5 pixels font
     Normal,  //!< 5x7 pixels font
     Big,     //!< 8x8 pixels font
-  };
-
-  //! The pixel rendering color
-  enum class Color
-  {
-    Black,  //!< Color is black
-    White,  //!< Color is white
-    Invert, //!< Invert the current color
-    Random, //!< Random color
-    None,   //!< Transparent
   };
 
   //! The circle types
@@ -163,25 +155,9 @@ public:
   /*!
    \param x_               The X coordinate of the pixel
    \param y_               The Y coordinate of the pixel
-   \param color_           The pixel color (white, black, invert...)
-   */
-  virtual void setPixel(uint16_t x_, uint16_t y_, Color color_);
-
-  //! Set a pixel
-  /*!
-   \param x_               The X coordinate of the pixel
-   \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  virtual void setPixel(uint16_t x_, uint16_t y_, util::ColorRGB color_);
-
-  //! Get the pixel value
-  /*!
-   \param x_               The X coordinate of the pixel
-   \param y_               The Y coordinate of the pixel
-   \return                 The color of the selected pixel
-   */
-  virtual Color pixel(uint16_t x_, uint16_t y_) const;
+  virtual void setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_);
 
   //! Get the pixel value as an RGB color
   /*!
@@ -189,8 +165,8 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual util::ColorRGB pixelRGB(uint16_t x_, uint16_t y_) const;
-  
+  virtual util::ColorRGB pixel(uint16_t x_, uint16_t y_) const;
+
   //! Draw a line
   /*!
    \param x0_              The X coordinate of the first point
@@ -199,7 +175,8 @@ public:
    \param y1_              The Y coordinate of the second point
    \param color_           The line color (white, black, invert, random)
    */
-  virtual void drawLine(uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, Color color_);
+  virtual void drawLine(
+    uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_);
 
   //! Draw a bitmap
   /*!
@@ -211,8 +188,10 @@ public:
    \param color_           The color of the pixels
    */
 
-  virtual void drawLineVertical(uint16_t x_, uint16_t y_, uint16_t h_, Color color_);
-  virtual void drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t w_, Color color_);
+  virtual void drawLineVertical(
+    uint16_t x_, uint16_t y_, uint16_t h_, const util::ColorRGB& color_);
+  virtual void drawLineHorizontal(
+    uint16_t x_, uint16_t y_, uint16_t w_, const util::ColorRGB& color_);
 
   virtual void drawTriangle(uint16_t x0_,
     uint16_t y0_,
@@ -220,35 +199,48 @@ public:
     uint16_t y1_,
     uint16_t x2_,
     uint16_t y2_,
-    Color color_);
+    const util::ColorRGB& color_);
   virtual void drawFilledTriangle(uint16_t x0_,
     uint16_t y0_,
     uint16_t x1_,
     uint16_t y1_,
     uint16_t x2_,
     uint16_t y2_,
-    Color color_,
-    Color fillColor_);
+    const util::ColorRGB& color_,
+    const util::ColorRGB& fillColor_);
 
-  virtual void drawRect(uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_);
+  virtual void drawRect(
+    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_);
 
-  virtual void drawFilledRect(
-    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, Color color_, Color fillColor_);
+  virtual void drawFilledRect(uint16_t x_,
+    uint16_t y_,
+    uint16_t w_,
+    uint16_t h_,
+    const util::ColorRGB& color_,
+    const util::ColorRGB& fillColor_);
 
   virtual void drawRectRounded(
-    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_);
+    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_);
 
-  virtual void drawFilledRectRounded(
-    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, Color color_, Color fillColor_);
+  virtual void drawFilledRectRounded(uint16_t x_,
+    uint16_t y_,
+    uint16_t w_,
+    uint16_t h_,
+    uint16_t r_,
+    const util::ColorRGB& color_,
+    const util::ColorRGB& fillColor_);
 
-  virtual void drawCircle(
-    uint16_t rx_, uint16_t ry_, uint16_t r_, Color color_, CircleType = CircleType::Full);
+  virtual void drawCircle(uint16_t rx_,
+    uint16_t ry_,
+    uint16_t r_,
+    const util::ColorRGB& color_,
+    CircleType = CircleType::Full);
 
   virtual void drawFilledCircle(uint16_t x_,
     uint16_t y_,
     uint16_t r_,
-    Color color_,
-    Color fillColor_,
+    const util::ColorRGB& color_,
+    const util::ColorRGB& fillColor_,
     CircleType = CircleType::Full);
 
   virtual void drawBitmap(uint16_t x_,
@@ -256,7 +248,7 @@ public:
     uint16_t w_,
     uint16_t h_,
     const uint8_t* pBitmap_,
-    Color color_ = Color::White);
+    const util::ColorRGB& color_);
 
   virtual void draw(const Canvas& c_,
     uint16_t xDest_,
@@ -281,42 +273,26 @@ public:
    \param x_             The X coordinate
    \param y_             The Y coordinate
    \param c_             The char to be printed
-   \param font_          The font (Default is the global font which can be set using setDefaultFont)
+   \param font_          The font
    \param color_         The color of the pixels
    */
   virtual void printChar(
-    uint16_t x_, uint16_t y_, char c_, Font* pFont_, Color color_ = Color::White);
+    uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_);
 
   //! Print a string
   /*!
    \param x_             The X coordinate
    \param y_             The Y coordinate
    \param pStr_          The string to be printed
-   \param font_          The font (Default is the global font which can be set using setDefaultFont)
+   \param font_          The font
    \param color_         The color of the pixels
    \param spacing_       Additional space between characters in pixels
    */
   virtual void printStr(uint16_t x_,
     uint16_t y_,
     const char* pStr_,
-    FontType font_ = FontType::Default,
-    Color color_ = Color::White,
-    uint8_t spacing_ = 0);
-
-  //! Print a string
-  /*!
-   \param x_               The X coordinate
-   \param y_               The Y coordinate
-   \param pStr_            The string to be printed
-   \param pFont_           A pointer to a Font
-   \param color_           The color of the pixels
-   \param spacing_         Additional space between characters in pixels
-   */
-  virtual void printStr(uint16_t x_,
-    uint16_t y_,
-    const char* pStr_,
-    Font* pFont_,
-    Color color_ = Color::White,
+    const util::ColorRGB& color_,
+    const std::string& font_,
     uint8_t spacing_ = 0);
 
   /**@}*/ // End of Text group
@@ -334,12 +310,6 @@ public:
    */
 
   //--------------------------------------------------------------------------------------------------
-
-  //! Set the default font size
-  /*!
-   \param font_  The font size to be set as default
-   */
-  virtual void setDefaultFont(FontType font_);
 
   /** @} */ // End of group Configuration
 
@@ -387,7 +357,7 @@ private:
   uint16_t m_width;  //!< Canvas width in pixels
   uint16_t m_height; //!< Canvas height in pixels
 
-  Font* m_pFont; //!< The current font
+  const Font* m_pFont; //!< The current font
 };
 
 

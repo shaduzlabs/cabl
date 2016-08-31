@@ -40,8 +40,10 @@ public:
     noexcept
   {
     if (c_ > lastChar() || x_ >= width() || y_ >= height())
+    {
       return false;
-
+    }
+    
     if (bytesPerLine() == 1)
     {
       return ((pFontData_[(c_ * height()) + y_] & (0x080 >> x_)) > 0);
@@ -52,20 +54,6 @@ public:
         (pFontData_[(c_ * height()) + (y_ * bytesPerLine()) + (x_ >> 3)] & (0x080 >> (x_ % 8)))
         > 0);
     }
-  }
-};
-
-//--------------------------------------------------------------------------------------------------
-
-template <class TFontClass>
-class FontBase : public Font
-{
-
-public:
-  static TFontClass* get()
-  {
-    static TFontClass m_font;
-    return &m_font;
   }
 };
 

@@ -67,45 +67,31 @@ void GDisplayPush2::black()
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayPush2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bSetDirtyChunk_)
+void GDisplayPush2::setPixelImpl(
+  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
-  if (x_ >= width() || y_ >= height() || color_ == Color::None)
+  if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
   
-  Color oldColor = pixelImpl(x_, y_);
-
-  if (color_ == Color::Random)
+  util::ColorRGB oldColor = pixelImpl(x_, y_);
+  util::ColorRGB newColor = color_;
+  if(color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
-    color_ = static_cast<Color>(util::randomRange(0, 2));
+    newColor = oldColor;
+    newColor.invert();
   }
   
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
-
-  switch (color_)
-  {
-    case Color::White:
-      data()[byteIndex] = 0xff;
-      data()[byteIndex + 1] = 0xff;
-      break;
-
-    case Color::Black:
-      data()[byteIndex] = 0x00;
-      data()[byteIndex + 1] = 0x00;
-      break;
-
-    case Color::Invert:
-      data()[byteIndex] = oldColor == Color::Black ? 0xff : 0x00;
-      data()[byteIndex + 1] = oldColor == Color::Black ? 0xff : 0x00;
-      break;
-
-    default:
-      break;
-  }
-
-  m_isDirty = (m_isDirty ? m_isDirty : oldColor != color_);
-  if (bSetDirtyChunk_ && oldColor != color_)
+  uint8_t green = ((newColor.green() / 255.0) * 63);
+  data()[byteIndex]
+    = (static_cast<uint8_t>((newColor.red() / 255.0) * 31) << 3) | ((green >> 3) & 0x07);
+  data()[byteIndex + 1]
+    = ((green << 5) & 0xE0) | static_cast<uint8_t>((newColor.blue() / 255.0) * 31);
+  
+  m_isDirty = (m_isDirty ? m_isDirty : oldColor != newColor);
+  if (bSetDirtyChunk_ && oldColor != newColor)
   {
     setDirtyChunks(y_);
   }
@@ -113,41 +99,18 @@ void GDisplayPush2::setPixelImpl(uint16_t x_, uint16_t y_, Color color_, bool bS
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayPush2::setPixelImpl(uint16_t x_, uint16_t y_, util::ColorRGB color_, bool bSetDirtyChunk_)
-{
-  unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
-  uint8_t green = ( (color_.green() / 255.0) * 63 );
-  data()[byteIndex] = (static_cast<uint8_t>( (color_.red() / 255.0) * 31 ) << 3 ) | ( ( green >> 3 ) & 0x03 );
-  data()[byteIndex + 1] =  ( ( green << 5 ) & 0xE0 ) | static_cast<uint8_t>( (color_.blue() / 255.0) * 31 );
-}
-
-//--------------------------------------------------------------------------------------------------
-
-GDisplay::Color GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
-    return Color::Black;
-  }
-  return (data()[(canvasWidthInBytes() * y_) + (x_ * 2)] == 0 ) ? Color::Black : Color::White;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-util::ColorRGB GDisplayPush2::pixelRGBImpl(uint16_t x_, uint16_t y_) const
-{
-  if (x_ >= width() || y_ >= height())
-  {
-    return {0,0,0,0};
+    return {};
   }
   unsigned index = (canvasWidthInBytes() * y_) + (x_ * 2);
-  
-  return {
-    static_cast<uint8_t>( ( ( data()[index]>>3 ) / 31.0 ) * 255),
-    static_cast<uint8_t>( ( ( ( data()[index] & 0x07 ) << 3 | ( data()[index + 1] & 0xE0 ) >> 5 ) / 63.0 ) * 255),
-    static_cast<uint8_t>( ( ( data()[index + 1] & 0x1F ) / 31.0 ) * 255),
-    0xff
-  };
+
+  return {static_cast<uint8_t>(((data()[index] >> 3) / 31.0) * 255),
+    static_cast<uint8_t>(
+      (((data()[index] & 0x07) << 3 | (data()[index + 1] & 0xE0) >> 5) / 63.0) * 255),
+    static_cast<uint8_t>(((data()[index + 1] & 0x1F) / 31.0) * 255)};
 }
 
 //--------------------------------------------------------------------------------------------------
