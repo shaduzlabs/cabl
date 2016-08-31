@@ -7,6 +7,7 @@
 
 #include "Euklid.h"
 
+#include <algorithm>
 #include <sstream>
 
 #include <unmidify.hpp>
