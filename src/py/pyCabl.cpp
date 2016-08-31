@@ -26,7 +26,7 @@ static object drawingContext_load(DrawingContext& self) {
   PyObject* py_buf = PyBuffer_FromReadWriteMemory(buffer, size);
   object retval = object(handle<>(py_buf));
   return retval;
-}*/
+}/
 
 //--------------------------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ static void writeDrawingContext(DrawingContext& self_, object buffer)
   std::copy_n((uint8_t*)pybuf.buf, self_.size(), self_.data().begin());
   self_.setDirty(true);
 }
-
+*/
 //--------------------------------------------------------------------------------------------------
 
 template <class T>
@@ -560,7 +560,7 @@ BOOST_PYTHON_MODULE(pycabl)
 #undef M_POT_DEF
 
 //--------------------------------------------------------------------------------------------------
-
+/*
 #define M_PIXEL_DEF(item) value(#item, Canvas::Color::item)
   enum_<Canvas::Color>("Pixel")
     .M_PIXEL_DEF(Black)
@@ -569,7 +569,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_PIXEL_DEF(Random)
     .M_PIXEL_DEF(None);
 #undef M_PIXEL_DEF
-
+*/
   //--------------------------------------------------------------------------------------------------
   /*
    class_<DeviceFactory, std::shared_ptr<DeviceFactory>, boost::noncopyable
@@ -592,8 +592,10 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("setLedButton", setLed_btn)
     .def("setLedPad", setLed_pad)
     .def("setLedKey", setLed_key)
+/*
     .def(
       "drawingContext", &Device::drawingContext, return_value_policy<reference_existing_object>())
+      */
     .def("onButtonChanged", &PyClient::onButtonChanged, args("onButtonChanged"))
     .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
     .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
@@ -657,7 +659,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("mono", &util::ColorRGB::mono);
 
   //--------------------------------------------------------------------------------------------------
-
+/*
   class_<DrawingContext, boost::noncopyable>("DrawingContext", init<unsigned, unsigned, unsigned>())
     .def("width", &DrawingContext::width)
     .def("height", &DrawingContext::height)
@@ -666,7 +668,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("isDirty", &DrawingContext::isDirty)
     .def("setDirty", &DrawingContext::setDirty)
     .def("write", &writeDrawingContext);
-
+*/
   //--------------------------------------------------------------------------------------------------
 
   class_<GDisplay, boost::noncopyable>("GraphicDisplay", no_init)

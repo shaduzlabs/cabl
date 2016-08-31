@@ -220,6 +220,7 @@ TEST_CASE("Canvas: allocation types and displays", "[gfx/Canvas]")
   c_1.drawRectRounded(50, 20, 20, 20, 3, {0xff});
   c_1.drawCircle(50, 32, 24, {0xff});
   c_1.drawFilledRect(10, 15, 90, 45, {0xff}, {util::ColorRGB::BlendMode::Invert});
+  c_1.printStr(10, 18, "Hey ho!", {util::ColorRGB::BlendMode::Invert});
   for (unsigned j = 0; j < 256; j++)
   {
     for (unsigned i = 48; i < 64; i++)
@@ -247,12 +248,15 @@ TEST_CASE("Canvas: allocation types and displays", "[gfx/Canvas]")
   c_3.drawLine(0, 0, 2560, 640, {0xff});
   c_3.drawRectRounded(50, 20, 20, 20, 3, {0xff});
   c_3.drawCircle(50, 32, 24, {0xff});
-  c_3.drawFilledRect(10, 15, 90, 45, {0xff}, {util::ColorRGB::BlendMode::Invert});
+  c_3.drawFilledRect(10, 15, 90, 45, {0xff}, {0xff,0,0});
+  c_3.drawFilledRect(43, 26, 800, 125, {0xff}, {util::ColorRGB::BlendMode::Invert});
   for (unsigned i = 0; i < 1024; i++)
   {
-    c_3.setPixel(i, 79, {0, 0, 0xff});
+    c_3.setPixel(i, 79, {0, 0xff, 0xff});
     c_3.setPixel(i, 80, {0, 0, 0xff});
   }
+  c_3.printStr(10, 18, "Hey ho!", {util::ColorRGB::BlendMode::Invert},"big",4);
+
   writePng(&c_3, "test-data/gfx/GDisplayPush2-0.png");
 }
 

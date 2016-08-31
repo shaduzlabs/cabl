@@ -277,7 +277,7 @@ public:
    \param color_         The color of the pixels
    */
   virtual void printChar(
-    uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_);
+    uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
 
   //! Print a string
   /*!
@@ -292,7 +292,7 @@ public:
     uint16_t y_,
     const char* pStr_,
     const util::ColorRGB& color_,
-    const std::string& font_,
+    const std::string& font_ = "",
     uint8_t spacing_ = 0);
 
   /**@}*/ // End of Text group
@@ -351,7 +351,7 @@ protected:
 
 private:
   friend class test::CanvasTestHelper;
-
+  
   tRawData m_data; //!< The raw Canvas data
 
   uint16_t m_width;  //!< Canvas width in pixels
