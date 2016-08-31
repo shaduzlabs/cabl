@@ -100,7 +100,7 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawLine(
+void Canvas::line(
   uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_)
 {
   int32_t e;
@@ -182,7 +182,7 @@ void Canvas::drawLine(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::Canvas::drawLineVertical(
+void Canvas::Canvas::lineVertical(
   uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
 {
   for (unsigned y = y_; y < y_ + l_; y++)
@@ -193,7 +193,7 @@ void Canvas::Canvas::drawLineVertical(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
+void Canvas::lineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
 {
   for (uint16_t x = x_; x < x_ + l_; x++)
   {
@@ -203,7 +203,7 @@ void Canvas::drawLineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const uti
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawTriangle(uint16_t x0_,
+void Canvas::triangle(uint16_t x0_,
   uint16_t y0_,
   uint16_t x1_,
   uint16_t y1_,
@@ -211,14 +211,14 @@ void Canvas::drawTriangle(uint16_t x0_,
   uint16_t y2_,
   const util::ColorRGB& color_)
 {
-  drawLine(x0_, y0_, x1_, y1_, color_);
-  drawLine(x1_, y1_, x2_, y2_, color_);
-  drawLine(x2_, y2_, x0_, y0_, color_);
+  line(x0_, y0_, x1_, y1_, color_);
+  line(x1_, y1_, x2_, y2_, color_);
+  line(x2_, y2_, x0_, y0_, color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledTriangle(uint16_t x0_,
+void Canvas::triangleFilled(uint16_t x0_,
   uint16_t y0_,
   uint16_t x1_,
   uint16_t y1_,
@@ -267,7 +267,7 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
     {
       b = x2_;
     }
-    drawLineHorizontal(a, y0_, b - a + 1, color_);
+    lineHorizontal(a, y0_, b - a + 1, color_);
     return;
   }
 
@@ -304,7 +304,7 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
     {
       M_SWAP(a, b);
     }
-    drawLineHorizontal(a, y, b - a + 1, color_);
+    lineHorizontal(a, y, b - a + 1, color_);
   }
 
   // For lower part of triangle, find scanline crossings for segments
@@ -325,21 +325,21 @@ void Canvas::drawFilledTriangle(uint16_t x0_,
     {
       M_SWAP(a, b);
     }
-    drawLineHorizontal(a, y, b - a + 1, color_);
+    lineHorizontal(a, y, b - a + 1, color_);
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawRect(
+void Canvas::rectangle(
   uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_)
 {
-  drawFilledRect(x_, y_, w_, h_, color_, {});
+  rectangleFilled(x_, y_, w_, h_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledRect(uint16_t x_,
+void Canvas::rectangleFilled(uint16_t x_,
   uint16_t y_,
   uint16_t w_,
   uint16_t h_,
@@ -351,15 +351,15 @@ void Canvas::drawFilledRect(uint16_t x_,
     return;
   }
 
-  drawLineHorizontal(x_, y_, w_, color_);
-  drawLineHorizontal(x_, y_ + h_ - 1, w_, color_);
+  lineHorizontal(x_, y_, w_, color_);
+  lineHorizontal(x_, y_ + h_ - 1, w_, color_);
   if (h_ <= 2)
   {
     return;
   }
 
-  drawLineVertical(x_, y_ + 1, h_ - 2, color_);
-  drawLineVertical(x_ + w_ - 1, y_ + 1, h_ - 2, color_);
+  lineVertical(x_, y_ + 1, h_ - 2, color_);
+  lineVertical(x_ + w_ - 1, y_ + 1, h_ - 2, color_);
 
   if (fillColor_.transparent())
   {
@@ -371,7 +371,7 @@ void Canvas::drawFilledRect(uint16_t x_,
     uint16_t lineWidth = w_ - 2;
     for (uint16_t i = y_ + 1; i < y_ + h_ - 1; i++)
     {
-      drawLineHorizontal(x_ + 1, i, lineWidth, fillColor_);
+      lineHorizontal(x_ + 1, i, lineWidth, fillColor_);
     }
   }
   else
@@ -379,22 +379,22 @@ void Canvas::drawFilledRect(uint16_t x_,
     uint16_t lineHeight = h_ - 2;
     for (uint16_t i = x_ + 1; i < x_ + w_ - 1; i++)
     {
-      drawLineVertical(i, y_ + 1, lineHeight, fillColor_);
+      lineVertical(i, y_ + 1, lineHeight, fillColor_);
     }
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawRectRounded(
+void Canvas::rectangleRounded(
   uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_)
 {
-  drawFilledRectRounded(x_, y_, w_, h_, r_, color_, {});
+  rectangleRoundedFilled(x_, y_, w_, h_, r_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledRectRounded(uint16_t x_,
+void Canvas::rectangleRoundedFilled(uint16_t x_,
   uint16_t y_,
   uint16_t w_,
   uint16_t h_,
@@ -414,20 +414,20 @@ void Canvas::drawFilledRectRounded(uint16_t x_,
     r_ = smallestSide / 2;
     rOffset = smallestSide;
   }
-  drawLineHorizontal((x_ + r_), (y_), (w_ - rOffset), color_);
-  drawLineHorizontal((x_ + r_), (y_ + h_ - 1), (w_ - rOffset), color_);
-  drawLineVertical((x_), (y_ + r_), (h_ - rOffset), color_);
-  drawLineVertical((x_ + w_ - 1), (y_ + r_), (h_ - rOffset), color_);
+  lineHorizontal((x_ + r_), (y_), (w_ - rOffset), color_);
+  lineHorizontal((x_ + r_), (y_ + h_ - 1), (w_ - rOffset), color_);
+  lineVertical((x_), (y_ + r_), (h_ - rOffset), color_);
+  lineVertical((x_ + w_ - 1), (y_ + r_), (h_ - rOffset), color_);
 
-  drawFilledCircle((x_ + r_), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopLeft);
+  circleFilled((x_ + r_), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopLeft);
 
-  drawFilledCircle(
+  circleFilled(
     (x_ + w_ - r_ - 1), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopRight);
 
-  drawFilledCircle(
+  circleFilled(
     (x_ + w_ - r_ - 1), (y_ + h_ - r_ - 1), r_, color_, fillColor_, CircleType::QuarterBottomRight);
 
-  drawFilledCircle(
+  circleFilled(
     (x_ + r_), (y_ + h_ - r_ - 1), r_, color_, fillColor_, CircleType::QuarterBottomLeft);
 
   if (fillColor_.transparent() || h_ <= 2 || w_ <= 2)
@@ -435,24 +435,24 @@ void Canvas::drawFilledRectRounded(uint16_t x_,
     return;
   }
 
-  drawFilledRect((x_ + r_), (y_ + 1), (w_ - rOffset), r_, fillColor_, fillColor_);
+  rectangleFilled((x_ + r_), (y_ + 1), (w_ - rOffset), r_, fillColor_, fillColor_);
 
-  drawFilledRect((x_ + 1), (y_ + r_), (w_ - 2), (h_ - rOffset), fillColor_, fillColor_);
+  rectangleFilled((x_ + 1), (y_ + r_), (w_ - 2), (h_ - rOffset), fillColor_, fillColor_);
 
-  drawFilledRect((x_ + r_), (y_ + h_ - 1 - r_), (w_ - rOffset), (r_), fillColor_, fillColor_);
+  rectangleFilled((x_ + r_), (y_ + h_ - 1 - r_), (w_ - rOffset), (r_), fillColor_, fillColor_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawCircle(
+void Canvas::circle(
   uint16_t x_, uint16_t y_, uint16_t r_, const util::ColorRGB& color_, CircleType type_)
 {
-  drawFilledCircle(x_, y_, r_, color_, {}, type_);
+  circleFilled(x_, y_, r_, color_, {}, type_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawFilledCircle(uint16_t x_,
+void Canvas::circleFilled(uint16_t x_,
   uint16_t y_,
   uint16_t r_,
   const util::ColorRGB& color_,
@@ -525,7 +525,7 @@ void Canvas::drawFilledCircle(uint16_t x_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::drawBitmap(uint16_t x_,
+void Canvas::bitmap(uint16_t x_,
   uint16_t y_,
   uint16_t w_,
   uint16_t h_,
@@ -554,7 +554,7 @@ void Canvas::drawBitmap(uint16_t x_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::draw(const Canvas& c_,
+void Canvas::canvas(const Canvas& c_,
   uint16_t xDest_,
   uint16_t yDest_,
   uint16_t xSource_,
@@ -585,7 +585,7 @@ void Canvas::draw(const Canvas& c_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::printChar(
+void Canvas::character(
   uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_)
 {
   const Font* pFont = FontManager::instance().getFont(font_);
@@ -610,7 +610,7 @@ void Canvas::printChar(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::printStr(uint16_t x_,
+void Canvas::text(uint16_t x_,
   uint16_t y_,
   const char* pStr_,
   const util::ColorRGB& color_,
@@ -629,7 +629,7 @@ void Canvas::printStr(uint16_t x_,
     {
       return;
     }
-    printChar(x_, y_, pStr_[i], color_, font_);
+    character(x_, y_, pStr_[i], color_, font_);
     x_ += charWidth;
   }
 }

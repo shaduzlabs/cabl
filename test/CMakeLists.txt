@@ -28,7 +28,17 @@ set(
 set(
   test_gfx_SRCS
     gfx/Canvas.cpp
-    gfx/CanvasTestHelper.h
+    gfx/CanvasTestHelpers.cpp
+    gfx/CanvasTestHelpers.h
+)
+
+set(
+  test_gfx_displays_SRCS
+    gfx/displays/GDisplayDummy.cpp
+    gfx/displays/GDisplayMaschineMikro.cpp
+    gfx/displays/GDisplayMaschineMK1.cpp
+    gfx/displays/GDisplayMaschineMK2.cpp
+    gfx/displays/GDisplayPush2.cpp
 )
 
 set(
@@ -40,6 +50,7 @@ set(
 source_group(""                  FILES ${test_SRCS})
 source_group("comm"              FILES ${test_comm_SRCS})
 source_group("gfx"               FILES ${test_gfx_SRCS})
+source_group("gfx\\displays"     FILES ${test_gfx_displays_SRCS})
 source_group("util"              FILES ${test_util_SRCS})
 
 set(
@@ -47,6 +58,7 @@ set(
     ${test_SRCS}
     ${test_comm_SRCS}
     ${test_gfx_SRCS}
+    ${test_gfx_displays_SRCS}
     ${test_util_SRCS}
 )
 

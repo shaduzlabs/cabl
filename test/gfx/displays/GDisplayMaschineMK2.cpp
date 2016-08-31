@@ -5,9 +5,10 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "catch.hpp"
+#include <catch.hpp>
+#include <gfx/displays/GDisplayMaschineMK2.h>
 
-#include <gfx/Canvas.h>
+#include "gfx/CanvasTestHelpers.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -20,33 +21,17 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-class CanvasTestHelper
-{
-public:
-  //--------------------------------------------------------------------------------------------------
+using CTH = CanvasTestHelper;
 
-  static std::string displayContent(const Canvas& c_)
-  {
-    std::string displayContent = "\n";
-    for (int row = 0; row < c_.m_height; row++)
-    {
-      for (int col = 0; col < c_.m_width; col++)
-      {
-        if (c_.pixel(col, row) == util::ColorRGB(0))
-        {
-          displayContent += "░";
-        }
-        else
-        {
-          displayContent += "█";
-        }
-      }
-      displayContent += "\n";
-    }
-    displayContent.pop_back();
-    return displayContent;
-  }
-};
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayMaschineMK2: constructor", "[gfx/Canvas/displays/GDisplayMaschineMK2]")
+{
+  GDisplayMaschineMK2 display;
+  CHECK(display.width() == 256);
+  CHECK(display.height() == 64);
+  CHECK(display.numberOfChunks() == 8);
+}
 
 //--------------------------------------------------------------------------------------------------
 

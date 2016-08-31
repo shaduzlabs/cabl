@@ -312,9 +312,9 @@ void Euklid::updateGUI()
   std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);
 
   device()->displayGraphic(0)->white();
-  device()->displayGraphic(0)->printStr(32, 52, "E U K L I D",s_colorWhite, "normal");
-  device()->displayGraphic(0)->drawFilledRect(0, 52, 28, 6, s_colorWhite, s_colorWhite);
-  device()->displayGraphic(0)->drawFilledRect(100, 52, 28, 6, s_colorWhite, s_colorWhite);
+  device()->displayGraphic(0)->text(32, 52, "E U K L I D",s_colorWhite, "normal");
+  device()->displayGraphic(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
+  device()->displayGraphic(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);
 
   device()->displayLCD(0)->setText("AB", 0);
 
@@ -454,9 +454,9 @@ void Euklid::drawConfigurationPage()
   }
 
 
-  device()->displayGraphic(0)->printStr(5, 2, " BPM   Shuffle", {0xff}, "normal");
-  device()->displayGraphic(0)->printStr(10, 12, std::to_string(m_bpm).c_str(), {0xff}, "normal");
-  device()->displayGraphic(0)->printStr(59, 12, std::to_string(m_shuffle).c_str(), {0xff}, "normal");
+  device()->displayGraphic(0)->text(5, 2, " BPM   Shuffle", {0xff}, "normal");
+  device()->displayGraphic(0)->text(10, 12, std::to_string(m_bpm).c_str(), {0xff}, "normal");
+  device()->displayGraphic(0)->text(59, 12, std::to_string(m_shuffle).c_str(), {0xff}, "normal");
 
   device()->setLed(Device::Button::F1, 0);
   device()->setLed(Device::Button::F2, 0);
@@ -471,7 +471,7 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      device()->displayGraphic(0)->drawFilledRect(
+      device()->displayGraphic(0)->rectangleFilled(
         41, 0, 52, 20, {util::ColorRGB::BlendMode::Invert}, {util::ColorRGB::BlendMode::Invert});
       device()->setLed(Device::Button::F2, 255);
       device()->setLed(Device::Button::DisplayButton2, 255);
@@ -479,7 +479,7 @@ void Euklid::drawConfigurationPage()
     }
     case EncoderState::Speed:
     {
-      device()->displayGraphic(0)->drawFilledRect(
+      device()->displayGraphic(0)->rectangleFilled(
         0, 0, 40, 20, {util::ColorRGB::BlendMode::Invert}, {util::ColorRGB::BlendMode::Invert});
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
@@ -500,12 +500,12 @@ void Euklid::drawSequencerPage()
     m_encoderState = EncoderState::Length;
   }
 
-  device()->displayGraphic(0)->printStr(5, 2, "Length Pulses Rotate", {0xff}, "normal");
+  device()->displayGraphic(0)->text(5, 2, "Length Pulses Rotate", {0xff}, "normal");
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      device()->displayGraphic(0)->drawRect(n * 8, 15 + (12 * i), 7, 7, {0xff});
+      device()->displayGraphic(0)->rectangle(n * 8, 15 + (12 * i), 7, 7, {0xff});
     }
   }
 
@@ -521,7 +521,7 @@ void Euklid::drawSequencerPage()
   {
     case EncoderState::Pulses:
     {
-      device()->displayGraphic(0)->drawFilledRect(
+      device()->displayGraphic(0)->rectangleFilled(
         43, 0, 42, 10, {util::ColorRGB::BlendMode::Invert}, {util::ColorRGB::BlendMode::Invert});
       device()->setLed(Device::Button::F2, 255);
       device()->setLed(Device::Button::DisplayButton2, 255);
@@ -529,7 +529,7 @@ void Euklid::drawSequencerPage()
     }
     case EncoderState::Rotate:
     {
-      device()->displayGraphic(0)->drawFilledRect(
+      device()->displayGraphic(0)->rectangleFilled(
         86, 0, 40, 10, {util::ColorRGB::BlendMode::Invert}, {util::ColorRGB::BlendMode::Invert});
       device()->setLed(Device::Button::F3, 255);
       device()->setLed(Device::Button::DisplayButton3, 255);
@@ -537,7 +537,7 @@ void Euklid::drawSequencerPage()
     }
     case EncoderState::Length:
     {
-      device()->displayGraphic(0)->drawFilledRect(
+      device()->displayGraphic(0)->rectangleFilled(
         0, 0, 42, 10, {util::ColorRGB::BlendMode::Invert}, {util::ColorRGB::BlendMode::Invert});
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
@@ -556,11 +556,11 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        device()->displayGraphic(0)->drawFilledRect(
+        device()->displayGraphic(0)->rectangleFilled(
           (k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, {0xff}, {0xff});
       }
     }
-    device()->displayGraphic(0)->drawRect(
+    device()->displayGraphic(0)->rectangle(
       (pos * 8) + 1, 16 + (12 * t), 5, 5, {util::ColorRGB::BlendMode::Invert});
   }
 }

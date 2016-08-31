@@ -19,17 +19,8 @@ namespace cabl
 class GDisplayDummy : public GDisplay
 {
 public:
-  GDisplayDummy() : GDisplay(0, 0, 0)
+  GDisplayDummy() : GDisplay(0U, 0U, 0U)
   {
-  }
-
-  void setPixel(uint16_t, uint16_t, const util::ColorRGB&) override
-  {
-  }
-
-  util::ColorRGB pixel(uint16_t, uint16_t) const override
-  {
-    return {0,0,0,0};
   }
 
   bool isDirty() const override
@@ -48,7 +39,7 @@ public:
 
   virtual uint8_t numberOfChunks() const noexcept override
   {
-    return 0;
+    return 0U;
   }
 
   void setDirtyChunks(uint16_t, uint16_t) override
@@ -71,65 +62,65 @@ public:
   {
   }
 
-  void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void line(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawLineVertical(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void lineVertical(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawLineHorizontal(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void lineHorizontal(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawTriangle(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void triangle(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawFilledTriangle(
+  void triangleFilled(
     uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void rectangle(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawFilledRect(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
+  void rectangleFilled(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawRectRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void rectangleRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void drawFilledRectRounded(
+  void rectangleRoundedFilled(
     uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void drawCircle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, CircleType) override
+  void circle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, CircleType) override
   {
   }
 
-  void drawFilledCircle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
+  void circleFilled(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
   {
   }
 
-  void drawBitmap(uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
+  void bitmap(uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
   {
   }
 
-  void draw(const Canvas&, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t) override
+  void canvas(const Canvas&, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t) override
   {
   }
 
-  void printChar(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
+  void character(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
   {
   }
 
-  void printStr(uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
+  void text(uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
   {
   }
 
@@ -156,7 +147,7 @@ protected:
   
   util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const override
   {
-    return {0,0,0,0};
+    return {};
   }
 };
 

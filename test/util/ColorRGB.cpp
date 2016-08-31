@@ -18,7 +18,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Constructors", "[util/ColorRGB]")
+TEST_CASE("ColorRGB: constructors", "[util/ColorRGB]")
 {
   ColorRGB color;
   CHECK(color.red() == 0);
@@ -47,7 +47,7 @@ TEST_CASE("Constructors", "[util/ColorRGB]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Getters/setters", "[util/ColorRGB]")
+TEST_CASE("ColorRGB: getters/setters", "[util/ColorRGB]")
 {
   ColorRGB color;
 
@@ -78,7 +78,7 @@ TEST_CASE("Getters/setters", "[util/ColorRGB]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Distance", "[util/ColorRGB]")
+TEST_CASE("ColorRGB: distance", "[util/ColorRGB]")
 {
   ColorRGB color1;
   ColorRGB color2;
@@ -92,7 +92,7 @@ TEST_CASE("Distance", "[util/ColorRGB]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Comparison", "[util/ColorRGB]")
+TEST_CASE("ColorRGB: comparison", "[util/ColorRGB]")
 {
   ColorRGB color1a(12);
   ColorRGB color1b(12);
@@ -109,7 +109,7 @@ TEST_CASE("Comparison", "[util/ColorRGB]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Streaming", "[util/ColorRGB]")
+TEST_CASE("ColorRGB: streaming", "[util/ColorRGB]")
 {
   ColorRGB color(11, 33, 55, 77);
   std::stringstream os;

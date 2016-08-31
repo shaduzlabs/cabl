@@ -18,7 +18,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Null vs non-null, conversion to bool", "[util/Version]")
+TEST_CASE("Version: null vs non-null, conversion to bool", "[util/Version]")
 {
   Version version_empty;
   Version version_nonNull_1(1);
@@ -33,7 +33,7 @@ TEST_CASE("Null vs non-null, conversion to bool", "[util/Version]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Constructor, getters and setters", "[util/Version]")
+TEST_CASE("Version: constructor, getters and setters", "[util/Version]")
 {
   Version version_952(9, 5, 2);
   Version version_95(9, 5);
@@ -75,7 +75,7 @@ TEST_CASE("Constructor, getters and setters", "[util/Version]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Reset", "[util/Version]")
+TEST_CASE("Version: reset", "[util/Version]")
 {
   Version version_1_2_3(1, 2, 3);
 
@@ -87,7 +87,7 @@ TEST_CASE("Reset", "[util/Version]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Conversion to string", "[util/Version]")
+TEST_CASE("Version: conversion to string", "[util/Version]")
 {
   Version version_1_2_3(1, 2, 3);
   Version version_1_2(1, 2);
@@ -104,7 +104,7 @@ TEST_CASE("Conversion to string", "[util/Version]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Version comparison", "[util/Version]")
+TEST_CASE("Version: version comparison", "[util/Version]")
 {
   Version version_2_3_4(2, 3, 4);
   Version version_1_2_3(1, 2, 3);

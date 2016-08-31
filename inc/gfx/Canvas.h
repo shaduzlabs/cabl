@@ -175,7 +175,7 @@ public:
    \param y1_              The Y coordinate of the second point
    \param color_           The line color (white, black, invert, random)
    */
-  virtual void drawLine(
+  virtual void line(
     uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_);
 
   //! Draw a bitmap
@@ -188,19 +188,19 @@ public:
    \param color_           The color of the pixels
    */
 
-  virtual void drawLineVertical(
+  virtual void lineVertical(
     uint16_t x_, uint16_t y_, uint16_t h_, const util::ColorRGB& color_);
-  virtual void drawLineHorizontal(
+  virtual void lineHorizontal(
     uint16_t x_, uint16_t y_, uint16_t w_, const util::ColorRGB& color_);
 
-  virtual void drawTriangle(uint16_t x0_,
+  virtual void triangle(uint16_t x0_,
     uint16_t y0_,
     uint16_t x1_,
     uint16_t y1_,
     uint16_t x2_,
     uint16_t y2_,
     const util::ColorRGB& color_);
-  virtual void drawFilledTriangle(uint16_t x0_,
+  virtual void triangleFilled(uint16_t x0_,
     uint16_t y0_,
     uint16_t x1_,
     uint16_t y1_,
@@ -209,20 +209,20 @@ public:
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
-  virtual void drawRect(
+  virtual void rectangle(
     uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_);
 
-  virtual void drawFilledRect(uint16_t x_,
+  virtual void rectangleFilled(uint16_t x_,
     uint16_t y_,
     uint16_t w_,
     uint16_t h_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
-  virtual void drawRectRounded(
+  virtual void rectangleRounded(
     uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_);
 
-  virtual void drawFilledRectRounded(uint16_t x_,
+  virtual void rectangleRoundedFilled(uint16_t x_,
     uint16_t y_,
     uint16_t w_,
     uint16_t h_,
@@ -230,27 +230,27 @@ public:
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
-  virtual void drawCircle(uint16_t rx_,
+  virtual void circle(uint16_t rx_,
     uint16_t ry_,
     uint16_t r_,
     const util::ColorRGB& color_,
     CircleType = CircleType::Full);
 
-  virtual void drawFilledCircle(uint16_t x_,
+  virtual void circleFilled(uint16_t x_,
     uint16_t y_,
     uint16_t r_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_,
     CircleType = CircleType::Full);
 
-  virtual void drawBitmap(uint16_t x_,
+  virtual void bitmap(uint16_t x_,
     uint16_t y_,
     uint16_t w_,
     uint16_t h_,
     const uint8_t* pBitmap_,
     const util::ColorRGB& color_);
 
-  virtual void draw(const Canvas& c_,
+  virtual void canvas(const Canvas& c_,
     uint16_t xDest_,
     uint16_t yDest_,
     uint16_t xSource_ = 0,
@@ -276,7 +276,7 @@ public:
    \param font_          The font
    \param color_         The color of the pixels
    */
-  virtual void printChar(
+  virtual void character(
     uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
 
   //! Print a string
@@ -288,7 +288,7 @@ public:
    \param color_         The color of the pixels
    \param spacing_       Additional space between characters in pixels
    */
-  virtual void printStr(uint16_t x_,
+  virtual void text(uint16_t x_,
     uint16_t y_,
     const char* pStr_,
     const util::ColorRGB& color_,
@@ -351,7 +351,7 @@ protected:
 
 private:
   friend class test::CanvasTestHelper;
-  
+
   tRawData m_data; //!< The raw Canvas data
 
   uint16_t m_width;  //!< Canvas width in pixels
