@@ -42,7 +42,7 @@ public:
     return 0U;
   }
 
-  void setDirtyChunks(uint16_t, uint16_t) override
+  void setDirtyChunk(uint16_t) override
   {
   }
 

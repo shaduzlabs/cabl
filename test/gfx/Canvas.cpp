@@ -42,6 +42,8 @@ TEST_CASE("Canvas: constructor", "[gfx/Canvas]")
   Canvas c(16, 5);
   CHECK(c.width() == 16);
   CHECK(c.height() == 5);
+  
+  CHECK( c.pixel(2000,2000) == util::ColorRGB());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -50,7 +52,11 @@ TEST_CASE("Canvas: lines", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   lines(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("lines")));
+  std::string fileNameSuffix("lines");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
   CHECK(compare(&display, &displayFromPng));
 }
 
@@ -60,7 +66,11 @@ TEST_CASE("Canvas: circles", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   circles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("circles")));
+  std::string fileNameSuffix("circles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
   CHECK(compare(&display, &displayFromPng));
 }
 
@@ -70,8 +80,12 @@ TEST_CASE("Canvas: triangles", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   triangles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("triangles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -80,8 +94,12 @@ TEST_CASE("Canvas: rectangles", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   rectangles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("rectangles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -90,8 +108,12 @@ TEST_CASE("Canvas: text", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   text(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("text");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -100,7 +122,11 @@ TEST_CASE("Canvas: canvas", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   canvas(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("canvas")));
+  std::string fileNameSuffix("canvas");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
   CHECK(compare(&display, &displayFromPng));
 }
 

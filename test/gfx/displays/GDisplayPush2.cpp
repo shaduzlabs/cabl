@@ -42,6 +42,8 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx/displays/GDisplayPush2]")
   CHECK(display.height() == 160);
   CHECK(display.numberOfChunks() == 1);
 
+  CHECK( display.pixel(2000,2000) == util::ColorRGB());
+  
   display.setPixel(0, 0, {0, 248, 0});
   auto color = display.pixel(0, 0);
   display.setPixel(0, 0, color);
@@ -54,7 +56,11 @@ TEST_CASE("GDisplayPush2: lines", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   lines(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("lines")));
+  std::string fileNameSuffix("lines");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
   CHECK(compare(&display, &displayFromPng));
 }
 
@@ -64,7 +70,11 @@ TEST_CASE("GDisplayPush2: circles", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   circles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("circles")));
+  std::string fileNameSuffix("circles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
   CHECK(compare(&display, &displayFromPng));
 }
 
@@ -74,8 +84,12 @@ TEST_CASE("GDisplayPush2: triangles", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   triangles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("triangles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -84,8 +98,12 @@ TEST_CASE("GDisplayPush2: rectangles", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   rectangles(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("rectangles");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -94,8 +112,12 @@ TEST_CASE("GDisplayPush2: text", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   text(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
-  CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("text");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -104,9 +126,12 @@ TEST_CASE("GDisplayPush2: canvas", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   canvas(&display);
-
-  REQUIRE(pngRead(&displayFromPng, pngFileName("canvas")));
-  // CHECK(compare(&display,&displayFromPng));
+  std::string fileNameSuffix("canvas");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+ // CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

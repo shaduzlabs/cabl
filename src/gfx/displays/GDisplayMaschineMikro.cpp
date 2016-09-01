@@ -97,7 +97,7 @@ void GDisplayMaschineMikro::setPixelImpl(
   m_isDirty = (m_isDirty ? m_isDirty : oldColor.active() != isWhite);
   if (bSetDirtyChunk_ && oldColor.active() != isWhite)
   {
-    setDirtyChunks(y_);
+    setDirtyChunk(y_);
   }
 }
 

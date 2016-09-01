@@ -45,8 +45,8 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
   CHECK_FALSE(display.isChunkDirty(0));
   CHECK_FALSE(display.isChunkDirty(10000));
 
-  display.setDirtyChunks(0, 0);
-  display.setDirtyChunks(10000, 10000);
+  display.setDirtyChunk(0);
+  display.setDirtyChunk(10000);
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
   CHECK_FALSE(display.isChunkDirty(10000));

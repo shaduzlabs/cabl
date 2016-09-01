@@ -93,7 +93,7 @@ void GDisplayPush2::setPixelImpl(
   m_isDirty = (m_isDirty ? m_isDirty : oldColor != newColor);
   if (bSetDirtyChunk_ && oldColor != newColor)
   {
-    setDirtyChunks(y_);
+    setDirtyChunk(y_);
   }
 }
 

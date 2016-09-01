@@ -148,7 +148,7 @@ protected:
    */
   virtual util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const = 0;
 
-  virtual void setDirtyChunks(uint16_t yStart_, uint16_t yEnd_ = 0xFFFF);
+  virtual void setDirtyChunk(uint16_t yStart_);
 
   mutable volatile bool m_isDirty; //!< Global 'dirty' flag
 

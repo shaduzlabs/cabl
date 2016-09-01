@@ -116,6 +116,21 @@ TEST_CASE("ColorRGB: streaming", "[util/ColorRGB]")
   os << color;
   CHECK(os.str() == "11,33,55,77");
 }
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("ColorRGB: blend modes", "[util/ColorRGB]")
+{
+  ColorRGB color(11, 33, 55, 77);
+  
+  color.setBlendMode(ColorRGB::BlendMode::Invert);
+  
+  CHECK(color.red() == static_cast<uint8_t>(~(11)));
+  CHECK(color.green() == static_cast<uint8_t>(~(33)));
+  CHECK(color.blue() == static_cast<uint8_t>(~(55)));
+  CHECK(color.mono() == static_cast<uint8_t>(~(77)));
+}
+
 //--------------------------------------------------------------------------------------------------
 
 } // namespace test

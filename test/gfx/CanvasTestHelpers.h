@@ -11,6 +11,10 @@
 
 //--------------------------------------------------------------------------------------------------
 
+//#define DO_WRITE_PICTURES 1 // Enable this to generate the pngs, must be disabled on build servers
+
+//--------------------------------------------------------------------------------------------------
+
 namespace sl
 {
 namespace cabl

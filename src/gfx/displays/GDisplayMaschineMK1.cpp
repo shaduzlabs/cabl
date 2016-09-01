@@ -110,7 +110,7 @@ void GDisplayMaschineMK1::setPixelImpl(
   m_isDirty = (m_isDirty ? m_isDirty : oldColor != color_);
   if (bSetDirtyChunk_ && oldColor != color_)
   {
-    setDirtyChunks(y_);
+    setDirtyChunk(y_);
   }
 }
 
