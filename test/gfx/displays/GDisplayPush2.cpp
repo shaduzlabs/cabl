@@ -94,8 +94,8 @@ TEST_CASE("GDisplayPush2: text", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   text(&display);
-  REQUIRE(pngWrite(&display, pngFileName("text")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

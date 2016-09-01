@@ -145,6 +145,7 @@ void circles(Canvas* c_)
 
 void triangles(Canvas* c_)
 {
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -157,6 +158,18 @@ void rectangles(Canvas* c_)
 
 void text(Canvas* c_)
 {
+  c_->character(5,10,'*',k_colorGreen,"small");
+  c_->character(5,20,'*',k_colorRed,"normal");
+  c_->character(5,30,'*',k_colorWhite,"big");
+  c_->character(5,44,'*',k_colorBlue,"non-existing-font");
+
+  c_->text(40,10,"Life is short.", k_colorWhite, "small");
+  c_->text(40,20,"Smile while", k_colorBlue, "normal");
+  c_->text(40,30,"you still", k_colorRed, "big");
+  c_->text(40,44,"have teeth.", k_colorGreen, "non-existing-font");
+
+  c_->text(40,44,"Optimism is a lack of information.", k_colorTransparent, "non-existing-font");
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -191,8 +204,6 @@ void canvas(Canvas* c_)
   }
   internalCanvas.canvas(internaInternallCanvas, (w / 2), (h / 2));
   c_->canvas(internalCanvas, x, y);
-
-  auto ccc = c_->pixel(103, 16);
 }
 
 //--------------------------------------------------------------------------------------------------

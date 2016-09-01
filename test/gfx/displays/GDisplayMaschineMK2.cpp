@@ -88,8 +88,8 @@ TEST_CASE("GDisplayMaschineMK2: text", "[gfx/displays/GDisplayMaschineMK2]")
 {
   GDisplayMaschineMK2 display, displayFromPng;
   text(&display);
-  REQUIRE(pngWrite(&display, pngFileName("text")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
