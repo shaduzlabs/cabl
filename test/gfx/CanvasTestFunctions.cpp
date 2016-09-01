@@ -145,13 +145,34 @@ void circles(Canvas* c_)
 
 void triangles(Canvas* c_)
 {
+  c_->triangle(5,5,100,100,100,30,k_colorWhite);
+  c_->triangle(105,50,10,20,1,70,k_colorBlue);
+  c_->triangle(25,15,1,1,12,300,k_colorGreen);
+  c_->triangle(c_->width()-1,c_->height(),0,25,c_->width()-1,99,k_colorRed);
 
+  c_->triangleFilled(15,45,10,10,100,130,k_colorWhite, k_colorInvert);
+  c_->triangleFilled(1,5,90,90,12,170,k_colorBlue, k_colorInvert);
+  c_->triangleFilled(25,15,1,1,12,300,k_colorGreen, k_colorInvert);
+  c_->triangleFilled(1,c_->height(),c_->width()-1,25,c_->width()-1,99,k_colorRed, k_colorInvert);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void rectangles(Canvas* c_)
 {
+  unsigned w = c_->width();
+  unsigned h = c_->height();
+
+  c_->rectangleFilled(2, 2, w-4, h-4, k_colorWhite, k_colorRed);
+  c_->rectangle(w/8, h/8, w/4, h/4, k_colorGreen);
+  c_->rectangle((w/8)*5, (h/8)*5, w/4, h/4, k_colorBlue);
+  c_->rectangle((w/8), (h/8)*5, w/4, h/4, k_colorBlack);
+  c_->rectangle((w/8)*5, (h/8), w/4, h/4, k_colorWhite);
+  c_->rectangle((w/8)*6, (h/8)*6, w/4, h/4, k_colorTransparent);
+  
+  c_->rectangleFilled((w/8), (h/8), (w/4)*3, (h/4)*3, k_colorTransparent, k_colorInvert);
+  c_->rectangleRoundedFilled((w/4), (h/4), w/2, h/2, 4, k_colorInvert, k_colorInvert);
+  
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -168,6 +189,8 @@ void text(Canvas* c_)
   c_->text(40,30,"you still", k_colorRed, "big");
   c_->text(40,44,"have teeth.", k_colorGreen, "non-existing-font");
 
+  c_->text(4,c_->height()-12,"Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua.", k_colorWhite, "big");
+  
   c_->text(40,44,"Optimism is a lack of information.", k_colorTransparent, "non-existing-font");
 
 }

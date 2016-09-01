@@ -68,8 +68,8 @@ TEST_CASE("GDisplayMaschineMikro: triangles", "[gfx/displays/GDisplayMaschineMik
 {
   GDisplayMaschineMikro display, displayFromPng;
   triangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("triangles")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,8 +78,8 @@ TEST_CASE("GDisplayMaschineMikro: rectangles", "[gfx/displays/GDisplayMaschineMi
 {
   GDisplayMaschineMikro display, displayFromPng;
   rectangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-  //  CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

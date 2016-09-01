@@ -74,8 +74,8 @@ TEST_CASE("GDisplayPush2: triangles", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   triangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("triangles")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -84,8 +84,8 @@ TEST_CASE("GDisplayPush2: rectangles", "[gfx/displays/GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   rectangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-  //  CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

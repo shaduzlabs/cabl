@@ -260,7 +260,7 @@ void Canvas::triangleFilled(uint16_t x0_,
     {
       b = x2_;
     }
-    lineHorizontal(a, y0_, b - a + 1, color_);
+    lineHorizontal(a, y0_, b - a + 1, fillColor_);
     return;
   }
 
@@ -297,7 +297,7 @@ void Canvas::triangleFilled(uint16_t x0_,
     {
       M_SWAP(a, b);
     }
-    lineHorizontal(a, y, b - a + 1, color_);
+    lineHorizontal(a, y, b - a + 1, fillColor_);
   }
 
   // For lower part of triangle, find scanline crossings for segments
@@ -318,8 +318,11 @@ void Canvas::triangleFilled(uint16_t x0_,
     {
       M_SWAP(a, b);
     }
-    lineHorizontal(a, y, b - a + 1, color_);
+    lineHorizontal(a, y, b - a + 1, fillColor_);
   }
+  line(x0_, y0_, x1_, y1_, color_);
+  line(x1_, y1_, x2_, y2_, color_);
+  line(x2_, y2_, x0_, y0_, color_);
 }
 
 //--------------------------------------------------------------------------------------------------

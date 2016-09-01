@@ -70,8 +70,8 @@ TEST_CASE("Canvas: triangles", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   triangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("triangles")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -80,8 +80,8 @@ TEST_CASE("Canvas: rectangles", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   rectangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-  //  CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ TEST_CASE("Canvas: text", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   text(&display);
-  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
+  REQUIRE(pngWrite(&display, pngFileName("text")));
   CHECK(compare(&display,&displayFromPng));
 }
 

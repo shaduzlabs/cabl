@@ -68,8 +68,8 @@ TEST_CASE("GDisplayMaschineMK2: triangles", "[gfx/displays/GDisplayMaschineMK2]"
 {
   GDisplayMaschineMK2 display, displayFromPng;
   triangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("triangles")));
-  // CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("triangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,8 +78,8 @@ TEST_CASE("GDisplayMaschineMK2: rectangles", "[gfx/displays/GDisplayMaschineMK2]
 {
   GDisplayMaschineMK2 display, displayFromPng;
   rectangles(&display);
-  REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-  //  CHECK(compare(&display,&displayFromPng));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("rectangles")));
+  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
