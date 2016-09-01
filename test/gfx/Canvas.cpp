@@ -90,7 +90,7 @@ TEST_CASE("Canvas: text", "[gfx/Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   text(&display);
-  REQUIRE(pngWrite(&display, pngFileName("text")));
+  REQUIRE(pngRead(&displayFromPng, pngFileName("text")));
   CHECK(compare(&display,&displayFromPng));
 }
 
