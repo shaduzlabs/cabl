@@ -35,7 +35,7 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
 
   CHECK_FALSE(display.isDirty());
 
-  display.setPixel(0,0,{0xff});
+  display.setPixel(0, 0, {0xff});
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
   CHECK_FALSE(display.isChunkDirty(10000));
@@ -44,13 +44,13 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
   CHECK_FALSE(display.isChunkDirty(10000));
-  
+
   display.setDirtyChunks(0, 0);
   display.setDirtyChunks(10000, 10000);
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
   CHECK_FALSE(display.isChunkDirty(10000));
-  
+
   display.white();
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
@@ -83,8 +83,7 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
-  display.triangleFilled(
-    10, 20, 30, 12, 22, 32, {0xff}, {0xff});
+  display.triangleFilled(10, 20, 30, 12, 22, 32, {0xff}, {0xff});
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
@@ -100,8 +99,7 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
-  display.rectangleRoundedFilled(
-    8, 2, 100, 200, 5, {0xff}, {0xff});
+  display.rectangleRoundedFilled(8, 2, 100, 200, 5, {0xff}, {0xff});
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
@@ -113,12 +111,12 @@ TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
-  const uint8_t myBitmap[] = {1,12,14,16,4,7,2,7,4,7,4,43};
+  const uint8_t myBitmap[] = {1, 12, 14, 16, 4, 7, 2, 7, 4, 7, 4, 43};
   display.bitmap(1, 2, 3, 4, myBitmap, {0xff});
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 
-  display.canvas({10,10}, 0, 0, 1, 2, 20, 20);
+  display.canvas({10, 10}, 0, 0, 1, 2, 20, 20);
   CHECK_FALSE(display.isDirty());
   CHECK_FALSE(display.isChunkDirty(0));
 

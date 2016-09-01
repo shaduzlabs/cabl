@@ -8,8 +8,8 @@
 #include <catch.hpp>
 #include <gfx/displays/GDisplayMaschineMK2.h>
 
-#include "gfx/CanvasTestHelpers.h"
 #include "gfx/CanvasTestFunctions.h"
+#include "gfx/CanvasTestHelpers.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ TEST_CASE("GDisplayMaschineMK2: lines", "[gfx/displays/GDisplayMaschineMK2]")
   GDisplayMaschineMK2 display, displayFromPng;
   lines(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("lines")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ TEST_CASE("GDisplayMaschineMK2: circles", "[gfx/displays/GDisplayMaschineMK2]")
   GDisplayMaschineMK2 display, displayFromPng;
   circles(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("circles")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ TEST_CASE("GDisplayMaschineMK2: triangles", "[gfx/displays/GDisplayMaschineMK2]"
   GDisplayMaschineMK2 display, displayFromPng;
   triangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("triangles")));
- // CHECK(compare(&display,&displayFromPng));
+  // CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ TEST_CASE("GDisplayMaschineMK2: rectangles", "[gfx/displays/GDisplayMaschineMK2]
   GDisplayMaschineMK2 display, displayFromPng;
   rectangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-//  CHECK(compare(&display,&displayFromPng));
+  //  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ TEST_CASE("GDisplayMaschineMK2: text", "[gfx/displays/GDisplayMaschineMK2]")
   GDisplayMaschineMK2 display, displayFromPng;
   text(&display);
   REQUIRE(pngWrite(&display, pngFileName("text")));
- // CHECK(compare(&display,&displayFromPng));
+  // CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ TEST_CASE("GDisplayMaschineMK2: canvas", "[gfx/displays/GDisplayMaschineMK2]")
   GDisplayMaschineMK2 display, displayFromPng;
   canvas(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("canvas")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

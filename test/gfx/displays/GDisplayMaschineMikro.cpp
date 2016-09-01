@@ -8,8 +8,8 @@
 #include <catch.hpp>
 #include <gfx/displays/GDisplayMaschineMikro.h>
 
-#include "gfx/CanvasTestHelpers.h"
 #include "gfx/CanvasTestFunctions.h"
+#include "gfx/CanvasTestHelpers.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ TEST_CASE("GDisplayMaschineMikro: lines", "[gfx/displays/GDisplayMaschineMikro]"
   GDisplayMaschineMikro display, displayFromPng;
   lines(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("lines")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ TEST_CASE("GDisplayMaschineMikro: circles", "[gfx/displays/GDisplayMaschineMikro
   GDisplayMaschineMikro display, displayFromPng;
   circles(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("circles")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ TEST_CASE("GDisplayMaschineMikro: triangles", "[gfx/displays/GDisplayMaschineMik
   GDisplayMaschineMikro display, displayFromPng;
   triangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("triangles")));
- // CHECK(compare(&display,&displayFromPng));
+  // CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ TEST_CASE("GDisplayMaschineMikro: rectangles", "[gfx/displays/GDisplayMaschineMi
   GDisplayMaschineMikro display, displayFromPng;
   rectangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-//  CHECK(compare(&display,&displayFromPng));
+  //  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ TEST_CASE("GDisplayMaschineMikro: text", "[gfx/displays/GDisplayMaschineMikro]")
   GDisplayMaschineMikro display, displayFromPng;
   text(&display);
   REQUIRE(pngWrite(&display, pngFileName("text")));
-//  CHECK(compare(&display,&displayFromPng));
+  //  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ TEST_CASE("GDisplayMaschineMikro: canvas", "[gfx/displays/GDisplayMaschineMikro]
   GDisplayMaschineMikro display, displayFromPng;
   canvas(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("canvas")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

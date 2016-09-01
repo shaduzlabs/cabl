@@ -67,23 +67,24 @@ void GDisplayMaschineMK2::black()
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK2::setPixelImpl(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+void GDisplayMaschineMK2::setPixelImpl(
+  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
-  if ( x_ >= width() || y_ >= height() || color_.transparent() )
+  if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
-  
+
   util::ColorRGB oldColor = pixelImpl(x_, y_);
 
   bool isWhite{color_.active()};
-  if(color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
     isWhite = !oldColor.active();
   }
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ >> 3);
-  
-  if(isWhite)
+
+  if (isWhite)
   {
     data()[byteIndex] |= (0x80 >> (x_ & 7));
   }

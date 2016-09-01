@@ -11,8 +11,8 @@
 #include <gfx/Canvas.h>
 #include <iostream>
 
-#include "gfx/CanvasTestHelpers.h"
 #include "gfx/CanvasTestFunctions.h"
+#include "gfx/CanvasTestHelpers.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -48,60 +48,60 @@ TEST_CASE("Canvas: constructor", "[gfx/Canvas]")
 
 TEST_CASE("Canvas: lines", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   lines(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("lines")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Canvas: circles", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   circles(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("circles")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Canvas: triangles", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   triangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("triangles")));
- // CHECK(compare(&display,&displayFromPng));
+  // CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Canvas: rectangles", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   rectangles(&display);
   REQUIRE(pngWrite(&display, pngFileName("rectangles")));
-//  CHECK(compare(&display,&displayFromPng));
+  //  CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Canvas: text", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   text(&display);
   REQUIRE(pngWrite(&display, pngFileName("text")));
- // CHECK(compare(&display,&displayFromPng));
+  // CHECK(compare(&display,&displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------
 
 TEST_CASE("Canvas: canvas", "[gfx/Canvas]")
 {
-  Canvas display(128,128), displayFromPng(128,128);
+  Canvas display(128, 128), displayFromPng(128, 128);
   canvas(&display);
   REQUIRE(pngRead(&displayFromPng, pngFileName("canvas")));
-  CHECK(compare(&display,&displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
   }
 
   util::ColorRGB oldColor = pixel(x_, y_);
-  unsigned byteIndex = (canvasWidthInBytes() * y_) + ( 3 * x_) ;
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
   if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
@@ -86,9 +86,9 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
   {
     return {};
   }
-  unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_) ;
-  
-  return {data()[byteIndex], data()[byteIndex + 1], data()[byteIndex + 2] };
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
+
+  return {data()[byteIndex], data()[byteIndex + 1], data()[byteIndex + 2]};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -414,8 +414,7 @@ void Canvas::rectangleRoundedFilled(uint16_t x_,
 
   circleFilled((x_ + r_), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopLeft);
 
-  circleFilled(
-    (x_ + w_ - r_ - 1), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopRight);
+  circleFilled((x_ + w_ - r_ - 1), (y_ + r_), r_, color_, fillColor_, CircleType::QuarterTopRight);
 
   circleFilled(
     (x_ + w_ - r_ - 1), (y_ + h_ - r_ - 1), r_, color_, fillColor_, CircleType::QuarterBottomRight);
@@ -557,7 +556,7 @@ void Canvas::canvas(const Canvas& c_,
 {
   uint16_t cw = c_.width();
   uint16_t ch = c_.height();
-  
+
   if ((xDest_ >= m_width) || (yDest_ >= m_height) || (xSource_ >= cw) || (ySource_ >= ch))
   {
     return;

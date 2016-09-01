@@ -51,7 +51,8 @@ bool compare(const Canvas* c1_, const Canvas* c2_)
     {
       if (c1_->pixel(x, y) != c2_->pixel(x, y))
       {
-        std::cout << x << ":"<< y << " " << c1_->pixel(x, y) << " != " << c2_->pixel(x, y) << std::endl;
+        std::cout << x << ":" << y << " " << c1_->pixel(x, y) << " != " << c2_->pixel(x, y)
+                  << std::endl;
         return false;
       }
     }

@@ -70,22 +70,22 @@ void GDisplayMaschineMikro::black()
 void GDisplayMaschineMikro::setPixelImpl(
   uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
-  if ( x_ >= width() || y_ >= height() || color_.transparent() )
+  if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
-  
+
   util::ColorRGB oldColor = pixelImpl(x_, y_);
 
   bool isWhite{color_.active()};
-  if(color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
   {
     isWhite = !oldColor.active();
   }
   unsigned byteIndex = (width() * (y_ >> 3)) + x_;
-  
 
-  if(isWhite)
+
+  if (isWhite)
   {
     data()[byteIndex] |= 0x01 << (y_ & 7);
   }

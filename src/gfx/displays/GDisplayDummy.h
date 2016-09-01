@@ -140,11 +140,11 @@ protected:
   {
     return 0U;
   }
-  
+
   void setPixelImpl(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override
   {
   }
-  
+
   util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const override
   {
     return {};
