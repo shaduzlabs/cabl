@@ -84,7 +84,7 @@ private:
 
   void processNote(uint8_t, uint8_t);
 
-  LCDDisplayGeneric m_displays[kPush_nDisplays];
+  LCDDisplayGeneric<17, 4> m_displays[kPush_nDisplays];
 
   std::array<uint8_t, kPush_ledsDataSize> m_leds;
   std::array<uint8_t, kPush_ledsDataSize> m_ledsPrev;

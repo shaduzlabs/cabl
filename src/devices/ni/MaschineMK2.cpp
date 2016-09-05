@@ -266,7 +266,7 @@ GDisplay* MaschineMK2::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* MaschineMK2::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  static LCDDisplayDummy s_dummyLCDDisplay;
   return &s_dummyLCDDisplay;
 }
 

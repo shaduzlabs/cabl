@@ -64,7 +64,7 @@ private:
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
   GDisplayDummy m_displayDummy;
-  LCDDisplay7Segments m_lcdDisplay;
+  LCDDisplay7Segments<2> m_lcdDisplay;
 
   std::array<uint8_t, kF1MK2_buttonsDataSize> m_buttons;
   std::array<uint8_t, kF1MK2_nLeds> m_leds;

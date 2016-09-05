@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <array>
+#include <bitset>
 #include <cstdint>
 
 #include "util/Types.h"
@@ -15,6 +17,7 @@ namespace sl
 {
 namespace cabl
 {
+
 class LCDDisplay
 {
 
@@ -50,27 +53,14 @@ public:
    * @{
    */
 
-  //! Constructor
-  /*!
-   \param charsPerRow_     Number of chars per row
-   \param nRows_           Number of rows
-  */
-  LCDDisplay(uint8_t numCharsPerRow_, uint8_t numRows_)
-    : m_isDirty(false), m_numCharsPerRow(numCharsPerRow_), m_numRows(numRows_)
-  {
-  }
-
   //! Destructor
   virtual ~LCDDisplay() = default;
 
-  virtual void clear()
-  {
-  }
+  virtual void clear() = 0;
 
-  virtual const tRawData& displayData() const
-  {
-    return m_data;
-  }
+  virtual void fill(uint8_t value_) = 0;
+  
+  virtual const uint8_t* displayData() const = 0;
 
   /** @} */ // End of group Lifetime
 
@@ -143,27 +133,18 @@ public:
   /*!
    \return        true if the display must be redrawn, false otherwise
    */
-  virtual bool isDirty() const
-  {
-    return m_isDirty;
-  }
-
+  virtual bool isDirty() const = 0;
+  
   //! Is the specified row dirty?
   /*!
    \param row_    The display row to check
    \return true if the display row must be redrawn, false otherwise
    */
-  virtual bool isDirtyRow(uint8_t row_) const
-  {
-    return m_isDirty;
-  }
-
+  virtual bool isDirtyRow(uint8_t row_) const = 0;
+  
   //! Reset the global dirty flag
-  virtual void resetDirtyFlags() const
-  {
-    m_isDirty = false;
-  }
-
+  virtual void resetDirtyFlags() const = 0;
+  
   /** @} */ // End of group Access
 
   //--------------------------------------------------------------------------------------------------
@@ -174,18 +155,76 @@ public:
    * @{
    */
 
-  virtual uint8_t numberOfCharsPerRow() const noexcept
+  virtual unsigned width() const = 0;
+
+  virtual unsigned height() const = 0;
+
+  virtual unsigned dataSize() const = 0;
+  
+  /** @} */ // End of group Utility
+
+  /** @} */ // End of group LCDDisplay
+
+  //--------------------------------------------------------------------------------------------------
+
+protected:
+  virtual uint8_t* data() = 0;
+  virtual void setDirty(unsigned row_) const = 0;
+};
+
+//--------------------------------------------------------------------------------------------------
+
+template<unsigned COLUMNS,unsigned ROWS>
+class LCDDisplayBase : public LCDDisplay
+{
+
+public:
+
+  void clear() override
   {
-    return m_numCharsPerRow;
+    m_data.fill(0);
+    m_dirtyFlags.set();
   }
-  virtual uint8_t numberOfRows() const noexcept
+  
+  void fill(uint8_t value_) override
   {
-    return m_numRows;
+    m_data.fill(value_);
+    m_dirtyFlags.set();
+  }
+  
+  const uint8_t* displayData() const override
+  {
+    return m_data.data();
   }
 
-  void setDirty(bool isDirty_) const
+  bool isDirty() const override
   {
-    m_isDirty = isDirty_;
+    return m_dirtyFlags.any();
+  }
+
+  bool isDirtyRow(uint8_t row_) const override
+  {
+    return m_dirtyFlags.test(row_);
+  }
+  
+  virtual void resetDirtyFlags() const override
+  {
+    m_dirtyFlags.reset();
+  }
+  
+  unsigned width() const noexcept override
+  {
+    return COLUMNS;
+  }
+  
+  unsigned height() const noexcept override
+  {
+    return ROWS;
+  }
+  
+  unsigned dataSize() const noexcept override
+  {
+    return ROWS*COLUMNS;
   }
 
   /** @} */ // End of group Utility
@@ -195,18 +234,24 @@ public:
   //--------------------------------------------------------------------------------------------------
 
 protected:
-  tRawData& data()
+
+  uint8_t* data() override
   {
-    return m_data;
+    return m_data.data();
   }
 
+  void setDirty(unsigned row_) const override
+  {
+    m_dirtyFlags[row_] = true;
+  }
+  
 private:
-  mutable bool m_isDirty;
-  uint8_t m_numCharsPerRow;
-  uint8_t m_numRows;
+  mutable std::bitset<ROWS> m_dirtyFlags;
 
-  tRawData m_data;
+  std::array<uint8_t, ROWS*COLUMNS> m_data;
 };
+
+using LCDDisplayDummy = LCDDisplayBase<0, 0>;
 
 //--------------------------------------------------------------------------------------------------
 

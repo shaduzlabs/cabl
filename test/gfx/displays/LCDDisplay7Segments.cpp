@@ -5,25 +5,29 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/displays/LCDDisplayGeneric.h"
+#include <catch.hpp>
+#include <gfx/displays/LCDDisplay7Segments.h>
 
-#include <cmath>
-#include <cstdint>
-#include <string>
-#ifndef ARDUINO
-#include <algorithm>
-#endif
-
-#include "util/Log.h"
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
+namespace test
+{
 
 //--------------------------------------------------------------------------------------------------
 
+TEST_CASE("LCDDisplay7Segments: constructor", "[gfx][displays][LCDDisplay7Segments]")
+{
+  LCDDisplay7Segments<19> display;
+  CHECK(display.width() == 19);
+  CHECK(display.height() == 1);
+}
+
 //--------------------------------------------------------------------------------------------------
 
+} // namespace test
 } // namespace cabl
 } // namespace sl

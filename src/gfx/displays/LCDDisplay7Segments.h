@@ -7,7 +7,12 @@
 
 #pragma once
 
+#include <cmath>
 #include <cstdint>
+#include <string>
+#ifndef ARDUINO
+#include <algorithm>
+#endif
 
 #include "gfx/LCDDisplay.h"
 
@@ -15,35 +20,177 @@ namespace sl
 {
 namespace cabl
 {
-class LCDDisplay7Segments : public LCDDisplay
+
+namespace detail
+{
+const uint8_t kLCDDisplay7S_FontData[] = {
+#include "gfx/fonts/data/FONT_7-seg.h"
+};
+} // namespace
+
+template <unsigned COLUMNS>
+class LCDDisplay7Segments : public LCDDisplayBase<COLUMNS, 1>
 {
 
 public:
-  explicit LCDDisplay7Segments(uint8_t);
 
   ~LCDDisplay7Segments() = default;
 
-  void clear() override;
-
-  bool isDirtyRow(uint8_t row_) const override;
-
   void setCharacter(uint8_t col_, uint8_t row_, char c_) override;
 
-  void setText(const std::string& string_, uint8_t row_, Align align_) override;
+  void setText(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setText(int value_, uint8_t row_, Align align_) override;
+  void setText(int value_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setText(double value_, uint8_t row_, Align align_) override;
+  void setText(double value_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setValue(float value_, uint8_t row_, Align align_) override;
+  void setValue(float value_, uint8_t row_, LCDDisplay::Align align_) override;
 
 private:
-  std::string alignText(const std::string&, Align align_) const;
+  std::string alignText(const std::string&, LCDDisplay::Align align_) const;
 
   void setDot(uint8_t nDot_, uint8_t row_, bool visible_ = true);
 
   void resetDots(uint8_t row_);
 };
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setCharacter(uint8_t col_, uint8_t row_, char c_)
+{
+  uint8_t charNum = static_cast<uint8_t>(c_);
+  if (row_ > 0 || col_ > this->width() || charNum < 45 || charNum > 90)
+  {
+    return;
+  }
+  this->setDirty(0);
+  this->data()[col_] = detail::kLCDDisplay7S_FontData[charNum - 45];
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setText(
+  const std::string& string_, uint8_t row_, LCDDisplay::Align align_)
+{
+  if (row_ > 0)
+  {
+    return;
+  }
+  this->setDirty(0);
+
+  std::string strAligned = alignText(string_, align_);
+  std::transform(strAligned.begin(), strAligned.end(), strAligned.begin(), ::toupper);
+
+  for (size_t i = 0; i < std::min<size_t>(strAligned.length(), this->width()); i++)
+  {
+    const uint8_t& character = strAligned.at(i);
+    this->data()[i]
+      = (character < 45 && character > 90) ? 0x00 : detail::kLCDDisplay7S_FontData[character - 45];
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setText(int value_, uint8_t row_, LCDDisplay::Align align_)
+{
+  setText(std::to_string(value_), row_, align_);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setText(double value_, uint8_t row_, LCDDisplay::Align align_)
+{
+  double integral;
+  double fractional = modf(value_, &integral);
+  std::string strValue = std::to_string(static_cast<int>(integral));
+  std::string strFractional = std::to_string(static_cast<int>(fractional * 10));
+  uint8_t emptySpaces = this->width() - strValue.length() - strFractional.length();
+  uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
+  resetDots(row_);
+  setDot(strValue.length() - 1 + leftFills, row_);
+  strValue.append(strFractional);
+
+  setText(strValue, row_, align_);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setValue(float value_, uint8_t row_, LCDDisplay::Align align_)
+{
+  return;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+std::string LCDDisplay7Segments<COLUMNS>::alignText(
+  const std::string& string_, LCDDisplay::Align align_) const
+{
+  if (string_.length() >= this->width())
+  {
+    return string_.substr(0, this->width());
+  }
+
+  std::string strValue(string_);
+  switch (align_)
+  {
+    case LCDDisplay::Align::Right:
+    {
+      strValue.insert(0, this->width() - strValue.length(), ' ');
+      break;
+    }
+    case LCDDisplay::Align::Center:
+    {
+      uint8_t nFills = this->width() - strValue.length();
+      uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
+      strValue.insert(0, leftFills, ' ');
+      strValue.append(nFills - leftFills, ' ');
+      break;
+    }
+    case LCDDisplay::Align::Left:
+    default:
+    {
+      strValue.append(this->width() - strValue.length(), ' ');
+      break;
+    }
+  }
+  return strValue;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
+{
+  if (row_ > 0 || nDot_ >= this->width())
+  {
+    return;
+  }
+  this->setDirty(0);
+  this->data()[nDot_] |= 0x01;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <unsigned COLUMNS>
+void LCDDisplay7Segments<COLUMNS>::resetDots(uint8_t row_)
+{
+  if (row_ > 0)
+  {
+    return;
+  }
+  this->setDirty(0);
+
+  for (uint8_t i = 0; i < this->width(); i++)
+  {
+    this->data()[i] &= 0xfe;
+  }
+}
 
 //--------------------------------------------------------------------------------------------------
 

@@ -141,7 +141,7 @@ enum class TraktorF1MK2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-TraktorF1MK2::TraktorF1MK2() : m_lcdDisplay(2), m_isDirtyLeds(true)
+TraktorF1MK2::TraktorF1MK2() : m_isDirtyLeds(true)
 {
 }
 
@@ -177,7 +177,7 @@ GDisplay* TraktorF1MK2::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* TraktorF1MK2::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  static LCDDisplayDummy s_dummyLCDDisplay;
   if (displayIndex_ > 0)
   {
     return &s_dummyLCDDisplay;
@@ -223,12 +223,12 @@ bool TraktorF1MK2::sendLedsAndDisplay()
 {
   if (m_lcdDisplay.isDirty() || true)
   {
-    const tRawData& displayData = m_lcdDisplay.displayData();
-    for (size_t i = 0; i < displayData.size(); i++)
+    const auto displayData = m_lcdDisplay.displayData();
+    for (size_t i = 0; i < m_lcdDisplay.dataSize(); i++)
     {
       for (uint8_t j = 0; j < 8; j++)
       {
-        size_t displayIndex = (displayData.size() - 1 - i);
+        size_t displayIndex = (m_lcdDisplay.dataSize() - 1 - i);
         m_leds[(displayIndex * 8) + j] = (((1 << j) & displayData[i]) > 0) ? 0x7f : 0x00;
       }
     }

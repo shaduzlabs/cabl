@@ -74,12 +74,19 @@ public:
   {
   }
 
-  void triangle(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void triangle(
+    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
-  void triangleFilled(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
+  void triangleFilled(uint16_t,
+    uint16_t,
+    uint16_t,
+    uint16_t,
+    uint16_t,
+    uint16_t,
+    const util::ColorRGB&,
+    const util::ColorRGB&) override
   {
   }
 
@@ -87,16 +94,19 @@ public:
   {
   }
 
-  void rectangleFilled(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
+  void rectangleFilled(
+    uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
-  void rectangleRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void rectangleRounded(
+    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
   {
   }
 
   void rectangleRoundedFilled(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
+    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&)
+    override
   {
   }
 
@@ -104,11 +114,13 @@ public:
   {
   }
 
-  void circleFilled(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
+  void circleFilled(
+    uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
   {
   }
 
-  void bitmap(uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
+  void bitmap(
+    uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
   {
   }
 
@@ -120,7 +132,8 @@ public:
   {
   }
 
-  void text(uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
+  void text(
+    uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
   {
   }
 
@@ -141,7 +154,8 @@ protected:
     return 0U;
   }
 
-  void setPixelImpl(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override
+  void setPixelImpl(
+    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override
   {
   }
 

@@ -47,7 +47,8 @@ protected:
      \param color_           The pixel color (RGB + monochrome)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-  void setPixelImpl(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override;
+  void setPixelImpl(
+    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override;
 
   //! Get the pixel value as an RGB color
   /*!

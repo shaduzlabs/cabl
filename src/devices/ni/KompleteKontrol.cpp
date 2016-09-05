@@ -349,7 +349,7 @@ GDisplay* KompleteKontrolBase::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* KompleteKontrolBase::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  static LCDDisplayDummy s_dummyLCDDisplay;
   if (displayIndex_ > 8)
   {
     return &s_dummyLCDDisplay;
@@ -407,7 +407,7 @@ bool KompleteKontrolBase::sendDisplayData()
     {
       if (m_displays[i].isDirty())
       {
-        std::copy_n(m_displays[i].displayData().data() + (row * 16), 16, &displayData[i * 16]);
+        //       std::copy_n(m_displays[i].displayData(row * 16), 16, &displayData[i * 16]);
       }
     }
     if (!writeToDeviceHandle(

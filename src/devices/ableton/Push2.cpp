@@ -28,7 +28,6 @@ namespace
 {
 const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
 const uint8_t kPush_epOut = 0x01;
-const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 // clang-format off
 const std::vector<sl::util::ColorRGB> kPush_colors{
@@ -354,7 +353,7 @@ GDisplay* Push2::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* Push2::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  static LCDDisplayDummy s_dummyLCDDisplay;
   return &s_dummyLCDDisplay;
 }
 

@@ -31,50 +31,13 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplayKompleteKontrol::LCDDisplayKompleteKontrol() : LCDDisplay(kLCDKK_numCols, kLCDKK_numRows)
-{
-  data().resize(48);
-  for (uint8_t i = 0; i < kLCDKK_numRows; i++)
-  {
-    m_dirtyFlags[i] = false;
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplayKompleteKontrol::~LCDDisplayKompleteKontrol()
-{
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void LCDDisplayKompleteKontrol::clear()
-{
-  data().clear();
-  setDirty(true);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool LCDDisplayKompleteKontrol::isDirtyRow(uint8_t row_) const
-{
-  if (row_ >= kLCDKK_numRows)
-  {
-    return false;
-  }
-  return m_dirtyFlags[row_];
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void LCDDisplayKompleteKontrol::setCharacter(uint8_t col_, uint8_t row_, char c_)
 {
-  if (row_ < 1 || row_ >= kLCDKK_numRows || col_ >= kLCDKK_numCols)
+  if (row_ < 1 || row_ >= height() || col_ >= width())
   {
     return;
   }
-  setDirty(true);
-  m_dirtyFlags[row_] = true;
+  setDirty(row_);
   unsigned index = (row_ * 16) + col_;
   data()[index++] = kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] & 0xff;
   data()[index++] = (kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
@@ -84,12 +47,12 @@ void LCDDisplayKompleteKontrol::setCharacter(uint8_t col_, uint8_t row_, char c_
 
 void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_, Align align_)
 {
-  if (row_ == 0 || row_ >= kLCDKK_numRows)
+  if (row_ == 0 || row_ >= height())
   {
     return;
   }
-  setDirty(true);
-  m_dirtyFlags[row_] = true;
+  setDirty(row_);
+
   unsigned index = row_ * 16;
   std::string strAligned = alignText(string_, align_);
   for (size_t i = 0; i < std::min<size_t>(strAligned.length(), 8); i++)
@@ -115,7 +78,7 @@ void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align
   double fractional = modf(value_, &integral);
   std::string strValue = std::to_string(static_cast<int>(integral));
   std::string strFractional = std::to_string(static_cast<int>(fractional * 1000));
-  uint8_t emptySpaces = kLCDKK_numCols - strValue.length() - strFractional.length();
+  uint8_t emptySpaces = width() - strValue.length() - strFractional.length();
   uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
   resetDots(row_);
   setDot(strValue.length() - 1 + leftFills, row_);
@@ -129,12 +92,11 @@ void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align
 
 void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align_)
 {
-  if (row_ >= kLCDKK_numRows)
+  if (row_ >= height())
   {
     return;
   }
-  setDirty(true);
-  m_dirtyFlags[row_] = true;
+  setDirty(row_);
 
   unsigned index = row_ * 16;
   float val = std::min<float>(value_, 1.0f);
@@ -175,9 +137,9 @@ void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align
 
 std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Align align_) const
 {
-  if (string_.length() >= kLCDKK_numCols)
+  if (string_.length() >= width())
   {
-    return string_.substr(0, kLCDKK_numCols);
+    return string_.substr(0, width());
   }
 
   std::string strValue(string_);
@@ -185,12 +147,12 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
   {
     case Align::Right:
     {
-      strValue.insert(0, kLCDKK_numCols - strValue.length(), ' ');
+      strValue.insert(0, width() - strValue.length(), ' ');
       break;
     }
     case Align::Center:
     {
-      uint8_t nFills = kLCDKK_numCols - strValue.length();
+      uint8_t nFills = width() - strValue.length();
       uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
       strValue.insert(0, leftFills, ' ');
       strValue.append(nFills - leftFills, ' ');
@@ -199,7 +161,7 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
     case Align::Left:
     default:
     {
-      strValue.append(kLCDKK_numCols - strValue.length(), ' ');
+      strValue.append(width() - strValue.length(), ' ');
       break;
     }
   }
@@ -210,12 +172,11 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
 
 void LCDDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
 {
-  if (row_ == 0 || row_ >= kLCDKK_numRows || nDot_ > kLCDKK_numDotsPerRow)
+  if (row_ == 0 || row_ >= height() || nDot_ > kLCDKK_numDotsPerRow)
   {
     return;
   }
-  setDirty(true);
-  m_dirtyFlags[row_] = true;
+  setDirty(row_);
 
   uint8_t mask = 1 << (row_ - 1);
   data()[(2 * nDot_) + 1] |= mask;
@@ -225,12 +186,11 @@ void LCDDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible
 
 void LCDDisplayKompleteKontrol::resetDots(uint8_t row_)
 {
-  if (row_ == 0 || row_ >= kLCDKK_numRows)
+  if (row_ == 0 || row_ >= height())
   {
     return;
   }
-  setDirty(true);
-  m_dirtyFlags[row_] = true;
+  setDirty(row_);
 
   uint8_t mask = 1 << (row_ - 1);
 

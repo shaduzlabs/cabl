@@ -305,7 +305,7 @@ GDisplay* Push::displayGraphic(size_t displayIndex_)
 
 LCDDisplay* Push::displayLCD(size_t displayIndex_)
 {
-  static LCDDisplay s_dummyLCDDisplay(0, 0);
+  static LCDDisplayDummy s_dummyLCDDisplay;
   if (displayIndex_ > kPush_nDisplays)
   {
     return &s_dummyLCDDisplay;
@@ -364,22 +364,21 @@ bool Push::sendDisplayData()
   bool result = true;
   tRawData sysexHeader{kPush_manufacturerId, 0x7F, 0x15, 0x18, 0x00, 0x45, 0x00};
 
-  for (unsigned row = 0; row < m_displays[0].numberOfRows(); row++)
+  for (unsigned row = 0; row < m_displays[0].height(); row++)
   {
     sysexHeader[3] = 0x18 + row;
-    unsigned nCharsPerRow = m_displays[0].numberOfCharsPerRow();
-    tRawData data(m_displays[0].numberOfCharsPerRow() * kPush_nDisplays);
+    unsigned nCharsPerRow = m_displays[0].width();
+    tRawData data(m_displays[0].width() * kPush_nDisplays);
     for (uint8_t i = 0; i < kPush_nDisplays; i++)
     {
-      std::copy_n(m_displays[i].displayData().data() + (row * nCharsPerRow),
-        nCharsPerRow,
-        &data[i * nCharsPerRow]);
+      std::copy_n(
+        m_displays[i].displayData() + (row * nCharsPerRow), nCharsPerRow, &data[i * nCharsPerRow]);
     }
     result = sendSysex({sysexHeader, data});
   }
   for (uint8_t i = 0; i < kPush_nDisplays; i++)
   {
-    m_displays[i].setDirty(false);
+    m_displays[i].LCDDisplay::resetDirtyFlags();
   }
   return result;
 }

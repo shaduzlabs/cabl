@@ -5,25 +5,29 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/displays/LCDDisplayGeneric.h"
+#include <catch.hpp>
+#include <gfx/displays/LCDDisplayKompleteKontrol.h>
 
-#include <cmath>
-#include <cstdint>
-#include <string>
-#ifndef ARDUINO
-#include <algorithm>
-#endif
-
-#include "util/Log.h"
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
+namespace test
+{
 
 //--------------------------------------------------------------------------------------------------
 
+TEST_CASE("LCDDisplayKompleteKontrol: constructor", "[gfx][displays][LCDDisplayKompleteKontrol]")
+{
+  LCDDisplayKompleteKontrol display;
+  CHECK(display.width() == 8);
+  CHECK(display.height() == 3);
+}
+
 //--------------------------------------------------------------------------------------------------
 
+} // namespace test
 } // namespace cabl
 } // namespace sl
