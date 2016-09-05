@@ -155,6 +155,8 @@ void triangles(Canvas* c_)
   c_->triangle(25,15,1,1,12,300,k_colorGreen);
   c_->triangle(c_->width()-1,c_->height(),0,25,c_->width()-1,99,k_colorRed);
 
+  c_->triangleFilled(160,1,12,1,300,1,k_colorWhite, k_colorInvert);
+  c_->triangleFilled(160,1,12,1,3,1,k_colorWhite, k_colorInvert);
   c_->triangleFilled(1,1,111,1,3,1,k_colorWhite, k_colorInvert);
   c_->triangleFilled(115,45,1,45,100,1,k_colorWhite, k_colorInvert);
   c_->triangleFilled(15,45,10,10,100,1,k_colorWhite, k_colorInvert);
@@ -162,6 +164,7 @@ void triangles(Canvas* c_)
   c_->triangleFilled(1,5,90,90,12,170,k_colorBlue, k_colorInvert);
   c_->triangleFilled(25,15,1,1,12,300,k_colorGreen, k_colorInvert);
   c_->triangleFilled(1,c_->height(),c_->width()-1,25,c_->width()-1,99,k_colorRed, k_colorInvert);
+  
 }
 
 //--------------------------------------------------------------------------------------------------
