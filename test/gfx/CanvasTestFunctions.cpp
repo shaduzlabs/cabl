@@ -399,6 +399,7 @@ void bitmap(Canvas* c_)
   }
 
   c_->bitmap((w-128)/2, 0, 128, 128, bmp_2, k_colorInvert);
+  c_->bitmap(w*2, 0, 128, 128, bmp_2, k_colorInvert);
 
 }
 

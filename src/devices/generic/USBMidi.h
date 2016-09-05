@@ -8,7 +8,6 @@
 #pragma once
 
 #include "devices/Device.h"
-#include "gfx/displays/LCDDisplayGeneric.h"
 
 #include <algorithm>
 #include <unmidify.hpp>

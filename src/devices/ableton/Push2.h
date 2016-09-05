@@ -12,7 +12,6 @@
 
 #include "devices/Device.h"
 #include "devices/generic/USBMidi.h"
-#include "gfx/displays/LCDDisplayGeneric.h"
 
 namespace sl
 {
@@ -54,8 +53,6 @@ private:
 
   void init() override;
 
-  void initDisplay() const;
-  bool sendDisplayData();
   bool sendLeds();
 
   void setLedImpl(Led, const util::ColorRGB&);
@@ -85,8 +82,6 @@ private:
   void processNote(uint8_t note_, uint8_t velocity_);
 
   static void midiInCallback(double timeStamp, std::vector<unsigned char>* message, void* userData);
-
-  LCDDisplayGeneric m_displays[kPush_nDisplays];
 
   std::array<uint8_t, kPush_ledsDataSize> m_leds;
   bool m_shiftPressed;

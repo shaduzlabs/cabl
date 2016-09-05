@@ -355,12 +355,7 @@ GDisplay* Push2::displayGraphic(size_t displayIndex_)
 LCDDisplay* Push2::displayLCD(size_t displayIndex_)
 {
   static LCDDisplay s_dummyLCDDisplay(0, 0);
-  if (displayIndex_ > kPush_nDisplays)
-  {
-    return &s_dummyLCDDisplay;
-  }
-
-  return &m_displays[displayIndex_];
+  return &s_dummyLCDDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -368,12 +363,6 @@ LCDDisplay* Push2::displayLCD(size_t displayIndex_)
 bool Push2::tick()
 {
   bool success = false;
-
-  if (m_displays[0].isDirty() || m_displays[1].isDirty() || m_displays[2].isDirty()
-      || m_displays[3].isDirty())
-  {
-    success = sendDisplayData();
-  }
 
   if (m_isDirtyLeds)
   {
@@ -387,44 +376,9 @@ bool Push2::tick()
 
 void Push2::init()
 {
-  // Display
-  initDisplay();
-
   // Leds
   std::fill(std::begin(m_leds), std::end(m_leds), 0);
   m_isDirtyLeds = true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Push2::initDisplay() const
-{
-  //!\todo set backlight?
-  return;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-bool Push2::sendDisplayData()
-{
-  bool result = true;
-  tRawData sysexHeader{kPush_manufacturerId, 0x7F, 0x15, 0x18, 0x00, 0x45, 0x00};
-
-  for (uint8_t row = 0; row < m_displays[0].numberOfRows(); row++)
-  {
-    sysexHeader[3] = 0x18 + row;
-    uint8_t nCharsPerRow = m_displays[0].numberOfCharsPerRow();
-    tRawData data(m_displays[0].numberOfCharsPerRow() * kPush_nDisplays);
-    for (uint8_t i = 0; i < kPush_nDisplays; i++)
-    {
-      std::copy_n(m_displays[i].displayData().data() + (row * nCharsPerRow),
-        nCharsPerRow,
-        &data[i * nCharsPerRow]);
-    }
-    result = sendSysex({sysexHeader, data});
-  }
-
-  return result;
 }
 
 //--------------------------------------------------------------------------------------------------
