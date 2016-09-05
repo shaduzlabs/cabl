@@ -34,7 +34,7 @@ std::string pngFileName(const std::string& test_)
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: constructor", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: constructor", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display;
   CHECK(display.width() == 255);
@@ -46,7 +46,26 @@ TEST_CASE("GDisplayMaschineMK1: constructor", "[gfx/displays/GDisplayMaschineMK1
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: lines", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: display chunks", "[gfx][displays][GDisplayMaschineMK1]")
+{
+  GDisplayMaschineMK1 display;
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK_FALSE( display.isChunkDirty(i));
+  }
+  
+  display.lineVertical(0, 0, display.height(), {0xFF});
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK( display.isChunkDirty(i));
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayMaschineMK1: lines", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   lines(&display);
@@ -60,7 +79,7 @@ TEST_CASE("GDisplayMaschineMK1: lines", "[gfx/displays/GDisplayMaschineMK1]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: circles", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: circles", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   circles(&display);
@@ -74,7 +93,7 @@ TEST_CASE("GDisplayMaschineMK1: circles", "[gfx/displays/GDisplayMaschineMK1]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: triangles", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: triangles", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   triangles(&display);
@@ -88,7 +107,7 @@ TEST_CASE("GDisplayMaschineMK1: triangles", "[gfx/displays/GDisplayMaschineMK1]"
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: rectangles", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: rectangles", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   rectangles(&display);
@@ -102,7 +121,7 @@ TEST_CASE("GDisplayMaschineMK1: rectangles", "[gfx/displays/GDisplayMaschineMK1]
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: text", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: text", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   text(&display);
@@ -116,11 +135,25 @@ TEST_CASE("GDisplayMaschineMK1: text", "[gfx/displays/GDisplayMaschineMK1]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMK1: canvas", "[gfx/displays/GDisplayMaschineMK1]")
+TEST_CASE("GDisplayMaschineMK1: canvas", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display, displayFromPng;
   canvas(&display);
   std::string fileNameSuffix("canvas");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayMaschineMK1: bitmap", "[gfx][displays][GDisplayMaschineMK1]")
+{
+  GDisplayMaschineMK1 display, displayFromPng;
+  bitmap(&display);
+  std::string fileNameSuffix("bitmap");
 #ifdef DO_WRITE_PICTURES
   REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
 #endif

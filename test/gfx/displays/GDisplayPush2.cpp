@@ -34,7 +34,7 @@ std::string pngFileName(const std::string& test_)
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: constructor", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display;
 
@@ -52,7 +52,26 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: lines", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: display chunks", "[gfx][displays][GDisplayPush2]")
+{
+  GDisplayPush2 display;
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK_FALSE( display.isChunkDirty(i));
+  }
+  
+  display.lineVertical(0, 0, display.height(), {0xFF});
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK( display.isChunkDirty(i));
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayPush2: lines", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   lines(&display);
@@ -66,7 +85,7 @@ TEST_CASE("GDisplayPush2: lines", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: circles", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: circles", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   circles(&display);
@@ -80,7 +99,7 @@ TEST_CASE("GDisplayPush2: circles", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: triangles", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: triangles", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   triangles(&display);
@@ -94,7 +113,7 @@ TEST_CASE("GDisplayPush2: triangles", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: rectangles", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: rectangles", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   rectangles(&display);
@@ -108,7 +127,7 @@ TEST_CASE("GDisplayPush2: rectangles", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: text", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: text", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   text(&display);
@@ -122,7 +141,7 @@ TEST_CASE("GDisplayPush2: text", "[gfx/displays/GDisplayPush2]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayPush2: canvas", "[gfx/displays/GDisplayPush2]")
+TEST_CASE("GDisplayPush2: canvas", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display, displayFromPng;
   canvas(&display);
@@ -131,7 +150,21 @@ TEST_CASE("GDisplayPush2: canvas", "[gfx/displays/GDisplayPush2]")
   REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
 #endif
   REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
- // CHECK(compare(&display, &displayFromPng));
+  CHECK(compare(&display, &displayFromPng));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayPush2: bitmap", "[gfx][displays][GDisplayPush2]")
+{
+  GDisplayPush2 display, displayFromPng;
+  bitmap(&display);
+  std::string fileNameSuffix("bitmap");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
 }
 
 //--------------------------------------------------------------------------------------------------

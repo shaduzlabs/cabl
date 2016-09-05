@@ -84,11 +84,11 @@ void GDisplayPush2::setPixelImpl(
   }
 
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
-  uint8_t green = ((newColor.green() / 255.0) * 63);
+  uint8_t green = ((newColor.green() / 255.0) * 63) + 0.5;
   data()[byteIndex]
-    = (static_cast<uint8_t>((newColor.red() / 255.0) * 31) << 3) | ((green >> 3) & 0x07);
+    = (static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
   data()[byteIndex + 1]
-    = ((green << 5) & 0xE0) | static_cast<uint8_t>((newColor.blue() / 255.0) * 31);
+    = ((green << 5) & 0xE0) | static_cast<uint8_t>(((newColor.blue() / 255.0) * 31) + 0.5);
 
   m_isDirty = (m_isDirty ? m_isDirty : oldColor != newColor);
   if (bSetDirtyChunk_ && oldColor != newColor)

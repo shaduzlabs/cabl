@@ -19,7 +19,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayDummy: constructor", "[gfx/Canvas/displays/GDisplayDummy]")
+TEST_CASE("GDisplayDummy: constructor", "[gfx][displays][GDisplayDummy]")
 {
   GDisplayDummy display;
   CHECK(display.width() == 0);
@@ -29,7 +29,26 @@ TEST_CASE("GDisplayDummy: constructor", "[gfx/Canvas/displays/GDisplayDummy]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayDummy: interface", "[gfx/Canvas/displays/GDisplayDummy]")
+TEST_CASE("GDisplayDummy: display chunks", "[gfx][displays][GDisplayDummy]")
+{
+  GDisplayDummy display;
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK_FALSE( display.isChunkDirty(i));
+  }
+  
+  display.lineVertical(0, 0, display.height(), {0xFF});
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK_FALSE( display.isChunkDirty(i));
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayDummy: interface", "[gfx][displays][GDisplayDummy]")
 {
   GDisplayDummy display;
 

@@ -25,7 +25,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Constructors, reset, bool operator", "[comm/Transfer]")
+TEST_CASE("Constructors, reset, bool operator", "[comm][Transfer]")
 {
   Transfer t1;
   CHECK(t1.size() == 0);
@@ -55,7 +55,7 @@ TEST_CASE("Constructors, reset, bool operator", "[comm/Transfer]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Transfer comparison", "[comm/Transfer]")
+TEST_CASE("Transfer comparison", "[comm][Transfer]")
 {
   Transfer t1({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   Transfer t2({0, 1, 2, 3, 4, 5, 6, 7, 8});
@@ -83,7 +83,7 @@ TEST_CASE("Transfer comparison", "[comm/Transfer]")
 //--------------------------------------------------------------------------------------------------
 #ifdef CABL_USE_NETWORK
 
-TEST_CASE("Serialization/deserialization", "[comm/Transfer]")
+TEST_CASE("Serialization/deserialization", "[comm][Transfer]")
 {
   std::stringstream ss;
   Transfer original({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});

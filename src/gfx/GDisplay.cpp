@@ -68,11 +68,7 @@ util::ColorRGB GDisplay::pixel(uint16_t x_, uint16_t y_) const
 
 bool GDisplay::isChunkDirty(uint8_t chunk_) const
 {
-  if (chunk_ < m_numDisplayChunks)
-  {
-    return m_pChunksDirtyFlags[chunk_];
-  }
-  return false;
+  return ((chunk_ < m_numDisplayChunks) && m_pChunksDirtyFlags[chunk_] );
 }
 
 //--------------------------------------------------------------------------------------------------

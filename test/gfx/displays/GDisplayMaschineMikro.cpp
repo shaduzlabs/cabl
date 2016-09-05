@@ -34,7 +34,7 @@ std::string pngFileName(const std::string& test_)
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: constructor", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: constructor", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display;
   CHECK(display.width() == 128);
@@ -46,7 +46,26 @@ TEST_CASE("GDisplayMaschineMikro: constructor", "[gfx/displays/GDisplayMaschineM
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: lines", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: display chunks", "[gfx][displays][GDisplayMaschineMikro]")
+{
+  GDisplayMaschineMikro display;
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK_FALSE( display.isChunkDirty(i));
+  }
+  
+  display.lineVertical(0, 0, display.height(), {0xFF});
+  
+  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  {
+    CHECK( display.isChunkDirty(i));
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayMaschineMikro: lines", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   lines(&display);
@@ -60,7 +79,7 @@ TEST_CASE("GDisplayMaschineMikro: lines", "[gfx/displays/GDisplayMaschineMikro]"
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: circles", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: circles", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   circles(&display);
@@ -74,7 +93,7 @@ TEST_CASE("GDisplayMaschineMikro: circles", "[gfx/displays/GDisplayMaschineMikro
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: triangles", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: triangles", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   triangles(&display);
@@ -88,7 +107,7 @@ TEST_CASE("GDisplayMaschineMikro: triangles", "[gfx/displays/GDisplayMaschineMik
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: rectangles", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: rectangles", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   rectangles(&display);
@@ -102,7 +121,7 @@ TEST_CASE("GDisplayMaschineMikro: rectangles", "[gfx/displays/GDisplayMaschineMi
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: text", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: text", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   text(&display);
@@ -116,11 +135,25 @@ TEST_CASE("GDisplayMaschineMikro: text", "[gfx/displays/GDisplayMaschineMikro]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayMaschineMikro: canvas", "[gfx/displays/GDisplayMaschineMikro]")
+TEST_CASE("GDisplayMaschineMikro: canvas", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display, displayFromPng;
   canvas(&display);
   std::string fileNameSuffix("canvas");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("GDisplayMaschineMikro: bitmap", "[gfx][displays][GDisplayMaschineMikro]")
+{
+  GDisplayMaschineMikro display, displayFromPng;
+  bitmap(&display);
+  std::string fileNameSuffix("bitmap");
 #ifdef DO_WRITE_PICTURES
   REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
 #endif

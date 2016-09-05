@@ -37,7 +37,7 @@ std::string pngFileName(const std::string& test_)
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: constructor", "[gfx/Canvas]")
+TEST_CASE("Canvas: constructor", "[gfx][Canvas]")
 {
   Canvas c(16, 5);
   CHECK(c.width() == 16);
@@ -48,7 +48,7 @@ TEST_CASE("Canvas: constructor", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: lines", "[gfx/Canvas]")
+TEST_CASE("Canvas: lines", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   lines(&display);
@@ -62,7 +62,7 @@ TEST_CASE("Canvas: lines", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: circles", "[gfx/Canvas]")
+TEST_CASE("Canvas: circles", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   circles(&display);
@@ -76,7 +76,7 @@ TEST_CASE("Canvas: circles", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: triangles", "[gfx/Canvas]")
+TEST_CASE("Canvas: triangles", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   triangles(&display);
@@ -90,7 +90,7 @@ TEST_CASE("Canvas: triangles", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: rectangles", "[gfx/Canvas]")
+TEST_CASE("Canvas: rectangles", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   rectangles(&display);
@@ -104,7 +104,7 @@ TEST_CASE("Canvas: rectangles", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: text", "[gfx/Canvas]")
+TEST_CASE("Canvas: text", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   text(&display);
@@ -118,11 +118,25 @@ TEST_CASE("Canvas: text", "[gfx/Canvas]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("Canvas: canvas", "[gfx/Canvas]")
+TEST_CASE("Canvas: canvas", "[gfx][Canvas]")
 {
   Canvas display(128, 128), displayFromPng(128, 128);
   canvas(&display);
   std::string fileNameSuffix("canvas");
+#ifdef DO_WRITE_PICTURES
+  REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
+#endif
+  REQUIRE(pngRead(&displayFromPng, pngFileName(fileNameSuffix)));
+  CHECK(compare(&display, &displayFromPng));
+}
+
+//--------------------------------------------------------------------------------------------------
+
+TEST_CASE("Canvas: bitmap", "[gfx][Canvas]")
+{
+  Canvas display(128, 128), displayFromPng(128, 128);
+  bitmap(&display);
+  std::string fileNameSuffix("bitmap");
 #ifdef DO_WRITE_PICTURES
   REQUIRE(pngWrite(&display, pngFileName(fileNameSuffix)));
 #endif
