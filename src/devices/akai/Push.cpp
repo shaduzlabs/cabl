@@ -378,7 +378,7 @@ bool Push::sendDisplayData()
   }
   for (uint8_t i = 0; i < kPush_nDisplays; i++)
   {
-    m_displays[i].LCDDisplay::resetDirtyFlags();
+    m_displays[i].resetDirtyFlags();
   }
   return result;
 }
