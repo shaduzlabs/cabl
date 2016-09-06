@@ -174,12 +174,17 @@ protected:
 
 //--------------------------------------------------------------------------------------------------
 
-template<unsigned COLUMNS,unsigned ROWS>
+template<unsigned COLUMNS,unsigned ROWS, unsigned DATA_SIZE=COLUMNS*ROWS>
 class LCDDisplayBase : public LCDDisplay
 {
 
 public:
 
+  LCDDisplayBase()
+  {
+    clear();
+  }
+  
   void clear() override
   {
     m_data.fill(0);
@@ -224,7 +229,7 @@ public:
   
   unsigned dataSize() const noexcept override
   {
-    return ROWS*COLUMNS;
+    return DATA_SIZE;
   }
 
   /** @} */ // End of group Utility
@@ -248,7 +253,7 @@ protected:
 private:
   mutable std::bitset<ROWS> m_dirtyFlags;
 
-  std::array<uint8_t, ROWS*COLUMNS> m_data;
+  std::array<uint8_t, DATA_SIZE> m_data;
 };
 
 using LCDDisplayDummy = LCDDisplayBase<0, 0>;

@@ -87,7 +87,7 @@ void LCDDisplay7Segments<COLUMNS>::setText(
   {
     const uint8_t& character = strAligned.at(i);
     this->data()[i]
-      = (character < 45 && character > 90) ? 0x00 : detail::kLCDDisplay7S_FontData[character - 45];
+      = (character < 45 || character > 90) ? 0x00 : detail::kLCDDisplay7S_FontData[character - 45];
   }
 }
 

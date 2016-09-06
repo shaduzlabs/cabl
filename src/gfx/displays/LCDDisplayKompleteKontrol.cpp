@@ -67,6 +67,11 @@ void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_
 
 void LCDDisplayKompleteKontrol::setText(int value_, uint8_t row_, Align align_)
 {
+  if (row_ == 0 || row_ >= height())
+  {
+    return;
+  }
+  
   setText(std::to_string(value_), row_, align_);
 }
 
@@ -74,6 +79,11 @@ void LCDDisplayKompleteKontrol::setText(int value_, uint8_t row_, Align align_)
 
 void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align_)
 {
+  if (row_ == 0 || row_ >= height())
+  {
+    return;
+  }
+  
   double integral;
   double fractional = modf(value_, &integral);
   std::string strValue = std::to_string(static_cast<int>(integral));
