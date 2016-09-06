@@ -3,54 +3,28 @@ sudo: false
 matrix:
   include:
 
-  # 1/ Linux Clang Builds
+  # 1/ Linux GCC5 Coverage build
   - os: linux
-    compiler: clang
-    addons: &1
+    compiler: gcc
+    addons: &gcc5-addons
       apt:
         sources:
-        - llvm-toolchain-precise-3.7
         - ubuntu-toolchain-r-test
         packages:
-        - clang-3.7
-        - gfortran
+        - g++-5
+        - gcc-5
+        - gfortran-5
         - libudev-dev
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
-      BUILD_TYPE='Release'
-  - os: linux
-    compiler: clang
-    addons: *1
-    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
-      BUILD_TYPE='Debug'
-  - os: linux
-    compiler: clang
-    addons: &2
-      apt:
-        sources:
-        - llvm-toolchain-precise-3.8
-        - ubuntu-toolchain-r-test
-        packages:
-        - clang-3.8
-        - gfortran
-        - libudev-dev
-        - libjack-dev
-        - libasound2-dev
-        - libboost-python-dev
-    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-      BUILD_TYPE='Release'
-  - os: linux
-    compiler: clang
-    addons: *2
-    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-      BUILD_TYPE='Debug'
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5
+
 
   # 2/ Linux GCC Builds
   - os: linux
     compiler: gcc
-    addons: &3
+    addons: &gcc-49-addons
       apt:
         sources:
         - ubuntu-toolchain-r-test
@@ -66,35 +40,62 @@ matrix:
       BUILD_TYPE='Release'
   - os: linux
     compiler: gcc
-    addons: *3
+    addons: *gcc-49-addons
     env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9'
       BUILD_TYPE='Debug'
   - os: linux
     compiler: gcc
-    addons: &4
+    addons: *gcc5-addons
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-linux-64"
+  - os: linux
+    compiler: gcc
+    addons: *gcc5-addons
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
+
+
+  # 3/ Linux Clang Builds
+  - os: linux
+    compiler: clang
+    addons: &clang-37-addons
       apt:
         sources:
+        - llvm-toolchain-precise-3.7
         - ubuntu-toolchain-r-test
         packages:
-        - g++-5
-        - gcc-5
-        - gfortran-5
+        - clang-3.7
+        - gfortran
         - libudev-dev
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-linux-64"
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Release'
   - os: linux
-    compiler: gcc
-    addons: *4
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
-
-
-  # 3/ Linux GCC5 Coverage build
+    compiler: clang
+    addons: *clang-37-addons
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Debug'
   - os: linux
-    compiler: gcc
-    addons: *4
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5
+    compiler: clang
+    addons: &clang-38-addons
+      apt:
+        sources:
+        - llvm-toolchain-precise-3.8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-3.8
+        - gfortran
+        - libudev-dev
+        - libjack-dev
+        - libasound2-dev
+        - libboost-python-dev
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Release'
+  - os: linux
+    compiler: clang
+    addons: *clang-38-addons
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Debug'
 
 
   # 4/ OSX Clang Builds
