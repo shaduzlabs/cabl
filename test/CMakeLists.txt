@@ -86,4 +86,4 @@ target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
 
 add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
 
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${PROJECT_NAME})
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure DEPENDS ${PROJECT_NAME})
