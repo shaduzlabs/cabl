@@ -369,9 +369,7 @@ set(
     src/gfx/displays/GDisplayPush2.h
     src/gfx/displays/GDisplayPush2.cpp
     src/gfx/displays/LCDDisplay7Segments.h
-    src/gfx/displays/LCDDisplay7Segments.cpp
     src/gfx/displays/LCDDisplayGeneric.h
-    src/gfx/displays/LCDDisplayGeneric.cpp
     src/gfx/displays/LCDDisplayKompleteKontrol.h
     src/gfx/displays/LCDDisplayKompleteKontrol.cpp
 )
