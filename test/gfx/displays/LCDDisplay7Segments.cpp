@@ -40,42 +40,42 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.setText(" A text! ",0,LCDDisplay::Align::Center);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {97, 97, 97, 97, 97, 97, 126, 97, 226, 242, 0, 226, 121, 97, 97, 97, 97, 97, 97};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
   {
     display.setText("      ",0,LCDDisplay::Align::Left);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
   {
     display.setText("                    ! ? *",0,LCDDisplay::Align::Left);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
   {
     display.setText("!!!",0,LCDDisplay::Align::Left);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {121, 121, 121, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
   {
     display.setText("!!!",0,LCDDisplay::Align::Right);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 121, 121, 121};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
   {
     display.setText("!!!",0,LCDDisplay::Align::Center);
     std::vector<uint8_t> displayData(display.displayData(), display.displayData()+display.dataSize());
     std::vector<uint8_t> expected = {97, 97, 97, 97, 97, 97, 97, 97, 121, 121, 121, 97, 97, 97, 97, 97, 97, 97, 97};
-    CHECK( std::equal( displayData.begin(), displayData.end(), std::begin(expected)) );
+    CHECK( std::equal( displayData.begin(), displayData.end(), expected.begin()) );
     display.clear();
   }
 }
