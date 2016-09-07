@@ -117,7 +117,7 @@ LCDDisplay* Push2Display::displayLCD(size_t displayIndex_)
 
 bool Push2Display::tick()
 {
-  if (m_display.isDirty())
+  if (m_display.dirty())
   {
     return sendDisplayData();
   }
@@ -143,10 +143,10 @@ bool Push2Display::sendDisplayData() const
       {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
     0x01);
 
-  for (unsigned offset = 0; offset < m_display.data().size(); offset += 16384)
+  for (unsigned offset = 0; offset < m_display.buffer().size(); offset += 16384)
   {
-    if (!writeToDeviceHandle(
-          Transfer({m_display.data().begin() + offset, m_display.data().begin() + offset + 16384}),
+    if (!writeToDeviceHandle(Transfer({m_display.buffer().begin() + offset,
+                               m_display.buffer().begin() + offset + 16384}),
           0x01))
     {
       return false;

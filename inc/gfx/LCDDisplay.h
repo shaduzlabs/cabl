@@ -13,10 +13,14 @@
 
 #include "util/Types.h"
 
+//--------------------------------------------------------------------------------------------------
+
 namespace sl
 {
 namespace cabl
 {
+
+//--------------------------------------------------------------------------------------------------
 
 class LCDDisplay
 {
@@ -26,24 +30,6 @@ public:
    * @defgroup LCDDisplay LCD display
    * @{
    */
-
-  //--------------------------------------------------------------------------------------------------
-
-  /**
-   * @defgroup Types Public types
-   * @ingroup LCDDisplay
-   * @{
-   */
-
-  //! The alignment type
-  enum class Align
-  {
-    Left,   //!< Align text to the left
-    Center, //!< Center text
-    Right,  //!< Align text to the right
-  };
-
-  /** @} */ // End of group Types
 
   //--------------------------------------------------------------------------------------------------
 
@@ -59,7 +45,7 @@ public:
   virtual void clear() = 0;
 
   virtual void fill(uint8_t value_) = 0;
-  
+
   virtual const uint8_t* displayData() const = 0;
 
   /** @} */ // End of group Lifetime
@@ -87,7 +73,7 @@ public:
    \param string_          The string to be printed
    \param row_             The row at which the string must be printed
    */
-  virtual void text(const std::string& string_, uint8_t row_, Align = Align::Left)
+  virtual void text(const std::string& string_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -96,7 +82,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void text(int value_, uint8_t row_, Align = Align::Left)
+  virtual void text(int value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -105,7 +91,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void text(double value_, uint8_t row_, Align = Align::Left)
+  virtual void text(double value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -114,7 +100,7 @@ public:
    \param value_           The value to be shown (0...1) by filling the available chars in a row
    \param row_             The row at which the value must be shown
    */
-  virtual void value(float value_, uint8_t row_, Align = Align::Left)
+  virtual void value(float value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -133,18 +119,18 @@ public:
   /*!
    \return        true if the display must be redrawn, false otherwise
    */
-  virtual bool isDirty() const = 0;
-  
+  virtual bool dirty() const = 0;
+
   //! Is the specified row dirty?
   /*!
    \param row_    The display row to check
    \return true if the display row must be redrawn, false otherwise
    */
-  virtual bool isDirtyRow(uint8_t row_) const = 0;
-  
+  virtual bool dirtyRow(uint8_t row_) const = 0;
+
   //! Reset the global dirty flag
   virtual void resetDirtyFlags() const = 0;
-  
+
   /** @} */ // End of group Access
 
   //--------------------------------------------------------------------------------------------------
@@ -160,7 +146,7 @@ public:
   virtual unsigned height() const = 0;
 
   virtual unsigned dataSize() const = 0;
-  
+
   /** @} */ // End of group Utility
 
   /** @} */ // End of group LCDDisplay
@@ -174,59 +160,58 @@ protected:
 
 //--------------------------------------------------------------------------------------------------
 
-template<unsigned COLUMNS,unsigned ROWS, unsigned DATA_SIZE=COLUMNS*ROWS>
+template <unsigned COLUMNS, unsigned ROWS, unsigned DATA_SIZE = COLUMNS* ROWS>
 class LCDDisplayBase : public LCDDisplay
 {
 
 public:
-
   LCDDisplayBase()
   {
     clear();
   }
-  
+
   void clear() override
   {
     m_data.fill(0);
     m_dirtyFlags.set();
   }
-  
+
   void fill(uint8_t value_) override
   {
     m_data.fill(value_);
     m_dirtyFlags.set();
   }
-  
+
   const uint8_t* displayData() const override
   {
     return m_data.data();
   }
 
-  bool isDirty() const override
+  bool dirty() const override
   {
     return m_dirtyFlags.any();
   }
 
-  bool isDirtyRow(uint8_t row_) const override
+  bool dirtyRow(uint8_t row_) const override
   {
     return m_dirtyFlags.test(row_);
   }
-  
+
   virtual void resetDirtyFlags() const override
   {
     m_dirtyFlags.reset();
   }
-  
+
   unsigned width() const noexcept override
   {
     return COLUMNS;
   }
-  
+
   unsigned height() const noexcept override
   {
     return ROWS;
   }
-  
+
   unsigned dataSize() const noexcept override
   {
     return DATA_SIZE;
@@ -239,7 +224,6 @@ public:
   //--------------------------------------------------------------------------------------------------
 
 protected:
-
   uint8_t* data() override
   {
     return m_data.data();
@@ -249,7 +233,7 @@ protected:
   {
     m_dirtyFlags[row_] = true;
   }
-  
+
 private:
   mutable std::bitset<ROWS> m_dirtyFlags;
 

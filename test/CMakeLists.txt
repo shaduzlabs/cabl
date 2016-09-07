@@ -22,6 +22,8 @@ set(
 
 set(
   test_comm_SRCS
+    comm/DeviceDescriptor.cpp
+    comm/DiscoveryPolicy.cpp
     comm/Transfer.cpp
 )
 

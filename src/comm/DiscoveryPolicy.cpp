@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DiscoveryPolicy.h"
+#include "comm/DiscoveryPolicy.h"
 
 #include <regex>
 
@@ -15,29 +15,27 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
 bool DiscoveryPolicy::matches(const DeviceDescriptor& deviceDescriptor_)
 {
-  if (type != DeviceDescriptor::Type::Unknown && type != deviceDescriptor_.type())
+  if (m_type != DeviceDescriptor::Type::Unknown && m_type != deviceDescriptor_.type())
   {
     return false;
   }
-  if (vendorId != 0 && vendorId != deviceDescriptor_.vendorId())
+  if (m_vendorId != 0 && m_vendorId != deviceDescriptor_.vendorId())
   {
     return false;
   }
-  if (productId != 0 && productId != deviceDescriptor_.productId())
+  if (m_productId != 0 && m_productId != deviceDescriptor_.productId())
   {
     return false;
   }
 
-  if (name != "*")
+  if (m_name != "*")
   {
-    std::regex expression(name);
+    std::regex expression(m_name);
     std::smatch match;
     std::regex_match(deviceDescriptor_.name(), match, expression);
     if (match.size() < 1)
@@ -50,6 +48,5 @@ bool DiscoveryPolicy::matches(const DeviceDescriptor& deviceDescriptor_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

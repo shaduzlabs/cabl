@@ -7,15 +7,28 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 
 #include "Canvas.h"
+
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
+
+//--------------------------------------------------------------------------------------------------
+
+namespace py
+{
+class CanvasHelper;
+}
+
 class Font;
+
+//--------------------------------------------------------------------------------------------------
 
 class GDisplay : public Canvas
 {
@@ -82,14 +95,20 @@ public:
    * @{
    */
 
+  //! Sets all of the dirty flags to true
+  virtual void setDirty()
+  {
+    std::fill(m_pChunksDirtyFlags.begin(), m_pChunksDirtyFlags.end(), true);
+  }
 
   //! Is any of the display chunks dirty?
   /*!
      \return  TRUE if any of the display chunks is dirty, FALSE otherwise
-     */
-  virtual bool isDirty() const
+  */
+  virtual bool dirty() const
   {
-    return m_isDirty;
+    return std::any_of(
+      m_pChunksDirtyFlags.begin(), m_pChunksDirtyFlags.end(), [](bool b) { return b; });
   }
 
   //! Is a specific display chunk dirty?
@@ -97,7 +116,7 @@ public:
      \param chunk_   The display chunk index
      \return         TRUE if the selected display chunk is dirty, FALSE otherwise
      */
-  virtual bool isChunkDirty(uint8_t chunk_) const;
+  virtual bool dirtyChunk(uint8_t chunk_) const;
 
   //! Reset the global dirty flag and the chunk-specific dirty flags
   virtual void resetDirtyFlags() const;
@@ -150,9 +169,8 @@ protected:
 
   virtual void setDirtyChunk(uint16_t yStart_);
 
-  mutable volatile bool m_isDirty; //!< Global 'dirty' flag
-
 private:
+  friend class py::CanvasHelper;
   mutable tCollFlags m_pChunksDirtyFlags; //!< Chunk-specific dirty flags
   uint8_t m_numDisplayChunks;             //!< Number of display chunks
 };

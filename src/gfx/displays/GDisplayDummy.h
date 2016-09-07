@@ -23,12 +23,12 @@ public:
   {
   }
 
-  bool isDirty() const override
+  bool dirty() const override
   {
     return false;
   }
 
-  bool isChunkDirty(uint8_t) const override
+  bool dirtyChunk(uint8_t) const override
   {
     return false;
   }
@@ -58,7 +58,7 @@ public:
   {
   }
 
-  void fillPattern(uint8_t) override
+  void fill(uint8_t) override
   {
   }
 

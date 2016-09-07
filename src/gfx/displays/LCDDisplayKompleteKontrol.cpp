@@ -45,7 +45,7 @@ void LCDDisplayKompleteKontrol::character(uint8_t col_, uint8_t row_, char c_)
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -65,19 +65,19 @@ void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, A
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(int value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(int value_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
     return;
   }
   
-  setText(std::to_string(value_), row_, align_);
+  text(std::to_string(value_), row_, align_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -95,12 +95,12 @@ void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Align align_)
   strValue.append(std::string(3 - strFractional.length(), '0'));
   strValue.append(strFractional);
 
-  setText(strValue, row_, align_);
+  text(strValue, row_, align_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Alignment align_)
 {
   if (row_ >= height())
   {
@@ -145,7 +145,7 @@ void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Align align_)
 
 //--------------------------------------------------------------------------------------------------
 
-std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Align align_) const
+std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Alignment align_) const
 {
   if (string_.length() >= width())
   {
@@ -155,12 +155,12 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
   std::string strValue(string_);
   switch (align_)
   {
-    case Align::Right:
+    case Alignment::Right:
     {
       strValue.insert(0, width() - strValue.length(), ' ');
       break;
     }
-    case Align::Center:
+    case Alignment::Center:
     {
       uint8_t nFills = width() - strValue.length();
       uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
@@ -168,7 +168,7 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
       strValue.append(nFills - leftFills, ' ');
       break;
     }
-    case Align::Left:
+    case Alignment::Left:
     default:
     {
       strValue.append(width() - strValue.length(), ' ');

@@ -52,14 +52,14 @@ TEST_CASE("GDisplayMaschineMikro: display chunks", "[gfx][displays][GDisplayMasc
   
   for(unsigned i=0; i<display.numberOfChunks(); i++)
   {
-    CHECK_FALSE( display.isChunkDirty(i));
+    CHECK_FALSE( display.dirtyChunk(i));
   }
   
   display.lineVertical(0, 0, display.height(), {0xFF});
   
   for(unsigned i=0; i<display.numberOfChunks(); i++)
   {
-    CHECK( display.isChunkDirty(i));
+    CHECK( display.dirtyChunk(i));
   }
 }
 

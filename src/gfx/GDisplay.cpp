@@ -30,7 +30,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 GDisplay::GDisplay(uint16_t width_, uint16_t height_, uint8_t numDisplayChunks_)
-  : Canvas(width_, height_), m_isDirty(false), m_numDisplayChunks(numDisplayChunks_)
+  : Canvas(width_, height_), m_numDisplayChunks(numDisplayChunks_)
 {
   m_pChunksDirtyFlags.resize(numDisplayChunks_);
   resetDirtyFlags();
@@ -66,7 +66,7 @@ util::ColorRGB GDisplay::pixel(uint16_t x_, uint16_t y_) const
 
 //--------------------------------------------------------------------------------------------------
 
-bool GDisplay::isChunkDirty(uint8_t chunk_) const
+bool GDisplay::dirtyChunk(uint8_t chunk_) const
 {
   return ((chunk_ < m_numDisplayChunks) && m_pChunksDirtyFlags[chunk_] );
 }
@@ -75,7 +75,6 @@ bool GDisplay::isChunkDirty(uint8_t chunk_) const
 
 void GDisplay::resetDirtyFlags() const
 {
-  m_isDirty = false;
   for (uint8_t chunk = 0; chunk < m_numDisplayChunks; chunk++)
   {
     m_pChunksDirtyFlags[chunk] = false;

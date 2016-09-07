@@ -28,7 +28,7 @@ const util::ColorRGB k_colorBlue{0x00, 0x00, 0xff, 0xcc};
 const util::ColorRGB k_colorRed{0xff, 0x00, 0x00, 0x7f};
 const util::ColorRGB k_colorGreen{0x00, 0xff, 0x00, 0x33};
 const util::ColorRGB k_colorWhite{0xff};
-const util::ColorRGB k_colorInvert{util::ColorRGB::BlendMode::Invert};
+const util::ColorRGB k_colorInvert{BlendMode::Invert};
 
 }
 

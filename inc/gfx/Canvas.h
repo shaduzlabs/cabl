@@ -22,6 +22,11 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
+namespace py
+{
+class CanvasHelper;
+}
+
 class Font;
 
 //--------------------------------------------------------------------------------------------------
@@ -125,7 +130,7 @@ public:
   /*!
    \param value_  The value of a pattern of eight pixels (8x1 pixels)
    */
-  virtual void fillPattern(uint8_t value_);
+  virtual void fill(uint8_t value_);
 
   /** @} */ // End of group Fill
 
@@ -174,10 +179,8 @@ public:
    \param color_           The color of the pixels
    */
 
-  virtual void lineVertical(
-    uint16_t x_, uint16_t y_, uint16_t h_, const util::ColorRGB& color_);
-  virtual void lineHorizontal(
-    uint16_t x_, uint16_t y_, uint16_t w_, const util::ColorRGB& color_);
+  virtual void lineVertical(uint16_t x_, uint16_t y_, uint16_t h_, const util::ColorRGB& color_);
+  virtual void lineHorizontal(uint16_t x_, uint16_t y_, uint16_t w_, const util::ColorRGB& color_);
 
   virtual void triangle(uint16_t x0_,
     uint16_t y0_,
@@ -320,7 +323,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  const tRawData& data() const
+  const tRawData& buffer() const
   {
     return m_data;
   }
@@ -330,12 +333,13 @@ protected:
 
   virtual uint16_t canvasWidthInBytes() const;
 
-  tRawData& data()
+  tRawData& buffer()
   {
     return m_data;
   }
 
 private:
+  friend class py::CanvasHelper;
 
   tRawData m_data; //!< The raw Canvas data
 
@@ -350,14 +354,14 @@ private:
 
 inline void Canvas::white()
 {
-  fillPattern(0xFF);
+  fill(0xFF);
 }
 
 //--------------------------------------------------------------------------------------------------
 
 inline void Canvas::black()
 {
-  fillPattern(0x00);
+  fill(0x00);
 }
 
 //--------------------------------------------------------------------------------------------------

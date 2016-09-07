@@ -37,7 +37,7 @@ GDisplayMaschineMK2::GDisplayMaschineMK2()
 
 void GDisplayMaschineMK2::initializeImpl()
 {
-  data().resize(canvasWidthInBytesImpl() * height());
+  buffer().resize(canvasWidthInBytesImpl() * height());
   black();
 }
 
@@ -53,16 +53,16 @@ uint16_t GDisplayMaschineMK2::canvasWidthInBytesImpl() const
 
 void GDisplayMaschineMK2::white()
 {
-  fillPattern(0xff);
-  m_isDirty = true;
+  fill(0xff);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayMaschineMK2::black()
 {
-  fillPattern(0x00);
-  m_isDirty = true;
+  fill(0x00);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void GDisplayMaschineMK2::setPixelImpl(
   util::ColorRGB oldColor = pixelImpl(x_, y_);
 
   bool isWhite{color_.active()};
-  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == BlendMode::Invert)
   {
     isWhite = !oldColor.active();
   }
@@ -86,14 +86,13 @@ void GDisplayMaschineMK2::setPixelImpl(
 
   if (isWhite)
   {
-    data()[byteIndex] |= (0x80 >> (x_ & 7));
+    buffer()[byteIndex] |= (0x80 >> (x_ & 7));
   }
   else
   {
-    data()[byteIndex] &= (~0x80 >> (x_ & 7));
+    buffer()[byteIndex] &= (~0x80 >> (x_ & 7));
   }
 
-  m_isDirty = (m_isDirty ? m_isDirty : oldColor.active() != isWhite);
   if (bSetDirtyChunk_ && oldColor.active() != isWhite)
   {
     setDirtyChunk(y_);
@@ -109,7 +108,7 @@ util::ColorRGB GDisplayMaschineMK2::pixelImpl(uint16_t x_, uint16_t y_) const
     return {};
   }
 
-  if ((data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
+  if ((buffer()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
   {
     return {0};
   }

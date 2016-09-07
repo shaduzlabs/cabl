@@ -55,7 +55,7 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-  void text(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(const std::string& string_, uint8_t row_, Alignment align_) override
   {
     if (row_ > 0)
     {
@@ -76,14 +76,14 @@ public:
   
 //--------------------------------------------------------------------------------------------------
 
-  void text(int value_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(int value_, uint8_t row_, Alignment align_) override
   {
-    setText(std::to_string(value_), row_, align_);
+    text(std::to_string(value_), row_, align_);
   }
   
 //--------------------------------------------------------------------------------------------------
 
-  void text(double value_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(double value_, uint8_t row_, Alignment align_) override
   {
     double integral;
     double fractional = modf(value_, &integral);
@@ -95,12 +95,12 @@ public:
     setDot(strValue.length() - 1 + leftFills, row_);
     strValue.append(strFractional);
 
-    setText(strValue, row_, align_);
+    text(strValue, row_, align_);
   }
   
 //--------------------------------------------------------------------------------------------------
 
-  void value(float value_, uint8_t row_, LCDDisplay::Align align_) override
+  void value(float value_, uint8_t row_, Alignment align_) override
   {
     return;
   }
@@ -111,7 +111,7 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-  std::string alignText(const std::string& string_, LCDDisplay::Align align_) const
+  std::string alignText(const std::string& string_, Alignment align_) const
   {
     if (string_.length() >= this->width())
     {
@@ -121,12 +121,12 @@ private:
     std::string strValue(string_);
     switch (align_)
     {
-      case LCDDisplay::Align::Right:
+      case Alignment::Right:
       {
         strValue.insert(0, this->width() - strValue.length(), ' ');
         break;
       }
-      case LCDDisplay::Align::Center:
+      case Alignment::Center:
       {
         uint8_t nFills = this->width() - strValue.length();
         uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
@@ -134,7 +134,7 @@ private:
         strValue.append(nFills - leftFills, ' ');
         break;
       }
-      case LCDDisplay::Align::Left:
+      case Alignment::Left:
       default:
       {
         strValue.append(this->width() - strValue.length(), ' ');

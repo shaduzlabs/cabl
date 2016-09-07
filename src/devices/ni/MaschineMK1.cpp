@@ -247,7 +247,7 @@ bool MaschineMK1::tick()
   {
     for (uint8_t displayIndex = 0; displayIndex < 2; displayIndex++)
     {
-      if (m_displays[displayIndex].isDirty())
+      if (m_displays[displayIndex].dirty())
       {
         success = sendFrame(displayIndex);
         m_displays[displayIndex].resetDirtyFlags();

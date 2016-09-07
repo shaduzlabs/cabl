@@ -5,33 +5,26 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#pragma once
+#include "catch.hpp"
 
-//--------------------------------------------------------------------------------------------------
-
-#include "comm/DeviceDescriptor.h"
+#include <comm/DiscoveryPolicy.h>
 
 namespace sl
 {
 namespace cabl
 {
-namespace devices
+namespace test
 {
 
 //--------------------------------------------------------------------------------------------------
 
-struct DiscoveryPolicy
+TEST_CASE("DiscoveryPolicy: constructor", "[devices][DiscoveryPolicy]")
 {
-  bool matches(const DeviceDescriptor&);
-
-  std::string name{"*"};
-  DeviceDescriptor::tVendorId vendorId{0};
-  DeviceDescriptor::tProductId productId{0};
-  DeviceDescriptor::Type type{DeviceDescriptor::Type::Unknown};
-};
+  DiscoveryPolicy dp;
+}
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
-} // namespace cabl
+} // namespace test
+} // namespace util
 } // namespace sl

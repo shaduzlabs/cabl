@@ -405,7 +405,7 @@ bool KompleteKontrolBase::sendDisplayData()
   {
     for (uint8_t i = 0; i < kKK_nDisplays; i++)
     {
-      if (m_displays[i].isDirty())
+      if (m_displays[i].dirty())
       {
         //       std::copy_n(m_displays[i].displayData(row * 16), 16, &displayData[i * 16]);
       }

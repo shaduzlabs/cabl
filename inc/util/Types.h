@@ -20,6 +20,25 @@
 
 namespace sl
 {
+
+//--------------------------------------------------------------------------------------------------
+
+//! The alignment type
+enum class Alignment
+{
+  Left,   //!< Align to the left
+  Center, //!< Center
+  Right,  //!< Align to the right
+};
+
+//! The blend mode
+enum class BlendMode
+{
+  Normal,      // Normal mode
+  Invert,      // Invert the current color
+  Transparent, // Ignore the current color
+};
+
 namespace cabl
 {
 

@@ -25,9 +25,10 @@ using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------
 
-Client::Client()
+Client::Client(DiscoveryPolicy discoveryPolicy_)
   : m_clientId(Coordinator::instance().registerClient(
       std::bind(&Client::devicesListChanged, this, std::placeholders::_1)))
+  , m_discoveryPolicy(std::move(discoveryPolicy_))
 {
   M_LOG("[Client] Client");
   devicesListChanged(Coordinator::instance().enumerate());
@@ -72,13 +73,6 @@ void Client::onInitDevice()
   initDevice();
 
   m_update = true;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Client::setDiscoveryPolicy(DiscoveryPolicy discoveryPolicy_)
-{
-  m_discoveryPolicy = std::move(discoveryPolicy_);
 }
 
 //--------------------------------------------------------------------------------------------------

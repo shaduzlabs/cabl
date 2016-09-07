@@ -47,7 +47,7 @@ void Canvas::invert()
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::fillPattern(uint8_t value_)
+void Canvas::fill(uint8_t value_)
 {
   std::fill(m_data.begin(), m_data.end(), value_);
 }
@@ -64,17 +64,17 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
   util::ColorRGB oldColor = pixel(x_, y_);
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
-  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == BlendMode::Invert)
   {
-    data()[byteIndex] = ~oldColor.red();
-    data()[byteIndex + 1] = ~oldColor.green();
-    data()[byteIndex + 2] = ~oldColor.blue();
+    buffer()[byteIndex] = ~oldColor.red();
+    buffer()[byteIndex + 1] = ~oldColor.green();
+    buffer()[byteIndex + 2] = ~oldColor.blue();
   }
   else
   {
-    data()[byteIndex] = color_.red();
-    data()[byteIndex + 1] = color_.green();
-    data()[byteIndex + 2] = color_.blue();
+    buffer()[byteIndex] = color_.red();
+    buffer()[byteIndex + 1] = color_.green();
+    buffer()[byteIndex + 2] = color_.blue();
   }
 }
 
@@ -88,7 +88,7 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
   }
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
-  return {data()[byteIndex], data()[byteIndex + 1], data()[byteIndex + 2]};
+  return {buffer()[byteIndex], buffer()[byteIndex + 1], buffer()[byteIndex + 2]};
 }
 
 //--------------------------------------------------------------------------------------------------

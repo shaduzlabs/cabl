@@ -320,8 +320,8 @@ bool Push::tick()
 {
   bool success = true;
 
-  if (m_displays[0].isDirty() || m_displays[1].isDirty() || m_displays[2].isDirty()
-      || m_displays[3].isDirty())
+  if (m_displays[0].dirty() || m_displays[1].dirty() || m_displays[2].dirty()
+      || m_displays[3].dirty())
   {
     success = false;
     success = sendDisplayData();

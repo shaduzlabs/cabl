@@ -191,6 +191,7 @@ set(
   inc_comm_INCLUDES
     inc/comm/DeviceDescriptor.h
     inc/comm/DeviceHandle.h
+    inc/comm/DiscoveryPolicy.h
     inc/comm/Driver.h
     inc/comm/Transfer.h
 )
@@ -201,7 +202,6 @@ set(
     inc/devices/Device.h
     inc/devices/DeviceFactory.h
     inc/devices/DeviceRegistrar.h
-    inc/devices/DiscoveryPolicy.h
 )
 
 set(
@@ -311,6 +311,7 @@ set(
   src_comm_SRCS
     src/comm/DeviceHandle.cpp
     src/comm/DeviceHandleImpl.h
+    src/comm/DiscoveryPolicy.cpp
     src/comm/Driver.cpp
     src/comm/DriverImpl.h
     src/comm/Transfer.cpp
@@ -320,7 +321,6 @@ set(
   src_devices_SRCS
     src/devices/Coordinator.cpp
     src/devices/DeviceFactory.cpp
-    src/devices/DiscoveryPolicy.cpp
 )
 
 set(

@@ -10,6 +10,7 @@
 #include <sstream>
 
 #include "Functions.h"
+#include "Types.h"
 
 namespace sl
 {
@@ -19,22 +20,8 @@ namespace util
 class ColorRGB
 {
 public:
-  enum class BlendMode
-  {
-    Normal,       // Normal mode
-    Invert,       // Invert the current color
-    Transparent,  // Ignore the current color
-  };
-  
-  enum class Name
-  {
-    White,       // Normal mode
-    Red,       // Invert the current color
-    Transparent,  // Ignore the current color
-  };
-  
   ColorRGB();
-  
+
   ColorRGB(BlendMode);
 
   ColorRGB(uint8_t mono_);
@@ -52,7 +39,7 @@ public:
   bool active() const;
   BlendMode blendMode() const;
   bool transparent() const;
-  
+
   void setRed(uint8_t red_);
   void setGreen(uint8_t green_);
   void setBlue(uint8_t blue_);
@@ -62,7 +49,7 @@ public:
   void black();
   void white();
   void invert();
-  
+
   bool operator==(const ColorRGB& other_) const;
   bool operator!=(const ColorRGB& other_) const;
   bool operator<(const ColorRGB& other_) const;
@@ -72,10 +59,10 @@ public:
 
   unsigned getValue() const;
 
-  
+
 private:
   friend std::ostream& operator<<(std::ostream& out_, const ColorRGB& c_);
-  
+
   uint8_t m_red{0U};
   uint8_t m_green{0U};
   uint8_t m_blue{0U};

@@ -221,7 +221,7 @@ void TraktorF1MK2::init()
 
 bool TraktorF1MK2::sendLedsAndDisplay()
 {
-  if (m_lcdDisplay.isDirty() || true)
+  if (m_lcdDisplay.dirty() || true)
   {
     const auto displayData = m_lcdDisplay.displayData();
     for (size_t i = 0; i < m_lcdDisplay.dataSize(); i++)

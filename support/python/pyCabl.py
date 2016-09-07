@@ -47,12 +47,21 @@ class CablClient:
 
         display1.white()
         display2.black()
-        display1.setPixel(5,5,Pixel.Invert)
-        display1.setPixel(5,6,Pixel.White)
-        display1.setPixel(5,7,Pixel.Black)
-        display2.setPixel(5,5,Pixel.Invert)
-        display2.setPixel(5,6,Pixel.White)
-        display2.setPixel(5,7,Pixel.Black)
+#        display1.setPixel(5,5,Pixel.Invert)
+#        display1.setPixel(5,6,Pixel.White)
+#        display1.setPixel(5,7,Pixel.Black)
+#        display2.setPixel(5,5,Pixel.Invert)
+#        display2.setPixel(5,6,Pixel.White)
+#        display2.setPixel(5,7,Pixel.Black)
+
+        displayBuffer = bytearray(display1.dataSize())
+        for col in range(0,displayBuffer.__len__() / 2):
+            displayBuffer[col] = 0xf0
+
+        display1.write(displayBuffer)
+
+#        for col in range(0,display1.width()):
+#            for row in range(0,display1.height()):
 
 #        self.drawingContext = self.client.getDrawingContext(0)
 #        self.drawingBuffer = bytearray(self.drawingContext.getSize())

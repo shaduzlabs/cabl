@@ -37,7 +37,7 @@ GDisplayPush2::GDisplayPush2()
 
 void GDisplayPush2::initializeImpl()
 {
-  data().resize(canvasWidthInBytesImpl() * height());
+  buffer().resize(canvasWidthInBytesImpl() * height());
   black();
 }
 
@@ -53,16 +53,16 @@ uint16_t GDisplayPush2::canvasWidthInBytesImpl() const
 
 void GDisplayPush2::white()
 {
-  fillPattern(0xff);
-  m_isDirty = true;
+  fill(0xff);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayPush2::black()
 {
-  fillPattern(0x00);
-  m_isDirty = true;
+  fill(0x00);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ void GDisplayPush2::setPixelImpl(
 
   util::ColorRGB oldColor = pixelImpl(x_, y_);
   util::ColorRGB newColor = color_;
-  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == BlendMode::Invert)
   {
     newColor = oldColor;
     newColor.invert();
@@ -85,12 +85,11 @@ void GDisplayPush2::setPixelImpl(
 
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
   uint8_t green = ((newColor.green() / 255.0) * 63) + 0.5;
-  data()[byteIndex]
+  buffer()[byteIndex]
     = (static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
-  data()[byteIndex + 1]
+  buffer()[byteIndex + 1]
     = ((green << 5) & 0xE0) | static_cast<uint8_t>(((newColor.blue() / 255.0) * 31) + 0.5);
 
-  m_isDirty = (m_isDirty ? m_isDirty : oldColor != newColor);
   if (bSetDirtyChunk_ && oldColor != newColor)
   {
     setDirtyChunk(y_);
@@ -107,10 +106,10 @@ util::ColorRGB GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_) const
   }
   unsigned index = (canvasWidthInBytes() * y_) + (x_ * 2);
 
-  return {static_cast<uint8_t>((((data()[index] >> 3) / 31.0) * 255) + 0.5),
+  return {static_cast<uint8_t>((((buffer()[index] >> 3) / 31.0) * 255) + 0.5),
     static_cast<uint8_t>(
-      ((((data()[index] & 0x07) << 3 | (data()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
-    static_cast<uint8_t>((((data()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
+      ((((buffer()[index] & 0x07) << 3 | (buffer()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
+    static_cast<uint8_t>((((buffer()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
 }
 
 //--------------------------------------------------------------------------------------------------

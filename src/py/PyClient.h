@@ -18,6 +18,8 @@ namespace sl
 {
 namespace cabl
 {
+namespace py
+{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -87,6 +89,10 @@ public:
     return device()->displayGraphic(displayIndex_);
   }
 
+  void writeToDisplay()
+  {
+  }
+
 private:
   object m_onInitDevice;
   object m_onRender;
@@ -100,5 +106,6 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
+} // namespace py
 } // namespace cabl
 } // namespace sl

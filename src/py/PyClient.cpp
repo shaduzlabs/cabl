@@ -13,6 +13,8 @@ namespace sl
 {
 namespace cabl
 {
+namespace py
+{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -219,5 +221,6 @@ void PyClient::setLed(Device::Key key_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
+} // namespace py
 } // namespace cabl
 } // namespace sl

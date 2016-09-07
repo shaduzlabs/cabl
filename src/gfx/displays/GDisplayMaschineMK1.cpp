@@ -37,7 +37,7 @@ GDisplayMaschineMK1::GDisplayMaschineMK1()
 
 void GDisplayMaschineMK1::initializeImpl()
 {
-  data().resize(canvasWidthInBytesImpl() * height());
+  buffer().resize(canvasWidthInBytesImpl() * height());
   black();
 }
 
@@ -53,16 +53,16 @@ uint16_t GDisplayMaschineMK1::canvasWidthInBytesImpl() const
 
 void GDisplayMaschineMK1::white()
 {
-  fillPattern(0x00);
-  m_isDirty = true;
+  fill(0x00);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayMaschineMK1::black()
 {
-  fillPattern(0xff);
-  m_isDirty = true;
+  fill(0xff);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void GDisplayMaschineMK1::setPixelImpl(
   util::ColorRGB oldColor = pixelImpl(x_, y_);
   unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
   uint8_t pixelValue{0};
-  if (color_.blendMode() == util::ColorRGB::BlendMode::Invert)
+  if (color_.blendMode() == BlendMode::Invert)
   {
     util::ColorRGB newColor = oldColor;
     newColor.invert();
@@ -92,22 +92,21 @@ void GDisplayMaschineMK1::setPixelImpl(
   switch (x_ % 3)
   {
     case 0:
-      data()[byteIndex] |= 0xF8;
-      data()[byteIndex] &= ~(pixelValue << 3);
+      buffer()[byteIndex] |= 0xF8;
+      buffer()[byteIndex] &= ~(pixelValue << 3);
       break;
     case 1:
-      data()[byteIndex] |= 0x07;
-      data()[byteIndex + 1] |= 0xC0;
-      data()[byteIndex] &= ~(pixelValue >> 2);
-      data()[byteIndex + 1] &= ~(pixelValue << 6);
+      buffer()[byteIndex] |= 0x07;
+      buffer()[byteIndex + 1] |= 0xC0;
+      buffer()[byteIndex] &= ~(pixelValue >> 2);
+      buffer()[byteIndex + 1] &= ~(pixelValue << 6);
       break;
     case 2:
-      data()[byteIndex + 1] |= 0x1F;
-      data()[byteIndex + 1] &= ~(pixelValue);
+      buffer()[byteIndex + 1] |= 0x1F;
+      buffer()[byteIndex + 1] &= ~(pixelValue);
       break;
   }
 
-  m_isDirty = (m_isDirty ? m_isDirty : oldColor != color_);
   if (bSetDirtyChunk_ && oldColor != color_)
   {
     setDirtyChunk(y_);
@@ -129,14 +128,14 @@ util::ColorRGB GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_) const
   switch (blockIndex)
   {
     case 0:
-      pixelValue = ~(static_cast<uint8_t>((((data()[byteIndex] & 0xF8) >> 3) / 31.0) * 255));
+      pixelValue = ~(static_cast<uint8_t>((((buffer()[byteIndex] & 0xF8) >> 3) / 31.0) * 255));
       break;
     case 1:
       pixelValue = ~(static_cast<uint8_t>(
-        ((((data()[byteIndex] & 0x07) << 2) | (data()[byteIndex + 1] & 0xC0) >> 6) / 31.0) * 255));
+        ((((buffer()[byteIndex] & 0x07) << 2) | (buffer()[byteIndex + 1] & 0xC0) >> 6) / 31.0) * 255));
       break;
     case 2:
-      pixelValue = ~(static_cast<uint8_t>(((data()[byteIndex + 1] & 0x1F) / 31.0) * 255));
+      pixelValue = ~(static_cast<uint8_t>(((buffer()[byteIndex + 1] & 0x1F) / 31.0) * 255));
       break;
   }
 

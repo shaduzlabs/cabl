@@ -12,6 +12,8 @@ namespace sl
 {
 namespace cabl
 {
+namespace py
+{
 
 using namespace devices;
 
@@ -26,11 +28,33 @@ static object drawingContext_load(DrawingContext& self) {
   PyObject* py_buf = PyBuffer_FromReadWriteMemory(buffer, size);
   object retval = object(handle<>(py_buf));
   return retval;
-}/
+}
+*/
+
+class CanvasHelper
+{
+public:
+  static void write(Canvas* canvas_, uint8_t* buffer)
+  {
+    std::copy_n(buffer, canvas_->buffer().size(), canvas_->buffer().begin());
+  }
+  static void setDirty(GDisplay* display_)
+  {
+    display_->setDirty();
+  }
+  static unsigned dataSize(Canvas* canvas_)
+  {
+    return canvas_->buffer().size();
+  }
+  static unsigned canvasWidthInBytes(Canvas* canvas_)
+  {
+    return canvas_->canvasWidthInBytes();
+  }
+};
 
 //--------------------------------------------------------------------------------------------------
 
-static void writeDrawingContext(DrawingContext& self_, object buffer)
+static void writeToDisplay(GDisplay& self_, object buffer)
 {
   PyObject* pyBuffer = buffer.ptr();
   if (!PyBuffer_Check(pyBuffer))
@@ -41,10 +65,24 @@ static void writeDrawingContext(DrawingContext& self_, object buffer)
   Py_buffer pybuf;
   PyObject_GetBuffer(pobj, &pybuf, PyBUF_SIMPLE);
 
-  std::copy_n((uint8_t*)pybuf.buf, self_.size(), self_.data().begin());
-  self_.setDirty(true);
+  CanvasHelper::write(&self_, static_cast<uint8_t*>(pybuf.buf));
+  CanvasHelper::setDirty(&self_);
 }
-*/
+
+//--------------------------------------------------------------------------------------------------
+
+static unsigned displayDataSize(GDisplay& self_)
+{
+  return CanvasHelper::dataSize(&self_);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+static unsigned canvasWidthInBytes(GDisplay& self_)
+{
+  return CanvasHelper::canvasWidthInBytes(&self_);
+}
+
 //--------------------------------------------------------------------------------------------------
 
 template <class T>
@@ -123,11 +161,175 @@ BOOST_PYTHON_MODULE(pycabl)
   Py_Initialize();
   PyEval_InitThreads();
 
+  //--------------------------------------------------------------------------------------------------
+
+  class_<DiscoveryPolicy>("DiscoveryPolicy",
+    init<std::string,
+      DeviceDescriptor::tVendorId,
+      DeviceDescriptor::tProductId,
+      DeviceDescriptor::Type>())
+    .def("name", &DiscoveryPolicy::name)
+    .def("type", &DiscoveryPolicy::type)
+    .def("vendorId", &DiscoveryPolicy::vendorId)
+    .def("productId", &DiscoveryPolicy::productId);
+
+  //--------------------------------------------------------------------------------------------------
+
+  void (PyClient::*setLed_btn)(Device::Button, const util::ColorRGB&) = &PyClient::setLed;
+  void (PyClient::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &PyClient::setLed;
+  void (PyClient::*setLed_key)(Device::Key, const util::ColorRGB&) = &PyClient::setLed;
+
+  class_<PyClient, boost::noncopyable>("Client", init<object, object, object>())
+    .def("enumerateDevices", &enumerateDevices)
+    .staticmethod("enumerateDevices")
+    .def("onInit", &Client::initDevice)
+    .def("setLedButton", setLed_btn)
+    .def("setLedPad", setLed_pad)
+    .def("setLedKey", setLed_key)
+    .def("onButtonChanged", &PyClient::onButtonChanged, args("onButtonChanged"))
+    .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
+    .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
+    .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
+    .def("displayGraphic",
+      &PyClient::displayGraphic,
+      return_value_policy<reference_existing_object>());
+
+  //--------------------------------------------------------------------------------------------------
+
+  class_<DeviceDescriptor>("DeviceDescriptor",
+    init<std::string,
+      DeviceDescriptor::Type,
+      DeviceDescriptor::tVendorId,
+      DeviceDescriptor::tProductId>())
+    .def(self_ns::str(self_ns::self))
+    .def("name", &DeviceDescriptor::name, return_value_policy<copy_const_reference>())
+    .def("type", &DeviceDescriptor::type)
+    .def("vendorId", &DeviceDescriptor::vendorId)
+    .def("productId", &DeviceDescriptor::productId)
+    .def(
+      "serialNumber", &DeviceDescriptor::serialNumber, return_value_policy<copy_const_reference>());
+
+  //--------------------------------------------------------------------------------------------------
+
+  class_<util::ColorRGB>("ColorRGB", init<uint8_t, uint8_t, uint8_t>())
+    .def(init<uint8_t, uint8_t, uint8_t>())
+    .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
+    .def(self_ns::str(self_ns::self))
+    .def("distance", &util::ColorRGB::distance)
+    .def("getValue", &util::ColorRGB::getValue)
+    .def("red", &util::ColorRGB::red)
+    .def("green", &util::ColorRGB::green)
+    .def("blue", &util::ColorRGB::blue)
+    .def("mono", &util::ColorRGB::mono)
+    .def("active", &util::ColorRGB::active)
+    .def("blendMode", &util::ColorRGB::blendMode)
+    .def("transparent", &util::ColorRGB::transparent)
+    .def("setRed", &util::ColorRGB::setRed)
+    .def("setGreen", &util::ColorRGB::setGreen)
+    .def("setBlue", &util::ColorRGB::setBlue)
+    .def("setMono", &util::ColorRGB::setMono)
+    .def("setBlendMode", &util::ColorRGB::setBlendMode)
+    .def("black", &util::ColorRGB::black)
+    .def("white", &util::ColorRGB::white)
+    .def("invert", &util::ColorRGB::invert);
+
+  //--------------------------------------------------------------------------------------------------
+
+  class_<GDisplay, boost::noncopyable>("GraphicDisplay", no_init)
+    .def("width", &GDisplay::width, "Returns the width of the display in pixels")
+    .def("height", &GDisplay::height, "Returns the height of the display in pixels")
+    .def("pixel", &GDisplay::pixel, "Returns the pixel vaule as a ColorRGB object")
+    .def("setPixel",
+      &GDisplay::setPixel,
+      args("x", "y", "color"),
+      "Sets the value of a pixel as a ColorRGB object")
+    .def("black", &GDisplay::black, "Fills the display with black")
+    .def("white", &GDisplay::white, "Fills the display with white")
+    .def("invert", &GDisplay::invert, "Inverts the content of the display")
+    .def("fill", &GDisplay::fill, "Fills the display with the specified value")
+    .def("line",
+      &GDisplay::line,
+      args("x0", "y0", "x1", "y1", "color"),
+      "Draws a line between x0,y0 and x1,y1 using the specified color")
+    .def("lineVertical",
+      &GDisplay::lineVertical,
+      args("x", "y", "length", "color"),
+      "Draws a vertical line between x,y and x,(y+l) using the specified color")
+    .def("lineHorizontal",
+      &GDisplay::lineHorizontal,
+      args("x", "y", "length", "color"),
+      "Draws an horizontal line between x,y and (x+l),y using the specified color")
+    .def("triangle",
+      &GDisplay::triangle,
+      args("x0", "y0", "x1", "y1", "x2", "y2", "color"),
+      "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified color")
+    .def("triangleFilled",
+      &GDisplay::triangleFilled,
+      args("x0", "y0", "x1", "y1", "x2", "y2", "color", "fillColor"),
+      "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified colors for "
+      "the border and the fill")
+    .def("rectangle",
+      &GDisplay::rectangle,
+      args("x", "y", "w", "h", "color"),
+      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
+      "color")
+    .def("rectangleFilled",
+      &GDisplay::rectangleFilled,
+      args("x", "y", "w", "h", "color", "fillColor"),
+      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
+      "colors for the border and the fill")
+    .def("rectangleRounded",
+      &GDisplay::rectangleRounded,
+      args("x", "y", "w", "h", "r", "color"),
+      "Draws a rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) "
+      "using the specified color")
+    .def("rectangleRoundedFilled",
+      &GDisplay::rectangleRoundedFilled,
+      args("x", "y", "w", "h", "r", "color"),
+      "Draws a filled rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) "
+      "x,(y+h) using the specified colors for the border and the fill")
+    .def("circle",
+      &GDisplay::circle,
+      args("x", "y", "r", "color", "type"),
+      "Draws a circle with center in x,y and radius r using the specified color. The circle type "
+      "can also be specified and is defaulted to Full")
+    .def("circleFilled",
+      &GDisplay::circleFilled,
+      args("x", "y", "r", "color", "fillColor", "type"),
+      "Draws a circle with center in x,y and radius r using the specified colors for the border "
+      "and the fill. The circle type can also be specified and is defaulted to Full.")
+    .def("bitmap",
+      &GDisplay::bitmap,
+      args("x", "y", "w", "h", "bitmap", "color"),
+      "Draws a 1-bit bitmap with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the "
+      "specified color")
+    .def("canvas",
+      &GDisplay::canvas,
+      args("canvas", "xdest", "ydest", "xsource", "ysource", "w", "h"),
+      "Draws a part of the canvas c identified by xsource,ysource (xsource+w),ysource "
+      "(xsource+w),(ysource+h) xsource,(ysource+h) starting at xdest,ydest")
+    .def("character",
+      &GDisplay::character,
+      args("x", "y", "c", "color", "font"),
+      "Draws a character c at x,y using the specified color and font")
+    .def("text",
+      &GDisplay::text,
+      args("x", "y", "text", "color", "font", "spacing"),
+      "Draws a string at x,y using the specified color and font. The spacing between characters "
+      "can also be specified and defaults to 0")
+    .def("dataSize", &displayDataSize, "Returns the display buffer size in bytes")
+    .def("canvasWidthInBytes", &canvasWidthInBytes, "Returns the display width in bytes")
+    .def("write", &writeToDisplay, args("buffer"), "Write a raw buffer to the display");
+
+//--------------------------------------------------------------------------------------------------
+
+#define M_DESCRIPTOR_TYPE_DEF(item) value(#item, DeviceDescriptor::Type::item)
   enum_<DeviceDescriptor::Type>("DeviceDescriptorType")
-    .value("USB", DeviceDescriptor::Type::USB)
-    .value("MIDI", DeviceDescriptor::Type::MIDI)
-    .value("HID", DeviceDescriptor::Type::HID)
-    .value("Unknown", DeviceDescriptor::Type::Unknown);
+    .M_DESCRIPTOR_TYPE_DEF(USB)
+    .M_DESCRIPTOR_TYPE_DEF(MIDI)
+    .M_DESCRIPTOR_TYPE_DEF(HID)
+    .M_DESCRIPTOR_TYPE_DEF(Unknown);
+#undef M_DESCRIPTOR_TYPE_DEF
 
 //--------------------------------------------------------------------------------------------------
 
@@ -560,127 +762,40 @@ BOOST_PYTHON_MODULE(pycabl)
 #undef M_POT_DEF
 
 //--------------------------------------------------------------------------------------------------
-/*
-#define M_PIXEL_DEF(item) value(#item, Canvas::Color::item)
-  enum_<Canvas::Color>("Pixel")
-    .M_PIXEL_DEF(Black)
-    .M_PIXEL_DEF(White)
-    .M_PIXEL_DEF(Invert)
-    .M_PIXEL_DEF(Random)
-    .M_PIXEL_DEF(None);
-#undef M_PIXEL_DEF
-*/
-  //--------------------------------------------------------------------------------------------------
-  /*
-   class_<DeviceFactory, std::shared_ptr<DeviceFactory>, boost::noncopyable
-   >("DeviceFactory",no_init)
-     .def("instance",&deviceFactory )
-     .staticmethod("instance")
-   ;
- */
-  //--------------------------------------------------------------------------------------------------
 
-  void (PyClient::*setLed_btn)(Device::Button, const util::ColorRGB&) = &PyClient::setLed;
-  void (PyClient::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &PyClient::setLed;
-  void (PyClient::*setLed_key)(Device::Key, const util::ColorRGB&) = &PyClient::setLed;
+#define M_CIRCLE_DEF(item) value(#item, Canvas::CircleType::item)
+  enum_<Canvas::CircleType>("CircleType")
+    .M_CIRCLE_DEF(Full)
+    .M_CIRCLE_DEF(SemiLeft)
+    .M_CIRCLE_DEF(SemiTop)
+    .M_CIRCLE_DEF(SemiRight)
+    .M_CIRCLE_DEF(SemiBottom)
+    .M_CIRCLE_DEF(QuarterTopLeft)
+    .M_CIRCLE_DEF(QuarterTopRight)
+    .M_CIRCLE_DEF(QuarterBottomRight)
+    .M_CIRCLE_DEF(QuarterBottomLeft);
+#undef M_CIRCLE_DEF
 
-  class_<PyClient, boost::noncopyable>("Client", init<object, object, object>())
-    .def("enumerateDevices", &enumerateDevices)
-    .staticmethod("enumerateDevices")
-    .def("onInit", &Client::initDevice)
-    //  .def("run",&Client::run)
-    .def("setLedButton", setLed_btn)
-    .def("setLedPad", setLed_pad)
-    .def("setLedKey", setLed_key)
-/*
-    .def(
-      "drawingContext", &Device::drawingContext, return_value_policy<reference_existing_object>())
-      */
-    .def("onButtonChanged", &PyClient::onButtonChanged, args("onButtonChanged"))
-    .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
-    .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
-    .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
-    .def("displayGraphic",
-      &PyClient::displayGraphic,
-      return_value_policy<reference_existing_object>());
+//--------------------------------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------------------------------
+#define M_BLENDMODE_DEF(item) value(#item, BlendMode::item)
+  enum_<BlendMode>("BlendMode")
+    .M_BLENDMODE_DEF(Normal)
+    .M_BLENDMODE_DEF(Invert)
+    .M_BLENDMODE_DEF(Transparent);
+#undef M_BLENDMODE_DEF
 
-  class_<DeviceDescriptor>("DeviceDescriptor",
-    init<std::string,
-      DeviceDescriptor::Type,
-      DeviceDescriptor::tVendorId,
-      DeviceDescriptor::tProductId>())
-    .def(self_ns::str(self_ns::self))
-    .def("name", &DeviceDescriptor::name, return_value_policy<copy_const_reference>())
-    .def("type", &DeviceDescriptor::type)
-    .def("vendorId", &DeviceDescriptor::vendorId)
-    .def("productId", &DeviceDescriptor::productId)
-    .def(
-      "serialNumber", &DeviceDescriptor::serialNumber, return_value_policy<copy_const_reference>());
+//--------------------------------------------------------------------------------------------------
 
-  //--------------------------------------------------------------------------------------------------
-
-  /*
-
-  void (Device::*setLed_btn)(Device::Button, const util::ColorRGB&) = &Device::setLed;
-  void (Device::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &Device::setLed;
-  void (Device::*setLed_key)(Device::Key, const util::ColorRGB&) = &Device::setLed;
-
-  class_<Device, boost::noncopyable>("Device")
-    .def("setLedButton", pure_virtual(setLed_btn))
-    .def("setLedPad", setLed_pad)
-    .def("setLedKey", setLed_key)
-  ;
-  class_<MaschineMK1, bases<Device> >("MaschineMK1");
-  class_<MaschineMK2, bases<Device> >("MaschineMK2");
-  class_<MaschineMikroMK2, bases<Device> >("MaschineMikroMK2");
-  class_<TraktorF1MK2, bases<Device> >("TraktorF1MK2");
-  class_<KompleteKontrolS25, bases<Device> >("KompleteKontrolS25");
-  class_<KompleteKontrolS49, bases<Device> >("KompleteKontrolS49");
-  class_<KompleteKontrolS61, bases<Device> >("KompleteKontrolS61");
-  class_<KompleteKontrolS88, bases<Device> >("KompleteKontrolS88");
-  class_<Push, bases<Device> >("Push");
-  class_<Push2, bases<Device> >("Push2");
-
-  */
-
-  //--------------------------------------------------------------------------------------------------
-
-  class_<util::ColorRGB>("ColorRGB", init<uint8_t, uint8_t, uint8_t>())
-    .def(init<uint8_t, uint8_t, uint8_t>())
-    .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
-    .def(self_ns::str(self_ns::self))
-    .def("distance", &util::ColorRGB::distance)
-    .def("getValue", &util::ColorRGB::getValue)
-    .def("red", &util::ColorRGB::red)
-    .def("green", &util::ColorRGB::green)
-    .def("blue", &util::ColorRGB::blue)
-    .def("mono", &util::ColorRGB::mono);
-
-  //--------------------------------------------------------------------------------------------------
-/*
-  class_<DrawingContext, boost::noncopyable>("DrawingContext", init<unsigned, unsigned, unsigned>())
-    .def("width", &DrawingContext::width)
-    .def("height", &DrawingContext::height)
-    .def("bytesPerPixel", &DrawingContext::bytesPerPixel)
-    .def("size", &DrawingContext::size)
-    .def("isDirty", &DrawingContext::isDirty)
-    .def("setDirty", &DrawingContext::setDirty)
-    .def("write", &writeDrawingContext);
-*/
-  //--------------------------------------------------------------------------------------------------
-
-  class_<GDisplay, boost::noncopyable>("GraphicDisplay", no_init)
-    .def("width", &GDisplay::width)
-    .def("height", &GDisplay::height)
-    .def("pixel", &GDisplay::pixel)
-    .def("setPixel", &GDisplay::setPixel)
-    .def("black", &GDisplay::black)
-    .def("white", &GDisplay::white);
+#define M_ALIGNMENT_DEF(item) value(#item, Alignment::item)
+  enum_<Alignment>("Alignment").M_ALIGNMENT_DEF(Left).M_ALIGNMENT_DEF(Center).M_ALIGNMENT_DEF(Right);
+#undef M_ALIGNMENT_DEF
 
   //--------------------------------------------------------------------------------------------------
 }
 
+//--------------------------------------------------------------------------------------------------
+
+} // namespace py
 } // namespace cabl
 } // namespace sl

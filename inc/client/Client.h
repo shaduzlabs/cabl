@@ -8,7 +8,7 @@
 #pragma once
 
 #include "devices/Coordinator.h"
-#include "devices/DiscoveryPolicy.h"
+#include "comm/DiscoveryPolicy.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -24,10 +24,8 @@ using namespace devices;
 class Client
 {
 public:
-  Client();
+  Client(DiscoveryPolicy = {});
   ~Client();
-
-  void setDiscoveryPolicy(DiscoveryPolicy);
 
   virtual void disconnected();
   virtual void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_);
