@@ -19,15 +19,15 @@ class LCDDisplayKompleteKontrol : public LCDDisplayBase<8,3,48>
 {
 
 public:
-  void setCharacter(uint8_t col_, uint8_t row_, char c_) override;
+  void character(uint8_t col_, uint8_t row_, char c_) override;
 
-  void setText(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override;
+  void text(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setText(int value_, uint8_t row_, LCDDisplay::Align align_) override;
+  void text(int value_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setText(double value_, uint8_t row_, LCDDisplay::Align align_) override;
+  void text(double value_, uint8_t row_, LCDDisplay::Align align_) override;
 
-  void setValue(float value_, uint8_t row_, LCDDisplay::Align align_) override;
+  void value(float value_, uint8_t row_, LCDDisplay::Align align_) override;
 
 private:
   std::string alignText(const std::string&, LCDDisplay::Align align_) const;

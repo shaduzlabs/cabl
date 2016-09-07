@@ -324,37 +324,37 @@ void Euklid::updateGUI()
   device()->displayGraphic(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
   device()->displayGraphic(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);
 
-  device()->displayLCD(0)->setText("AB", 0);
+  device()->displayLCD(0)->text("AB", 0);
 
 
-  device()->displayLCD(0)->setText(strTrackName, 1);
-  device()->displayLCD(0)->setText("{EUKLID}", 2, s_alignCenter);
+  device()->displayLCD(0)->text(strTrackName, 1);
+  device()->displayLCD(0)->text("{EUKLID}", 2, s_alignCenter);
 
-  device()->displayLCD(1)->setText("Length", 1, s_alignCenter);
-  device()->displayLCD(1)->setValue(
+  device()->displayLCD(1)->text("Length", 1, s_alignCenter);
+  device()->displayLCD(1)->value(
     static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(1)->setText(static_cast<int>(m_lengths[m_currentTrack]), 2, s_alignCenter);
+  device()->displayLCD(1)->text(static_cast<int>(m_lengths[m_currentTrack]), 2, s_alignCenter);
 
-  device()->displayLCD(2)->setText("Density", 1);
-  device()->displayLCD(2)->setValue(
+  device()->displayLCD(2)->text("Density", 1);
+  device()->displayLCD(2)->value(
     static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(2)->setText(
+  device()->displayLCD(2)->text(
     static_cast<double>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 2, s_alignCenter);
 
-  device()->displayLCD(3)->setText("Rotation", 1);
-  device()->displayLCD(3)->setValue(
+  device()->displayLCD(3)->text("Rotation", 1);
+  device()->displayLCD(3)->value(
     static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(3)->setText(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
+  device()->displayLCD(3)->text(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
 
-  device()->displayLCD(4)->setText("BPM", 1, s_alignCenter);
-  device()->displayLCD(4)->setValue(static_cast<float>(m_bpm) / 255.0, 0);
-  device()->displayLCD(4)->setText(static_cast<int>(m_bpm), 2, s_alignCenter);
+  device()->displayLCD(4)->text("BPM", 1, s_alignCenter);
+  device()->displayLCD(4)->value(static_cast<float>(m_bpm) / 255.0, 0);
+  device()->displayLCD(4)->text(static_cast<int>(m_bpm), 2, s_alignCenter);
 
-  device()->displayLCD(5)->setText("Shuffle", 1, s_alignCenter);
-  device()->displayLCD(5)->setValue(static_cast<float>(m_shuffle) / 100, 0);
-  device()->displayLCD(5)->setText(static_cast<int>(m_shuffle), 2, s_alignCenter);
+  device()->displayLCD(5)->text("Shuffle", 1, s_alignCenter);
+  device()->displayLCD(5)->value(static_cast<float>(m_shuffle) / 100, 0);
+  device()->displayLCD(5)->text(static_cast<int>(m_shuffle), 2, s_alignCenter);
 
-  //  device()->displayLCD(3)->setText(m_rotates[m_currentTrack], 2);
+  //  device()->displayLCD(3)->text(m_rotates[m_currentTrack], 2);
 
   switch (m_screenPage)
   {

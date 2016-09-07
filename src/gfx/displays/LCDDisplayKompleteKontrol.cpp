@@ -31,7 +31,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setCharacter(uint8_t col_, uint8_t row_, char c_)
+void LCDDisplayKompleteKontrol::character(uint8_t col_, uint8_t row_, char c_)
 {
   if (row_ < 1 || row_ >= height() || col_ >= width())
   {
@@ -45,7 +45,7 @@ void LCDDisplayKompleteKontrol::setCharacter(uint8_t col_, uint8_t row_, char c_
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, Align align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -65,7 +65,7 @@ void LCDDisplayKompleteKontrol::setText(const std::string& string_, uint8_t row_
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setText(int value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(int value_, uint8_t row_, Align align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -77,7 +77,7 @@ void LCDDisplayKompleteKontrol::setText(int value_, uint8_t row_, Align align_)
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Align align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -100,7 +100,7 @@ void LCDDisplayKompleteKontrol::setText(double value_, uint8_t row_, Align align
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setValue(float value_, uint8_t row_, Align align_)
+void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Align align_)
 {
   if (row_ >= height())
   {

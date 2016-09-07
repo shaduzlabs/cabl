@@ -78,7 +78,7 @@ public:
    \param row_             The row at which the char must be printed
    \param c_               The char to be printed
   */
-  virtual void setCharacter(uint8_t col_, uint8_t row_, char c_)
+  virtual void character(uint8_t col_, uint8_t row_, char c_)
   {
   }
 
@@ -87,7 +87,7 @@ public:
    \param string_          The string to be printed
    \param row_             The row at which the string must be printed
    */
-  virtual void setText(const std::string& string_, uint8_t row_, Align = Align::Left)
+  virtual void text(const std::string& string_, uint8_t row_, Align = Align::Left)
   {
   }
 
@@ -96,7 +96,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void setText(int value_, uint8_t row_, Align = Align::Left)
+  virtual void text(int value_, uint8_t row_, Align = Align::Left)
   {
   }
 
@@ -105,7 +105,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void setText(double value_, uint8_t row_, Align = Align::Left)
+  virtual void text(double value_, uint8_t row_, Align = Align::Left)
   {
   }
 
@@ -114,7 +114,7 @@ public:
    \param value_           The value to be shown (0...1) by filling the available chars in a row
    \param row_             The row at which the value must be shown
    */
-  virtual void setValue(float value_, uint8_t row_, Align = Align::Left)
+  virtual void value(float value_, uint8_t row_, Align = Align::Left)
   {
   }
 

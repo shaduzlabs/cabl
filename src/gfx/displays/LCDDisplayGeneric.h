@@ -42,7 +42,7 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
-  void setCharacter(uint8_t col_, uint8_t row_, char c_) override
+  void character(uint8_t col_, uint8_t row_, char c_) override
   {
     if (row_ < 1 || row_ >= this->height() || col_ >= this->width())
     {
@@ -55,7 +55,7 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
-  void setText(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(const std::string& string_, uint8_t row_, LCDDisplay::Align align_) override
   {
     if (row_ >= this->height())
     {
@@ -74,14 +74,14 @@ public:
 
 //--------------------------------------------------------------------------------------------------
   
-  void setText(int value_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(int value_, uint8_t row_, LCDDisplay::Align align_) override
   {
     setText(std::to_string(value_), row_, align_);
   }
 
 //--------------------------------------------------------------------------------------------------
 
-  void setText(double value_, uint8_t row_, LCDDisplay::Align align_) override
+  void text(double value_, uint8_t row_, LCDDisplay::Align align_) override
   {
     double integral;
     double fractional = modf(value_, &integral);
@@ -97,7 +97,7 @@ public:
 
 //--------------------------------------------------------------------------------------------------
   
-  void setValue(float value_, uint8_t row_, LCDDisplay::Align align_) override
+  void value(float value_, uint8_t row_, LCDDisplay::Align align_) override
   {
     if (row_ >= this->height())
     {
