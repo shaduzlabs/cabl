@@ -49,7 +49,9 @@ TEST_CASE("GDisplayMaschineMK1: constructor", "[gfx][displays][GDisplayMaschineM
 TEST_CASE("GDisplayMaschineMK1: display chunks", "[gfx][displays][GDisplayMaschineMK1]")
 {
   GDisplayMaschineMK1 display;
-  
+  CHECK(display.dirty());
+
+  display.resetDirtyFlags();
   for(unsigned i=0; i<display.numberOfChunks(); i++)
   {
     CHECK_FALSE( display.dirtyChunk(i));

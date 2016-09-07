@@ -49,7 +49,9 @@ TEST_CASE("GDisplayMaschineMikro: constructor", "[gfx][displays][GDisplayMaschin
 TEST_CASE("GDisplayMaschineMikro: display chunks", "[gfx][displays][GDisplayMaschineMikro]")
 {
   GDisplayMaschineMikro display;
-  
+  CHECK(display.dirty());
+
+  display.resetDirtyFlags();
   for(unsigned i=0; i<display.numberOfChunks(); i++)
   {
     CHECK_FALSE( display.dirtyChunk(i));

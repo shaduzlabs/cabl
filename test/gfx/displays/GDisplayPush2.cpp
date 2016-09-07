@@ -55,7 +55,9 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
 TEST_CASE("GDisplayPush2: display chunks", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display;
+  CHECK( display.dirty());
   
+  display.resetDirtyFlags();
   for(unsigned i=0; i<display.numberOfChunks(); i++)
   {
     CHECK_FALSE( display.dirtyChunk(i));
