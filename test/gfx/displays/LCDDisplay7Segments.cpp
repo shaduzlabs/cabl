@@ -18,6 +18,10 @@ namespace sl
 {
 namespace cabl
 {
+
+template class LCDDisplayBase<19, 1>;
+template class LCDDisplay7Segments<19>;
+
 namespace test
 {
 
