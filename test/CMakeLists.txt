@@ -86,6 +86,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${CMAKE
 
 target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
 
-add_test( ${PROJECT_NAME} ${PROJECT_NAME} )
+add_test( NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} -s -r junit -o test-report.junit.xml )
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure DEPENDS ${PROJECT_NAME})

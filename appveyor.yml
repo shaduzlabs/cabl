@@ -52,9 +52,9 @@ after_build:
 
 before_test:
 - cmd: >-
-    cd c:\SLBuild\cabl\build-%PLATFORM%\test\%CONFIGURATION%\
+    cd c:\SLBuild\cabl\
 
-    unit-tests.exe -s -r junit -o test-report.junit.xml
+    cmake --build build-%PLATFORM% --target check
 
 after_test:
 - ps: >-
