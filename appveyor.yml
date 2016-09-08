@@ -54,7 +54,7 @@ before_test:
 - cmd: >-
     cd c:\SLBuild\cabl\
 
-    cmake --build build-%PLATFORM% --target check
+    cmake --build build-%PLATFORM% --config %CONFIGURATION% --target check
 
 after_test:
 - ps: >-
