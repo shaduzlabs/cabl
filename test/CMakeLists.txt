@@ -88,4 +88,4 @@ target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
 
 add_test( NAME ${PROJECT_NAME} WORKING_DIRECTORY ${CABL_BUILD_DIR}/test COMMAND ${PROJECT_NAME} -s -r junit -o test-report.junit.xml )
 
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure DEPENDS ${PROJECT_NAME})
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --build-config ${CMAKE_BUILD_TYPE} DEPENDS ${PROJECT_NAME})
