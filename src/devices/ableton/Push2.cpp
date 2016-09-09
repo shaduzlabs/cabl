@@ -343,22 +343,6 @@ void Push2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push2::displayGraphic(size_t displayIndex_)
-{
-  static GDisplayDummy s_dummyDisplay;
-  return &s_dummyDisplay;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* Push2::displayLCD(size_t displayIndex_)
-{
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 bool Push2::tick()
 {
   bool success = false;

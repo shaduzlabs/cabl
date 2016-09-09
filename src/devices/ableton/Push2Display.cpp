@@ -102,15 +102,12 @@ Push2Display::~Push2Display()
 GDisplay* Push2Display::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
-  return &s_dummyDisplay;
-}
+  if (displayIndex_ > 0)
+  {
+    return &s_dummyDisplay;
+  }
 
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* Push2Display::displayLCD(size_t displayIndex_)
-{
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
+  return &m_display;
 }
 
 //--------------------------------------------------------------------------------------------------

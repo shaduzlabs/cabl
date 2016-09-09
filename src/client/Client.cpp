@@ -11,6 +11,7 @@
 #include "devices/ableton/Push2Display.h"
 #include "devices/akai/Push.h"
 #include "devices/ni/KompleteKontrol.h"
+#include "devices/ni/MaschineJam.h"
 #include "devices/ni/MaschineMK1.h"
 #include "devices/ni/MaschineMK2.h"
 #include "devices/ni/MaschineMikroMK2.h"

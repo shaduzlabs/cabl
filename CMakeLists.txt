@@ -211,6 +211,7 @@ set(
     inc/gfx/FontManager.h
     inc/gfx/GDisplay.h
     inc/gfx/LCDDisplay.h
+    inc/gfx/LedMatrix.h
 )
 
 set(
@@ -320,6 +321,7 @@ set(
 set(
   src_devices_SRCS
     src/devices/Coordinator.cpp
+    src/devices/Device.cpp
     src/devices/DeviceFactory.cpp
 )
 
@@ -347,6 +349,8 @@ set(
   src_devices_ni_SRCS
     src/devices/ni/KompleteKontrol.h
     src/devices/ni/KompleteKontrol.cpp
+    src/devices/ni/MaschineJam.h
+    src/devices/ni/MaschineJam.cpp
     src/devices/ni/MaschineMK1.h
     src/devices/ni/MaschineMK1.cpp
     src/devices/ni/MaschineMK2.h

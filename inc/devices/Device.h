@@ -20,6 +20,7 @@
 #include "comm/DeviceDescriptor.h"
 #include "comm/DeviceHandle.h"
 #include "devices/DeviceRegistrar.h"
+
 #include "util/ColorRGB.h"
 
 namespace sl
@@ -29,6 +30,8 @@ namespace cabl
 
 class GDisplay;
 class LCDDisplay;
+class LedMatrix;
+class LedArray;
 
 namespace devices
 {
@@ -136,11 +139,20 @@ public:
     Capture,
     Quant, Quantize = Quant,
     Sync,
-    Pad1, Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
-    Pad9, Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
     Stop1, Stop2, Stop3, Stop4,
 
-    // Push
+    Pad1,  Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
+    Pad9,  Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
+    Pad17, Pad18, Pad19, Pad20, Pad21, Pad22, Pad23, Pad24,
+    Pad25, Pad26, Pad27, Pad28, Pad29, Pad30, Pad31, Pad32,
+    Pad33, Pad34, Pad35, Pad36, Pad37, Pad38, Pad39, Pad40,
+    Pad41, Pad42, Pad43, Pad44, Pad45, Pad46, Pad47, Pad48,
+    Pad49, Pad50, Pad51, Pad52, Pad53, Pad54, Pad55, Pad56,
+    Pad57, Pad58, Pad59, Pad60, Pad61, Pad62, Pad63, Pad64,
+
+    Arrange, Clear, Mst, Grp, Cue, Macro, Level, Aux, Auto, Perform, Variation, Lock, Tune,
+
+     // Push
     Btn1Row1,
     Btn2Row1,
     Btn3Row1,
@@ -277,198 +289,79 @@ public:
   Device() = default;
   virtual ~Device() = default;
 
-  void setDeviceHandle(tPtr<DeviceHandle> pDeviceHandle_)
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    m_pDeviceHandle = std::move(pDeviceHandle_);
-  }
+  void setDeviceHandle(tPtr<DeviceHandle> pDeviceHandle_);
 
-  void resetDeviceHandle()
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    m_pDeviceHandle = nullptr;
-  }
+  void resetDeviceHandle();
 
   virtual void init() = 0;
 
-  virtual GDisplay* displayGraphic(size_t displayIndex_) = 0;
-  virtual LCDDisplay* displayLCD(size_t displayIndex_) = 0;
-  virtual size_t numOfGraphicDisplays()
-  {
-    return 0;
-  }
-  virtual size_t numOfLCDDisplays()
-  {
-    return 0;
-  }
+  virtual GDisplay* displayGraphic(size_t displayIndex_);
+
+  virtual LCDDisplay* displayLCD(size_t displayIndex_);
+
+  virtual LedMatrix* ledMatrix(size_t ledMatrixIndex_);
+
+  virtual LedArray* ledArray(size_t ledArrayIndex_);
+
+  virtual size_t numOfGraphicDisplays() const = 0;
+
+  virtual size_t numOfLCDDisplays() const = 0;
+
+  virtual size_t numOfLedMatrices() const = 0;
+
+  virtual size_t numOfLedArrays() const = 0;
 
   virtual void setLed(Button, const util::ColorRGB&) = 0;
 
-  virtual void setLed(Pad, const util::ColorRGB&)
-  {
-  }
-  virtual void setLed(Key, const util::ColorRGB&)
-  {
-  }
+  virtual void setLed(Pad, const util::ColorRGB&);
 
-  virtual void sendMidiMsg(tRawData) = 0;
+  virtual void setLed(Key, const util::ColorRGB&);
 
-  void setCallbackDisconnect(tCbDisconnect cbDisconnect_)
-  {
-    m_cbDisconnect = cbDisconnect_;
-  }
+  virtual void sendMidiMsg(tRawData);
 
-  void setCallbackRender(tCbRender cbRender_)
-  {
-    m_cbRender = cbRender_;
-  }
+  void setCallbackDisconnect(tCbDisconnect cbDisconnect_);
 
-  void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_)
-  {
-    m_cbButtonChanged = cbButtonChanged_;
-  }
+  void setCallbackRender(tCbRender cbRender_);
 
-  void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_)
-  {
-    m_cbEncoderChanged = cbEncoderChanged_;
-  }
+  void setCallbackButtonChanged(tCbButtonChanged cbButtonChanged_);
 
-  void setCallbackPadChanged(tCbPadChanged cbPadChanged_)
-  {
-    m_cbPadChanged = cbPadChanged_;
-  }
+  void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_);
 
-  void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_)
-  {
-    m_cbKeyChanged = cbKeyChanged_;
-  }
+  void setCallbackPadChanged(tCbPadChanged cbPadChanged_);
 
-  void setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_)
-  {
-    m_cbPotentiometerChanged = cbPotentiometerChanged_;
-  }
+  void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_);
 
-  bool hasDeviceHandle()
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    return static_cast<bool>(m_pDeviceHandle);
-  }
+  void setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_);
+
+  bool hasDeviceHandle();
 
 protected:
   virtual bool tick() = 0;
 
-  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_) const
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
+  bool writeToDeviceHandle(const Transfer& transfer_, uint8_t endpoint_) const;
 
-    if (m_pDeviceHandle)
-    {
-      return m_pDeviceHandle->write(transfer_, endpoint_);
-    }
+  bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_) const;
 
-    return false;
-  }
+  void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_) const;
 
-  bool readFromDeviceHandle(Transfer& transfer_, uint8_t endpoint_) const
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    if (m_pDeviceHandle)
-    {
-      return m_pDeviceHandle->read(transfer_, endpoint_);
-    }
+  void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_);
 
-    return false;
-  }
+  void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
 
-  void readFromDeviceHandleAsync(uint8_t endpoint_, DeviceHandle::tCbRead cbRead_) const
-  {
-    std::lock_guard<std::mutex> lock(m_mtxDeviceHandle);
-    if (m_pDeviceHandle)
-    {
-      return m_pDeviceHandle->readAsync(endpoint_, cbRead_);
-    }
-  }
+  void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_);
 
+  void keyChanged(Key key_, uint16_t value_, bool shiftPressed_);
 
-  void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_)
-  {
-    if (m_cbButtonChanged)
-    {
-      m_cbButtonChanged(button_, buttonState_, shiftPressed_);
-    }
-  }
-
-  void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
-  {
-    if (m_cbEncoderChanged)
-    {
-      m_cbEncoderChanged(encoder_, valueIncreased_, shiftPressed_);
-    }
-  }
-
-  void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_)
-  {
-    if (m_cbPadChanged)
-    {
-      m_cbPadChanged(pad_, value_, shiftPressed_);
-    }
-  }
-
-  void keyChanged(Key key_, uint16_t value_, bool shiftPressed_)
-  {
-    if (m_cbKeyChanged)
-    {
-      m_cbKeyChanged(key_, value_, shiftPressed_);
-    }
-  }
-
-  void potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_)
-  {
-    if (m_cbPotentiometerChanged)
-    {
-      m_cbPotentiometerChanged(potentiometer_, value_, shiftPressed_);
-    }
-  }
+  void potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_);
 
 private:
-  bool onTick()
-  {
-    if (!hasDeviceHandle())
-    {
-      return false;
-    }
+  bool onTick();
 
-    render();
-    if (!m_connected)
-    {
-      return true;
-    }
-    return tick();
-  }
+  void onConnect();
 
-  void onConnect()
-  {
-    init();
-    m_connected = true;
-  }
+  void onDisconnect();
 
-  void onDisconnect()
-  {
-    m_connected = false;
-    resetDeviceHandle();
-    if (m_cbDisconnect)
-    {
-      m_cbDisconnect();
-    }
-  }
-
-  void render()
-  {
-    if (m_cbRender)
-    {
-      m_cbRender();
-    }
-  }
+  void render();
 
   bool m_connected{false};
   tCbDisconnect m_cbDisconnect;

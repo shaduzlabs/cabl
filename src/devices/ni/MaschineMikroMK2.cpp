@@ -156,13 +156,6 @@ void MaschineMikroMK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMikroMK2::sendMidiMsg(tRawData midiMsg_)
-{
-  //!\todo Use MaschineMikroMK2 virtual midi port
-}
-
-//--------------------------------------------------------------------------------------------------
-
 GDisplay* MaschineMikroMK2::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
@@ -172,14 +165,6 @@ GDisplay* MaschineMikroMK2::displayGraphic(size_t displayIndex_)
   }
 
   return &m_display;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* MaschineMikroMK2::displayLCD(size_t displayIndex_)
-{
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -32,17 +32,17 @@ TEST_CASE("GDisplayDummy: constructor", "[gfx][displays][GDisplayDummy]")
 TEST_CASE("GDisplayDummy: display chunks", "[gfx][displays][GDisplayDummy]")
 {
   GDisplayDummy display;
-  
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK_FALSE( display.dirtyChunk(i));
+    CHECK_FALSE(display.dirtyChunk(i));
   }
-  
+
   display.lineVertical(0, 0, display.height(), {0xFF});
-  
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK_FALSE( display.dirtyChunk(i));
+    CHECK_FALSE(display.dirtyChunk(i));
   }
 }
 

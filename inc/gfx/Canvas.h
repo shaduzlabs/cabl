@@ -323,6 +323,11 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
+  const tRawData& data()
+  {
+    return m_data;
+  }
+  
   const tRawData& buffer() const
   {
     return m_data;

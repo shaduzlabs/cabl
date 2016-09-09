@@ -36,8 +36,15 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* displayGraphic(size_t displayIndex_) override;
   LCDDisplay* displayLCD(size_t displayIndex_) override;
+
+  size_t numOfGraphicDisplays() const override { return 0; }
+
+  size_t numOfLCDDisplays() const override { return 9; }
+
+  size_t numOfLedMatrices() const override { return 0; }
+
+  size_t numOfLedArrays() const override { return 0; }
 
   bool tick() override;
 

@@ -132,7 +132,8 @@ util::ColorRGB GDisplayMaschineMK1::pixelImpl(uint16_t x_, uint16_t y_) const
       break;
     case 1:
       pixelValue = ~(static_cast<uint8_t>(
-        ((((buffer()[byteIndex] & 0x07) << 2) | (buffer()[byteIndex + 1] & 0xC0) >> 6) / 31.0) * 255));
+        ((((buffer()[byteIndex] & 0x07) << 2) | (buffer()[byteIndex + 1] & 0xC0) >> 6) / 31.0)
+        * 255));
       break;
     case 2:
       pixelValue = ~(static_cast<uint8_t>(((buffer()[byteIndex + 1] & 0x1F) / 31.0) * 255));

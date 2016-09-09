@@ -42,8 +42,8 @@ TEST_CASE("Canvas: constructor", "[gfx][Canvas]")
   Canvas c(16, 5);
   CHECK(c.width() == 16);
   CHECK(c.height() == 5);
-  
-  CHECK( c.pixel(2000,2000) == util::ColorRGB());
+
+  CHECK(c.pixel(2000, 2000) == util::ColorRGB());
 }
 
 //--------------------------------------------------------------------------------------------------

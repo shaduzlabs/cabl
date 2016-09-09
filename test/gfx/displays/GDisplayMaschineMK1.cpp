@@ -41,7 +41,7 @@ TEST_CASE("GDisplayMaschineMK1: constructor", "[gfx][displays][GDisplayMaschineM
   CHECK(display.height() == 64);
   CHECK(display.numberOfChunks() == 22);
 
-  CHECK( display.pixel(2000,2000) == util::ColorRGB());
+  CHECK(display.pixel(2000, 2000) == util::ColorRGB());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -52,16 +52,16 @@ TEST_CASE("GDisplayMaschineMK1: display chunks", "[gfx][displays][GDisplayMaschi
   CHECK(display.dirty());
 
   display.resetDirtyFlags();
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK_FALSE( display.dirtyChunk(i));
+    CHECK_FALSE(display.dirtyChunk(i));
   }
-  
+
   display.lineVertical(0, 0, display.height(), {0xFF});
-  
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK( display.dirtyChunk(i));
+    CHECK(display.dirtyChunk(i));
   }
 }
 

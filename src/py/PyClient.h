@@ -88,6 +88,18 @@ public:
   {
     return device()->displayGraphic(displayIndex_);
   }
+  LCDDisplay* displayLCD(size_t displayIndex_)
+  {
+    return device()->displayLCD(displayIndex_);
+  }
+  LedMatrix* ledMatrix(size_t ledMatrixIndex_)
+  {
+    return device()->ledMatrix(ledMatrixIndex_);
+  }
+  LedArray* ledArray(size_t ledArrayIndex_)
+  {
+    return device()->ledArray(ledArrayIndex_);
+  }
 
   void writeToDisplay()
   {

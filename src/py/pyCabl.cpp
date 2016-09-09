@@ -165,9 +165,9 @@ BOOST_PYTHON_MODULE(pycabl)
 
   class_<DiscoveryPolicy>("DiscoveryPolicy",
     init<std::string,
-      DeviceDescriptor::tVendorId,
-      DeviceDescriptor::tProductId,
-      DeviceDescriptor::Type>())
+                            DeviceDescriptor::tVendorId,
+                            DeviceDescriptor::tProductId,
+                            DeviceDescriptor::Type>())
     .def("name", &DiscoveryPolicy::name)
     .def("type", &DiscoveryPolicy::type)
     .def("vendorId", &DiscoveryPolicy::vendorId)
@@ -198,9 +198,9 @@ BOOST_PYTHON_MODULE(pycabl)
 
   class_<DeviceDescriptor>("DeviceDescriptor",
     init<std::string,
-      DeviceDescriptor::Type,
-      DeviceDescriptor::tVendorId,
-      DeviceDescriptor::tProductId>())
+                             DeviceDescriptor::Type,
+                             DeviceDescriptor::tVendorId,
+                             DeviceDescriptor::tProductId>())
     .def(self_ns::str(self_ns::self))
     .def("name", &DeviceDescriptor::name, return_value_policy<copy_const_reference>())
     .def("type", &DeviceDescriptor::type)

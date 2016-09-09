@@ -320,7 +320,7 @@ void Euklid::updateGUI()
   std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);
 
   device()->displayGraphic(0)->black();
-  device()->displayGraphic(0)->text(32, 52, "E U K L I D",s_colorWhite, "normal");
+  device()->displayGraphic(0)->text(32, 52, "E U K L I D", s_colorWhite, "normal");
   device()->displayGraphic(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
   device()->displayGraphic(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);
 
@@ -568,8 +568,7 @@ void Euklid::drawSequencerPage()
           (k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, {0xff}, {0xff});
       }
     }
-    device()->displayGraphic(0)->rectangle(
-      (pos * 8) + 1, 16 + (12 * t), 5, 5, {BlendMode::Invert});
+    device()->displayGraphic(0)->rectangle((pos * 8) + 1, 16 + (12 * t), 5, 5, {BlendMode::Invert});
   }
 }
 

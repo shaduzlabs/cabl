@@ -202,7 +202,6 @@ void MaschineMK1::setLed(Device::Pad pad_, const util::ColorRGB& color_)
   setLedImpl(led(pad_), color_);
 }
 
-
 //--------------------------------------------------------------------------------------------------
 
 void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
@@ -212,7 +211,6 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
   writeToDeviceHandle(
     Transfer({0x07, lengthH, lengthL}, midiMsg_.data(), midiMsg_.size()), kMASMK1_epOut);
 }
-
 
 //--------------------------------------------------------------------------------------------------
 
@@ -226,15 +224,6 @@ GDisplay* MaschineMK1::displayGraphic(size_t displayIndex_)
 
   return &m_displays[displayIndex_];
 }
-
-//--------------------------------------------------------------------------------------------------
-
-LCDDisplay* MaschineMK1::displayLCD(size_t displayIndex_)
-{
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
-}
-
 
 //--------------------------------------------------------------------------------------------------
 

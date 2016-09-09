@@ -42,8 +42,8 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
   CHECK(display.height() == 160);
   CHECK(display.numberOfChunks() == 1);
 
-  CHECK( display.pixel(2000,2000) == util::ColorRGB());
-  
+  CHECK(display.pixel(2000, 2000) == util::ColorRGB());
+
   display.setPixel(0, 0, {0, 248, 0});
   auto color = display.pixel(0, 0);
   display.setPixel(0, 0, color);
@@ -55,19 +55,19 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
 TEST_CASE("GDisplayPush2: display chunks", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display;
-  CHECK( display.dirty());
-  
+  CHECK(display.dirty());
+
   display.resetDirtyFlags();
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK_FALSE( display.dirtyChunk(i));
+    CHECK_FALSE(display.dirtyChunk(i));
   }
-  
+
   display.lineVertical(0, 0, display.height(), {0xFF});
-  
-  for(unsigned i=0; i<display.numberOfChunks(); i++)
+
+  for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
-    CHECK( display.dirtyChunk(i));
+    CHECK(display.dirtyChunk(i));
   }
 }
 

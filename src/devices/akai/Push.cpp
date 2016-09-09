@@ -295,14 +295,6 @@ void Push::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push::displayGraphic(size_t displayIndex_)
-{
-  static GDisplayDummy s_dummyDisplay;
-  return &s_dummyDisplay;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 LCDDisplay* Push::displayLCD(size_t displayIndex_)
 {
   static LCDDisplayDummy s_dummyLCDDisplay;

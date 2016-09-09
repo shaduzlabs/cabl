@@ -104,8 +104,8 @@ DriverLibUSB::DriverLibUSB() : m_usbThreadRunning(true)
 #endif
 
   libusb_hotplug_register_callback(m_pContext,
-    static_cast<libusb_hotplug_event>(
-      LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
+    static_cast<libusb_hotplug_event>(LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED
+                                      | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
     static_cast<libusb_hotplug_flag>(0),
     LIBUSB_HOTPLUG_MATCH_ANY,
     LIBUSB_HOTPLUG_MATCH_ANY,

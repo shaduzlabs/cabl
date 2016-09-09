@@ -264,15 +264,6 @@ GDisplay* MaschineMK2::displayGraphic(size_t displayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* MaschineMK2::displayLCD(size_t displayIndex_)
-{
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
-}
-
-
-//--------------------------------------------------------------------------------------------------
-
 bool MaschineMK2::tick()
 {
   static int state = 0;

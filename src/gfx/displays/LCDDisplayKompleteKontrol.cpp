@@ -71,7 +71,7 @@ void LCDDisplayKompleteKontrol::text(int value_, uint8_t row_, Alignment align_)
   {
     return;
   }
-  
+
   text(std::to_string(value_), row_, align_);
 }
 
@@ -83,7 +83,7 @@ void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Alignment alig
   {
     return;
   }
-  
+
   double integral;
   double fractional = modf(value_, &integral);
   std::string strValue = std::to_string(static_cast<int>(integral));

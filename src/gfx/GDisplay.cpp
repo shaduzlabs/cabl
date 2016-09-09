@@ -68,7 +68,7 @@ util::ColorRGB GDisplay::pixel(uint16_t x_, uint16_t y_) const
 
 bool GDisplay::dirtyChunk(uint8_t chunk_) const
 {
-  return ((chunk_ < m_numDisplayChunks) && m_pChunksDirtyFlags[chunk_] );
+  return ((chunk_ < m_numDisplayChunks) && m_pChunksDirtyFlags[chunk_]);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ void GDisplay::resetDirtyFlags() const
 void GDisplay::setDirtyChunk(uint16_t yStart_)
 {
   float chunkHeight = static_cast<float>(height()) / m_numDisplayChunks;
-  if ( yStart_ < height() )
+  if (yStart_ < height())
   {
     m_pChunksDirtyFlags[static_cast<uint8_t>(yStart_ / chunkHeight)] = true;
   }
