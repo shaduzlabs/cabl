@@ -8,6 +8,7 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 #include "Canvas.h"
 
 namespace sl
