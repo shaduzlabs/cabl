@@ -235,85 +235,85 @@ BOOST_PYTHON_MODULE(pycabl)
 
   //--------------------------------------------------------------------------------------------------
 
-  class_<GDisplay, boost::noncopyable>("GraphicDisplay", no_init)
-    .def("width", &GDisplay::width, "Returns the width of the display in pixels")
-    .def("height", &GDisplay::height, "Returns the height of the display in pixels")
-    .def("pixel", &GDisplay::pixel, "Returns the pixel vaule as a ColorRGB object")
+  class_<Canvas, boost::noncopyable>("Canvas", no_init)
+    .def("width", &Canvas::width, "Returns the width of the display in pixels")
+    .def("height", &Canvas::height, "Returns the height of the display in pixels")
+    .def("pixel", &Canvas::pixel, "Returns the pixel vaule as a ColorRGB object")
     .def("setPixel",
-      &GDisplay::setPixel,
+      &Canvas::setPixel,
       args("x", "y", "color"),
       "Sets the value of a pixel as a ColorRGB object")
-    .def("black", &GDisplay::black, "Fills the display with black")
-    .def("white", &GDisplay::white, "Fills the display with white")
-    .def("invert", &GDisplay::invert, "Inverts the content of the display")
-    .def("fill", &GDisplay::fill, "Fills the display with the specified value")
+    .def("black", &Canvas::black, "Fills the display with black")
+    .def("white", &Canvas::white, "Fills the display with white")
+    .def("invert", &Canvas::invert, "Inverts the content of the display")
+    .def("fill", &Canvas::fill, "Fills the display with the specified value")
     .def("line",
-      &GDisplay::line,
+      &Canvas::line,
       args("x0", "y0", "x1", "y1", "color"),
       "Draws a line between x0,y0 and x1,y1 using the specified color")
     .def("lineVertical",
-      &GDisplay::lineVertical,
+      &Canvas::lineVertical,
       args("x", "y", "length", "color"),
       "Draws a vertical line between x,y and x,(y+l) using the specified color")
     .def("lineHorizontal",
-      &GDisplay::lineHorizontal,
+      &Canvas::lineHorizontal,
       args("x", "y", "length", "color"),
       "Draws an horizontal line between x,y and (x+l),y using the specified color")
     .def("triangle",
-      &GDisplay::triangle,
+      &Canvas::triangle,
       args("x0", "y0", "x1", "y1", "x2", "y2", "color"),
       "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified color")
     .def("triangleFilled",
-      &GDisplay::triangleFilled,
+      &Canvas::triangleFilled,
       args("x0", "y0", "x1", "y1", "x2", "y2", "color", "fillColor"),
       "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified colors for "
       "the border and the fill")
     .def("rectangle",
-      &GDisplay::rectangle,
+      &Canvas::rectangle,
       args("x", "y", "w", "h", "color"),
       "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
       "color")
     .def("rectangleFilled",
-      &GDisplay::rectangleFilled,
+      &Canvas::rectangleFilled,
       args("x", "y", "w", "h", "color", "fillColor"),
       "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
       "colors for the border and the fill")
     .def("rectangleRounded",
-      &GDisplay::rectangleRounded,
+      &Canvas::rectangleRounded,
       args("x", "y", "w", "h", "r", "color"),
       "Draws a rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) "
       "using the specified color")
     .def("rectangleRoundedFilled",
-      &GDisplay::rectangleRoundedFilled,
+      &Canvas::rectangleRoundedFilled,
       args("x", "y", "w", "h", "r", "color"),
       "Draws a filled rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) "
       "x,(y+h) using the specified colors for the border and the fill")
     .def("circle",
-      &GDisplay::circle,
+      &Canvas::circle,
       args("x", "y", "r", "color", "type"),
       "Draws a circle with center in x,y and radius r using the specified color. The circle type "
       "can also be specified and is defaulted to Full")
     .def("circleFilled",
-      &GDisplay::circleFilled,
+      &Canvas::circleFilled,
       args("x", "y", "r", "color", "fillColor", "type"),
       "Draws a circle with center in x,y and radius r using the specified colors for the border "
       "and the fill. The circle type can also be specified and is defaulted to Full.")
     .def("bitmap",
-      &GDisplay::bitmap,
+      &Canvas::bitmap,
       args("x", "y", "w", "h", "bitmap", "color"),
       "Draws a 1-bit bitmap with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the "
       "specified color")
     .def("canvas",
-      &GDisplay::canvas,
+      &Canvas::canvas,
       args("canvas", "xdest", "ydest", "xsource", "ysource", "w", "h"),
       "Draws a part of the canvas c identified by xsource,ysource (xsource+w),ysource "
       "(xsource+w),(ysource+h) xsource,(ysource+h) starting at xdest,ydest")
     .def("character",
-      &GDisplay::character,
+      &Canvas::character,
       args("x", "y", "c", "color", "font"),
       "Draws a character c at x,y using the specified color and font")
     .def("text",
-      &GDisplay::text,
+      &Canvas::text,
       args("x", "y", "text", "color", "font", "spacing"),
       "Draws a string at x,y using the specified color and font. The spacing between characters "
       "can also be specified and defaults to 0")
