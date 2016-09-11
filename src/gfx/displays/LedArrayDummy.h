@@ -22,7 +22,6 @@ class LedArrayDummy : public LedArrayBase<0>
 {
 
 public:
-
   void setPixel(uint16_t pos_, const util::ColorRGB& color_) override
   {
   }
@@ -31,7 +30,6 @@ public:
   {
     return {};
   }
-
 };
 
 //--------------------------------------------------------------------------------------------------

@@ -136,7 +136,7 @@ TEST_CASE("GDisplayDummy: interface", "[gfx][displays][GDisplayDummy]")
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 
-  DynamicCanvas c(10,10);
+  DynamicCanvas c(10, 10);
   display.canvas(c, 0, 0, 1, 2, 20, 20);
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));

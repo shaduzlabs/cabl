@@ -32,8 +32,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas::Canvas()
-  : m_pFont(FontManager::instance().getDefaultFont())
+Canvas::Canvas() : m_pFont(FontManager::instance().getDefaultFont())
 {
 }
 

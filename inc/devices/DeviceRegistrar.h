@@ -12,9 +12,9 @@
 //--------------------------------------------------------------------------------------------------
 // Use this macro in the header file of a new device class, after the class declaration
 #define M_REGISTER_DEVICE_CLASS(clsName, name, type, vid, pid) \
-  \
-static DeviceRegistrar<clsName>                                \
-    registrar_##clsName = DeviceRegistrar<clsName>({name, type, vid, pid})
+                                                               \
+  static DeviceRegistrar<clsName> registrar_##clsName          \
+    = DeviceRegistrar<clsName>({name, type, vid, pid})
 
 //--------------------------------------------------------------------------------------------------
 

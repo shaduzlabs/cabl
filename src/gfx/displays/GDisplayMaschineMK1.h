@@ -18,16 +18,15 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayMaschineMK1 : public CanvasBase<255,64,10880,22>
+class GDisplayMaschineMK1 : public CanvasBase<255, 64, 10880, 22>
 {
 public:
-
   GDisplayMaschineMK1();
-  
+
   void white() override;
 
   void black() override;
-  
+
 
   //! Set a pixel
   /*!

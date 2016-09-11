@@ -43,7 +43,7 @@ public:
     {
       return false;
     }
-    
+
     if (bytesPerLine() == 1)
     {
       return ((pFontData_[(c_ * height()) + y_] & (0x080 >> x_)) > 0);

@@ -21,7 +21,6 @@ namespace cabl
 class LedMatrixMaschineJam : public CanvasBase<8, 8, 64>
 {
 public:
-
   //! Set a pixel
   /*!
      \param x_               The X coordinate of the pixel

@@ -46,7 +46,7 @@ public:
     , m_serialNumber(serialNumber_)
     , m_portIdIn(portIdIn_)
     , m_portIdOut(portIdOut_)
-    , m_local( false )
+    , m_local(false)
   {
   }
 

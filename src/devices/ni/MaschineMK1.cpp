@@ -379,7 +379,8 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   offset += dataSize;
 
   if (!writeToDeviceHandle(
-        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].daaata() + offset, 338), kMASMK1_epDisplay))
+        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].daaata() + offset, 338),
+        kMASMK1_epDisplay))
   {
     return false;
   }

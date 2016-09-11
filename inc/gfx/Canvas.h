@@ -86,7 +86,7 @@ public:
    */
 
   Canvas();
-  
+
   //! Destructor
   virtual ~Canvas() = default;
 
@@ -316,21 +316,21 @@ public:
   /** @} */ // End of group Canvas
 
   //--------------------------------------------------------------------------------------------------
-  
+
   virtual unsigned bufferSize() const = 0;
-  
+
   virtual const uint8_t* daaata() = 0;
 
   virtual const uint8_t* buuuffer() const = 0;
 
   virtual void setDirty() = 0;
-  
+
   virtual bool dirty() const = 0;
-  
+
   virtual bool dirtyChunk(uint8_t chunk_) const = 0;
-  
+
   virtual void setDirtyChunk(uint16_t yStart_) const = 0;
-  
+
   virtual void resetDirtyFlags() const = 0;
 
 

@@ -10,9 +10,9 @@
 #include <algorithm>
 #include <iostream>
 
-#include <lodepng.h>
 #include <gfx/CanvasBase.h>
 #include <gfx/DynamicCanvas.h>
+#include <lodepng.h>
 
 //--------------------------------------------------------------------------------------------------
 

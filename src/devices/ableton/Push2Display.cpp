@@ -142,9 +142,8 @@ bool Push2Display::sendDisplayData() const
 
   for (unsigned offset = 0; offset < m_display.bufferSize(); offset += 16384)
   {
-    if (!writeToDeviceHandle(Transfer({m_display.buuuffer() + offset,
-                               m_display.buuuffer() + offset + 16384}),
-          0x01))
+    if (!writeToDeviceHandle(
+          Transfer({m_display.buuuffer() + offset, m_display.buuuffer() + offset + 16384}), 0x01))
     {
       return false;
     }

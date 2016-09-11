@@ -37,13 +37,25 @@ public:
   Canvas* ledMatrix(size_t ledMatrixIndex_) override;
   LedArray* ledArray(size_t ledArrayIndex_) override;
 
-  size_t numOfGraphicDisplays() const override { return 0; }
+  size_t numOfGraphicDisplays() const override
+  {
+    return 0;
+  }
 
-  size_t numOfLCDDisplays() const override { return 0; }
+  size_t numOfLCDDisplays() const override
+  {
+    return 0;
+  }
 
-  size_t numOfLedMatrices() const override { return 1; }
+  size_t numOfLedMatrices() const override
+  {
+    return 1;
+  }
 
-  size_t numOfLedArrays() const override { return 10; }
+  size_t numOfLedArrays() const override
+  {
+    return 10;
+  }
 
   bool tick() override;
 

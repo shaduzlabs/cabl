@@ -15,7 +15,7 @@ namespace sl
 {
 namespace cabl
 {
-class LCDDisplayKompleteKontrol : public LCDDisplayBase<8,3,48>
+class LCDDisplayKompleteKontrol : public LCDDisplayBase<8, 3, 48>
 {
 
 public:

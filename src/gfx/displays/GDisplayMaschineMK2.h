@@ -18,10 +18,9 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayMaschineMK2 : public CanvasBase<256,64,2048,8>
+class GDisplayMaschineMK2 : public CanvasBase<256, 64, 2048, 8>
 {
 public:
-
   //! Set a pixel
   /*!
      \param x_               The X coordinate of the pixel

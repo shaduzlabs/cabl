@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <vector>
 #include "Canvas.h"
+#include <vector>
 
 namespace sl
 {
@@ -27,7 +27,6 @@ class DynamicCanvas : public Canvas
 {
 
 public:
-
   DynamicCanvas(unsigned w_, unsigned h_, unsigned size_ = 0, unsigned nChunks_ = 1)
     : m_width(w_)
     , m_height(h_)
@@ -90,7 +89,8 @@ public:
   */
   bool dirty() const override
   {
-    return std::any_of(m_chunkDirtyFlags.begin(), m_chunkDirtyFlags.end(), [](bool b){ return b; });
+    return std::any_of(
+      m_chunkDirtyFlags.begin(), m_chunkDirtyFlags.end(), [](bool b) { return b; });
   }
 
   //! Is a specific display chunk dirty?
@@ -132,8 +132,6 @@ public:
   /** @} */ // End of group Utility
 
 protected:
-
-
   uint8_t* buuuffer() override
   {
     return m_data.data();
@@ -146,7 +144,7 @@ private:
   unsigned m_size;
   unsigned m_nChunks;
 
-  std::vector<uint8_t> m_data; //!< The raw Canvas data
+  std::vector<uint8_t> m_data;                 //!< The raw Canvas data
   mutable std::vector<bool> m_chunkDirtyFlags; //!< Chunk-specific dirty flags
 };
 

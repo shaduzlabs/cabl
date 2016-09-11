@@ -57,10 +57,10 @@ util::ColorRGB GDisplayPush2::pixel(uint16_t x_, uint16_t y_) const
   }
   unsigned index = (canvasWidthInBytes() * y_) + (x_ * 2);
 
-  return {
-    static_cast<uint8_t>((((buuuffer()[index] >> 3) / 31.0) * 255) + 0.5),
+  return {static_cast<uint8_t>((((buuuffer()[index] >> 3) / 31.0) * 255) + 0.5),
     static_cast<uint8_t>(
-      ((((buuuffer()[index] & 0x07) << 3 | (buuuffer()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
+      ((((buuuffer()[index] & 0x07) << 3 | (buuuffer()[index + 1] & 0xE0) >> 5) / 63.0) * 255)
+      + 0.5),
     static_cast<uint8_t>((((buuuffer()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
 }
 

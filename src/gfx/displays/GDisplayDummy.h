@@ -16,10 +16,9 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayDummy : public CanvasBase<0,0,0,1>
+class GDisplayDummy : public CanvasBase<0, 0, 0, 1>
 {
 public:
-
   bool dirty() const override
   {
     return false;
@@ -128,7 +127,6 @@ public:
     uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
   {
   }
-
 };
 
 //--------------------------------------------------------------------------------------------------

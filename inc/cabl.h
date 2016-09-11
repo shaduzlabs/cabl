@@ -13,8 +13,8 @@
 
 #include "gfx/Canvas.h"
 #include "gfx/LCDDisplay.h"
-#include "gfx/LedMatrix.h"
 #include "gfx/LedArray.h"
+#include "gfx/LedMatrix.h"
 
 #include "util/Version.h"
 

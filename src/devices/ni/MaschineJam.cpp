@@ -373,7 +373,7 @@ void MaschineJam::init()
   m_isDirtyStripLeds = true;
   m_isDirtyPadLeds = true;
 
- // m_ledMatrix.setPixel(0, 1, {0xff});
+  // m_ledMatrix.setPixel(0, 1, {0xff});
   m_ledMatrix.circle(4, 4, 3, 0xf9);
   m_ledArraysStrips[7].setPixel(9, 0xf0);
 }
@@ -409,11 +409,11 @@ bool MaschineJam::sendLeds()
       else if (i < 10)
       {
         unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 9);
-        for (unsigned k = 0; k < m_ledArraysLevel[i-8].length(); k++)
+        for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
         {
-          m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i-8].buffer()[k];
+          m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i - 8].buffer()[k];
         }
-        m_ledArraysLevel[i-8].resetDirty();
+        m_ledArraysLevel[i - 8].resetDirty();
       }
       m_isDirtyPadLeds = true;
     }

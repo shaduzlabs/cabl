@@ -51,8 +51,8 @@ TEST_CASE("Canvas: constructor", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: lines", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   lines(&display);
   std::string fileNameSuffix("lines");
 #ifdef DO_WRITE_PICTURES
@@ -66,8 +66,8 @@ TEST_CASE("Canvas: lines", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: circles", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   circles(&display);
   std::string fileNameSuffix("circles");
 #ifdef DO_WRITE_PICTURES
@@ -81,8 +81,8 @@ TEST_CASE("Canvas: circles", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: triangles", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   triangles(&display);
   std::string fileNameSuffix("triangles");
 #ifdef DO_WRITE_PICTURES
@@ -96,8 +96,8 @@ TEST_CASE("Canvas: triangles", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: rectangles", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   rectangles(&display);
   std::string fileNameSuffix("rectangles");
 #ifdef DO_WRITE_PICTURES
@@ -111,8 +111,8 @@ TEST_CASE("Canvas: rectangles", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: text", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   text(&display);
   std::string fileNameSuffix("text");
 #ifdef DO_WRITE_PICTURES
@@ -126,8 +126,8 @@ TEST_CASE("Canvas: text", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: canvas", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   canvas(&display);
   std::string fileNameSuffix("canvas");
 #ifdef DO_WRITE_PICTURES
@@ -141,8 +141,8 @@ TEST_CASE("Canvas: canvas", "[gfx][Canvas]")
 
 TEST_CASE("Canvas: bitmap", "[gfx][Canvas]")
 {
-  CanvasBase<128,128> display;
-  CanvasBase<128,128> displayFromPng;
+  CanvasBase<128, 128> display;
+  CanvasBase<128, 128> displayFromPng;
   bitmap(&display);
   std::string fileNameSuffix("bitmap");
 #ifdef DO_WRITE_PICTURES

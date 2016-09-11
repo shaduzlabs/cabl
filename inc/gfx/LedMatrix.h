@@ -30,8 +30,8 @@ class Font;
 
 //--------------------------------------------------------------------------------------------------
 
-template<unsigned W, unsigned H, unsigned SIZE=W*H>
-class LedMatrix : public CanvasBase<W,H,SIZE>
+template <unsigned W, unsigned H, unsigned SIZE = W* H>
+class LedMatrix : public CanvasBase<W, H, SIZE>
 {
 
 public:
@@ -85,7 +85,10 @@ public:
   }
 
   //! Reset the dirty flag
-  virtual void resetDirty() const { m_dirty = false; }
+  virtual void resetDirty() const
+  {
+    m_dirty = false;
+  }
 
   /** @} */ // End of group Access
 

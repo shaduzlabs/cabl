@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include "Canvas.h"
 #include <array>
 #include <bitset>
-#include "Canvas.h"
 
 namespace sl
 {
@@ -23,17 +23,16 @@ namespace cabl
   \brief The canvas base class
 
 */
-template<unsigned W, unsigned H, unsigned SIZE = W * H * 3, unsigned NCHUNKS = 1>
+template <unsigned W, unsigned H, unsigned SIZE = W* H * 3, unsigned NCHUNKS = 1>
 class CanvasBase : public Canvas
 {
 
 public:
-
   CanvasBase()
   {
     setDirty();
   }
-  
+
   unsigned width() const noexcept override
   {
     return W;
@@ -97,19 +96,24 @@ public:
      */
   bool dirtyChunk(uint8_t chunk_) const override
   {
+    if (chunk_ >= NCHUNKS || NCHUNKS == 0)
+    {
+      return false;
+    }
     return m_chunkDirtyFlags[chunk_];
   }
 
   void setDirtyChunk(uint16_t yStart_) const override
   {
     unsigned constexpr chunkHeight = H / NCHUNKS;
-    if(chunkHeight == 0)
+    if (chunkHeight == 0 || NCHUNKS == 0)
     {
       return;
     }
     if (yStart_ < H)
     {
-      m_chunkDirtyFlags[static_cast<uint8_t>(yStart_ / chunkHeight)] = true;
+      unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), NCHUNKS - 1);
+      m_chunkDirtyFlags[chunk] = true;
     }
   }
 
@@ -133,8 +137,6 @@ public:
   /** @} */ // End of group Utility
 
 protected:
-
-
   uint8_t* buuuffer() override
   {
     return m_data.data();
@@ -143,7 +145,7 @@ protected:
 private:
   friend class py::CanvasHelper;
 
-  std::array<uint8_t, SIZE> m_data{}; //!< The raw Canvas data
+  std::array<uint8_t, SIZE> m_data{};               //!< The raw Canvas data
   mutable std::bitset<NCHUNKS> m_chunkDirtyFlags{}; //!< Chunk-specific dirty flags
 };
 

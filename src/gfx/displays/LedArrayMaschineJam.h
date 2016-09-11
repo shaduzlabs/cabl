@@ -18,15 +18,14 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-template<unsigned L>
+template <unsigned L>
 class LedArrayMaschineJam : public LedArrayBase<L>
 {
 
 public:
-
   void setPixel(uint16_t pos_, const util::ColorRGB& color_) override
   {
-    if(pos_<this->length())
+    if (pos_ < this->length())
     {
       this->data()[pos_] = devices::MaschineJamHelper::toLedColor(color_);
       this->setDirty();
@@ -35,13 +34,12 @@ public:
 
   util::ColorRGB pixel(uint16_t pos_) const override
   {
-    if(pos_<this->length())
+    if (pos_ < this->length())
     {
       return devices::MaschineJamHelper::fromLedColor(this->data()[pos_]);
     }
     return {};
   }
-
 };
 
 //--------------------------------------------------------------------------------------------------

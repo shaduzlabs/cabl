@@ -31,13 +31,25 @@ public:
   void setLed(Device::Button, const util::ColorRGB&) override;
   void setLed(Device::Pad, const util::ColorRGB&) override;
 
-  size_t numOfGraphicDisplays() const override { return 0; }
+  size_t numOfGraphicDisplays() const override
+  {
+    return 0;
+  }
 
-  size_t numOfLCDDisplays() const override { return 0; }
+  size_t numOfLCDDisplays() const override
+  {
+    return 0;
+  }
 
-  size_t numOfLedMatrices() const override { return 0; }
+  size_t numOfLedMatrices() const override
+  {
+    return 0;
+  }
 
-  size_t numOfLedArrays() const override { return 0; }
+  size_t numOfLedArrays() const override
+  {
+    return 0;
+  }
 
   void sendMidiMsg(tRawData) override;
 
