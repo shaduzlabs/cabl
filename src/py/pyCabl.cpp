@@ -36,7 +36,7 @@ class CanvasHelper
 public:
   static void write(Canvas* canvas_, uint8_t* buffer)
   {
-    std::copy_n(buffer, canvas_->bufferSize(), canvas_->buuuffer());
+    std::copy_n(buffer, canvas_->bufferSize(), canvas_->data());
   }
   static void setDirty(Canvas* display_)
   {
@@ -190,9 +190,12 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
     .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
     .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
-    .def("displayGraphic",
-      &PyClient::displayGraphic,
-      return_value_policy<reference_existing_object>());
+    .def("graphicDisplay",
+      &PyClient::graphicDisplay,
+      return_value_policy<reference_existing_object>())
+    .def("textDisplay", &PyClient::textDisplay, return_value_policy<reference_existing_object>())
+    .def("ledArray", &PyClient::ledArray, return_value_policy<reference_existing_object>())
+    .def("ledMatrix", &PyClient::ledMatrix, return_value_policy<reference_existing_object>());
 
   //--------------------------------------------------------------------------------------------------
 
@@ -298,22 +301,22 @@ BOOST_PYTHON_MODULE(pycabl)
       args("x", "y", "r", "color", "fillColor", "type"),
       "Draws a circle with center in x,y and radius r using the specified colors for the border "
       "and the fill. The circle type can also be specified and is defaulted to Full.")
-    .def("bitmap",
-      &Canvas::bitmap,
+    .def("putBitmap",
+      &Canvas::putBitmap,
       args("x", "y", "w", "h", "bitmap", "color"),
       "Draws a 1-bit bitmap with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the "
       "specified color")
-    .def("canvas",
-      &Canvas::canvas,
+    .def("putCanvas",
+      &Canvas::putCanvas,
       args("canvas", "xdest", "ydest", "xsource", "ysource", "w", "h"),
       "Draws a part of the canvas c identified by xsource,ysource (xsource+w),ysource "
       "(xsource+w),(ysource+h) xsource,(ysource+h) starting at xdest,ydest")
-    .def("character",
-      &Canvas::character,
+    .def("putCharacter",
+      &Canvas::putCharacter,
       args("x", "y", "c", "color", "font"),
       "Draws a character c at x,y using the specified color and font")
-    .def("text",
-      &Canvas::text,
+    .def("putText",
+      &Canvas::putText,
       args("x", "y", "text", "color", "font", "spacing"),
       "Draws a string at x,y using the specified color and font. The spacing between characters "
       "can also be specified and defaults to 0")
@@ -321,6 +324,16 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("canvasWidthInBytes", &canvasWidthInBytes, "Returns the display width in bytes")
     .def("write", &writeToDisplay, args("buffer"), "Write a raw buffer to the display");
 
+//--------------------------------------------------------------------------------------------------
+
+  class_<TextDisplay, boost::noncopyable>("TextDisplay", no_init)
+    .def("width", &Canvas::width, "Returns the width of the display in number of characters")
+    .def("height", &Canvas::height, "Returns the height of the display in rows")
+    .def("clear", &TextDisplay::clear, "Clears the display")
+    .def("putCharacter",
+     &TextDisplay::putCharacter, args("col", "row", "c"), "Displays a character c at col,row");/*
+    .def("putText", &TextDisplay::putText, args("string", "row", "alignment"), "Displays a string at the specified row using the specified alignment");
+*/
 //--------------------------------------------------------------------------------------------------
 
 #define M_DESCRIPTOR_TYPE_DEF(item) value(#item, DeviceDescriptor::Type::item)

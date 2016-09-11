@@ -13,7 +13,7 @@
 #include "devices/Device.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
-#include "gfx/displays/LedArrayMaschineJam.h"
+#include "gfx/LedArrayMaschineJam.h"
 #include "gfx/displays/LedMatrixMaschineJam.h"
 
 namespace sl
@@ -42,7 +42,7 @@ public:
     return 0;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 0;
   }

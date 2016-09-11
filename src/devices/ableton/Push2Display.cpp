@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
+#include "gfx/TextDisplay.h"
+#include "gfx/displays/NullCanvas.h"
 
 #include <cmath>
 
@@ -99,9 +99,9 @@ Push2Display::~Push2Display()
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas* Push2Display::displayGraphic(size_t displayIndex_)
+Canvas* Push2Display::graphicDisplay(size_t displayIndex_)
 {
-  static GDisplayDummy s_dummyDisplay;
+  static NullCanvas s_dummyDisplay;
   if (displayIndex_ > 0)
   {
     return &s_dummyDisplay;
@@ -143,7 +143,7 @@ bool Push2Display::sendDisplayData() const
   for (unsigned offset = 0; offset < m_display.bufferSize(); offset += 16384)
   {
     if (!writeToDeviceHandle(
-          Transfer({m_display.buuuffer() + offset, m_display.buuuffer() + offset + 16384}), 0x01))
+          Transfer({m_display.data() + offset, m_display.data() + offset + 16384}), 0x01))
     {
       return false;
     }

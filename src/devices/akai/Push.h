@@ -12,7 +12,7 @@
 
 #include "devices/Device.h"
 #include "devices/generic/USBMidi.h"
-#include "gfx/displays/LCDDisplayGeneric.h"
+#include "gfx/displays/TextDisplayGeneric.h"
 
 namespace sl
 {
@@ -34,14 +34,14 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  LCDDisplay* displayLCD(size_t displayIndex_) override;
+  TextDisplay* textDisplay(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override
   {
     return 0;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 4;
   }
@@ -103,7 +103,7 @@ private:
 
   void processNote(uint8_t, uint8_t);
 
-  LCDDisplayGeneric<17, 4> m_displays[kPush_nDisplays];
+  TextDisplayGeneric<17, 4> m_displays[kPush_nDisplays];
 
   std::array<uint8_t, kPush_ledsDataSize> m_leds;
   std::array<uint8_t, kPush_ledsDataSize> m_ledsPrev;

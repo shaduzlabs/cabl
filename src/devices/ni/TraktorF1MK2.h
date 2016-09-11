@@ -11,8 +11,8 @@
 #include <bitset>
 
 #include "devices/Device.h"
-#include "gfx/displays/GDisplayDummy.h"
-#include "gfx/displays/LCDDisplay7Segments.h"
+#include "gfx/displays/NullCanvas.h"
+#include "gfx/displays/TextDisplay7Segments.h"
 
 namespace sl
 {
@@ -32,14 +32,14 @@ public:
   void setLed(Device::Button, const util::ColorRGB&) override;
   void setLed(Device::Pad, const util::ColorRGB&) override;
 
-  LCDDisplay* displayLCD(size_t displayIndex_) override;
+  TextDisplay* textDisplay(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override
   {
     return 0;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 1;
   }
@@ -80,8 +80,8 @@ private:
   bool isButtonPressed(Button button) const noexcept;
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
-  GDisplayDummy m_displayDummy;
-  LCDDisplay7Segments<2> m_lcdDisplay;
+  NullCanvas m_displayDummy;
+  TextDisplay7Segments<2> m_TextDisplay;
 
   std::array<uint8_t, kF1MK2_buttonsDataSize> m_buttons;
   std::array<uint8_t, kF1MK2_nLeds> m_leds;

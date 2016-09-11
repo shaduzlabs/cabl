@@ -233,14 +233,14 @@ public:
     const util::ColorRGB& fillColor_,
     CircleType = CircleType::Full);
 
-  virtual void bitmap(uint16_t x_,
+  virtual void putBitmap(uint16_t x_,
     uint16_t y_,
     uint16_t w_,
     uint16_t h_,
     const uint8_t* pBitmap_,
     const util::ColorRGB& color_);
 
-  virtual void canvas(const Canvas& c_,
+  virtual void putCanvas(const Canvas& c_,
     uint16_t xDest_,
     uint16_t yDest_,
     uint16_t xSource_ = 0,
@@ -266,7 +266,7 @@ public:
    \param font_          The font
    \param color_         The color of the pixels
    */
-  virtual void character(
+  virtual void putCharacter(
     uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
 
   //! Print a string
@@ -278,7 +278,7 @@ public:
    \param color_         The color of the pixels
    \param spacing_       Additional space between characters in pixels
    */
-  virtual void text(uint16_t x_,
+  virtual void putText(uint16_t x_,
     uint16_t y_,
     const char* pStr_,
     const util::ColorRGB& color_,
@@ -319,9 +319,9 @@ public:
 
   virtual unsigned bufferSize() const = 0;
 
-  virtual const uint8_t* daaata() = 0;
+  virtual const uint8_t* buffer() = 0;
 
-  virtual const uint8_t* buuuffer() const = 0;
+  virtual const uint8_t* data() const = 0;
 
   virtual void setDirty() = 0;
 
@@ -335,7 +335,7 @@ public:
 
 
 protected:
-  virtual uint8_t* buuuffer() = 0;
+  virtual uint8_t* data() = 0;
 
 private:
   friend class py::CanvasHelper;

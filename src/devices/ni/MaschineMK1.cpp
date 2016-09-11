@@ -13,8 +13,8 @@
 #include "comm/Transfer.h"
 #include "util/Functions.h"
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
+#include "gfx/TextDisplay.h"
+#include "gfx/displays/NullCanvas.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -208,9 +208,9 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas* MaschineMK1::displayGraphic(size_t displayIndex_)
+Canvas* MaschineMK1::graphicDisplay(size_t displayIndex_)
 {
-  static GDisplayDummy s_dummyDisplay;
+  static NullCanvas s_dummyDisplay;
   if (displayIndex_ > 1)
   {
     return &s_dummyDisplay;
@@ -358,7 +358,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   const uint16_t dataSize = 502;
 
   if (!writeToDeviceHandle(
-        Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].daaata() + offset, dataSize),
+        Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].buffer() + offset, dataSize),
         kMASMK1_epDisplay))
   {
     return false;
@@ -369,7 +369,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   {
     offset += dataSize;
     if (!writeToDeviceHandle(
-          Transfer({d, 0x01, 0xF6}, m_displays[displayIndex_].daaata() + offset, dataSize),
+          Transfer({d, 0x01, 0xF6}, m_displays[displayIndex_].buffer() + offset, dataSize),
           kMASMK1_epDisplay))
     {
       return false;
@@ -379,7 +379,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   offset += dataSize;
 
   if (!writeToDeviceHandle(
-        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].daaata() + offset, 338),
+        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].buffer() + offset, 338),
         kMASMK1_epDisplay))
   {
     return false;

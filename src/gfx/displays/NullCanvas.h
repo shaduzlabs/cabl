@@ -16,7 +16,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayDummy : public CanvasBase<0, 0, 0, 1>
+class NullCanvas : public CanvasBase<0, 0, 0>
 {
 public:
   bool dirty() const override
@@ -110,20 +110,20 @@ public:
   {
   }
 
-  void bitmap(
+  void putBitmap(
     uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
   {
   }
 
-  void canvas(const Canvas&, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t) override
+  void putCanvas(const Canvas&, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t) override
   {
   }
 
-  void character(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
+  void putCharacter(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
   {
   }
 
-  void text(
+  void putText(
     uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
   {
   }

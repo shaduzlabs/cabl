@@ -38,11 +38,11 @@ void GDisplayMaschineMikro::setPixel(
 
   if (isWhite)
   {
-    buuuffer()[byteIndex] |= 0x01 << (y_ & 7);
+    data()[byteIndex] |= 0x01 << (y_ & 7);
   }
   else
   {
-    buuuffer()[byteIndex] &= ~(0x01 << (y_ & 7));
+    data()[byteIndex] &= ~(0x01 << (y_ & 7));
   }
 
   if (bSetDirtyChunk_ && oldColor.active() != isWhite)
@@ -60,7 +60,7 @@ util::ColorRGB GDisplayMaschineMikro::pixel(uint16_t x_, uint16_t y_) const
     return {};
   }
 
-  if (((buuuffer()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0)
+  if (((data()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0)
   {
     return {0};
   }

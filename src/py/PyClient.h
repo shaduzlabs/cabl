@@ -84,13 +84,13 @@ public:
   void setLed(Device::Pad, const util::ColorRGB&);
   void setLed(Device::Key, const util::ColorRGB&);
 
-  Canvas* displayGraphic(size_t displayIndex_)
+  Canvas* graphicDisplay(size_t displayIndex_)
   {
-    return device()->displayGraphic(displayIndex_);
+    return device()->graphicDisplay(displayIndex_);
   }
-  LCDDisplay* displayLCD(size_t displayIndex_)
+  TextDisplay* textDisplay(size_t displayIndex_)
   {
-    return device()->displayLCD(displayIndex_);
+    return device()->textDisplay(displayIndex_);
   }
   Canvas* ledMatrix(size_t ledMatrixIndex_)
   {

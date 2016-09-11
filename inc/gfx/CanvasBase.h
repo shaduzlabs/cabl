@@ -53,7 +53,7 @@ public:
     return NCHUNKS;
   }
 
-  const uint8_t* daaata() override
+  const uint8_t* buffer() override
   {
     return m_data.data();
   }
@@ -63,7 +63,7 @@ public:
     return SIZE;
   }
 
-  const uint8_t* buuuffer() const override
+  const uint8_t* data() const override
   {
     return m_data.data();
   }
@@ -137,7 +137,7 @@ public:
   /** @} */ // End of group Utility
 
 protected:
-  uint8_t* buuuffer() override
+  uint8_t* data() override
   {
     return m_data.data();
   }

@@ -12,9 +12,9 @@
 #include "devices/DeviceFactory.h"
 
 #include "gfx/Canvas.h"
-#include "gfx/LCDDisplay.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
+#include "gfx/TextDisplay.h"
 
 #include "util/Version.h"
 

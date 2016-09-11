@@ -10,7 +10,7 @@
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "devices/ni/KompleteKontrol.h"
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 #include "util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
@@ -340,12 +340,12 @@ void KompleteKontrolBase::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* KompleteKontrolBase::displayLCD(size_t displayIndex_)
+TextDisplay* KompleteKontrolBase::textDisplay(size_t displayIndex_)
 {
-  static LCDDisplayDummy s_dummyLCDDisplay;
+  static TextDisplayDummy s_dummyTextDisplay;
   if (displayIndex_ > 8)
   {
-    return &s_dummyLCDDisplay;
+    return &s_dummyTextDisplay;
   }
   return &m_displays[displayIndex_];
 }

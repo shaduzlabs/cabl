@@ -15,7 +15,7 @@
 #include <devices/ni/MaschineMK1.h>
 #include <devices/ni/MaschineMK2.h>
 #include <devices/ni/MaschineMikroMK2.h>
-#include <gfx/LCDDisplay.h>
+#include <gfx/TextDisplay.h>
 
 namespace
 {
@@ -306,11 +306,11 @@ void Euklid::play()
 
 void Euklid::updateGUI()
 {
-  for (unsigned j = 0; j < device()->displayGraphic(0)->width(); j++)
+  for (unsigned j = 0; j < device()->graphicDisplay(0)->width(); j++)
   {
-    for (unsigned i = 0; i < device()->displayGraphic(0)->height(); i++)
+    for (unsigned i = 0; i < device()->graphicDisplay(0)->height(); i++)
     {
-      device()->displayGraphic(0)->setPixel(j, i, {static_cast<uint8_t>(j), 0, 0});
+      device()->graphicDisplay(0)->setPixel(j, i, {static_cast<uint8_t>(j), 0, 0});
     }
   }
   return;
@@ -319,42 +319,42 @@ void Euklid::updateGUI()
 
   std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);
 
-  device()->displayGraphic(0)->black();
-  device()->displayGraphic(0)->text(32, 52, "E U K L I D", s_colorWhite, "normal");
-  device()->displayGraphic(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
-  device()->displayGraphic(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);
+  device()->graphicDisplay(0)->black();
+  device()->graphicDisplay(0)->putText(32, 52, "E U K L I D", s_colorWhite, "normal");
+  device()->graphicDisplay(0)->rectangleFilled(0, 52, 28, 6, s_colorWhite, s_colorWhite);
+  device()->graphicDisplay(0)->rectangleFilled(100, 52, 28, 6, s_colorWhite, s_colorWhite);
 
-  device()->displayLCD(0)->text("AB", 0);
+  device()->textDisplay(0)->putText("AB", 0);
 
 
-  device()->displayLCD(0)->text(strTrackName, 1);
-  device()->displayLCD(0)->text("{EUKLID}", 2, s_alignCenter);
+  device()->textDisplay(0)->putText(strTrackName, 1);
+  device()->textDisplay(0)->putText("{EUKLID}", 2, s_alignCenter);
 
-  device()->displayLCD(1)->text("Length", 1, s_alignCenter);
-  device()->displayLCD(1)->value(
+  device()->textDisplay(1)->putText("Length", 1, s_alignCenter);
+  device()->textDisplay(1)->putValue(
     static_cast<float>(m_lengths[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(1)->text(static_cast<int>(m_lengths[m_currentTrack]), 2, s_alignCenter);
+  device()->textDisplay(1)->putText(static_cast<int>(m_lengths[m_currentTrack]), 2, s_alignCenter);
 
-  device()->displayLCD(2)->text("Density", 1);
-  device()->displayLCD(2)->value(
+  device()->textDisplay(2)->putText("Density", 1);
+  device()->textDisplay(2)->putValue(
     static_cast<float>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(2)->text(
+  device()->textDisplay(2)->putText(
     static_cast<double>(m_pulses[m_currentTrack]) / kEuklidDefaultSteps, 2, s_alignCenter);
 
-  device()->displayLCD(3)->text("Rotation", 1);
-  device()->displayLCD(3)->value(
+  device()->textDisplay(3)->putText("Rotation", 1);
+  device()->textDisplay(3)->putValue(
     static_cast<float>(m_rotates[m_currentTrack]) / kEuklidDefaultSteps, 0);
-  device()->displayLCD(3)->text(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
+  device()->textDisplay(3)->putText(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
 
-  device()->displayLCD(4)->text("BPM", 1, s_alignCenter);
-  device()->displayLCD(4)->value(static_cast<float>(m_bpm) / 255.0, 0);
-  device()->displayLCD(4)->text(static_cast<int>(m_bpm), 2, s_alignCenter);
+  device()->textDisplay(4)->putText("BPM", 1, s_alignCenter);
+  device()->textDisplay(4)->putValue(static_cast<float>(m_bpm) / 255.0, 0);
+  device()->textDisplay(4)->putText(static_cast<int>(m_bpm), 2, s_alignCenter);
 
-  device()->displayLCD(5)->text("Shuffle", 1, s_alignCenter);
-  device()->displayLCD(5)->value(static_cast<float>(m_shuffle) / 100, 0);
-  device()->displayLCD(5)->text(static_cast<int>(m_shuffle), 2, s_alignCenter);
+  device()->textDisplay(5)->putText("Shuffle", 1, s_alignCenter);
+  device()->textDisplay(5)->putValue(static_cast<float>(m_shuffle) / 100, 0);
+  device()->textDisplay(5)->putText(static_cast<int>(m_shuffle), 2, s_alignCenter);
 
-  //  device()->displayLCD(3)->text(m_rotates[m_currentTrack], 2);
+  //  device()->textDisplay(3)->putText(m_rotates[m_currentTrack], 2);
 
   switch (m_screenPage)
   {
@@ -462,9 +462,9 @@ void Euklid::drawConfigurationPage()
   }
 
 
-  device()->displayGraphic(0)->text(5, 2, " BPM   Shuffle", {0xff}, "normal");
-  device()->displayGraphic(0)->text(10, 12, std::to_string(m_bpm).c_str(), {0xff}, "normal");
-  device()->displayGraphic(0)->text(59, 12, std::to_string(m_shuffle).c_str(), {0xff}, "normal");
+  device()->graphicDisplay(0)->putText(5, 2, " BPM   Shuffle", {0xff}, "normal");
+  device()->graphicDisplay(0)->putText(10, 12, std::to_string(m_bpm).c_str(), {0xff}, "normal");
+  device()->graphicDisplay(0)->putText(59, 12, std::to_string(m_shuffle).c_str(), {0xff}, "normal");
 
   device()->setLed(Device::Button::F1, 0);
   device()->setLed(Device::Button::F2, 0);
@@ -479,7 +479,7 @@ void Euklid::drawConfigurationPage()
   {
     case EncoderState::Shuffle:
     {
-      device()->displayGraphic(0)->rectangleFilled(
+      device()->graphicDisplay(0)->rectangleFilled(
         41, 0, 52, 20, {BlendMode::Invert}, {BlendMode::Invert});
       device()->setLed(Device::Button::F2, 255);
       device()->setLed(Device::Button::DisplayButton2, 255);
@@ -487,7 +487,7 @@ void Euklid::drawConfigurationPage()
     }
     case EncoderState::Speed:
     {
-      device()->displayGraphic(0)->rectangleFilled(
+      device()->graphicDisplay(0)->rectangleFilled(
         0, 0, 40, 20, {BlendMode::Invert}, {BlendMode::Invert});
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
@@ -508,12 +508,12 @@ void Euklid::drawSequencerPage()
     m_encoderState = EncoderState::Length;
   }
 
-  device()->displayGraphic(0)->text(5, 2, "Length Pulses Rotate", {0xff}, "normal");
+  device()->graphicDisplay(0)->putText(5, 2, "Length Pulses Rotate", {0xff}, "normal");
   for (uint8_t i = 0; i < kEuklidNumTracks; i++)
   {
     for (uint8_t n = 0; n < m_sequences[i].getLength(); n++)
     {
-      device()->displayGraphic(0)->rectangle(n * 8, 15 + (12 * i), 7, 7, {0xff});
+      device()->graphicDisplay(0)->rectangle(n * 8, 15 + (12 * i), 7, 7, {0xff});
     }
   }
 
@@ -529,7 +529,7 @@ void Euklid::drawSequencerPage()
   {
     case EncoderState::Pulses:
     {
-      device()->displayGraphic(0)->rectangleFilled(
+      device()->graphicDisplay(0)->rectangleFilled(
         43, 0, 42, 10, {BlendMode::Invert}, {BlendMode::Invert});
       device()->setLed(Device::Button::F2, 255);
       device()->setLed(Device::Button::DisplayButton2, 255);
@@ -537,7 +537,7 @@ void Euklid::drawSequencerPage()
     }
     case EncoderState::Rotate:
     {
-      device()->displayGraphic(0)->rectangleFilled(
+      device()->graphicDisplay(0)->rectangleFilled(
         86, 0, 40, 10, {BlendMode::Invert}, {BlendMode::Invert});
       device()->setLed(Device::Button::F3, 255);
       device()->setLed(Device::Button::DisplayButton3, 255);
@@ -545,7 +545,7 @@ void Euklid::drawSequencerPage()
     }
     case EncoderState::Length:
     {
-      device()->displayGraphic(0)->rectangleFilled(
+      device()->graphicDisplay(0)->rectangleFilled(
         0, 0, 42, 10, {BlendMode::Invert}, {BlendMode::Invert});
       device()->setLed(Device::Button::F1, 255);
       device()->setLed(Device::Button::DisplayButton1, 255);
@@ -564,11 +564,11 @@ void Euklid::drawSequencerPage()
     {
       if (pulses & (1 << i))
       {
-        device()->displayGraphic(0)->rectangleFilled(
+        device()->graphicDisplay(0)->rectangleFilled(
           (k % m_lengths[t]) * 8, 15 + (12 * t), 7, 7, {0xff}, {0xff});
       }
     }
-    device()->displayGraphic(0)->rectangle((pos * 8) + 1, 16 + (12 * t), 5, 5, {BlendMode::Invert});
+    device()->graphicDisplay(0)->rectangle((pos * 8) + 1, 16 + (12 * t), 5, 5, {BlendMode::Invert});
   }
 }
 

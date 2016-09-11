@@ -13,12 +13,12 @@
 #include "comm/Transfer.h"
 #include "util/Functions.h"
 
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
 
-#include "gfx/displays/GDisplayDummy.h"
-#include "gfx/displays/LedArrayDummy.h"
+#include "gfx/displays/NullCanvas.h"
+#include "gfx/LedArrayDummy.h"
 
 #include "devices/ni/MaschineJamHelper.h"
 
@@ -304,7 +304,7 @@ void MaschineJam::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 
 Canvas* MaschineJam::ledMatrix(size_t ledMatrixIndex_)
 {
-  static GDisplayDummy s_dummyLedMatrix;
+  static NullCanvas s_dummyLedMatrix;
   if (ledMatrixIndex_ == 0)
   {
     return &m_ledMatrix;

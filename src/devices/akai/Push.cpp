@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
+#include "gfx/TextDisplay.h"
+#include "gfx/displays/NullCanvas.h"
 
 #include <cmath>
 
@@ -295,12 +295,12 @@ void Push::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Push::displayLCD(size_t displayIndex_)
+TextDisplay* Push::textDisplay(size_t displayIndex_)
 {
-  static LCDDisplayDummy s_dummyLCDDisplay;
+  static TextDisplayDummy s_dummyTextDisplay;
   if (displayIndex_ > kPush_nDisplays)
   {
-    return &s_dummyLCDDisplay;
+    return &s_dummyTextDisplay;
   }
 
   return &m_displays[displayIndex_];

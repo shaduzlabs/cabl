@@ -36,14 +36,14 @@ public:
   {
   }
 
-  Canvas* displayGraphic(size_t displayIndex_) override;
+  Canvas* graphicDisplay(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override
   {
     return 1;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 0;
   }

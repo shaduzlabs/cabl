@@ -33,7 +33,7 @@ void LedMatrixMaschineJam::setPixel(
     newColor.invert();
   }
 
-  buuuffer()[x_ + (y_ * 8)] = devices::MaschineJamHelper::toLedColor(color_);
+  data()[x_ + (y_ * 8)] = devices::MaschineJamHelper::toLedColor(color_);
 
   if (bSetDirtyChunk_ && oldColor != newColor)
   {
@@ -49,7 +49,7 @@ util::ColorRGB LedMatrixMaschineJam::pixel(uint16_t x_, uint16_t y_) const
   {
     return {};
   }
-  return devices::MaschineJamHelper::fromLedColor(buuuffer()[x_ + (y_ * 8)]);
+  return devices::MaschineJamHelper::fromLedColor(data()[x_ + (y_ * 8)]);
 }
 
 //--------------------------------------------------------------------------------------------------

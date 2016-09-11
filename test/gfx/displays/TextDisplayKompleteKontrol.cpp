@@ -6,7 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include <catch.hpp>
-#include <gfx/displays/LCDDisplayKompleteKontrol.h>
+#include <gfx/displays/TextDisplayKompleteKontrol.h>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -19,9 +19,9 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplayKompleteKontrol: constructor", "[gfx][displays][LCDDisplayKompleteKontrol]")
+TEST_CASE("TextDisplayKompleteKontrol: constructor", "[gfx][displays][TextDisplayKompleteKontrol]")
 {
-  LCDDisplayKompleteKontrol display;
+  TextDisplayKompleteKontrol display;
   CHECK(display.width() == 8);
   CHECK(display.height() == 3);
 }
@@ -29,13 +29,13 @@ TEST_CASE("LCDDisplayKompleteKontrol: constructor", "[gfx][displays][LCDDisplayK
 //--------------------------------------------------------------------------------------------------
 
 // clang-format off
-TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKompleteKontrol]")
+TEST_CASE("TextDisplayKompleteKontrol: set text", "[gfx][displays][TextDisplayKompleteKontrol]")
 {
-  LCDDisplayKompleteKontrol display;
+  TextDisplayKompleteKontrol display;
 
   SECTION("Write text to first row")
   {
-    display.text("@A text@+!ˆ&",0,Alignment::Center);
+    display.putText("@A text@+!ˆ&",0,Alignment::Center);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -49,7 +49,7 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Write text to second row")
   {
-    display.text("@A text@+!ˆ&",1,Alignment::Center);
+    display.putText("@A text@+!ˆ&",1,Alignment::Center);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -63,7 +63,7 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Write text to third row")
   {
-    display.text("@A text@+!ˆ&",2,Alignment::Center);
+    display.putText("@A text@+!ˆ&",2,Alignment::Center);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -77,9 +77,9 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Text alignment - 1")
   {
-    display.text("text",0,Alignment::Center);
-    display.text("text",1,Alignment::Right);
-    display.text("text",2,Alignment::Left);
+    display.putText("text",0,Alignment::Center);
+    display.putText("text",1,Alignment::Right);
+    display.putText("text",2,Alignment::Left);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -93,9 +93,9 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Text alignment - 2")
   {
-    display.text("text",0,Alignment::Left);
-    display.text("text",1,Alignment::Center);
-    display.text("text",2,Alignment::Right);
+    display.putText("text",0,Alignment::Left);
+    display.putText("text",1,Alignment::Center);
+    display.putText("text",2,Alignment::Right);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -109,9 +109,9 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Numbers (integers)")
   {
-    display.text(123456789,1,Alignment::Left);
-    display.text(123456,1,Alignment::Center);
-    display.text(67890,2,Alignment::Right);
+    display.putText(123456789,1,Alignment::Left);
+    display.putText(123456,1,Alignment::Center);
+    display.putText(67890,2,Alignment::Right);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -125,9 +125,9 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 
   SECTION("Numbers (double)")
   {
-    display.text(1234.5678,1,Alignment::Left);
-    display.text(123.456,1,Alignment::Center);
-    display.text(67.890,2,Alignment::Right);
+    display.putText(1234.5678,1,Alignment::Left);
+    display.putText(123.456,1,Alignment::Center);
+    display.putText(67.890,2,Alignment::Right);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 
@@ -142,12 +142,12 @@ TEST_CASE("LCDDisplayKompleteKontrol: set text", "[gfx][displays][LCDDisplayKomp
 }
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplayKompleteKontrol: set value", "[gfx][displays][LCDDisplayKompleteKontrol]")
+TEST_CASE("TextDisplayKompleteKontrol: set value", "[gfx][displays][TextDisplayKompleteKontrol]")
 {
-  LCDDisplayKompleteKontrol display;
+  TextDisplayKompleteKontrol display;
 
   {
-    display.value(0.6f,0,Alignment::Right);
+    display.putValue(0.6f,0,Alignment::Right);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
 

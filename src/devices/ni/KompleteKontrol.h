@@ -12,8 +12,8 @@
 
 #include "devices/Device.h"
 #include "devices/DeviceFactory.h"
-#include "gfx/displays/GDisplayDummy.h"
-#include "gfx/displays/LCDDisplayKompleteKontrol.h"
+#include "gfx/displays/NullCanvas.h"
+#include "gfx/displays/TextDisplayKompleteKontrol.h"
 
 namespace sl
 {
@@ -36,14 +36,14 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  LCDDisplay* displayLCD(size_t displayIndex_) override;
+  TextDisplay* textDisplay(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override
   {
     return 0;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 9;
   }
@@ -91,7 +91,7 @@ private:
 
   static void midiInCallback(double timeStamp, std::vector<unsigned char>* message, void* userData);
 
-  GDisplayDummy m_displayDummy;
+  NullCanvas m_displayDummy;
   tRawData m_leds;
   tRawData m_buttons;
   std::bitset<kKK_nButtons> m_buttonStates;
@@ -102,7 +102,7 @@ private:
 
   uint8_t m_firstOctave;
 
-  LCDDisplayKompleteKontrol m_displays[kKK_nDisplays];
+  TextDisplayKompleteKontrol m_displays[kKK_nDisplays];
 
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   tPtr<RtMidiOut> m_pMidiOut;

@@ -10,7 +10,7 @@
 #include <iterator>
 
 #include <catch.hpp>
-#include <gfx/displays/LCDDisplay7Segments.h>
+#include <gfx/displays/TextDisplay7Segments.h>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -24,21 +24,21 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplay7Segments: constructor", "[gfx][displays][LCDDisplay7Segments]")
+TEST_CASE("TextDisplay7Segments: constructor", "[gfx][displays][TextDisplay7Segments]")
 {
-  LCDDisplay7Segments<19> display;
+  TextDisplay7Segments<19> display;
   CHECK(display.width() == 19);
   CHECK(display.height() == 1);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]")
+TEST_CASE("TextDisplay7Segments: set text", "[gfx][displays][TextDisplay7Segments]")
 {
-  LCDDisplay7Segments<19> display;
+  TextDisplay7Segments<19> display;
 
   {
-    display.text("@A text!@", 0, Alignment::Center);
+    display.putText("@A text!@", 0, Alignment::Center);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected
@@ -47,7 +47,7 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.clear();
   }
   {
-    display.text("      ", 0, Alignment::Left);
+    display.putText("      ", 0, Alignment::Left);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -55,7 +55,7 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.clear();
   }
   {
-    display.text("                    ! ? *", 0, Alignment::Left);
+    display.putText("                    ! ? *", 0, Alignment::Left);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -63,7 +63,7 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.clear();
   }
   {
-    display.text("AAA", 0, Alignment::Left);
+    display.putText("AAA", 0, Alignment::Left);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected
@@ -72,7 +72,7 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.clear();
   }
   {
-    display.text("AAA", 0, Alignment::Right);
+    display.putText("AAA", 0, Alignment::Right);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected
@@ -81,7 +81,7 @@ TEST_CASE("LCDDisplay7Segments: set text", "[gfx][displays][LCDDisplay7Segments]
     display.clear();
   }
   {
-    display.text("AAA", 0, Alignment::Center);
+    display.putText("AAA", 0, Alignment::Center);
     std::vector<uint8_t> displayData(
       display.displayData(), display.displayData() + display.dataSize());
     std::vector<uint8_t> expected

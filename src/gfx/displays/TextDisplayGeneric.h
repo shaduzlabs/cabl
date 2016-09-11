@@ -14,7 +14,7 @@
 #include <algorithm>
 #endif
 
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -23,86 +23,103 @@ namespace sl
 namespace cabl
 {
 
-namespace detail
-{
-const uint8_t kLCDDisplay7S_FontData[] = {
-#include "gfx/fonts/data/FONT_7-seg.h"
-};
-} // namespace
-
 //--------------------------------------------------------------------------------------------------
 
-template <unsigned COLUMNS>
-class LCDDisplay7Segments : public LCDDisplayBase<COLUMNS, 1>
+template <unsigned ROWS, unsigned COLUMNS>
+class TextDisplayGeneric : public TextDisplayBase<ROWS, COLUMNS>
 {
 
 public:
-  ~LCDDisplay7Segments() = default;
+  ~TextDisplayGeneric() = default;
 
   //--------------------------------------------------------------------------------------------------
 
-  void character(uint8_t col_, uint8_t row_, char c_) override
+  void clear() override
   {
-    uint8_t charNum = static_cast<uint8_t>(c_);
-    if (row_ > 0 || col_ > this->width() || charNum < 45 || charNum > 90)
-    {
-      return;
-    }
-    this->setDirty(0);
-    this->data()[col_] = detail::kLCDDisplay7S_FontData[charNum - 45];
+    this->fill(0x20);
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void text(const std::string& string_, uint8_t row_, Alignment align_) override
+  void putCharacter(uint8_t col_, uint8_t row_, char c_) override
   {
-    if (row_ > 0)
+    if (row_ < 1 || row_ >= this->height() || col_ >= this->width())
     {
       return;
     }
-    this->setDirty(0);
+    this->setDirty(row_);
+    unsigned index = (row_ * this->width()) + col_;
+    this->data()[index++] = c_;
+  }
 
+  //--------------------------------------------------------------------------------------------------
+
+  void putText(const std::string& string_, uint8_t row_, Alignment align_) override
+  {
+    if (row_ >= this->height())
+    {
+      return;
+    }
+    this->setDirty(row_);
+
+    unsigned index = row_ * this->width();
     std::string strAligned = alignText(string_, align_);
-    std::transform(strAligned.begin(), strAligned.end(), strAligned.begin(), ::toupper);
-
     for (size_t i = 0; i < std::min<size_t>(strAligned.length(), this->width()); i++)
     {
       const uint8_t& character = strAligned.at(i);
-      this->data()[i] = (character < 45 || character > 90)
-                          ? 0x00
-                          : detail::kLCDDisplay7S_FontData[character - 45];
+      this->data()[index++] = character;
     }
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void text(int value_, uint8_t row_, Alignment align_) override
+  void putText(int value_, uint8_t row_, Alignment align_) override
   {
-    text(std::to_string(value_), row_, align_);
+    putText(std::to_string(value_), row_, align_);
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void text(double value_, uint8_t row_, Alignment align_) override
+  void putText(double value_, uint8_t row_, Alignment align_) override
   {
     double integral;
     double fractional = modf(value_, &integral);
     std::string strValue = std::to_string(static_cast<int>(integral));
-    std::string strFractional = std::to_string(static_cast<int>(fractional * 10));
-    uint8_t emptySpaces = this->width() - strValue.length() - strFractional.length();
-    uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
-    resetDots(row_);
-    setDot(strValue.length() - 1 + leftFills, row_);
+    std::string strFractional = std::to_string(static_cast<int>(fractional * 1000));
+
+    strValue.append(".");
+    strValue.append(std::string(3 - strFractional.length(), '0'));
     strValue.append(strFractional);
 
-    text(strValue, row_, align_);
+    putText(strValue, row_, align_);
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void value(float value_, uint8_t row_, Alignment align_) override
+  void putValue(float value_, uint8_t row_, Alignment align_) override
   {
-    return;
+    if (row_ >= this->height())
+    {
+      return;
+    }
+    this->setDirty(row_);
+
+    unsigned index = row_ * 16;
+    float val = std::min<float>(value_, 1.0f);
+
+    uint8_t valInterval = static_cast<uint8_t>(round(val * 8.0));
+    for (uint8_t i = 0; i < 8; i++)
+    {
+      if (valInterval > i)
+      {
+        //   data()[index++] = kTextDisplayKK_FontData[43] & 0xff;
+        //   data()[index++] = (kTextDisplayKK_FontData[43] >> 8) & 0xff;
+      }
+      else
+      {
+        this->data()[index++] = 0x20;
+      }
+    }
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -142,36 +159,6 @@ private:
     }
     return strValue;
   }
-
-  //--------------------------------------------------------------------------------------------------
-
-  void setDot(uint8_t nDot_, uint8_t row_, bool visible_ = true)
-  {
-    if (row_ > 0 || nDot_ >= this->width())
-    {
-      return;
-    }
-    this->setDirty(0);
-    this->data()[nDot_] |= 0x01;
-  }
-
-  //--------------------------------------------------------------------------------------------------
-
-  void resetDots(uint8_t row_)
-  {
-    if (row_ > 0)
-    {
-      return;
-    }
-    this->setDirty(0);
-
-    for (uint8_t i = 0; i < this->width(); i++)
-    {
-      this->data()[i] &= 0xfe;
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------
 };
 
 //--------------------------------------------------------------------------------------------------

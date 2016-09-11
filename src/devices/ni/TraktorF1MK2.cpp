@@ -8,7 +8,7 @@
 #include "devices/ni/TraktorF1MK2.h"
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 #include "util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
@@ -161,14 +161,14 @@ void TraktorF1MK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* TraktorF1MK2::displayLCD(size_t displayIndex_)
+TextDisplay* TraktorF1MK2::textDisplay(size_t displayIndex_)
 {
-  static LCDDisplayDummy s_dummyLCDDisplay;
+  static TextDisplayDummy s_dummyTextDisplay;
   if (displayIndex_ > 0)
   {
-    return &s_dummyLCDDisplay;
+    return &s_dummyTextDisplay;
   }
-  return &m_lcdDisplay;
+  return &m_TextDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -207,14 +207,14 @@ void TraktorF1MK2::init()
 
 bool TraktorF1MK2::sendLedsAndDisplay()
 {
-  if (m_lcdDisplay.dirty() || true)
+  if (m_TextDisplay.dirty() || true)
   {
-    const auto displayData = m_lcdDisplay.displayData();
-    for (size_t i = 0; i < m_lcdDisplay.dataSize(); i++)
+    const auto displayData = m_TextDisplay.displayData();
+    for (size_t i = 0; i < m_TextDisplay.dataSize(); i++)
     {
       for (uint8_t j = 0; j < 8; j++)
       {
-        size_t displayIndex = (m_lcdDisplay.dataSize() - 1 - i);
+        size_t displayIndex = (m_TextDisplay.dataSize() - 1 - i);
         m_leds[(displayIndex * 8) + j] = (((1 << j) & displayData[i]) > 0) ? 0x7f : 0x00;
       }
     }

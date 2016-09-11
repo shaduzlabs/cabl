@@ -9,25 +9,25 @@
 
 #include <cstdint>
 
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 
 namespace sl
 {
 namespace cabl
 {
-class LCDDisplayKompleteKontrol : public LCDDisplayBase<8, 3, 48>
+class TextDisplayKompleteKontrol : public TextDisplayBase<8, 3, 48>
 {
 
 public:
-  void character(uint8_t col_, uint8_t row_, char c_) override;
+  void putCharacter(uint8_t col_, uint8_t row_, char c_) override;
 
-  void text(const std::string& string_, uint8_t row_, Alignment align_) override;
+  void putText(const std::string& string_, uint8_t row_, Alignment align_) override;
 
-  void text(int value_, uint8_t row_, Alignment align_) override;
+  void putText(int value_, uint8_t row_, Alignment align_) override;
 
-  void text(double value_, uint8_t row_, Alignment align_) override;
+  void putText(double value_, uint8_t row_, Alignment align_) override;
 
-  void value(float value_, uint8_t row_, Alignment align_) override;
+  void putValue(float value_, uint8_t row_, Alignment align_) override;
 
 private:
   std::string alignText(const std::string&, Alignment align_) const;

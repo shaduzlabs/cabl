@@ -22,12 +22,12 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class LCDDisplay
+class TextDisplay
 {
 
 public:
   /**
-   * @defgroup LCDDisplay LCD display
+   * @defgroup TextDisplay LCD display
    * @{
    */
 
@@ -35,12 +35,12 @@ public:
 
   /**
    * @defgroup Lifetime Constructor and destructor
-   * @ingroup LCDDisplay
+   * @ingroup TextDisplay
    * @{
    */
 
   //! Destructor
-  virtual ~LCDDisplay() = default;
+  virtual ~TextDisplay() = default;
 
   virtual void clear() = 0;
 
@@ -54,7 +54,7 @@ public:
 
   /**
    * @defgroup Text Text
-   * @ingroup LCDDisplay
+   * @ingroup TextDisplay
    * @{
    */
 
@@ -64,7 +64,7 @@ public:
    \param row_             The row at which the char must be printed
    \param c_               The char to be printed
   */
-  virtual void character(uint8_t col_, uint8_t row_, char c_)
+  virtual void putCharacter(uint8_t col_, uint8_t row_, char c_)
   {
   }
 
@@ -73,7 +73,7 @@ public:
    \param string_          The string to be printed
    \param row_             The row at which the string must be printed
    */
-  virtual void text(const std::string& string_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(const std::string& string_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -82,7 +82,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void text(int value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(int value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -91,7 +91,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void text(double value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(double value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -100,7 +100,7 @@ public:
    \param value_           The value to be shown (0...1) by filling the available chars in a row
    \param row_             The row at which the value must be shown
    */
-  virtual void value(float value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putValue(float value_, uint8_t row_, Alignment = Alignment::Left)
   {
   }
 
@@ -110,7 +110,7 @@ public:
 
   /**
    * @defgroup Access Access and state queries functions
-   * @ingroup LCDDisplay
+   * @ingroup TextDisplay
    * @{
    */
 
@@ -137,7 +137,7 @@ public:
 
   /**
    * @defgroup Utility Utility/debug functions
-   * @ingroup LCDDisplay
+   * @ingroup TextDisplay
    * @{
    */
 
@@ -149,7 +149,7 @@ public:
 
   /** @} */ // End of group Utility
 
-  /** @} */ // End of group LCDDisplay
+  /** @} */ // End of group TextDisplay
 
   //--------------------------------------------------------------------------------------------------
 
@@ -161,11 +161,11 @@ protected:
 //--------------------------------------------------------------------------------------------------
 
 template <unsigned COLUMNS, unsigned ROWS, unsigned DATA_SIZE = COLUMNS* ROWS>
-class LCDDisplayBase : public LCDDisplay
+class TextDisplayBase : public TextDisplay
 {
 
 public:
-  LCDDisplayBase()
+  TextDisplayBase()
   {
     clear();
   }
@@ -219,7 +219,7 @@ public:
 
   /** @} */ // End of group Utility
 
-  /** @} */ // End of group LCDDisplay
+  /** @} */ // End of group TextDisplay
 
   //--------------------------------------------------------------------------------------------------
 
@@ -240,7 +240,7 @@ private:
   std::array<uint8_t, DATA_SIZE> m_data;
 };
 
-using LCDDisplayDummy = LCDDisplayBase<0, 0>;
+using TextDisplayDummy = TextDisplayBase<0, 0>;
 
 //--------------------------------------------------------------------------------------------------
 

@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <thread>
 
-#include "gfx/LCDDisplay.h"
-#include "gfx/displays/GDisplayDummy.h"
+#include "gfx/TextDisplay.h"
+#include "gfx/displays/NullCanvas.h"
 
 #include <cmath>
 

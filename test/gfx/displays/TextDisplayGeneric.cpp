@@ -6,7 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include <catch.hpp>
-#include <gfx/displays/LCDDisplayGeneric.h>
+#include <gfx/displays/TextDisplayGeneric.h>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -19,34 +19,34 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplayGeneric: constructor", "[gfx][displays][LCDDisplayGeneric]")
+TEST_CASE("TextDisplayGeneric: constructor", "[gfx][displays][TextDisplayGeneric]")
 {
-  LCDDisplayGeneric<8, 4> display;
+  TextDisplayGeneric<8, 4> display;
   CHECK(display.width() == 8);
   CHECK(display.height() == 4);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("LCDDisplayGeneric: set text", "[gfx][displays][LCDDisplayGeneric]")
+TEST_CASE("TextDisplayGeneric: set text", "[gfx][displays][TextDisplayGeneric]")
 {
-  LCDDisplayGeneric<130, 4> display;
+  TextDisplayGeneric<130, 4> display;
 
   SECTION("Write text")
   {
-    display.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+    display.putText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
                  "tempor incididunt ut labore et dolore magna aliqua. Ut",
       0,
       Alignment::Left);
-    display.text("enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut "
+    display.putText("enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut "
                  "aliquip ex ea commodo consequat. Duis aute irure dolor ",
       1,
       Alignment::Left);
-    display.text("in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
+    display.putText("in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
                  "pariatur. Excepteur sint occaecat cupidatat non proident,",
       2,
       Alignment::Left);
-    display.text(
+    display.putText(
       "sunt in culpa qui officia deserunt mollit anim id est laborum.", 3, Alignment::Left);
 
     std::string displayData(display.displayData(), display.displayData() + display.dataSize());

@@ -37,11 +37,11 @@ void GDisplayMaschineMK2::setPixel(
 
   if (isWhite)
   {
-    buuuffer()[byteIndex] |= (0x80 >> (x_ & 7));
+    data()[byteIndex] |= (0x80 >> (x_ & 7));
   }
   else
   {
-    buuuffer()[byteIndex] &= (~0x80 >> (x_ & 7));
+    data()[byteIndex] &= (~0x80 >> (x_ & 7));
   }
 
   if (bSetDirtyChunk_ && oldColor.active() != isWhite)
@@ -59,7 +59,7 @@ util::ColorRGB GDisplayMaschineMK2::pixel(uint16_t x_, uint16_t y_) const
     return {};
   }
 
-  if ((buuuffer()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
+  if ((data()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
   {
     return {0};
   }

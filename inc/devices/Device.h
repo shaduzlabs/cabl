@@ -29,7 +29,7 @@ namespace cabl
 {
 
 class Canvas;
-class LCDDisplay;
+class TextDisplay;
 class LedArray;
 
 namespace devices
@@ -294,9 +294,9 @@ public:
 
   virtual void init() = 0;
 
-  virtual Canvas* displayGraphic(size_t displayIndex_);
+  virtual Canvas* graphicDisplay(size_t displayIndex_);
 
-  virtual LCDDisplay* displayLCD(size_t displayIndex_);
+  virtual TextDisplay* textDisplay(size_t displayIndex_);
 
   virtual Canvas* ledMatrix(size_t ledMatrixIndex_);
 
@@ -304,7 +304,7 @@ public:
 
   virtual size_t numOfGraphicDisplays() const = 0;
 
-  virtual size_t numOfLCDDisplays() const = 0;
+  virtual size_t numOfTextDisplays() const = 0;
 
   virtual size_t numOfLedMatrices() const = 0;
 

@@ -10,12 +10,12 @@
 
 
 #include "gfx/Canvas.h"
-#include "gfx/LCDDisplay.h"
+#include "gfx/TextDisplay.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
 
-#include "gfx/displays/GDisplayDummy.h"
-#include "gfx/displays/LedArrayDummy.h"
+#include "gfx/displays/NullCanvas.h"
+#include "gfx/LedArrayDummy.h"
 
 namespace sl
 {
@@ -42,25 +42,25 @@ void Device::resetDeviceHandle()
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas* Device::displayGraphic(size_t displayIndex_)
+Canvas* Device::graphicDisplay(size_t displayIndex_)
 {
-  static GDisplayDummy s_dummyDisplay;
+  static NullCanvas s_dummyDisplay;
   return &s_dummyDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-LCDDisplay* Device::displayLCD(size_t displayIndex_)
+TextDisplay* Device::textDisplay(size_t displayIndex_)
 {
-  static LCDDisplayDummy s_dummyLCDDisplay;
-  return &s_dummyLCDDisplay;
+  static TextDisplayDummy s_dummyTextDisplay;
+  return &s_dummyTextDisplay;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 Canvas* Device::ledMatrix(size_t ledMatrixInde_)
 {
-  static GDisplayDummy s_dummyLedMatrix;
+  static NullCanvas s_dummyLedMatrix;
   return &s_dummyLedMatrix;
 }
 

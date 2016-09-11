@@ -211,7 +211,7 @@ set(
     inc/gfx/DynamicCanvas.h
     inc/gfx/Font.h
     inc/gfx/FontManager.h
-    inc/gfx/LCDDisplay.h
+    inc/gfx/TextDisplay.h
     inc/gfx/LedMatrix.h
     inc/gfx/LedArray.h
 )
@@ -367,11 +367,9 @@ set(
 
 set(
   src_gfx_displays_SRCS
-    src/gfx/displays/LedArrayDummy.h
-    src/gfx/displays/LedArrayMaschineJam.h
     src/gfx/displays/LedMatrixMaschineJam.h
     src/gfx/displays/LedMatrixMaschineJam.cpp
-    src/gfx/displays/GDisplayDummy.h
+    src/gfx/displays/NullCanvas.h
     src/gfx/displays/GDisplayMaschineMikro.h
     src/gfx/displays/GDisplayMaschineMikro.cpp
     src/gfx/displays/GDisplayMaschineMK1.h
@@ -380,10 +378,10 @@ set(
     src/gfx/displays/GDisplayMaschineMK2.cpp
     src/gfx/displays/GDisplayPush2.h
     src/gfx/displays/GDisplayPush2.cpp
-    src/gfx/displays/LCDDisplay7Segments.h
-    src/gfx/displays/LCDDisplayGeneric.h
-    src/gfx/displays/LCDDisplayKompleteKontrol.h
-    src/gfx/displays/LCDDisplayKompleteKontrol.cpp
+    src/gfx/displays/TextDisplay7Segments.h
+    src/gfx/displays/TextDisplayGeneric.h
+    src/gfx/displays/TextDisplayKompleteKontrol.h
+    src/gfx/displays/TextDisplayKompleteKontrol.cpp
 )
 
 set(
@@ -405,6 +403,8 @@ set(
 set(
   src_gfx_SRCS
     src/gfx/Canvas.cpp
+    src/gfx/LedArrayDummy.h
+    src/gfx/LedArrayMaschineJam.h
     src/gfx/FontManager.cpp
 )
 

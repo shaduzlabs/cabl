@@ -66,18 +66,18 @@ void GDisplayMaschineMK1::setPixel(
   switch (x_ % 3)
   {
     case 0:
-      buuuffer()[byteIndex] |= 0xF8;
-      buuuffer()[byteIndex] &= ~(pixelValue << 3);
+      data()[byteIndex] |= 0xF8;
+      data()[byteIndex] &= ~(pixelValue << 3);
       break;
     case 1:
-      buuuffer()[byteIndex] |= 0x07;
-      buuuffer()[byteIndex + 1] |= 0xC0;
-      buuuffer()[byteIndex] &= ~(pixelValue >> 2);
-      buuuffer()[byteIndex + 1] &= ~(pixelValue << 6);
+      data()[byteIndex] |= 0x07;
+      data()[byteIndex + 1] |= 0xC0;
+      data()[byteIndex] &= ~(pixelValue >> 2);
+      data()[byteIndex + 1] &= ~(pixelValue << 6);
       break;
     case 2:
-      buuuffer()[byteIndex + 1] |= 0x1F;
-      buuuffer()[byteIndex + 1] &= ~(pixelValue);
+      data()[byteIndex + 1] |= 0x1F;
+      data()[byteIndex + 1] &= ~(pixelValue);
       break;
   }
 
@@ -102,15 +102,15 @@ util::ColorRGB GDisplayMaschineMK1::pixel(uint16_t x_, uint16_t y_) const
   switch (blockIndex)
   {
     case 0:
-      pixelValue = ~(static_cast<uint8_t>((((buuuffer()[byteIndex] & 0xF8) >> 3) / 31.0) * 255));
+      pixelValue = ~(static_cast<uint8_t>((((data()[byteIndex] & 0xF8) >> 3) / 31.0) * 255));
       break;
     case 1:
       pixelValue = ~(static_cast<uint8_t>(
-        ((((buuuffer()[byteIndex] & 0x07) << 2) | (buuuffer()[byteIndex + 1] & 0xC0) >> 6) / 31.0)
+        ((((data()[byteIndex] & 0x07) << 2) | (data()[byteIndex + 1] & 0xC0) >> 6) / 31.0)
         * 255));
       break;
     case 2:
-      pixelValue = ~(static_cast<uint8_t>(((buuuffer()[byteIndex + 1] & 0x1F) / 31.0) * 255));
+      pixelValue = ~(static_cast<uint8_t>(((data()[byteIndex + 1] & 0x1F) / 31.0) * 255));
       break;
   }
 

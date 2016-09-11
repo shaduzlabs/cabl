@@ -36,7 +36,7 @@ public:
     return 0;
   }
 
-  size_t numOfLCDDisplays() const override
+  size_t numOfTextDisplays() const override
   {
     return 0;
   }

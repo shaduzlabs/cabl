@@ -38,10 +38,10 @@ set(
 
 set(
   test_gfx_displays_SRCS
-    gfx/displays/LCDDisplay7Segments.cpp
-    gfx/displays/LCDDisplayGeneric.cpp
-    gfx/displays/LCDDisplayKompleteKontrol.cpp
-    gfx/displays/GDisplayDummy.cpp
+    gfx/displays/TextDisplay7Segments.cpp
+    gfx/displays/TextDisplayGeneric.cpp
+    gfx/displays/TextDisplayKompleteKontrol.cpp
+    gfx/displays/NullCanvas.cpp
     gfx/displays/GDisplayMaschineMikro.cpp
     gfx/displays/GDisplayMaschineMK1.cpp
     gfx/displays/GDisplayMaschineMK2.cpp

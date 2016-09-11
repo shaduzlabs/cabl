@@ -40,14 +40,14 @@ Canvas::Canvas() : m_pFont(FontManager::instance().getDefaultFont())
 
 void Canvas::invert()
 {
-  std::for_each(buuuffer(), buuuffer() + bufferSize(), [](uint8_t& pixel_) { pixel_ = ~pixel_; });
+  std::for_each(data(), data() + bufferSize(), [](uint8_t& pixel_) { pixel_ = ~pixel_; });
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::fill(uint8_t value_)
 {
-  std::fill(buuuffer(), buuuffer() + bufferSize(), value_);
+  std::fill(data(), data() + bufferSize(), value_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -60,19 +60,22 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bo
   }
 
   util::ColorRGB oldColor = pixel(x_, y_);
+  util::ColorRGB newColor = color_;
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
   if (color_.blendMode() == BlendMode::Invert)
   {
-    buuuffer()[byteIndex] = ~oldColor.red();
-    buuuffer()[byteIndex + 1] = ~oldColor.green();
-    buuuffer()[byteIndex + 2] = ~oldColor.blue();
+    newColor = oldColor;
+    newColor.invert();
   }
-  else
+  
+  data()[byteIndex] = newColor.red();
+  data()[byteIndex + 1] = newColor.green();
+  data()[byteIndex + 2] = newColor.blue();
+  
+  if (setDirtyFlags_ && oldColor != newColor)
   {
-    buuuffer()[byteIndex] = color_.red();
-    buuuffer()[byteIndex + 1] = color_.green();
-    buuuffer()[byteIndex + 2] = color_.blue();
+    setDirtyChunk(y_);
   }
 }
 
@@ -86,7 +89,7 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
   }
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
-  return {buuuffer()[byteIndex], buuuffer()[byteIndex + 1], buuuffer()[byteIndex + 2]};
+  return {data()[byteIndex], data()[byteIndex + 1], data()[byteIndex + 2]};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -518,7 +521,7 @@ void Canvas::circleFilled(uint16_t x_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::bitmap(uint16_t x_,
+void Canvas::putBitmap(uint16_t x_,
   uint16_t y_,
   uint16_t w_,
   uint16_t h_,
@@ -547,7 +550,7 @@ void Canvas::bitmap(uint16_t x_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::canvas(const Canvas& c_,
+void Canvas::putCanvas(const Canvas& c_,
   uint16_t xDest_,
   uint16_t yDest_,
   uint16_t xSource_,
@@ -580,7 +583,7 @@ void Canvas::canvas(const Canvas& c_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::character(
+void Canvas::putCharacter(
   uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_)
 {
   const Font* pFont = FontManager::instance().getFont(font_);
@@ -605,7 +608,7 @@ void Canvas::character(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::text(uint16_t x_,
+void Canvas::putText(uint16_t x_,
   uint16_t y_,
   const char* pStr_,
   const util::ColorRGB& color_,
@@ -624,7 +627,7 @@ void Canvas::text(uint16_t x_,
     {
       return;
     }
-    character(x_, y_, pStr_[i], color_, font_);
+    putCharacter(x_, y_, pStr_[i], color_, font_);
     x_ += charWidth;
   }
 }

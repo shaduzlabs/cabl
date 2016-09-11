@@ -31,7 +31,7 @@
 //#include "devices/DeviceTraktorF1MK2.cpp"
 
 #include "gfx/Canvas.h"
-#include "gfx/GDisplay.h"
+#include "gfx/CanvasBase.h"
 #include "gfx/displays/GDisplayMaschineMikro.h"
 
 #include "util/Functions.h"

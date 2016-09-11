@@ -7,7 +7,7 @@
 
 #include <catch.hpp>
 #include <gfx/DynamicCanvas.h>
-#include <gfx/displays/GDisplayDummy.h>
+#include <gfx/displays/NullCanvas.h>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -20,9 +20,9 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayDummy: constructor", "[gfx][displays][GDisplayDummy]")
+TEST_CASE("NullCanvas: constructor", "[gfx][displays][NullCanvas]")
 {
-  GDisplayDummy display;
+  NullCanvas display;
   CHECK(display.width() == 0);
   CHECK(display.height() == 0);
   CHECK(display.numberOfChunks() == 1);
@@ -30,9 +30,9 @@ TEST_CASE("GDisplayDummy: constructor", "[gfx][displays][GDisplayDummy]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayDummy: display chunks", "[gfx][displays][GDisplayDummy]")
+TEST_CASE("NullCanvas: display chunks", "[gfx][displays][NullCanvas]")
 {
-  GDisplayDummy display;
+  NullCanvas display;
 
   for (unsigned i = 0; i < display.numberOfChunks(); i++)
   {
@@ -49,9 +49,9 @@ TEST_CASE("GDisplayDummy: display chunks", "[gfx][displays][GDisplayDummy]")
 
 //--------------------------------------------------------------------------------------------------
 
-TEST_CASE("GDisplayDummy: interface", "[gfx][displays][GDisplayDummy]")
+TEST_CASE("NullCanvas: interface", "[gfx][displays][NullCanvas]")
 {
-  GDisplayDummy display;
+  NullCanvas display;
 
   CHECK_FALSE(display.dirty());
 
@@ -132,20 +132,20 @@ TEST_CASE("GDisplayDummy: interface", "[gfx][displays][GDisplayDummy]")
   CHECK_FALSE(display.dirtyChunk(0));
 
   const uint8_t myBitmap[] = {1, 12, 14, 16, 4, 7, 2, 7, 4, 7, 4, 43};
-  display.bitmap(1, 2, 3, 4, myBitmap, {0xff});
+  display.putBitmap(1, 2, 3, 4, myBitmap, {0xff});
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 
   DynamicCanvas c(10, 10);
-  display.canvas(c, 0, 0, 1, 2, 20, 20);
+  display.putCanvas(c, 0, 0, 1, 2, 20, 20);
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 
-  display.character(1, 4, 'h', {0xff}, "normal");
+  display.putCharacter(1, 4, 'h', {0xff}, "normal");
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 
-  display.text(3, 1, "oh my god it's really late!", {0xff}, "big", 22);
+  display.putText(3, 1, "oh my god it's really late!", {0xff}, "big", 22);
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 }

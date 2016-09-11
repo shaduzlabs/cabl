@@ -33,6 +33,7 @@ public:
     , m_size(size_ == 0 ? w_ * h_ * 3 : size_)
     , m_nChunks(nChunks_)
     , m_data(m_size)
+    , m_chunkDirtyFlags(m_nChunks)
   {
     black();
   }
@@ -56,7 +57,7 @@ public:
     return m_nChunks;
   }
 
-  const uint8_t* daaata() override
+  const uint8_t* buffer() override
   {
     return m_data.data();
   }
@@ -66,7 +67,7 @@ public:
     return m_size;
   }
 
-  const uint8_t* buuuffer() const override
+  const uint8_t* data() const override
   {
     return m_data.data();
   }
@@ -106,9 +107,14 @@ public:
   void setDirtyChunk(uint16_t yStart_) const override
   {
     unsigned chunkHeight = m_height / m_nChunks;
+    if (chunkHeight == 0 || m_nChunks == 0)
+    {
+      return;
+    }
     if (yStart_ < m_height)
     {
-      m_chunkDirtyFlags[static_cast<uint8_t>(yStart_ / chunkHeight)] = true;
+      unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), m_nChunks - 1);
+      m_chunkDirtyFlags[chunk] = true;
     }
   }
 
@@ -132,7 +138,7 @@ public:
   /** @} */ // End of group Utility
 
 protected:
-  uint8_t* buuuffer() override
+  uint8_t* data() override
   {
     return m_data.data();
   }

@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/displays/LCDDisplayKompleteKontrol.h"
+#include "gfx/displays/TextDisplayKompleteKontrol.h"
 
 #include <cmath>
 #include <cstdint>
@@ -19,7 +19,7 @@
 namespace
 {
 const uint8_t kLCDKK_numDotsPerRow = 7;
-const uint16_t kLCDDisplayKK_FontData[] = {
+const uint16_t kTextDisplayKK_FontData[] = {
 #include "gfx/fonts/data/FONT_16-seg.h"
 };
 } // namespace
@@ -31,7 +31,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::character(uint8_t col_, uint8_t row_, char c_)
+void TextDisplayKompleteKontrol::putCharacter(uint8_t col_, uint8_t row_, char c_)
 {
   if (row_ < 1 || row_ >= height() || col_ >= width())
   {
@@ -39,13 +39,13 @@ void LCDDisplayKompleteKontrol::character(uint8_t col_, uint8_t row_, char c_)
   }
   setDirty(row_);
   unsigned index = (row_ * 16) + col_;
-  data()[index++] = kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] & 0xff;
-  data()[index++] = (kLCDDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
+  data()[index++] = kTextDisplayKK_FontData[static_cast<uint8_t>(c_)] & 0xff;
+  data()[index++] = (kTextDisplayKK_FontData[static_cast<uint8_t>(c_)] >> 8) & 0xff;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(const std::string& string_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -58,26 +58,26 @@ void LCDDisplayKompleteKontrol::text(const std::string& string_, uint8_t row_, A
   for (size_t i = 0; i < std::min<size_t>(strAligned.length(), 8); i++)
   {
     const uint8_t& character = strAligned.at(i);
-    data()[index++] = kLCDDisplayKK_FontData[character] & 0xff;
-    data()[index++] = (kLCDDisplayKK_FontData[character] >> 8) & 0xff;
+    data()[index++] = kTextDisplayKK_FontData[character] & 0xff;
+    data()[index++] = (kTextDisplayKK_FontData[character] >> 8) & 0xff;
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(int value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(int value_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
     return;
   }
 
-  text(std::to_string(value_), row_, align_);
+  putText(std::to_string(value_), row_, align_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(double value_, uint8_t row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -95,12 +95,12 @@ void LCDDisplayKompleteKontrol::text(double value_, uint8_t row_, Alignment alig
   strValue.append(std::string(3 - strFractional.length(), '0'));
   strValue.append(strFractional);
 
-  text(strValue, row_, align_);
+  putText(strValue, row_, align_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putValue(float value_, uint8_t row_, Alignment align_)
 {
   if (row_ >= height())
   {
@@ -131,8 +131,8 @@ void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Alignment alig
     {
       if (valInterval > i)
       {
-        data()[index++] = kLCDDisplayKK_FontData[43] & 0xff;
-        data()[index++] = (kLCDDisplayKK_FontData[43] >> 8) & 0xff;
+        data()[index++] = kTextDisplayKK_FontData[43] & 0xff;
+        data()[index++] = (kTextDisplayKK_FontData[43] >> 8) & 0xff;
       }
       else
       {
@@ -145,7 +145,7 @@ void LCDDisplayKompleteKontrol::value(float value_, uint8_t row_, Alignment alig
 
 //--------------------------------------------------------------------------------------------------
 
-std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Alignment align_) const
+std::string TextDisplayKompleteKontrol::alignText(const std::string& string_, Alignment align_) const
 {
   if (string_.length() >= width())
   {
@@ -180,7 +180,7 @@ std::string LCDDisplayKompleteKontrol::alignText(const std::string& string_, Ali
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
+void TextDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
 {
   if (row_ == 0 || row_ >= height() || nDot_ > kLCDKK_numDotsPerRow)
   {
@@ -194,7 +194,7 @@ void LCDDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible
 
 //--------------------------------------------------------------------------------------------------
 
-void LCDDisplayKompleteKontrol::resetDots(uint8_t row_)
+void TextDisplayKompleteKontrol::resetDots(uint8_t row_)
 {
   if (row_ == 0 || row_ >= height())
   {
