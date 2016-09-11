@@ -11,15 +11,6 @@
 
 //--------------------------------------------------------------------------------------------------
 
-namespace
-{
-const uint16_t kMASMK2_displayWidth = 1024;      // Width of the display in pixels
-const uint16_t kMASMK2_displayHeight = 160;      // Height of the display in pixels
-const uint16_t kMASMK2_nOfDisplayDataChunks = 1; // N. of display data chunks
-} // namespace
-
-//--------------------------------------------------------------------------------------------------
-
 namespace sl
 {
 namespace cabl
@@ -27,47 +18,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplayPush2::GDisplayPush2()
-  : GDisplay(kMASMK2_displayWidth, kMASMK2_displayHeight, kMASMK2_nOfDisplayDataChunks)
-{
-  initialize();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayPush2::initializeImpl()
-{
-  buffer().resize(canvasWidthInBytesImpl() * height());
-  black();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-uint16_t GDisplayPush2::canvasWidthInBytesImpl() const
-{
-  uint16_t canvasWitdhInBytes = width() * 2;
-  return canvasWitdhInBytes;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayPush2::white()
-{
-  fill(0xff);
-  setDirty();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayPush2::black()
-{
-  fill(0x00);
-  setDirty();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayPush2::setPixelImpl(
+void GDisplayPush2::setPixel(
   uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
@@ -75,7 +26,7 @@ void GDisplayPush2::setPixelImpl(
     return;
   }
 
-  util::ColorRGB oldColor = pixelImpl(x_, y_);
+  util::ColorRGB oldColor = pixel(x_, y_);
   util::ColorRGB newColor = color_;
   if (color_.blendMode() == BlendMode::Invert)
   {
@@ -85,9 +36,9 @@ void GDisplayPush2::setPixelImpl(
 
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
   uint8_t green = ((newColor.green() / 255.0) * 63) + 0.5;
-  buffer()[byteIndex]
+  buuuffer()[byteIndex]
     = (static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
-  buffer()[byteIndex + 1]
+  buuuffer()[byteIndex + 1]
     = ((green << 5) & 0xE0) | static_cast<uint8_t>(((newColor.blue() / 255.0) * 31) + 0.5);
 
   if (bSetDirtyChunk_ && oldColor != newColor)
@@ -98,7 +49,7 @@ void GDisplayPush2::setPixelImpl(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayPush2::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
@@ -107,10 +58,10 @@ util::ColorRGB GDisplayPush2::pixelImpl(uint16_t x_, uint16_t y_) const
   unsigned index = (canvasWidthInBytes() * y_) + (x_ * 2);
 
   return {
-    static_cast<uint8_t>((((buffer()[index] >> 3) / 31.0) * 255) + 0.5),
+    static_cast<uint8_t>((((buuuffer()[index] >> 3) / 31.0) * 255) + 0.5),
     static_cast<uint8_t>(
-      ((((buffer()[index] & 0x07) << 3 | (buffer()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
-    static_cast<uint8_t>((((buffer()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
+      ((((buuuffer()[index] & 0x07) << 3 | (buuuffer()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
+    static_cast<uint8_t>((((buuuffer()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
 }
 
 //--------------------------------------------------------------------------------------------------

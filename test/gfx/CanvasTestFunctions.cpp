@@ -11,6 +11,8 @@
 #include <iostream>
 
 #include <lodepng.h>
+#include <gfx/CanvasBase.h>
+#include <gfx/DynamicCanvas.h>
 
 //--------------------------------------------------------------------------------------------------
 
@@ -35,8 +37,8 @@ const util::ColorRGB k_colorInvert{BlendMode::Invert};
 
 void lines(Canvas* c_)
 {
-  uint16_t width{c_->width()};
-  uint16_t height{c_->height()};
+  unsigned width{c_->width()};
+  unsigned height{c_->height()};
 
   c_->line(0, height, width, height, k_colorWhite);
   c_->line(0, height, width, 0, k_colorWhite);
@@ -68,8 +70,8 @@ void lines(Canvas* c_)
 
 void circles(Canvas* c_)
 {
-  uint16_t width{c_->width()};
-  uint16_t height{c_->height()};
+  unsigned width{c_->width()};
+  unsigned height{c_->height()};
 
   c_->circle(width / 2, height / 2, std::min(width / 2, height / 2), k_colorBlue);
 
@@ -229,7 +231,7 @@ void canvas(Canvas* c_)
   c_->white();
   c_->invert();
 
-  Canvas internalCanvas(w, h);
+  DynamicCanvas internalCanvas(w, h);
 
   for (unsigned j = 0; j < w; j++)
   {
@@ -239,7 +241,7 @@ void canvas(Canvas* c_)
     }
   }
 
-  Canvas internaInternallCanvas(w, h);
+  DynamicCanvas internaInternallCanvas(w, h);
 
   for (unsigned j = 0; j < w / 2; j++)
   {

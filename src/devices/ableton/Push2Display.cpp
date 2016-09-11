@@ -99,7 +99,7 @@ Push2Display::~Push2Display()
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* Push2Display::displayGraphic(size_t displayIndex_)
+Canvas* Push2Display::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 0)
@@ -140,10 +140,10 @@ bool Push2Display::sendDisplayData() const
       {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
     0x01);
 
-  for (unsigned offset = 0; offset < m_display.buffer().size(); offset += 16384)
+  for (unsigned offset = 0; offset < m_display.bufferSize(); offset += 16384)
   {
-    if (!writeToDeviceHandle(Transfer({m_display.buffer().begin() + offset,
-                               m_display.buffer().begin() + offset + 16384}),
+    if (!writeToDeviceHandle(Transfer({m_display.buuuffer() + offset,
+                               m_display.buuuffer() + offset + 16384}),
           0x01))
     {
       return false;

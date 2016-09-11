@@ -251,7 +251,7 @@ void MaschineMK2::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK2::displayGraphic(size_t displayIndex_)
+Canvas* MaschineMK2::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -341,7 +341,7 @@ bool MaschineMK2::sendFrame(uint8_t displayIndex_)
   {
     uint8_t firstByte = 0xE0 | displayIndex_;
     chunkByte = chunk * 8;
-    const uint8_t* ptr = m_displays[displayIndex_].ptr(chunk * 256);
+    const uint8_t* ptr = m_displays[displayIndex_].daaata() + (chunk * 256);
     if (!writeToDeviceHandle(
           Transfer({firstByte, 0x00, 0x00, chunkByte, 0x00, 0x20, 0x00, 0x08, 0x00}, ptr, 256),
           kMASMK2_epDisplay))

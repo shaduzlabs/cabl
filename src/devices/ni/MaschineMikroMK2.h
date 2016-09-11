@@ -32,7 +32,7 @@ public:
   void setLed(Device::Button, const util::ColorRGB&) override;
   void setLed(Device::Pad, const util::ColorRGB&) override;
 
-  GDisplay* displayGraphic(size_t displayIndex_) override;
+  Canvas* displayGraphic(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override { return 1; }
 

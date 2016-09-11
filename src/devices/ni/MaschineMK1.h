@@ -28,14 +28,13 @@ class MaschineMK1 : public Device
 
 public:
   MaschineMK1();
-  ~MaschineMK1() override;
 
   void setLed(Device::Button, const util::ColorRGB&) override;
   void setLed(Device::Pad, const util::ColorRGB&) override;
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* displayGraphic(size_t displayIndex_) override;
+  Canvas* displayGraphic(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override { return 2; }
 

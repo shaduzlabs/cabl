@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "Canvas.h"
+#include "gfx/CanvasBase.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -30,7 +30,8 @@ class Font;
 
 //--------------------------------------------------------------------------------------------------
 
-class LedMatrix : public Canvas
+template<unsigned W, unsigned H, unsigned SIZE=W*H>
+class LedMatrix : public CanvasBase<W,H,SIZE>
 {
 
 public:
@@ -53,9 +54,6 @@ public:
      \param height_ Display height in pixels
      \param numDisplayChunks_ Number of data chunks (Default value is 8)
      */
-  LedMatrix(uint16_t width_, uint16_t height_)
-    : Canvas(width_, height_)
-  {}
 
   //! Destructor
   virtual ~LedMatrix() = default;

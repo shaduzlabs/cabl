@@ -7,37 +7,25 @@
 
 #pragma once
 
-#include "client/Client.h"
-
-#include "devices/DeviceFactory.h"
-
-#include "gfx/Canvas.h"
-#include "gfx/LCDDisplay.h"
-#include "gfx/LedMatrix.h"
-#include "gfx/LedArray.h"
-
-#include "util/Version.h"
-
-#include "cabl-config.h"
+#include "util/ColorRGB.h"
 
 namespace sl
 {
 namespace cabl
 {
+namespace devices
+{
 
 //--------------------------------------------------------------------------------------------------
 
-class Lib
+struct MaschineJamHelper
 {
-
-public:
-  static std::string version()
-  {
-    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
-  }
+  static uint8_t toLedColor(const util::ColorRGB& color_);
+  static util::ColorRGB fromLedColor(uint8_t color_);
 };
 
 //--------------------------------------------------------------------------------------------------
 
+} // namespace devices
 } // namespace cabl
 } // namespace sl

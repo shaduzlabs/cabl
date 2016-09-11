@@ -5,9 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/displays/GDisplayMaschineMikro.h"
-
-#include "util/Functions.h"
+#include "gfx/displays/LedMatrixMaschineJam.h"
+#include "devices/ni/MaschineJamHelper.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -18,7 +17,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMikro::setPixel(
+void LedMatrixMaschineJam::setPixel(
   uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
@@ -27,25 +26,16 @@ void GDisplayMaschineMikro::setPixel(
   }
 
   util::ColorRGB oldColor = pixel(x_, y_);
-
-  bool isWhite{color_.active()};
+  util::ColorRGB newColor = color_;
   if (color_.blendMode() == BlendMode::Invert)
   {
-    isWhite = !oldColor.active();
-  }
-  unsigned byteIndex = (width() * (y_ >> 3)) + x_;
-
-
-  if (isWhite)
-  {
-    buuuffer()[byteIndex] |= 0x01 << (y_ & 7);
-  }
-  else
-  {
-    buuuffer()[byteIndex] &= ~(0x01 << (y_ & 7));
+    newColor = oldColor;
+    newColor.invert();
   }
 
-  if (bSetDirtyChunk_ && oldColor.active() != isWhite)
+  buuuffer()[x_ + (y_ * 8)] = devices::MaschineJamHelper::toLedColor(color_);
+
+  if (bSetDirtyChunk_ && oldColor != newColor)
   {
     setDirtyChunk(y_);
   }
@@ -53,19 +43,13 @@ void GDisplayMaschineMikro::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayMaschineMikro::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB LedMatrixMaschineJam::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
     return {};
   }
-
-  if (((buuuffer()[x_ + (width() * (y_ >> 3))] >> ((y_)&7)) & 0x01) == 0)
-  {
-    return {0};
-  }
-
-  return {0xff};
+  return devices::MaschineJamHelper::fromLedColor(buuuffer()[x_ + (y_ * 8)]);
 }
 
 //--------------------------------------------------------------------------------------------------

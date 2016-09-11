@@ -32,29 +32,28 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-Canvas::Canvas(uint16_t width_, uint16_t height_)
-  : m_width(width_), m_height(height_), m_pFont(FontManager::instance().getDefaultFont())
+Canvas::Canvas()
+  : m_pFont(FontManager::instance().getDefaultFont())
 {
-  initialize();
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::invert()
 {
-  std::for_each(m_data.begin(), m_data.end(), [](uint8_t& pixel_) { pixel_ = ~pixel_; });
+  std::for_each(buuuffer(), buuuffer() + bufferSize(), [](uint8_t& pixel_) { pixel_ = ~pixel_; });
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::fill(uint8_t value_)
 {
-  std::fill(m_data.begin(), m_data.end(), value_);
+  std::fill(buuuffer(), buuuffer() + bufferSize(), value_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
+void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool setDirtyFlags_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -66,15 +65,15 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_)
 
   if (color_.blendMode() == BlendMode::Invert)
   {
-    buffer()[byteIndex] = ~oldColor.red();
-    buffer()[byteIndex + 1] = ~oldColor.green();
-    buffer()[byteIndex + 2] = ~oldColor.blue();
+    buuuffer()[byteIndex] = ~oldColor.red();
+    buuuffer()[byteIndex + 1] = ~oldColor.green();
+    buuuffer()[byteIndex + 2] = ~oldColor.blue();
   }
   else
   {
-    buffer()[byteIndex] = color_.red();
-    buffer()[byteIndex + 1] = color_.green();
-    buffer()[byteIndex + 2] = color_.blue();
+    buuuffer()[byteIndex] = color_.red();
+    buuuffer()[byteIndex + 1] = color_.green();
+    buuuffer()[byteIndex + 2] = color_.blue();
   }
 }
 
@@ -88,7 +87,7 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
   }
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
-  return {buffer()[byteIndex], buffer()[byteIndex + 1], buffer()[byteIndex + 2]};
+  return {buuuffer()[byteIndex], buuuffer()[byteIndex + 1], buuuffer()[byteIndex + 2]};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -527,13 +526,13 @@ void Canvas::bitmap(uint16_t x_,
   const uint8_t* pBitmap_,
   const util::ColorRGB& color_)
 {
-  if ((x_ >= m_width) || (y_ >= m_height))
+  if ((x_ >= width()) || (y_ >= height()))
   {
     return;
   }
 
-  uint16_t drawableHeight = ((y_ + h_) > m_height) ? (m_height - y_) : h_;
-  uint16_t drawableWidth = ((x_ + w_) > m_width) ? (m_width - x_) : w_;
+  uint16_t drawableHeight = ((y_ + h_) > height()) ? (height() - y_) : h_;
+  uint16_t drawableWidth = ((x_ + w_) > width()) ? (width() - x_) : w_;
 
   for (uint8_t j = 0; j < drawableHeight; j++)
   {
@@ -560,16 +559,16 @@ void Canvas::canvas(const Canvas& c_,
   uint16_t cw = c_.width();
   uint16_t ch = c_.height();
 
-  if ((xDest_ >= m_width) || (yDest_ >= m_height) || (xSource_ >= cw) || (ySource_ >= ch))
+  if ((xDest_ >= width()) || (yDest_ >= height()) || (xSource_ >= cw) || (ySource_ >= ch))
   {
     return;
   }
 
-  uint16_t width = (w_ <= cw && w_ > 0) ? w_ : cw;
-  uint16_t height = (h_ <= ch && h_ > 0) ? h_ : ch;
+  uint16_t ww = (w_ <= cw && w_ > 0) ? w_ : cw;
+  uint16_t hh = (h_ <= ch && h_ > 0) ? h_ : ch;
 
-  uint16_t drawableHeight = ((yDest_ + height) > m_height) ? (m_height - yDest_) : height;
-  uint16_t drawableWidth = ((xDest_ + width) > m_width) ? (m_width - xDest_) : width;
+  uint16_t drawableHeight = ((yDest_ + hh) > height()) ? (height() - yDest_) : hh;
+  uint16_t drawableWidth = ((xDest_ + ww) > width()) ? (width() - xDest_) : ww;
 
   for (uint16_t j = 0; j < drawableHeight; j++)
   {
@@ -588,7 +587,7 @@ void Canvas::character(
   const Font* pFont = FontManager::instance().getFont(font_);
   uint8_t c = c_ - pFont->firstChar();
 
-  if ((x_ >= m_width) || (y_ >= m_height) || c > pFont->lastChar() || c_ < pFont->firstChar())
+  if ((x_ >= width()) || (y_ >= height()) || c > pFont->lastChar() || c_ < pFont->firstChar())
   {
     return;
   }
@@ -616,34 +615,19 @@ void Canvas::text(uint16_t x_,
 {
   const Font* pFont = FontManager::instance().getFont(font_);
   uint8_t charWidth = pFont->charSpacing() + spacing_;
-  if (y_ >= m_height || x_ > m_width)
+  if (y_ >= height() || x_ > width())
   {
     return;
   }
   for (unsigned i = 0; static_cast<unsigned>(pStr_[i]) != 0; i++)
   {
-    if (x_ > (m_width + charWidth))
+    if (x_ > (width() + charWidth))
     {
       return;
     }
     character(x_, y_, pStr_[i], color_, font_);
     x_ += charWidth;
   }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Canvas::initialize()
-{
-  m_data.resize(canvasWidthInBytes() * m_height);
-  black();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-uint16_t Canvas::canvasWidthInBytes() const
-{
-  return m_width * 3;
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include <catch.hpp>
+#include <gfx/DynamicCanvas.h>
 #include <gfx/displays/GDisplayDummy.h>
 
 //--------------------------------------------------------------------------------------------------
@@ -24,7 +25,7 @@ TEST_CASE("GDisplayDummy: constructor", "[gfx][displays][GDisplayDummy]")
   GDisplayDummy display;
   CHECK(display.width() == 0);
   CHECK(display.height() == 0);
-  CHECK(display.numberOfChunks() == 0);
+  CHECK(display.numberOfChunks() == 1);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -135,7 +136,8 @@ TEST_CASE("GDisplayDummy: interface", "[gfx][displays][GDisplayDummy]")
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 
-  display.canvas({10, 10}, 0, 0, 1, 2, 20, 20);
+  DynamicCanvas c(10,10);
+  display.canvas(c, 0, 0, 1, 2, 20, 20);
   CHECK_FALSE(display.dirty());
   CHECK_FALSE(display.dirtyChunk(0));
 

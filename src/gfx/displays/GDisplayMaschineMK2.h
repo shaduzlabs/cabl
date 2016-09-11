@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "gfx/GDisplay.h"
+#include "gfx/CanvasBase.h"
 
 #include <map>
 
@@ -18,27 +18,9 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayMaschineMK2 : public GDisplay
+class GDisplayMaschineMK2 : public CanvasBase<256,64,2048,8>
 {
 public:
-  //! Constructor
-  /*!
-     \param width_  Display width in pixels
-     \param height_ Display height in pixels
-     \param height_ Number of data chunks (Default value is 8)
-     */
-  GDisplayMaschineMK2();
-
-  void white() override;
-
-  void black() override;
-
-protected:
-  //! Initialize the display
-  void initializeImpl() override;
-
-  //! \return The width of the display in bytes
-  uint16_t canvasWidthInBytesImpl() const override;
 
   //! Set a pixel
   /*!
@@ -47,7 +29,7 @@ protected:
      \param color_           The pixel color (RGB + monochrome)
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
-  void setPixelImpl(
+  void setPixel(
     uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override;
 
   //! Get the pixel value as an RGB color
@@ -56,7 +38,7 @@ protected:
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-  util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const override;
+  util::ColorRGB pixel(uint16_t x_, uint16_t y_) const override;
 };
 
 //--------------------------------------------------------------------------------------------------

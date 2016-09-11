@@ -184,12 +184,6 @@ MaschineMK1::MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::~MaschineMK1()
-{
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void MaschineMK1::setLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
@@ -214,7 +208,7 @@ void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMK1::displayGraphic(size_t displayIndex_)
+Canvas* MaschineMK1::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 1)
@@ -364,7 +358,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   const uint16_t dataSize = 502;
 
   if (!writeToDeviceHandle(
-        Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].ptr(offset), dataSize),
+        Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].daaata() + offset, dataSize),
         kMASMK1_epDisplay))
   {
     return false;
@@ -375,7 +369,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   {
     offset += dataSize;
     if (!writeToDeviceHandle(
-          Transfer({d, 0x01, 0xF6}, m_displays[displayIndex_].ptr(offset), dataSize),
+          Transfer({d, 0x01, 0xF6}, m_displays[displayIndex_].daaata() + offset, dataSize),
           kMASMK1_epDisplay))
     {
       return false;
@@ -385,7 +379,7 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   offset += dataSize;
 
   if (!writeToDeviceHandle(
-        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].ptr(offset), 338), kMASMK1_epDisplay))
+        Transfer({d, 0x01, 0x52}, m_displays[displayIndex_].daaata() + offset, 338), kMASMK1_epDisplay))
   {
     return false;
   }

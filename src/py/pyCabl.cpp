@@ -36,15 +36,15 @@ class CanvasHelper
 public:
   static void write(Canvas* canvas_, uint8_t* buffer)
   {
-    std::copy_n(buffer, canvas_->buffer().size(), canvas_->buffer().begin());
+    std::copy_n(buffer, canvas_->bufferSize(), canvas_->buuuffer());
   }
-  static void setDirty(GDisplay* display_)
+  static void setDirty(Canvas* display_)
   {
     display_->setDirty();
   }
   static unsigned dataSize(Canvas* canvas_)
   {
-    return canvas_->buffer().size();
+    return canvas_->bufferSize();
   }
   static unsigned canvasWidthInBytes(Canvas* canvas_)
   {
@@ -54,7 +54,7 @@ public:
 
 //--------------------------------------------------------------------------------------------------
 
-static void writeToDisplay(GDisplay& self_, object buffer)
+static void writeToDisplay(Canvas& self_, object buffer)
 {
   PyObject* pyBuffer = buffer.ptr();
   if (!PyBuffer_Check(pyBuffer))
@@ -71,14 +71,14 @@ static void writeToDisplay(GDisplay& self_, object buffer)
 
 //--------------------------------------------------------------------------------------------------
 
-static unsigned displayDataSize(GDisplay& self_)
+static unsigned displayDataSize(Canvas& self_)
 {
   return CanvasHelper::dataSize(&self_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-static unsigned canvasWidthInBytes(GDisplay& self_)
+static unsigned canvasWidthInBytes(Canvas& self_)
 {
   return CanvasHelper::canvasWidthInBytes(&self_);
 }

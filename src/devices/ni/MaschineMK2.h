@@ -34,7 +34,7 @@ public:
 
   void sendMidiMsg(tRawData) override;
 
-  GDisplay* displayGraphic(size_t displayIndex_) override;
+  Canvas* displayGraphic(size_t displayIndex_) override;
 
   size_t numOfGraphicDisplays() const override { return 2; }
 

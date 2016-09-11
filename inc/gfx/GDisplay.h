@@ -30,6 +30,7 @@ class Font;
 
 //--------------------------------------------------------------------------------------------------
 
+//template<unsigned W, unsigned H, unsigned SIZE = W * H * 3>
 class GDisplay : public Canvas
 {
 

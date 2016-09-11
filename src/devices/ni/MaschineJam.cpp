@@ -7,15 +7,20 @@
 
 #include "devices/ni/MaschineJam.h"
 
+#include <thread>
+
 #include "comm/Driver.h"
 #include "comm/Transfer.h"
 #include "util/Functions.h"
-#include <thread>
 
 #include "gfx/LCDDisplay.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
+
 #include "gfx/displays/GDisplayDummy.h"
+#include "gfx/displays/LedArrayDummy.h"
+
+#include "devices/ni/MaschineJamHelper.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -24,12 +29,6 @@ namespace
 const uint8_t kMASJ_epOut = 0x01;
 const uint8_t kMASJ_epInput = 0x84;
 const std::string kMASJ_midiOutName = "Maschine Controller MK2";
-
-uint8_t getJamColor(const sl::util::ColorRGB& color_)
-{
-  //\todo implement actual color conversion
-  return color_.mono();
-}
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -283,14 +282,8 @@ enum class MaschineJam::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineJam::MaschineJam() : m_ledMatrix(8, 8)
+MaschineJam::MaschineJam()
 {
-  for (unsigned i = 0; i < kMASJ_nLedArrays; i++)
-  {
-    m_ledArrays.emplace_back(11);
-  }
-  m_ledArrays.emplace_back(8);
-  m_ledArrays.emplace_back(8);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -309,9 +302,9 @@ void MaschineJam::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-LedMatrix* MaschineJam::ledMatrix(size_t ledMatrixIndex_)
+Canvas* MaschineJam::ledMatrix(size_t ledMatrixIndex_)
 {
-  static LedMatrix s_dummyLedMatrix(0, 0);
+  static GDisplayDummy s_dummyLedMatrix;
   if (ledMatrixIndex_ == 0)
   {
     return &m_ledMatrix;
@@ -324,10 +317,14 @@ LedMatrix* MaschineJam::ledMatrix(size_t ledMatrixIndex_)
 
 LedArray* MaschineJam::ledArray(size_t ledArrayIndex_)
 {
-  static LedArray s_dummyLedArray(0);
-  if (ledArrayIndex_ < m_ledArrays.size())
+  static LedArrayDummy s_dummyLedArray;
+  if (ledArrayIndex_ < 8)
   {
-    return &m_ledArrays[ledArrayIndex_];
+    return &m_ledArraysStrips[ledArrayIndex_];
+  }
+  else if (ledArrayIndex_ < 10)
+  {
+    return &m_ledArraysLevel[ledArrayIndex_ - 8];
   }
 
   return &s_dummyLedArray;
@@ -375,6 +372,10 @@ void MaschineJam::init()
   m_isDirtyButtonLeds = true;
   m_isDirtyStripLeds = true;
   m_isDirtyPadLeds = true;
+
+ // m_ledMatrix.setPixel(0, 1, {0xff});
+  m_ledMatrix.circle(4, 4, 3, 0xf9);
+  m_ledArraysStrips[7].setPixel(9, 0xf0);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -383,28 +384,37 @@ bool MaschineJam::sendLeds()
 {
   if (m_ledMatrix.dirty())
   {
-    std::copy(m_ledMatrix.data().begin(), m_ledMatrix.data().end(), &m_ledsPads[8]);
-    m_ledMatrix.resetDirty();
+    unsigned pixel = 8;
+    for (int y = 0; y < m_ledMatrix.height(); y++)
+    {
+      for (int x = 0; x < m_ledMatrix.width(); x++)
+      {
+        m_ledsPads[pixel++] = MaschineJamHelper::toLedColor(m_ledMatrix.pixel(x, y));
+      }
+    }
+    m_ledMatrix.resetDirtyFlags();
     m_isDirtyPadLeds = true;
   }
   for (unsigned i = 0; i < numOfLedArrays(); i++)
   {
-    if (m_ledArrays[i].dirty())
+    if (m_ledArraysStrips[i].dirty())
     {
       if (i < 8)
       {
-        std::copy(
-          m_ledArrays[i].data().begin(), m_ledArrays[i].data().end(), &m_ledsStrips[i * 11]);
+        std::copy(m_ledArraysStrips[i].buffer(),
+          m_ledArraysStrips[i].buffer() + m_ledArraysStrips[i].length(),
+          &m_ledsStrips[i * 11]);
+        m_ledArraysStrips[i].resetDirty();
       }
       else if (i < 10)
       {
         unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 9);
-        for (unsigned k = 0; k < m_ledArrays[i].data().size(); k++)
+        for (unsigned k = 0; k < m_ledArraysLevel[i-8].length(); k++)
         {
-          m_ledsButtons[offset + (2 * k)] = m_ledArrays[i].data()[k];
+          m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i-8].buffer()[k];
         }
+        m_ledArraysLevel[i-8].resetDirty();
       }
-      m_ledArrays[i].resetDirty();
       m_isDirtyPadLeds = true;
     }
   }
@@ -486,10 +496,10 @@ void MaschineJam::processButtons(const Transfer& input_)
           if (currentButton >= Button::Pad1 && currentButton <= Button::Pad64)
           {
             unsigned padIndex
-              = static_cast<unsigned>(currentButton) - static_cast<unsigned>(Pad::Pad1);
+              = static_cast<unsigned>(currentButton) - static_cast<unsigned>(Button::Pad1);
             Device::Pad pad
               = static_cast<Device::Pad>(static_cast<unsigned>(Device::Pad::Pad1) + padIndex);
-            padChanged(pad, buttonPressed ? 0 : 0xff, shiftPressed);
+            padChanged(pad, buttonPressed ? 0 : 0xffff, shiftPressed);
           }
           else
           {
@@ -549,7 +559,7 @@ void MaschineJam::setLedImpl(Led led_, const util::ColorRGB& color_)
     // Matrix buttons, pads and groups
     ledIndex -= static_cast<unsigned>(Led::DisplayButton1);
     uint8_t currentVal = m_ledsPads[ledIndex];
-    uint8_t newVal = getJamColor(color_);
+    uint8_t newVal = MaschineJamHelper::toLedColor(color_);
     m_ledsPads[ledIndex] = newVal;
     m_isDirtyPadLeds = m_isDirtyPadLeds || (currentVal != newVal);
   }
@@ -558,7 +568,7 @@ void MaschineJam::setLedImpl(Led led_, const util::ColorRGB& color_)
     // Touch strips
     ledIndex -= static_cast<unsigned>(Led::Strip1L1);
     uint8_t currentVal = m_ledsStrips[ledIndex];
-    uint8_t newVal = getJamColor(color_);
+    uint8_t newVal = MaschineJamHelper::toLedColor(color_);
     m_ledsStrips[ledIndex] = newVal;
     m_isDirtyStripLeds = m_isDirtyStripLeds || (currentVal != newVal);
   }

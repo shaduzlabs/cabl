@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "gfx/GDisplay.h"
+#include "gfx/CanvasBase.h"
 
 namespace sl
 {
@@ -16,12 +16,9 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayDummy : public GDisplay
+class GDisplayDummy : public CanvasBase<0,0,0,1>
 {
 public:
-  GDisplayDummy() : GDisplay(0U, 0U, 0U)
-  {
-  }
 
   bool dirty() const override
   {
@@ -37,12 +34,7 @@ public:
   {
   }
 
-  virtual uint8_t numberOfChunks() const noexcept override
-  {
-    return 0U;
-  }
-
-  void setDirtyChunk(uint16_t) override
+  void setDirtyChunk(uint16_t) const override
   {
   }
 
@@ -137,32 +129,6 @@ public:
   {
   }
 
-  const uint8_t* ptr(uint16_t) const override
-  {
-    return nullptr;
-  }
-
-protected:
-  //! Initialize the display
-  void initializeImpl() override
-  {
-  }
-
-  //! \return The width of the display in bytes
-  uint16_t canvasWidthInBytesImpl() const override
-  {
-    return 0U;
-  }
-
-  void setPixelImpl(
-    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override
-  {
-  }
-
-  util::ColorRGB pixelImpl(uint16_t x_, uint16_t y_) const override
-  {
-    return {};
-  }
 };
 
 //--------------------------------------------------------------------------------------------------

@@ -11,15 +11,6 @@
 
 //--------------------------------------------------------------------------------------------------
 
-namespace
-{
-const uint16_t kMASMK2_displayWidth = 256;       // Width of the display in pixels
-const uint16_t kMASMK2_displayHeight = 64;       // Height of the display in pixels
-const uint16_t kMASMK2_nOfDisplayDataChunks = 8; // N. of display data chunks
-} // namespace
-
-//--------------------------------------------------------------------------------------------------
-
 namespace sl
 {
 namespace cabl
@@ -27,47 +18,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplayMaschineMK2::GDisplayMaschineMK2()
-  : GDisplay(kMASMK2_displayWidth, kMASMK2_displayHeight, kMASMK2_nOfDisplayDataChunks)
-{
-  initialize();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK2::initializeImpl()
-{
-  buffer().resize(canvasWidthInBytesImpl() * height());
-  black();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-uint16_t GDisplayMaschineMK2::canvasWidthInBytesImpl() const
-{
-  uint16_t canvasWitdhInBytes = 1 + ((width() - 1) >> 3);
-  return canvasWitdhInBytes;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK2::white()
-{
-  fill(0xff);
-  setDirty();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK2::black()
-{
-  fill(0x00);
-  setDirty();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void GDisplayMaschineMK2::setPixelImpl(
+void GDisplayMaschineMK2::setPixel(
   uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
@@ -75,7 +26,7 @@ void GDisplayMaschineMK2::setPixelImpl(
     return;
   }
 
-  util::ColorRGB oldColor = pixelImpl(x_, y_);
+  util::ColorRGB oldColor = pixel(x_, y_);
 
   bool isWhite{color_.active()};
   if (color_.blendMode() == BlendMode::Invert)
@@ -86,11 +37,11 @@ void GDisplayMaschineMK2::setPixelImpl(
 
   if (isWhite)
   {
-    buffer()[byteIndex] |= (0x80 >> (x_ & 7));
+    buuuffer()[byteIndex] |= (0x80 >> (x_ & 7));
   }
   else
   {
-    buffer()[byteIndex] &= (~0x80 >> (x_ & 7));
+    buuuffer()[byteIndex] &= (~0x80 >> (x_ & 7));
   }
 
   if (bSetDirtyChunk_ && oldColor.active() != isWhite)
@@ -101,14 +52,14 @@ void GDisplayMaschineMK2::setPixelImpl(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayMaschineMK2::pixelImpl(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayMaschineMK2::pixel(uint16_t x_, uint16_t y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
     return {};
   }
 
-  if ((buffer()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
+  if ((buuuffer()[(canvasWidthInBytes() * y_) + (x_ >> 3)] & (0x80 >> (x_ & 7))) == 0)
   {
     return {0};
   }

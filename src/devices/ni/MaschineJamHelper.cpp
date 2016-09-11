@@ -5,39 +5,35 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#pragma once
+#include "devices/ni/MaschineJamHelper.h"
 
-#include "client/Client.h"
-
-#include "devices/DeviceFactory.h"
-
-#include "gfx/Canvas.h"
-#include "gfx/LCDDisplay.h"
-#include "gfx/LedMatrix.h"
-#include "gfx/LedArray.h"
-
-#include "util/Version.h"
-
-#include "cabl-config.h"
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
 namespace cabl
 {
-
-//--------------------------------------------------------------------------------------------------
-
-class Lib
+namespace devices
 {
 
-public:
-  static std::string version()
-  {
-    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
-  }
-};
+//--------------------------------------------------------------------------------------------------
+
+uint8_t MaschineJamHelper::toLedColor(const sl::util::ColorRGB& color_)
+{
+  //\todo implement actual color conversion
+  return color_.mono();
+}
 
 //--------------------------------------------------------------------------------------------------
 
+util::ColorRGB MaschineJamHelper::fromLedColor(uint8_t color_)
+{
+  //\todo implement actual color conversion
+  return {color_};
+}
+
+//--------------------------------------------------------------------------------------------------
+
+} // namespace devices
 } // namespace cabl
 } // namespace sl

@@ -84,8 +84,9 @@ public:
    \param height_ Canvas height in pixels
    \param alloc_  Number of data chunks (Default value is 8)
    */
-  Canvas(uint16_t width_, uint16_t height_);
 
+  Canvas();
+  
   //! Destructor
   virtual ~Canvas() = default;
 
@@ -93,19 +94,18 @@ public:
   /*!
    \return         The Canvas width in pixels
    */
-  uint16_t width() const noexcept
-  {
-    return m_width;
-  }
+  virtual unsigned width() const = 0;
 
   //! Get the Canvas height in pixels
   /*!
    \return         The Canvas height in pixels
    */
-  uint16_t height() const noexcept
-  {
-    return m_height;
-  }
+  virtual unsigned height() const = 0;
+
+  virtual unsigned canvasWidthInBytes() const = 0;
+
+  virtual unsigned numberOfChunks() const = 0;
+
 
   /** @} */ // End of group Lifetime
 
@@ -148,7 +148,8 @@ public:
    \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  virtual void setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_);
+  virtual void setPixel(
+    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true);
 
   //! Get the pixel value as an RGB color
   /*!
@@ -310,46 +311,34 @@ public:
    * @{
    */
 
-  //! Get a pointer to the specified offset of the Canvas data
-  /*!
-   \param offset_  Offset of the pointer starting from the first byte of Canvas data
-   \return         A pointer to Canvas data (at the specified offset)
-   */
-  virtual const uint8_t* ptr(uint16_t offset_) const;
-
   /** @} */ // End of group Access
 
   /** @} */ // End of group Canvas
 
   //--------------------------------------------------------------------------------------------------
-
-  const tRawData& data()
-  {
-    return m_data;
-  }
   
-  const tRawData& buffer() const
-  {
-    return m_data;
-  }
+  virtual unsigned bufferSize() const = 0;
+  
+  virtual const uint8_t* daaata() = 0;
+
+  virtual const uint8_t* buuuffer() const = 0;
+
+  virtual void setDirty() = 0;
+  
+  virtual bool dirty() const = 0;
+  
+  virtual bool dirtyChunk(uint8_t chunk_) const = 0;
+  
+  virtual void setDirtyChunk(uint16_t yStart_) const = 0;
+  
+  virtual void resetDirtyFlags() const = 0;
+
 
 protected:
-  virtual void initialize();
-
-  virtual uint16_t canvasWidthInBytes() const;
-
-  tRawData& buffer()
-  {
-    return m_data;
-  }
+  virtual uint8_t* buuuffer() = 0;
 
 private:
   friend class py::CanvasHelper;
-
-  tRawData m_data; //!< The raw Canvas data
-
-  uint16_t m_width;  //!< Canvas width in pixels
-  uint16_t m_height; //!< Canvas height in pixels
 
   const Font* m_pFont; //!< The current font
 };
@@ -360,6 +349,7 @@ private:
 inline void Canvas::white()
 {
   fill(0xFF);
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -367,13 +357,7 @@ inline void Canvas::white()
 inline void Canvas::black()
 {
   fill(0x00);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-inline const uint8_t* Canvas::ptr(uint16_t offset) const
-{
-  return m_data.data() + offset;
+  setDirty();
 }
 
 //--------------------------------------------------------------------------------------------------

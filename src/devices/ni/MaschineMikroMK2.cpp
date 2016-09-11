@@ -156,7 +156,7 @@ void MaschineMikroMK2::setLed(Device::Pad pad_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-GDisplay* MaschineMikroMK2::displayGraphic(size_t displayIndex_)
+Canvas* MaschineMikroMK2::displayGraphic(size_t displayIndex_)
 {
   static GDisplayDummy s_dummyDisplay;
   if (displayIndex_ > 0)
@@ -225,7 +225,7 @@ bool MaschineMikroMK2::sendFrame()
   uint8_t yOffset = 0;
   for (int chunk = 0; chunk < 4; chunk++, yOffset += 2)
   {
-    const uint8_t* ptr = m_display.ptr(chunk * 256);
+    const uint8_t* ptr = m_display.daaata() + (chunk * 256);
     if (!writeToDeviceHandle(
           Transfer({0xE0, 0x00, 0x00, yOffset, 0x00, 0x80, 0x00, 0x02, 0x00}, ptr, 256),
           kMikroMK2_epDisplay))

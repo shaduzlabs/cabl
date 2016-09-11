@@ -13,6 +13,8 @@
 #include "devices/Device.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
+#include "gfx/displays/LedArrayMaschineJam.h"
+#include "gfx/displays/LedMatrixMaschineJam.h"
 
 namespace sl
 {
@@ -32,7 +34,7 @@ public:
   void setLed(Device::Button, const util::ColorRGB&) override;
   void setLed(Device::Pad, const util::ColorRGB&) override;
 
-  LedMatrix* ledMatrix(size_t ledMatrixIndex_) override;
+  Canvas* ledMatrix(size_t ledMatrixIndex_) override;
   LedArray* ledArray(size_t ledArrayIndex_) override;
 
   size_t numOfGraphicDisplays() const override { return 0; }
@@ -44,7 +46,10 @@ public:
   size_t numOfLedArrays() const override { return 10; }
 
   bool tick() override;
-  
+
+  static uint8_t toLedColor(const util::ColorRGB& color_);
+  static util::ColorRGB fromLedColor(uint8_t color_);
+
 private:
   enum class Led : uint8_t;
   enum class Button : uint8_t;
@@ -56,7 +61,7 @@ private:
   static constexpr uint8_t kMASJ_nLedsButtons = 41;
   static constexpr uint8_t kMASJ_nLedsPads = 80;
   static constexpr uint8_t kMASJ_nLedsStrips = 88;
-  
+
   static constexpr uint8_t kMASJ_nLedArrays = 10;
 
   void init() override;
@@ -81,8 +86,9 @@ private:
   std::array<uint8_t, kMASJ_nLedsStrips> m_ledsStrips;
   std::array<uint8_t, kMASJ_buttonsDataSize> m_buttons;
 
-  LedMatrix m_ledMatrix;
-  std::vector<LedArray> m_ledArrays;
+  LedMatrixMaschineJam m_ledMatrix;
+  std::array<LedArrayMaschineJam<11>, 8> m_ledArraysStrips;
+  std::array<LedArrayMaschineJam<8>, 2> m_ledArraysLevel;
   std::bitset<kMASJ_nButtons> m_buttonStates;
   std::bitset<kMASJ_nPads> m_padsStatus;
   uint8_t m_encoderValue;

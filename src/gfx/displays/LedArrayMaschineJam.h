@@ -7,18 +7,9 @@
 
 #pragma once
 
-#include "client/Client.h"
+#include "devices/ni/MaschineJamHelper.h"
 
-#include "devices/DeviceFactory.h"
-
-#include "gfx/Canvas.h"
-#include "gfx/LCDDisplay.h"
-#include "gfx/LedMatrix.h"
-#include "gfx/LedArray.h"
-
-#include "util/Version.h"
-
-#include "cabl-config.h"
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
@@ -27,14 +18,30 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class Lib
+template<unsigned L>
+class LedArrayMaschineJam : public LedArrayBase<L>
 {
 
 public:
-  static std::string version()
+
+  void setPixel(uint16_t pos_, const util::ColorRGB& color_) override
   {
-    return util::Version(CABL_VERSION_MAJOR, CABL_VERSION_MINOR, CABL_VERSION_MICRO);
+    if(pos_<this->length())
+    {
+      this->data()[pos_] = devices::MaschineJamHelper::toLedColor(color_);
+      this->setDirty();
+    }
   }
+
+  util::ColorRGB pixel(uint16_t pos_) const override
+  {
+    if(pos_<this->length())
+    {
+      return devices::MaschineJamHelper::fromLedColor(this->data()[pos_]);
+    }
+    return {};
+  }
+
 };
 
 //--------------------------------------------------------------------------------------------------

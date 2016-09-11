@@ -18,7 +18,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayPush2 : public CanvasBase<1024, 160, 1024*160*2>
+class LedMatrixMaschineJam : public CanvasBase<8, 8, 64>
 {
 public:
 

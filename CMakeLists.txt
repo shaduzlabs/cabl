@@ -207,11 +207,13 @@ set(
 set(
   inc_gfx_INCLUDES
     inc/gfx/Canvas.h
+    inc/gfx/CanvasBase.h
+    inc/gfx/DynamicCanvas.h
     inc/gfx/Font.h
     inc/gfx/FontManager.h
-    inc/gfx/GDisplay.h
     inc/gfx/LCDDisplay.h
     inc/gfx/LedMatrix.h
+    inc/gfx/LedArray.h
 )
 
 set(
@@ -351,6 +353,8 @@ set(
     src/devices/ni/KompleteKontrol.cpp
     src/devices/ni/MaschineJam.h
     src/devices/ni/MaschineJam.cpp
+    src/devices/ni/MaschineJamHelper.h
+    src/devices/ni/MaschineJamHelper.cpp
     src/devices/ni/MaschineMK1.h
     src/devices/ni/MaschineMK1.cpp
     src/devices/ni/MaschineMK2.h
@@ -363,6 +367,10 @@ set(
 
 set(
   src_gfx_displays_SRCS
+    src/gfx/displays/LedArrayDummy.h
+    src/gfx/displays/LedArrayMaschineJam.h
+    src/gfx/displays/LedMatrixMaschineJam.h
+    src/gfx/displays/LedMatrixMaschineJam.cpp
     src/gfx/displays/GDisplayDummy.h
     src/gfx/displays/GDisplayMaschineMikro.h
     src/gfx/displays/GDisplayMaschineMikro.cpp
@@ -398,7 +406,6 @@ set(
   src_gfx_SRCS
     src/gfx/Canvas.cpp
     src/gfx/FontManager.cpp
-    src/gfx/GDisplay.cpp
 )
 
 set(

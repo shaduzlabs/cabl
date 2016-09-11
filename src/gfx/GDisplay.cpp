@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/GDisplay.h"
+#include "gfx/Canvas.h"
 
 #include <cstdio>
 #include <cstdlib>

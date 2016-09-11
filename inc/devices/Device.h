@@ -28,9 +28,8 @@ namespace sl
 namespace cabl
 {
 
-class GDisplay;
+class Canvas;
 class LCDDisplay;
-class LedMatrix;
 class LedArray;
 
 namespace devices
@@ -295,11 +294,11 @@ public:
 
   virtual void init() = 0;
 
-  virtual GDisplay* displayGraphic(size_t displayIndex_);
+  virtual Canvas* displayGraphic(size_t displayIndex_);
 
   virtual LCDDisplay* displayLCD(size_t displayIndex_);
 
-  virtual LedMatrix* ledMatrix(size_t ledMatrixIndex_);
+  virtual Canvas* ledMatrix(size_t ledMatrixIndex_);
 
   virtual LedArray* ledArray(size_t ledArrayIndex_);
 
