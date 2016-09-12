@@ -69,6 +69,11 @@ static void writeToDisplay(Canvas& self_, object buffer)
   CanvasHelper::setDirty(&self_);
 }
 
+static void writeTextToDisplay(
+  TextDisplay& self_, const std::string text_, unsigned row_, Alignment alignment_)
+{
+  self_.putText(text_, row_, alignment_);
+}
 //--------------------------------------------------------------------------------------------------
 
 static unsigned displayDataSize(Canvas& self_)
@@ -161,19 +166,19 @@ BOOST_PYTHON_MODULE(pycabl)
   Py_Initialize();
   PyEval_InitThreads();
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   class_<DiscoveryPolicy>("DiscoveryPolicy",
     init<std::string,
-      DeviceDescriptor::tVendorId,
-      DeviceDescriptor::tProductId,
-      DeviceDescriptor::Type>())
+                            DeviceDescriptor::tVendorId,
+                            DeviceDescriptor::tProductId,
+                            DeviceDescriptor::Type>())
     .def("name", &DiscoveryPolicy::name)
     .def("type", &DiscoveryPolicy::type)
     .def("vendorId", &DiscoveryPolicy::vendorId)
     .def("productId", &DiscoveryPolicy::productId);
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   void (PyClient::*setLed_btn)(Device::Button, const util::ColorRGB&) = &PyClient::setLed;
   void (PyClient::*setLed_pad)(Device::Pad, const util::ColorRGB&) = &PyClient::setLed;
@@ -190,20 +195,19 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
     .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
     .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
-    .def("graphicDisplay",
-      &PyClient::graphicDisplay,
-      return_value_policy<reference_existing_object>())
+    .def(
+      "graphicDisplay", &PyClient::graphicDisplay, return_value_policy<reference_existing_object>())
     .def("textDisplay", &PyClient::textDisplay, return_value_policy<reference_existing_object>())
     .def("ledArray", &PyClient::ledArray, return_value_policy<reference_existing_object>())
     .def("ledMatrix", &PyClient::ledMatrix, return_value_policy<reference_existing_object>());
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   class_<DeviceDescriptor>("DeviceDescriptor",
     init<std::string,
-      DeviceDescriptor::Type,
-      DeviceDescriptor::tVendorId,
-      DeviceDescriptor::tProductId>())
+                             DeviceDescriptor::Type,
+                             DeviceDescriptor::tVendorId,
+                             DeviceDescriptor::tProductId>())
     .def(self_ns::str(self_ns::self))
     .def("name", &DeviceDescriptor::name, return_value_policy<copy_const_reference>())
     .def("type", &DeviceDescriptor::type)
@@ -212,7 +216,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def(
       "serialNumber", &DeviceDescriptor::serialNumber, return_value_policy<copy_const_reference>());
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   class_<util::ColorRGB>("ColorRGB", init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t>())
@@ -236,16 +240,19 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("white", &util::ColorRGB::white)
     .def("invert", &util::ColorRGB::invert);
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   class_<Canvas, boost::noncopyable>("Canvas", no_init)
     .def("width", &Canvas::width, "Returns the width of the display in pixels")
     .def("height", &Canvas::height, "Returns the height of the display in pixels")
-    .def("pixel", &Canvas::pixel, "Returns the pixel vaule as a ColorRGB object")
+    .def("pixel",
+      &Canvas::pixel,
+      args("pos"),
+      "Returns the pixel value of the specified pixel as a ColorRGB object")
     .def("setPixel",
       &Canvas::setPixel,
       args("x", "y", "color"),
-      "Sets the value of a pixel as a ColorRGB object")
+      "Sets the value of the pixel at x,y as a ColorRGB object")
     .def("black", &Canvas::black, "Fills the display with black")
     .def("white", &Canvas::white, "Fills the display with white")
     .def("invert", &Canvas::invert, "Inverts the content of the display")
@@ -324,17 +331,35 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("canvasWidthInBytes", &canvasWidthInBytes, "Returns the display width in bytes")
     .def("write", &writeToDisplay, args("buffer"), "Write a raw buffer to the display");
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
   class_<TextDisplay, boost::noncopyable>("TextDisplay", no_init)
     .def("width", &Canvas::width, "Returns the width of the display in number of characters")
     .def("height", &Canvas::height, "Returns the height of the display in rows")
     .def("clear", &TextDisplay::clear, "Clears the display")
     .def("putCharacter",
-     &TextDisplay::putCharacter, args("col", "row", "c"), "Displays a character c at col,row");/*
-    .def("putText", &TextDisplay::putText, args("string", "row", "alignment"), "Displays a string at the specified row using the specified alignment");
-*/
-//--------------------------------------------------------------------------------------------------
+      &TextDisplay::putCharacter,
+      args("col", "row", "c"),
+      "Displays a character c at col,row")
+    .def("putText",
+      &writeTextToDisplay,
+      args("string", "row", "alignment"),
+      "Displays a string at the specified row using the specified alignment");
+
+  //------------------------------------------------------------------------------------------------
+
+  class_<LedArray, boost::noncopyable>("LedArray", no_init)
+    .def("length", &LedArray::length, "Returns the number of leds in the array")
+    .def("pixel",
+      &LedArray::pixel,
+      args("pos"),
+      "Returns the value of the specified pixel as a ColorRGB object")
+    .def("setPixel",
+      &LedArray::setPixel,
+      args("pos", "color"),
+      "Sets the value of the specified pixel as a ColorRGB object");
+
+  //------------------------------------------------------------------------------------------------
 
 #define M_DESCRIPTOR_TYPE_DEF(item) value(#item, DeviceDescriptor::Type::item)
   enum_<DeviceDescriptor::Type>("DeviceDescriptorType")
@@ -344,7 +369,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_DESCRIPTOR_TYPE_DEF(Unknown);
 #undef M_DESCRIPTOR_TYPE_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_BTN_DEF(item) value(#item, Device::Button::item)
   enum_<Device::Button>("Button")
@@ -516,7 +541,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_BTN_DEF(Unknown);
 #undef M_BTN_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_ENCODER_DEF(item) value(#item, Device::Encoder::item)
   enum_<Device::Encoder>("Encoder")
@@ -537,7 +562,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_ENCODER_DEF(Unknown);
 #undef M_ENCODER_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_PAD_DEF(item) value(#item, Device::Pad::item)
   enum_<Device::Pad>("Pad")
@@ -608,7 +633,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_PAD_DEF(Unknown);
 #undef M_PAD_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_KEY_DEF(item) value(#item, Device::Key::item)
   enum_<Device::Key>("Key")
@@ -743,7 +768,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_KEY_DEF(Unknown);
 #undef M_KEY_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_POT_DEF(item) value(#item, Device::Potentiometer::item)
   enum_<Device::Potentiometer>("Potentiometer")
@@ -774,7 +799,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_POT_DEF(Unknown);
 #undef M_POT_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_CIRCLE_DEF(item) value(#item, Canvas::CircleType::item)
   enum_<Canvas::CircleType>("CircleType")
@@ -789,7 +814,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_CIRCLE_DEF(QuarterBottomLeft);
 #undef M_CIRCLE_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_BLENDMODE_DEF(item) value(#item, BlendMode::item)
   enum_<BlendMode>("BlendMode")
@@ -798,13 +823,14 @@ BOOST_PYTHON_MODULE(pycabl)
     .M_BLENDMODE_DEF(Transparent);
 #undef M_BLENDMODE_DEF
 
-//--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
 
 #define M_ALIGNMENT_DEF(item) value(#item, Alignment::item)
   enum_<Alignment>("Alignment").M_ALIGNMENT_DEF(Left).M_ALIGNMENT_DEF(Center).M_ALIGNMENT_DEF(Right);
 #undef M_ALIGNMENT_DEF
 
-  //--------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
+
 }
 
 //--------------------------------------------------------------------------------------------------

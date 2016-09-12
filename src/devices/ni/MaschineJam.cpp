@@ -13,12 +13,12 @@
 #include "comm/Transfer.h"
 #include "util/Functions.h"
 
-#include "gfx/TextDisplay.h"
 #include "gfx/LedArray.h"
 #include "gfx/LedMatrix.h"
+#include "gfx/TextDisplay.h"
 
-#include "gfx/displays/NullCanvas.h"
 #include "gfx/LedArrayDummy.h"
+#include "gfx/displays/NullCanvas.h"
 
 #include "devices/ni/MaschineJamHelper.h"
 
@@ -361,21 +361,11 @@ void MaschineJam::init()
   // Leds
   std::fill(std::begin(m_ledsButtons), std::end(m_ledsButtons), 0);
   std::fill(std::begin(m_ledsStrips), std::end(m_ledsStrips), 0);
-
-  int offset = 128;
-  for (int i = 0; i < m_ledsPads.size(); i++)
-  {
-    m_ledsPads[i] = i + offset;
-  }
-
   std::fill(std::begin(m_ledsPads), std::end(m_ledsPads), 0);
+
   m_isDirtyButtonLeds = true;
   m_isDirtyStripLeds = true;
   m_isDirtyPadLeds = true;
-
-  // m_ledMatrix.setPixel(0, 1, {0xff});
-  m_ledMatrix.circle(4, 4, 3, 0xf9);
-  m_ledArraysStrips[7].setPixel(9, 0xf0);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -408,7 +398,7 @@ bool MaschineJam::sendLeds()
       }
       else if (i < 10)
       {
-        unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 9);
+        unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 8);
         for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
         {
           m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i - 8].buffer()[k];

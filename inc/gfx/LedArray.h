@@ -190,7 +190,7 @@ protected:
 
 private:
   mutable bool m_dirty;
-  std::array<uint8_t, SIZE> m_data;
+  std::array<uint8_t, SIZE> m_data{};
 };
 
 //--------------------------------------------------------------------------------------------------

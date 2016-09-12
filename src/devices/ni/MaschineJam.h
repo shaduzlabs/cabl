@@ -93,10 +93,10 @@ private:
   bool isButtonPressed(Button button) const noexcept;
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
-  std::array<uint8_t, kMASJ_nLedsButtons> m_ledsButtons;
-  std::array<uint8_t, kMASJ_nLedsPads> m_ledsPads;
-  std::array<uint8_t, kMASJ_nLedsStrips> m_ledsStrips;
-  std::array<uint8_t, kMASJ_buttonsDataSize> m_buttons;
+  std::array<uint8_t, kMASJ_nLedsButtons> m_ledsButtons{};
+  std::array<uint8_t, kMASJ_nLedsPads> m_ledsPads{};
+  std::array<uint8_t, kMASJ_nLedsStrips> m_ledsStrips{};
+  std::array<uint8_t, kMASJ_buttonsDataSize> m_buttons{};
 
   LedMatrixMaschineJam m_ledMatrix;
   std::array<LedArrayMaschineJam<11>, 8> m_ledArraysStrips;
