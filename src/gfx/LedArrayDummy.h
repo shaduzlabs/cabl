@@ -30,6 +30,15 @@ public:
   {
     return {};
   }
+  
+   void setValue(double val_, util::ColorRGB color_, Alignment alignment_) override
+   {
+   }
+  
+   void clear() override
+   {
+   
+   }
 };
 
 //--------------------------------------------------------------------------------------------------

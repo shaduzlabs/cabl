@@ -66,6 +66,10 @@ public:
    */
   virtual util::ColorRGB pixel(uint16_t pos_) const = 0;
 
+  virtual void setValue(double val_, util::ColorRGB color_, Alignment alignment_ = Alignment::Left) = 0;
+  
+  virtual void clear() = 0;
+  
   /** @} */ // End of group Lifetime
 
   //--------------------------------------------------------------------------------------------------
@@ -139,6 +143,63 @@ public:
    * @{
    */
 
+  void setValue(double val_, util::ColorRGB color_, Alignment alignment_) override
+  {
+    float val = std::min(val_, 1.0);
+    clear();
+    switch(alignment_)
+    {
+      case Alignment::Left:
+      {
+        val = std::max(val_, 0.0);
+        unsigned nLedsOn = val * SIZE;
+        for(unsigned i = 0; i < nLedsOn; i++)
+        {
+          setPixel(i,color_);
+        }
+        break;
+      }
+      case Alignment::Center:
+      {
+        val = (std::max(val_, -1.0)) / 2.0;
+        unsigned nLedsOn = val * SIZE;
+        if(val < 0)
+        {
+          for(int i = nLedsOn; i >= 0; i--)
+          {
+            setPixel(i,color_);
+          }
+        }
+        else if (val > 0)
+        {
+          for(int i = nLedsOn; i < SIZE; i++)
+          {
+            setPixel(i,color_);
+          }
+        }
+        setPixel(SIZE/2, color_);
+        break;
+      }
+      case Alignment::Right:
+      {
+        val = std::max(val_, 0.0);
+        unsigned nLedsOn = val * SIZE;
+        for(int i = SIZE; i >= nLedsOn; i--)
+        {
+          setPixel(i,color_);
+        }
+        break;
+      }
+    }
+    setDirty();
+  }
+  
+  //! turn off all leds
+  void clear() override
+  {
+    std::fill(m_data.begin(), m_data.end(), 0);
+  }
+  
   //! \return the length of the led array
   uint16_t length() const override
   {

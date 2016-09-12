@@ -6,15 +6,16 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/akai/Push.h"
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
-#include "util/Functions.h"
 
 #include <algorithm>
+#include <limits>
 #include <thread>
 
+#include "comm/Driver.h"
+#include "comm/Transfer.h"
 #include "gfx/TextDisplay.h"
 #include "gfx/displays/NullCanvas.h"
+#include "util/Functions.h"
 
 #include <cmath>
 

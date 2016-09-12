@@ -387,25 +387,23 @@ bool MaschineJam::sendLeds()
   }
   for (unsigned i = 0; i < numOfLedArrays(); i++)
   {
-    if (m_ledArraysStrips[i].dirty())
+    if (i < 8 && m_ledArraysStrips[i].dirty())
     {
-      if (i < 8)
+      std::copy(m_ledArraysStrips[i].buffer(),
+        m_ledArraysStrips[i].buffer() + m_ledArraysStrips[i].length(),
+        &m_ledsStrips[i * 11]);
+      m_ledArraysStrips[i].resetDirty();
+      m_isDirtyStripLeds = true;
+    }
+    else if ((i == 8 || i == 9) && m_ledArraysLevel[i - 8].dirty())
+    {
+      unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 8);
+      for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
       {
-        std::copy(m_ledArraysStrips[i].buffer(),
-          m_ledArraysStrips[i].buffer() + m_ledArraysStrips[i].length(),
-          &m_ledsStrips[i * 11]);
-        m_ledArraysStrips[i].resetDirty();
+        m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i - 8].buffer()[k];
       }
-      else if (i < 10)
-      {
-        unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 8);
-        for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
-        {
-          m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i - 8].buffer()[k];
-        }
-        m_ledArraysLevel[i - 8].resetDirty();
-      }
-      m_isDirtyPadLeds = true;
+      m_ledArraysLevel[i - 8].resetDirty();
+      m_isDirtyButtonLeds = true;
     }
   }
 
@@ -517,13 +515,21 @@ void MaschineJam::processButtons(const Transfer& input_)
 
 void MaschineJam::processStrips(const Transfer& input_)
 {
+  unsigned tsIndex = 0;
   for (int i = 1; i < input_.size(); i += 6)
   {
-    unsigned timeMs = input_[i] | (input_[i + 1] << 8);
-    unsigned val = input_[i + 2] | (input_[i + 3] << 8);
-    std::cout << timeMs << ": " << val << "  ";
+    // uint16_t timeMs = input_[i] | (input_[i + 1] << 8);
+    uint16_t val = input_[i + 2] | (input_[i + 3] << 8);
+
+    Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
+      static_cast<uint8_t>(Device::Potentiometer::Fader1) + tsIndex);
+    if (val != 0 && m_touchstripsValues[i] != val)
+    {
+      m_touchstripsValues[i] = val;
+      potentiometerChanged(potentiometer, val, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+    }
+    tsIndex++;
   }
-  std::cout << std::endl;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -546,7 +552,7 @@ void MaschineJam::setLedImpl(Led led_, const util::ColorRGB& color_)
   }
   else if (led_ < Led::Strip1L1)
   {
-    // Matrix buttons, pads and groups
+    // matrix buttons, pads and groups
     ledIndex -= static_cast<unsigned>(Led::DisplayButton1);
     uint8_t currentVal = m_ledsPads[ledIndex];
     uint8_t newVal = MaschineJamHelper::toLedColor(color_);
@@ -555,7 +561,7 @@ void MaschineJam::setLedImpl(Led led_, const util::ColorRGB& color_)
   }
   else
   {
-    // Touch strips
+    // touch strips
     ledIndex -= static_cast<unsigned>(Led::Strip1L1);
     uint8_t currentVal = m_ledsStrips[ledIndex];
     uint8_t newVal = MaschineJamHelper::toLedColor(color_);

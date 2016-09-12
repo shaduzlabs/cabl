@@ -125,42 +125,6 @@ list enumerateDevices()
 
 //--------------------------------------------------------------------------------------------------
 
-void onButtonChanged(PyObject* callable, Device::Button button_, bool val_, bool shiftKey_)
-{
-  boost::python::call<void>(callable, button_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onEncoderChanged(PyObject* callable, Device::Encoder encoder_, uint16_t val_, bool shiftKey_)
-{
-  boost::python::call<void>(callable, encoder_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onPadChanged(PyObject* callable, Device::Pad pad_, uint16_t val_, bool shiftKey_)
-{
-  boost::python::call<void>(callable, pad_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onKeyChanged(PyObject* callable, Device::Key key_, uint16_t val_, bool shiftKey_)
-{
-  boost::python::call<void>(callable, key_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void onPotentiometerChanged(
-  PyObject* callable, Device::Potentiometer pot_, uint16_t val_, bool shiftKey_)
-{
-  boost::python::call<void>(callable, pot_, val_, shiftKey_);
-}
-
-//--------------------------------------------------------------------------------------------------
-
 BOOST_PYTHON_MODULE(pycabl)
 {
   Py_Initialize();
@@ -195,6 +159,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
     .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
     .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
+    .def("onPotentiometerChanged", &PyClient::onPotentiometerChanged, args("onPotentiometerChanged"))
     .def(
       "graphicDisplay", &PyClient::graphicDisplay, return_value_policy<reference_existing_object>())
     .def("textDisplay", &PyClient::textDisplay, return_value_policy<reference_existing_object>())

@@ -53,6 +53,7 @@ public:
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
   void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed) override;
+  void potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed) override;
 
   void updateClock();
 
@@ -61,6 +62,7 @@ public:
   void updateGUI();
   void updateGroupLeds();
   void updatePads();
+  void updateTouchStrips();
 
   void drawConfigurationPage();
   void drawSequencerPage();

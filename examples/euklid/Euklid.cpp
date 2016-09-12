@@ -8,6 +8,7 @@
 #include "Euklid.h"
 
 #include <algorithm>
+#include <cmath>
 #include <sstream>
 
 #include <unmidify.hpp>
@@ -82,6 +83,7 @@ void Euklid::render()
   updateGUI();
   updateGroupLeds();
   updatePads();
+  updateTouchStrips();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -245,6 +247,52 @@ void Euklid::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
     m_sequences[m_currentTrack].toggleStep(padIndex);
     requestDeviceUpdate();
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Euklid::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed_)
+{
+  double val = value_ / 1024.0;
+  switch (pot_)
+  {
+    case Device::Potentiometer::Fader1:
+    {
+      m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((val * 16)+0.5));
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    case Device::Potentiometer::Fader2:
+    {
+      m_pulses[m_currentTrack] = std::max<uint8_t>(0, ( m_lengths[m_currentTrack] * val ) + 0.5);
+      m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    case Device::Potentiometer::Fader3:
+    {
+    
+      m_rotates[m_currentTrack] = std::max<uint8_t>(0, (m_lengths[m_currentTrack] * val)+0.5);
+      m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
+      break;
+    }
+    case Device::Potentiometer::Fader4:
+    {
+      m_bpm = (val * 195) + 60;
+      updateClock();
+      break;
+    }
+    case Device::Potentiometer::Fader5:
+    {
+      m_shuffle = val * 100;
+      updateClock();
+      break;
+    }
+    default:
+      break;
+  }
+  requestDeviceUpdate();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -450,6 +498,17 @@ void Euklid::updatePads()
       }
     }
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Euklid::updateTouchStrips()
+{
+  device()->ledArray(0)->setValue(m_lengths[m_currentTrack] / 16.0, kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
+  device()->ledArray(1)->setValue(m_pulses[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]), kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
+  device()->ledArray(2)->setValue(m_rotates[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]), kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
+  device()->ledArray(3)->setValue((m_bpm - 60) / 195.0, {0xff}, Alignment::Left);
+  device()->ledArray(4)->setValue(m_shuffle / 100.0, {0xff}, Alignment::Left);
 }
 
 //--------------------------------------------------------------------------------------------------

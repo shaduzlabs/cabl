@@ -70,8 +70,9 @@ private:
   static constexpr uint8_t kMASJ_buttonsDataSize = 17;
   static constexpr uint8_t kMASJ_nPads = 64;
   static constexpr uint8_t kMASJ_padsBufferSize = 16;
-  static constexpr uint8_t kMASJ_nLedsButtons = 41;
+  static constexpr uint8_t kMASJ_nLedsButtons = 53;
   static constexpr uint8_t kMASJ_nLedsPads = 80;
+  static constexpr uint8_t kMASJ_nTouchStrips = 8;
   static constexpr uint8_t kMASJ_nLedsStrips = 88;
 
   static constexpr uint8_t kMASJ_nLedArrays = 10;
@@ -99,12 +100,14 @@ private:
   std::array<uint8_t, kMASJ_buttonsDataSize> m_buttons{};
 
   LedMatrixMaschineJam m_ledMatrix;
-  std::array<LedArrayMaschineJam<11>, 8> m_ledArraysStrips;
-  std::array<LedArrayMaschineJam<8>, 2> m_ledArraysLevel;
-  std::bitset<kMASJ_nButtons> m_buttonStates;
-  std::bitset<kMASJ_nPads> m_padsStatus;
-  uint8_t m_encoderValue;
+  std::array<LedArrayMaschineJam<11>, kMASJ_nTouchStrips> m_ledArraysStrips{};
+  std::array<LedArrayMaschineJam<8>, 2> m_ledArraysLevel{};
+  std::array<uint16_t, kMASJ_nTouchStrips> m_touchstripsValues{};
 
+  std::bitset<kMASJ_nButtons> m_buttonStates{};
+  std::bitset<kMASJ_nPads> m_padsStatus{};
+  uint8_t m_encoderValue;
+  
   mutable bool m_isDirtyPadLeds{false};
   mutable bool m_isDirtyStripLeds{false};
   mutable bool m_isDirtyButtonLeds{false};

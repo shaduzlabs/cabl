@@ -153,6 +153,25 @@ void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
+void PyClient::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed_)
+{
+  GILLock gilLock;
+
+  try
+  {
+    if (m_onKeyChanged)
+    {
+      m_onPotentiometerChanged(pot_, value_, shiftPressed_);
+    }
+  }
+  catch (const error_already_set& e)
+  {
+    M_LOG("[PyClient::render] exception: " << PyErrorString());
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void PyClient::initDevice()
 {
   GILLock gilLock;

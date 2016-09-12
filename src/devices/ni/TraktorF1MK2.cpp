@@ -291,7 +291,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
     }
   }
 
-  // Now process the pot/fader data
+  // encoder
   uint8_t currentValue = input_.data()[kF1MK2_buttonsDataSize];
   if (currentValue != m_encoderValue)
   {
@@ -302,6 +302,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
     encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
   }
 
+  // pots/faders
   for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize + 1; potIndex < 8; i += 2, potIndex++)
   {
     Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
