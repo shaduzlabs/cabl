@@ -86,7 +86,7 @@ else()
 endif()
 
 configure_file (
-  "${CABL_ROOT_DIR}/inc/cabl-config.h.in"
+  "${CABL_ROOT_DIR}/inc/cabl/cabl-config.h.in"
   "${PROJECT_BINARY_DIR}/cabl-config.h"
 )
 
@@ -184,59 +184,59 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 set(
   inc_client_INCLUDES
-    inc/client/Client.h
+    inc/cabl/client/Client.h
 )
 
 set(
   inc_comm_INCLUDES
-    inc/comm/DeviceDescriptor.h
-    inc/comm/DeviceHandle.h
-    inc/comm/DiscoveryPolicy.h
-    inc/comm/Driver.h
-    inc/comm/Transfer.h
+    inc/cabl/comm/DeviceDescriptor.h
+    inc/cabl/comm/DeviceHandle.h
+    inc/cabl/comm/DiscoveryPolicy.h
+    inc/cabl/comm/Driver.h
+    inc/cabl/comm/Transfer.h
 )
 
 set(
   inc_devices_INCLUDES
-    inc/devices/Coordinator.h
-    inc/devices/Device.h
-    inc/devices/DeviceFactory.h
-    inc/devices/DeviceRegistrar.h
+    inc/cabl/devices/Coordinator.h
+    inc/cabl/devices/Device.h
+    inc/cabl/devices/DeviceFactory.h
+    inc/cabl/devices/DeviceRegistrar.h
 )
 
 set(
   inc_gfx_INCLUDES
-    inc/gfx/Canvas.h
-    inc/gfx/CanvasBase.h
-    inc/gfx/DynamicCanvas.h
-    inc/gfx/Font.h
-    inc/gfx/FontManager.h
-    inc/gfx/TextDisplay.h
-    inc/gfx/LedMatrix.h
-    inc/gfx/LedArray.h
+    inc/cabl/gfx/Canvas.h
+    inc/cabl/gfx/CanvasBase.h
+    inc/cabl/gfx/DynamicCanvas.h
+    inc/cabl/gfx/Font.h
+    inc/cabl/gfx/FontManager.h
+    inc/cabl/gfx/TextDisplay.h
+    inc/cabl/gfx/LedMatrix.h
+    inc/cabl/gfx/LedArray.h
 )
 
 set(
   inc_util_INCLUDES
-    inc/util/ColorRGB.h
-    inc/util/Functions.h
-    inc/util/Log.h
-    inc/util/Macros.h
-    inc/util/Types.h
-    inc/util/Version.h
+    inc/cabl/util/ColorRGB.h
+    inc/cabl/util/Functions.h
+    inc/cabl/util/Log.h
+    inc/cabl/util/Macros.h
+    inc/cabl/util/Types.h
+    inc/cabl/util/Version.h
 )
 
 set(
   inc_INCLUDES
-    inc/cabl.h
+    inc/cabl/cabl.h
 )
 
-source_group("inc\\client"           FILES ${inc_client_INCLUDES})
-source_group("inc\\comm"             FILES ${inc_comm_INCLUDES})
-source_group("inc\\devices"          FILES ${inc_devices_INCLUDES})
-source_group("inc\\gfx"              FILES ${inc_gfx_INCLUDES})
-source_group("inc\\util"             FILES ${inc_util_INCLUDES})
-source_group("inc"                   FILES ${inc_INCLUDES})
+source_group("inc\\cabl\\client"           FILES ${inc_client_INCLUDES})
+source_group("inc\\cabl\\comm"             FILES ${inc_comm_INCLUDES})
+source_group("inc\\cabl\\devices"          FILES ${inc_devices_INCLUDES})
+source_group("inc\\cabl\\gfx"              FILES ${inc_gfx_INCLUDES})
+source_group("inc\\cabl\\util"             FILES ${inc_util_INCLUDES})
+source_group("inc\\cabl"                   FILES ${inc_INCLUDES})
 
 set (
   cabl_INCLUDES
@@ -606,11 +606,11 @@ if( UNIX )
     endif()
 
     install (FILES      ${inc_INCLUDES}  DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/client       DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
-    install (DIRECTORY  inc/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/cabl/client       DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/cabl/comm         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/cabl/devices      DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/cabl/gfx          DESTINATION "include/${LIBRARY_FOLDER_NAME}")
+    install (DIRECTORY  inc/cabl/util         DESTINATION "include/${LIBRARY_FOLDER_NAME}")
 
     install (
       FILES        ${PROJECT_BINARY_DIR}/cabl-config.h

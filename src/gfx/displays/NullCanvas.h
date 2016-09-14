@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "gfx/CanvasBase.h"
+#include "cabl/gfx/CanvasBase.h"
 
 namespace sl
 {

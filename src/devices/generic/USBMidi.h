@@ -7,10 +7,12 @@
 
 #pragma once
 
-#include "devices/Device.h"
-
 #include <algorithm>
 #include <unmidify.hpp>
+
+#include "cabl/devices/Device.h"
+
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {

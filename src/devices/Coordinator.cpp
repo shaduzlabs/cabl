@@ -5,13 +5,13 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/Coordinator.h"
+#include "cabl/devices/Coordinator.h"
 
 #include <algorithm>
 
-#include "cabl.h"
+#include "cabl/cabl.h"
+#include "cabl/devices/DeviceFactory.h"
 #include "comm/drivers/LibUSB/DriverLibUSB.h"
-#include "devices/DeviceFactory.h"
 
 //--------------------------------------------------------------------------------------------------
 

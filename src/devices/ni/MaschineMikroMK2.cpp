@@ -6,13 +6,13 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/ni/MaschineMikroMK2.h"
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
-#include "util/Functions.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/Transfer.h"
+#include "cabl/util/Functions.h"
 
 #include <thread>
 
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/TextDisplay.h"
 #include "gfx/displays/NullCanvas.h"
 
 //!\todo delete debug includes

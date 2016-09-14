@@ -17,11 +17,11 @@
 
 //--------------------------------------------------------------------------------------------------
 
-#include "comm/DeviceDescriptor.h"
-#include "comm/DeviceHandle.h"
-#include "devices/DeviceRegistrar.h"
+#include "cabl/comm/DeviceDescriptor.h"
+#include "cabl/comm/DeviceHandle.h"
+#include "cabl/devices/DeviceRegistrar.h"
 
-#include "util/ColorRGB.h"
+#include "cabl/util/ColorRGB.h"
 
 namespace sl
 {

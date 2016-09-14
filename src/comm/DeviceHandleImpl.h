@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "comm/DeviceHandle.h"
+#include "cabl/comm/DeviceHandle.h"
 
 namespace sl
 {

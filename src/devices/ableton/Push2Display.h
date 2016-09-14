@@ -10,7 +10,7 @@
 #include <array>
 #include <map>
 
-#include "devices/Device.h"
+#include "cabl/devices/Device.h"
 #include "gfx/displays/GDisplayPush2.h"
 
 namespace sl

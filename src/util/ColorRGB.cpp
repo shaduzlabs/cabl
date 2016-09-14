@@ -5,7 +5,7 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "util/ColorRGB.h"
+#include "cabl/util/ColorRGB.h"
 #include <cmath>
 
 namespace sl

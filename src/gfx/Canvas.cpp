@@ -5,14 +5,14 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "gfx/Canvas.h"
+#include "cabl/gfx/Canvas.h"
 
 #include <algorithm>
 
 #include <cstdio>
 #include <cstdlib>
 
-#include "util/Functions.h"
+#include "cabl/util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
 

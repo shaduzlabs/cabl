@@ -9,7 +9,7 @@
 
 #include <cstdint>
 
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/TextDisplay.h"
 
 namespace sl
 {

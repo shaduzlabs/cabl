@@ -9,14 +9,14 @@
 
 #include "client/Client.h"
 
-#include "devices/DeviceFactory.h"
+#include "cabl/devices/DeviceFactory.h"
 
-#include "gfx/Canvas.h"
-#include "gfx/LedArray.h"
-#include "gfx/LedMatrix.h"
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/Canvas.h"
+#include "cabl/gfx/LedArray.h"
+#include "cabl/gfx/LedMatrix.h"
+#include "cabl/gfx/TextDisplay.h"
 
-#include "util/Version.h"
+#include "cabl/util/Version.h"
 
 #include "cabl-config.h"
 

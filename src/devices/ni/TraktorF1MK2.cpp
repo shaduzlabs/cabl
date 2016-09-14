@@ -6,10 +6,10 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/ni/TraktorF1MK2.h"
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
-#include "gfx/TextDisplay.h"
-#include "util/Functions.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/Transfer.h"
+#include "cabl/gfx/TextDisplay.h"
+#include "cabl/util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
 

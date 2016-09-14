@@ -5,14 +5,14 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/Device.h"
-#include "comm/DeviceHandle.h"
+#include "cabl/devices/Device.h"
+#include "cabl/comm/DeviceHandle.h"
 
 
-#include "gfx/Canvas.h"
-#include "gfx/TextDisplay.h"
-#include "gfx/LedArray.h"
-#include "gfx/LedMatrix.h"
+#include "cabl/gfx/Canvas.h"
+#include "cabl/gfx/TextDisplay.h"
+#include "cabl/gfx/LedArray.h"
+#include "cabl/gfx/LedMatrix.h"
 
 #include "gfx/displays/NullCanvas.h"
 #include "gfx/LedArrayDummy.h"

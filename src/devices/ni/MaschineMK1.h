@@ -9,9 +9,9 @@
 
 #include <bitset>
 
-#include "comm/Transfer.h"
-#include "devices/Device.h"
-#include "devices/DeviceFactory.h"
+#include "cabl/comm/Transfer.h"
+#include "cabl/devices/Device.h"
+#include "cabl/devices/DeviceFactory.h"
 #include "gfx/displays/GDisplayMaschineMK1.h"
 
 namespace sl

@@ -7,7 +7,7 @@
 
 #include "catch.hpp"
 
-#include <util/ColorRGB.h>
+#include <cabl/util/ColorRGB.h>
 
 namespace sl
 {

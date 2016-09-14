@@ -7,11 +7,11 @@
 
 #include <algorithm>
 
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/Transfer.h"
 #include "devices/ni/KompleteKontrol.h"
-#include "gfx/TextDisplay.h"
-#include "util/Functions.h"
+#include "cabl/gfx/TextDisplay.h"
+#include "cabl/util/Functions.h"
 
 //--------------------------------------------------------------------------------------------------
 

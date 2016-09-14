@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DiscoveryPolicy.h"
-#include "devices/Coordinator.h"
+#include "cabl/comm/DiscoveryPolicy.h"
+#include "cabl/devices/Coordinator.h"
 
 //--------------------------------------------------------------------------------------------------
 

@@ -10,7 +10,7 @@
 #include <array>
 #include <map>
 
-#include "devices/Device.h"
+#include "cabl/devices/Device.h"
 #include "devices/generic/USBMidi.h"
 #include "gfx/displays/TextDisplayGeneric.h"
 

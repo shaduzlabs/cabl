@@ -6,14 +6,14 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "devices/ableton/Push2Display.h"
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
-#include "util/Functions.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/Transfer.h"
+#include "cabl/util/Functions.h"
 
 #include <algorithm>
 #include <thread>
 
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/TextDisplay.h"
 #include "gfx/displays/NullCanvas.h"
 
 #include <cmath>

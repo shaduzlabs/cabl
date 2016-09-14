@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "devices/DeviceFactory.h"
+#include "cabl/devices/DeviceFactory.h"
 
 //--------------------------------------------------------------------------------------------------
 // Use this macro in the header file of a new device class, after the class declaration

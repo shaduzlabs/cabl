@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "comm/DeviceDescriptor.h"
-#include "util/Types.h"
+#include "cabl/comm/DeviceDescriptor.h"
+#include "cabl/util/Types.h"
 #include <functional>
 #include <map>
 

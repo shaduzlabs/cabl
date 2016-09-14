@@ -10,9 +10,9 @@
 #include <array>
 #include <bitset>
 
-#include "devices/Device.h"
-#include "gfx/LedArray.h"
-#include "gfx/LedMatrix.h"
+#include "cabl/devices/Device.h"
+#include "cabl/gfx/LedArray.h"
+#include "cabl/gfx/LedMatrix.h"
 #include "gfx/LedArrayMaschineJam.h"
 #include "gfx/displays/LedMatrixMaschineJam.h"
 

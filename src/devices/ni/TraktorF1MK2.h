@@ -10,7 +10,7 @@
 #include <array>
 #include <bitset>
 
-#include "devices/Device.h"
+#include "cabl/devices/Device.h"
 #include "gfx/displays/NullCanvas.h"
 #include "gfx/displays/TextDisplay7Segments.h"
 

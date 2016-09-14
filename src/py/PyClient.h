@@ -9,8 +9,8 @@
 
 #include <boost/python.hpp>
 
-#include "client/Client.h"
-#include "devices/Coordinator.h"
+#include "cabl/client/Client.h"
+#include "cabl/devices/Coordinator.h"
 
 //--------------------------------------------------------------------------------------------------
 

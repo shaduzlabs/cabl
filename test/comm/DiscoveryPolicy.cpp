@@ -7,7 +7,7 @@
 
 #include "catch.hpp"
 
-#include <comm/DiscoveryPolicy.h>
+#include <cabl/comm/DiscoveryPolicy.h>
 
 namespace sl
 {

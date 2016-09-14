@@ -10,8 +10,8 @@
 #include <array>
 #include <bitset>
 
-#include "devices/Device.h"
-#include "devices/DeviceFactory.h"
+#include "cabl/devices/Device.h"
+#include "cabl/devices/DeviceFactory.h"
 #include "gfx/displays/NullCanvas.h"
 #include "gfx/displays/TextDisplayKompleteKontrol.h"
 

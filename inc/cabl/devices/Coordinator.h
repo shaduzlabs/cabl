@@ -11,9 +11,9 @@
 #include <map>
 #include <thread>
 
-#include "comm/DeviceDescriptor.h"
-#include "comm/Driver.h"
-#include "devices/Device.h"
+#include "cabl/comm/DeviceDescriptor.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/devices/Device.h"
 
 //--------------------------------------------------------------------------------------------------
 

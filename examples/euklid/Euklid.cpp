@@ -16,7 +16,7 @@
 #include <devices/ni/MaschineMK1.h>
 #include <devices/ni/MaschineMK2.h>
 #include <devices/ni/MaschineMikroMK2.h>
-#include <gfx/TextDisplay.h>
+#include <cabl/gfx/TextDisplay.h>
 
 namespace
 {

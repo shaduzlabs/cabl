@@ -10,7 +10,7 @@
 #include <future>
 #include <cstdint>
 
-#include <cabl.h>
+#include <cabl/cabl.h>
 
 #include "Sequence.h"
 

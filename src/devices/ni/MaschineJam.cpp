@@ -9,13 +9,13 @@
 
 #include <thread>
 
-#include "comm/Driver.h"
-#include "comm/Transfer.h"
-#include "util/Functions.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/Transfer.h"
+#include "cabl/util/Functions.h"
 
-#include "gfx/LedArray.h"
-#include "gfx/LedMatrix.h"
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/LedArray.h"
+#include "cabl/gfx/LedMatrix.h"
+#include "cabl/gfx/TextDisplay.h"
 
 #include "gfx/LedArrayDummy.h"
 #include "gfx/displays/NullCanvas.h"

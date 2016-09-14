@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "devices/DeviceFactory.h"
-#include "devices/Device.h"
+#include "cabl/devices/DeviceFactory.h"
+#include "cabl/devices/Device.h"
 
 //--------------------------------------------------------------------------------------------------
 

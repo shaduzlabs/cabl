@@ -7,7 +7,7 @@
 
 #include "catch.hpp"
 
-#include <comm/DeviceDescriptor.h>
+#include <cabl/comm/DeviceDescriptor.h>
 
 namespace sl
 {

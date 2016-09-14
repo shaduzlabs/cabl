@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <comm/Driver.h>
-#include <comm/Transfer.h>
+#include <cabl/comm/Driver.h>
+#include <cabl/comm/Transfer.h>
 
 namespace sl
 {

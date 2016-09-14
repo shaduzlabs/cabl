@@ -14,7 +14,7 @@
 #include <algorithm>
 #endif
 
-#include "gfx/TextDisplay.h"
+#include "cabl/gfx/TextDisplay.h"
 
 //--------------------------------------------------------------------------------------------------
 

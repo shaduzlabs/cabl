@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include <cstdint>
-#include <functional>
+#include <map>
+#include <memory>
+#include <string>
 
-#include "util/Types.h"
+#include "cabl/gfx/Font.h"
 
 namespace sl
 {
@@ -19,29 +20,25 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class Transfer;
-class DeviceHandleImpl;
+/**
+  \class FontManager
+  \brief The font manager class
 
-//--------------------------------------------------------------------------------------------------
-
-class DeviceHandle
+*/
+class FontManager
 {
-
 public:
-  using tCbRead = std::function<void(Transfer)>;
+  static FontManager& instance();
 
-  explicit DeviceHandle(tPtr<DeviceHandleImpl>);
-  ~DeviceHandle();
-
-  void disconnect();
-
-  bool read(Transfer&, uint8_t);
-  bool write(const Transfer&, uint8_t);
-
-  void readAsync(uint8_t, tCbRead);
+  const Font* getFont(const std::string& /*name_*/) const;
+  const Font* getDefaultFont() const;
 
 private:
-  tPtr<DeviceHandleImpl> m_pImpl;
+  FontManager();
+
+  std::unique_ptr<Font> m_pDefaultFont;
+  std::map<std::string, std::unique_ptr<Font>> m_collFonts;
+  bool m_initialized{false};
 };
 
 //--------------------------------------------------------------------------------------------------

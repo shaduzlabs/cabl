@@ -10,10 +10,10 @@
 #include <cstdint>
 #include <string>
 
-#include "util/ColorRGB.h"
-#include "util/Types.h"
+#include "cabl/util/ColorRGB.h"
+#include "cabl/util/Types.h"
 
-#include "gfx/FontManager.h"
+#include "cabl/gfx/FontManager.h"
 
 namespace sl
 {

@@ -6,7 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include <catch.hpp>
-#include <gfx/DynamicCanvas.h>
+#include <cabl/gfx/DynamicCanvas.h>
 #include <gfx/displays/NullCanvas.h>
 
 //--------------------------------------------------------------------------------------------------

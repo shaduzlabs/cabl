@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "gfx/CanvasBase.h"
+#include "cabl/gfx/CanvasBase.h"
 
 //--------------------------------------------------------------------------------------------------
 

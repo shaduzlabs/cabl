@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include "comm/Driver.h"
-#include "comm/DeviceHandle.h"
+#include "cabl/comm/Driver.h"
+#include "cabl/comm/DeviceHandle.h"
 #include "comm/DriverImpl.h"
 
 #include "comm/drivers/Probe/DriverProbe.h"
