@@ -58,7 +58,6 @@ public:
   void disconnected() override;
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_) override;
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
-  void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
   void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
   void controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed) override;
   
@@ -72,10 +71,6 @@ public:
   void onEncoderChanged(object fn_)
   {
     m_onEncoderChanged = fn_;
-  }
-  void onPadChanged(object fn_)
-  {
-    m_onPadChanged = fn_;
   }
   void onKeyChanged(object fn_)
   {
@@ -117,7 +112,6 @@ private:
 
   object m_onButtonChanged;
   object m_onEncoderChanged;
-  object m_onPadChanged;
   object m_onKeyChanged;
   object m_onControlChanged;
 };

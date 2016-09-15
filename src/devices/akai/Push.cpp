@@ -805,8 +805,7 @@ void Push::processNote(uint8_t note_, uint8_t velocity_)
   else if (note_ >= 36 && note_ <= 99)
   {
     // Pads
-    Device::Pad pad = static_cast<Device::Pad>(note_ - 36);
-    padChanged(pad, (velocity_ > 0), m_shiftPressed);
+    keyChanged(note_ - 36, velocity_ / 127.0, m_shiftPressed);
   }
 }
 

@@ -271,7 +271,6 @@ public:
 
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
-  using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
   using tCbKeyChanged = std::function<void(unsigned index_, double, bool shiftKey_)>;
   using tCbControlChanged
     = std::function<void(Potentiometer pad_, uint16_t val_, bool shiftKey_)>;
@@ -326,8 +325,6 @@ public:
 
   void setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_);
 
-  void setCallbackPadChanged(tCbPadChanged cbPadChanged_);
-
   void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_);
 
   void setCallbackControlChanged(tCbControlChanged cbControlChanged_);
@@ -346,8 +343,6 @@ protected:
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_);
 
   void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
-
-  void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_);
 
   void keyChanged(unsigned index_, double value_, bool shiftPressed_);
 
@@ -368,7 +363,6 @@ private:
 
   tCbButtonChanged m_cbButtonChanged;
   tCbEncoderChanged m_cbEncoderChanged;
-  tCbPadChanged m_cbPadChanged;
   tCbKeyChanged m_cbKeyChanged;
   tCbControlChanged m_cbControlChanged;
 

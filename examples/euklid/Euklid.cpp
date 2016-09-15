@@ -221,21 +221,6 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
-{
-  static auto lastEvent = std::chrono::system_clock::now();
-  auto now = std::chrono::system_clock::now();
-  if (now - lastEvent > std::chrono::milliseconds(180))
-  {
-    lastEvent = now;
-    uint8_t idx = padIndex(pad_);
-    m_sequences[m_currentTrack].toggleStep(idx);
-    requestDeviceUpdate();
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Euklid::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
   static auto lastEvent = std::chrono::system_clock::now();

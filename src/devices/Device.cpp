@@ -120,13 +120,6 @@ void Device::setCallbackEncoderChanged(tCbEncoderChanged cbEncoderChanged_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setCallbackPadChanged(tCbPadChanged cbPadChanged_)
-{
-  m_cbPadChanged = cbPadChanged_;
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void Device::setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_)
 {
   m_cbKeyChanged = cbKeyChanged_;
@@ -202,16 +195,6 @@ void Device::encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPr
   if (m_cbEncoderChanged)
   {
     m_cbEncoderChanged(encoder_, valueIncreased_, shiftPressed_);
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Device::padChanged(Pad pad_, uint16_t value_, bool shiftPressed_)
-{
-  if (m_cbPadChanged)
-  {
-    m_cbPadChanged(pad_, value_, shiftPressed_);
   }
 }
 

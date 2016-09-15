@@ -473,14 +473,14 @@ void MaschineMK1::processPads(const Transfer& input_)
     if (m_padsData[pad] > kMASMK1_padThreshold)
     {
       m_padsStatus[pad] = true;
-      padChanged(btn, m_padsData[pad], m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      keyChanged(pad, m_padsData[pad] / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
     else
     {
       if (m_padsStatus[pad])
       {
         m_padsStatus[pad] = false;
-        padChanged(btn, 0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+        keyChanged(pad, 0.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
       }
     }
   }

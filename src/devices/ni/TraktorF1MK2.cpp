@@ -278,9 +278,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
           {
             unsigned padIndex
               = static_cast<unsigned>(currentButton) - static_cast<unsigned>(Pad::Pad1);
-            Device::Pad pad
-              = static_cast<Device::Pad>(static_cast<unsigned>(Device::Pad::Pad1) + padIndex);
-            padChanged(pad, buttonPressed ? 0 : 0xff, shiftPressed);
+            keyChanged(padIndex, buttonPressed ? 1.0 : 0.0, shiftPressed);
           }
           else
           {

@@ -115,25 +115,6 @@ void PyClient::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bo
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
-{
-  GILLock gilLock;
-
-  try
-  {
-    if (m_onPadChanged)
-    {
-      m_onPadChanged(pad_, value_, shiftPressed_);
-    }
-  }
-  catch (const error_already_set& e)
-  {
-    M_LOG("[PyClient::render] exception: " << PyErrorString());
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
 void PyClient::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
   GILLock gilLock;
