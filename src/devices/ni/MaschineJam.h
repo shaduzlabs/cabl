@@ -31,8 +31,8 @@ class MaschineJam : public Device
 public:
   MaschineJam();
 
-  void setLed(Device::Button, const util::ColorRGB&) override;
-  void setLed(Device::Pad, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const util::ColorRGB&) override;
+  void setKeyLed(unsigned, const util::ColorRGB&) override;
 
   Canvas* ledMatrix(size_t ledMatrixIndex_) override;
   LedArray* ledArray(size_t ledArrayIndex_) override;
@@ -88,7 +88,7 @@ private:
   void setLedImpl(Led, const util::ColorRGB&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
-  Led led(Device::Pad) const noexcept;
+  Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button btn_) const noexcept;
   bool isButtonPressed(Button button) const noexcept;

@@ -18,7 +18,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-class GDisplayPush2 : public CanvasBase<1024, 160, 1024 * 160 * 2>
+class GDisplayPush2 : public CanvasBase<960, 160, 1024 * 160 * 2>
 {
 public:
   //! Set a pixel

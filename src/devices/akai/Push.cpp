@@ -275,16 +275,16 @@ Push::Push() : m_isDirtyLeds(false)
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setLed(Device::Button btn_, const util::ColorRGB& color_)
+void Push::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setLed(Device::Pad pad_, const util::ColorRGB& color_)
+void Push::setKeyLed(unsigned index_, const util::ColorRGB& color_)
 {
-  setLedImpl(led(pad_), color_);
+  setLedImpl(led(index_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -543,11 +543,10 @@ Push::Led Push::led(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Push::Led Push::led(Device::Pad pad_) const noexcept
+Push::Led Push::led(unsigned index_) const noexcept
 {
-  uint8_t pad = static_cast<unsigned>(pad_);
-  unsigned index = static_cast<unsigned>(Led::Pad1) + pad;
-  if (pad < 64)
+  unsigned index = static_cast<unsigned>(Led::Pad1) + index_;
+  if (index_ < 64)
   {
     return static_cast<Led>(index);
   }

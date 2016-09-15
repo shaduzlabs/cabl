@@ -38,7 +38,7 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
 {
   GDisplayPush2 display;
 
-  CHECK(display.width() == 1024);
+  CHECK(display.width() == 960);
   CHECK(display.height() == 160);
   CHECK(display.numberOfChunks() == 1);
 

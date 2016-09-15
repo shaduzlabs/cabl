@@ -29,8 +29,8 @@ public:
   MaschineMK2();
   ~MaschineMK2() override;
 
-  void setLed(Device::Button, const util::ColorRGB&) override;
-  void setLed(Device::Pad, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const util::ColorRGB&) override;
+  void setKeyLed(unsigned, const util::ColorRGB&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -86,7 +86,7 @@ private:
   void setLedImpl(Led, const util::ColorRGB&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
-  Led led(Device::Pad) const noexcept;
+  Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button btn_) const noexcept;
   bool isButtonPressed(Button button) const noexcept;

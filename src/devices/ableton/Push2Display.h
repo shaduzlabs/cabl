@@ -27,10 +27,10 @@ class Push2Display : public Device
 
 public:
 
-  void setLed(Device::Button, const util::ColorRGB&) override
+  void setButtonLed(Device::Button, const util::ColorRGB&) override
   {
   }
-  void setLed(Device::Pad, const util::ColorRGB&) override
+  void setKeyLed(unsigned, const util::ColorRGB&) override
   {
   }
 

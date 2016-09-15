@@ -319,16 +319,16 @@ KompleteKontrolBase::~KompleteKontrolBase()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLed(Device::Button btn_, const util::ColorRGB& color_)
+void KompleteKontrolBase::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLed(Device::Key key_, const util::ColorRGB& color_)
+void KompleteKontrolBase::setKeyLed(unsigned index_, const util::ColorRGB& color_)
 {
-  setLedImpl(led(key_), color_);
+  setLedImpl(led(index_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -606,153 +606,15 @@ KompleteKontrolBase::Led KompleteKontrolBase::led(Device::Button btn_) const noe
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrolBase::Led KompleteKontrolBase::led(Device::Key key_) const noexcept
+KompleteKontrolBase::Led KompleteKontrolBase::led(unsigned index_) const noexcept
 {
-  static const Device::Key kMaxKey = static_cast<Device::Key>(numKeys());
-  if (key_ >= kMaxKey)
-    return Led::Unknown;
-
-#define M_KEY_CASE(idKey)  \
-  case Device::Key::idKey: \
-    return Led::idKey
-
-  switch (key_)
+  unsigned index = static_cast<unsigned>(Led::Key1) + ( 3 * index_);
+  if (index_ < numKeys())
   {
-    M_KEY_CASE(Key1);
-    M_KEY_CASE(Key2);
-    M_KEY_CASE(Key3);
-    M_KEY_CASE(Key4);
-    M_KEY_CASE(Key5);
-    M_KEY_CASE(Key6);
-    M_KEY_CASE(Key7);
-    M_KEY_CASE(Key8);
-    M_KEY_CASE(Key9);
-    M_KEY_CASE(Key10);
-    M_KEY_CASE(Key11);
-    M_KEY_CASE(Key12);
-    M_KEY_CASE(Key13);
-    M_KEY_CASE(Key14);
-    M_KEY_CASE(Key15);
-    M_KEY_CASE(Key16);
-    M_KEY_CASE(Key17);
-    M_KEY_CASE(Key18);
-    M_KEY_CASE(Key19);
-    M_KEY_CASE(Key20);
-    M_KEY_CASE(Key21);
-    M_KEY_CASE(Key22);
-    M_KEY_CASE(Key23);
-    M_KEY_CASE(Key24);
-    M_KEY_CASE(Key25);
-    M_KEY_CASE(Key26);
-    M_KEY_CASE(Key27);
-    M_KEY_CASE(Key28);
-    M_KEY_CASE(Key29);
-    M_KEY_CASE(Key30);
-    M_KEY_CASE(Key31);
-    M_KEY_CASE(Key32);
-    M_KEY_CASE(Key33);
-    M_KEY_CASE(Key34);
-    M_KEY_CASE(Key35);
-    M_KEY_CASE(Key36);
-    M_KEY_CASE(Key37);
-    M_KEY_CASE(Key38);
-    M_KEY_CASE(Key39);
-    M_KEY_CASE(Key40);
-    M_KEY_CASE(Key41);
-    M_KEY_CASE(Key42);
-    M_KEY_CASE(Key43);
-    M_KEY_CASE(Key44);
-    M_KEY_CASE(Key45);
-    M_KEY_CASE(Key46);
-    M_KEY_CASE(Key47);
-    M_KEY_CASE(Key48);
-    M_KEY_CASE(Key49);
-    M_KEY_CASE(Key50);
-    M_KEY_CASE(Key51);
-    M_KEY_CASE(Key52);
-    M_KEY_CASE(Key53);
-    M_KEY_CASE(Key54);
-    M_KEY_CASE(Key55);
-    M_KEY_CASE(Key56);
-    M_KEY_CASE(Key57);
-    M_KEY_CASE(Key58);
-    M_KEY_CASE(Key59);
-    M_KEY_CASE(Key60);
-    M_KEY_CASE(Key61);
-    M_KEY_CASE(Key62);
-    M_KEY_CASE(Key63);
-    M_KEY_CASE(Key64);
-    M_KEY_CASE(Key65);
-    M_KEY_CASE(Key66);
-    M_KEY_CASE(Key67);
-    M_KEY_CASE(Key68);
-    M_KEY_CASE(Key69);
-    M_KEY_CASE(Key70);
-    M_KEY_CASE(Key71);
-    M_KEY_CASE(Key72);
-    M_KEY_CASE(Key73);
-    M_KEY_CASE(Key74);
-    M_KEY_CASE(Key75);
-    M_KEY_CASE(Key76);
-    M_KEY_CASE(Key77);
-    M_KEY_CASE(Key78);
-    M_KEY_CASE(Key79);
-    M_KEY_CASE(Key80);
-    M_KEY_CASE(Key81);
-    M_KEY_CASE(Key82);
-    M_KEY_CASE(Key83);
-    M_KEY_CASE(Key84);
-    M_KEY_CASE(Key85);
-    M_KEY_CASE(Key86);
-    M_KEY_CASE(Key87);
-    M_KEY_CASE(Key88);
-    M_KEY_CASE(Key89);
-    M_KEY_CASE(Key90);
-    M_KEY_CASE(Key91);
-    M_KEY_CASE(Key92);
-    M_KEY_CASE(Key93);
-    M_KEY_CASE(Key94);
-    M_KEY_CASE(Key95);
-    M_KEY_CASE(Key96);
-    M_KEY_CASE(Key97);
-    M_KEY_CASE(Key98);
-    M_KEY_CASE(Key99);
-    M_KEY_CASE(Key100);
-    M_KEY_CASE(Key101);
-    M_KEY_CASE(Key102);
-    M_KEY_CASE(Key103);
-    M_KEY_CASE(Key104);
-    M_KEY_CASE(Key105);
-    M_KEY_CASE(Key106);
-    M_KEY_CASE(Key107);
-    M_KEY_CASE(Key108);
-    M_KEY_CASE(Key109);
-    M_KEY_CASE(Key110);
-    M_KEY_CASE(Key111);
-    M_KEY_CASE(Key112);
-    M_KEY_CASE(Key113);
-    M_KEY_CASE(Key114);
-    M_KEY_CASE(Key115);
-    M_KEY_CASE(Key116);
-    M_KEY_CASE(Key117);
-    M_KEY_CASE(Key118);
-    M_KEY_CASE(Key119);
-    M_KEY_CASE(Key120);
-    M_KEY_CASE(Key121);
-    M_KEY_CASE(Key122);
-    M_KEY_CASE(Key123);
-    M_KEY_CASE(Key124);
-    M_KEY_CASE(Key125);
-    M_KEY_CASE(Key126);
-    M_KEY_CASE(Key127);
-    M_KEY_CASE(Key128);
-    default:
-    {
-      return Led::Unknown;
-    }
+    return static_cast<Led>(index);
   }
 
-#undef M_PAD_CASE
+  return Led::Unknown;
 }
 
 //--------------------------------------------------------------------------------------------------

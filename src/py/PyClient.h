@@ -80,9 +80,8 @@ public:
   {
     m_onControlChanged = fn_;
   }
-  void setLed(Device::Button, const util::ColorRGB&);
-  void setLed(Device::Pad, const util::ColorRGB&);
-  void setLed(Device::Key, const util::ColorRGB&);
+  void setButtonLed(Device::Button, const util::ColorRGB&);
+  void setKeyLed(unsigned, const util::ColorRGB&);
 
   Canvas* graphicDisplay(size_t displayIndex_)
   {

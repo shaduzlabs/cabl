@@ -73,7 +73,7 @@ Euklid::Euklid()
 
 void Euklid::initDevice()
 {
-  device()->setLed(Device::Key::Key1, kEuklidColor_Track[0]);
+  device()->setKeyLed(0, kEuklidColor_Track[0]);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -411,22 +411,22 @@ void Euklid::updateGroupLeds()
   switch (m_currentTrack)
   {
     case 0:
-      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
-      device()->setLed(Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
-      device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
-      device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[0]);
+      device()->setButtonLed(Device::Button::GroupA, kEuklidColor_Track_CurrentStep[0]);
+      device()->setButtonLed(Device::Button::GroupB, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::GroupC, kEuklidColor_Black);
       break;
     case 1:
-      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
-      device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
-      device()->setLed(Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
-      device()->setLed(Device::Button::GroupC, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[1]);
+      device()->setButtonLed(Device::Button::GroupA, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::GroupB, kEuklidColor_Track_CurrentStep[1]);
+      device()->setButtonLed(Device::Button::GroupC, kEuklidColor_Black);
       break;
     case 2:
-      device()->setLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
-      device()->setLed(Device::Button::GroupA, kEuklidColor_Black);
-      device()->setLed(Device::Button::GroupB, kEuklidColor_Black);
-      device()->setLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
+      device()->setButtonLed(Device::Button::Group, kEuklidColor_Track_CurrentStep[2]);
+      device()->setButtonLed(Device::Button::GroupA, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::GroupB, kEuklidColor_Black);
+      device()->setButtonLed(Device::Button::GroupC, kEuklidColor_Track_CurrentStep[2]);
       break;
   }
 }
@@ -442,41 +442,33 @@ void Euklid::updatePads()
     uint16_t pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, j = m_rotates[t]; i < 16; i++, j++)
     {
-      Device::Pad p = pad(i);
-      Device::Key k = static_cast<Device::Key>(i);
-
       if (m_currentTrack == t)
       {
 
         if (i >= m_lengths[t])
         {
-          device()->setLed(p, kEuklidColor_Black);
-          device()->setLed(k, kEuklidColor_Black);
+          device()->setKeyLed(i, kEuklidColor_Black);
         }
         else if (pulses & (1 << i))
         {
           if (pos == (j % m_lengths[t]) && m_play)
           {
-            device()->setLed(p, kEuklidColor_Track_CurrentStep[m_currentTrack]);
-            device()->setLed(k, kEuklidColor_Track_CurrentStep[m_currentTrack]);
+            device()->setKeyLed(i, kEuklidColor_Track_CurrentStep[m_currentTrack]);
           }
           else
           {
-            device()->setLed(p, kEuklidColor_Track[m_currentTrack]);
-            device()->setLed(k, kEuklidColor_Track[m_currentTrack]);
+            device()->setKeyLed(i, kEuklidColor_Track[m_currentTrack]);
           }
         }
         else
         {
           if (pos == (j % m_lengths[t]) && m_play)
           {
-            device()->setLed(p, kEuklidColor_Step_Empty_Current);
-            device()->setLed(k, kEuklidColor_Step_Empty_Current);
+            device()->setKeyLed(i, kEuklidColor_Step_Empty_Current);
           }
           else
           {
-            device()->setLed(p, kEuklidColor_Step_Empty);
-            device()->setLed(k, kEuklidColor_Step_Empty);
+            device()->setKeyLed(i, kEuklidColor_Step_Empty);
           }
         }
       }
@@ -509,13 +501,13 @@ void Euklid::drawConfigurationPage()
   device()->graphicDisplay(0)->putText(10, 12, std::to_string(m_bpm).c_str(), {0xff}, "normal");
   device()->graphicDisplay(0)->putText(59, 12, std::to_string(m_shuffle).c_str(), {0xff}, "normal");
 
-  device()->setLed(Device::Button::F1, 0);
-  device()->setLed(Device::Button::F2, 0);
-  device()->setLed(Device::Button::F3, 0);
-  device()->setLed(Device::Button::DisplayButton1, 0);
-  device()->setLed(Device::Button::DisplayButton2, 0);
-  device()->setLed(Device::Button::DisplayButton3, 0);
-  device()->setLed(Device::Button::Control, 255);
+  device()->setButtonLed(Device::Button::F1, 0);
+  device()->setButtonLed(Device::Button::F2, 0);
+  device()->setButtonLed(Device::Button::F3, 0);
+  device()->setButtonLed(Device::Button::DisplayButton1, 0);
+  device()->setButtonLed(Device::Button::DisplayButton2, 0);
+  device()->setButtonLed(Device::Button::DisplayButton3, 0);
+  device()->setButtonLed(Device::Button::Control, 255);
 
 
   switch (m_encoderState)
@@ -524,16 +516,16 @@ void Euklid::drawConfigurationPage()
     {
       device()->graphicDisplay(0)->rectangleFilled(
         41, 0, 52, 20, {BlendMode::Invert}, {BlendMode::Invert});
-      device()->setLed(Device::Button::F2, 255);
-      device()->setLed(Device::Button::DisplayButton2, 255);
+      device()->setButtonLed(Device::Button::F2, 255);
+      device()->setButtonLed(Device::Button::DisplayButton2, 255);
       break;
     }
     case EncoderState::Speed:
     {
       device()->graphicDisplay(0)->rectangleFilled(
         0, 0, 40, 20, {BlendMode::Invert}, {BlendMode::Invert});
-      device()->setLed(Device::Button::F1, 255);
-      device()->setLed(Device::Button::DisplayButton1, 255);
+      device()->setButtonLed(Device::Button::F1, 255);
+      device()->setButtonLed(Device::Button::DisplayButton1, 255);
       break;
     }
     default:
@@ -560,13 +552,13 @@ void Euklid::drawSequencerPage()
     }
   }
 
-  device()->setLed(Device::Button::F1, 0);
-  device()->setLed(Device::Button::F2, 0);
-  device()->setLed(Device::Button::F3, 0);
-  device()->setLed(Device::Button::DisplayButton1, 0);
-  device()->setLed(Device::Button::DisplayButton2, 0);
-  device()->setLed(Device::Button::DisplayButton3, 0);
-  device()->setLed(Device::Button::Control, 0);
+  device()->setButtonLed(Device::Button::F1, 0);
+  device()->setButtonLed(Device::Button::F2, 0);
+  device()->setButtonLed(Device::Button::F3, 0);
+  device()->setButtonLed(Device::Button::DisplayButton1, 0);
+  device()->setButtonLed(Device::Button::DisplayButton2, 0);
+  device()->setButtonLed(Device::Button::DisplayButton3, 0);
+  device()->setButtonLed(Device::Button::Control, 0);
 
   switch (m_encoderState)
   {
@@ -574,24 +566,24 @@ void Euklid::drawSequencerPage()
     {
       device()->graphicDisplay(0)->rectangleFilled(
         43, 0, 42, 10, {BlendMode::Invert}, {BlendMode::Invert});
-      device()->setLed(Device::Button::F2, 255);
-      device()->setLed(Device::Button::DisplayButton2, 255);
+      device()->setButtonLed(Device::Button::F2, 255);
+      device()->setButtonLed(Device::Button::DisplayButton2, 255);
       break;
     }
     case EncoderState::Rotate:
     {
       device()->graphicDisplay(0)->rectangleFilled(
         86, 0, 40, 10, {BlendMode::Invert}, {BlendMode::Invert});
-      device()->setLed(Device::Button::F3, 255);
-      device()->setLed(Device::Button::DisplayButton3, 255);
+      device()->setButtonLed(Device::Button::F3, 255);
+      device()->setButtonLed(Device::Button::DisplayButton3, 255);
       break;
     }
     case EncoderState::Length:
     {
       device()->graphicDisplay(0)->rectangleFilled(
         0, 0, 42, 10, {BlendMode::Invert}, {BlendMode::Invert});
-      device()->setLed(Device::Button::F1, 255);
-      device()->setLed(Device::Button::DisplayButton1, 255);
+      device()->setButtonLed(Device::Button::F1, 255);
+      device()->setButtonLed(Device::Button::DisplayButton1, 255);
       break;
     }
     default:
@@ -671,12 +663,12 @@ void Euklid::togglePlay()
   m_play = !m_play;
   if (m_play)
   {
-    device()->setLed(Device::Button::Play, 255);
+    device()->setButtonLed(Device::Button::Play, 255);
     m_clockFuture = std::async(std::launch::async, std::bind(&Euklid::play, this));
   }
   else
   {
-    device()->setLed(Device::Button::Play, 0);
+    device()->setButtonLed(Device::Button::Play, 0);
     m_clockFuture.get();
     for (uint8_t t = 0; t < kEuklidNumTracks; t++)
     {
@@ -750,91 +742,6 @@ uint8_t Euklid::encoderValue(
     return currentValue_ - step_;
   }
   return currentValue_;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Device::Pad Euklid::pad(uint8_t padIndex_)
-{
-  switch (padIndex_)
-  {
-    case 0:
-      return Device::Pad::Pad13;
-    case 1:
-      return Device::Pad::Pad14;
-    case 2:
-      return Device::Pad::Pad15;
-    case 3:
-      return Device::Pad::Pad16;
-    case 4:
-      return Device::Pad::Pad9;
-    case 5:
-      return Device::Pad::Pad10;
-    case 6:
-      return Device::Pad::Pad11;
-    case 7:
-      return Device::Pad::Pad12;
-    case 8:
-      return Device::Pad::Pad5;
-    case 9:
-      return Device::Pad::Pad6;
-    case 10:
-      return Device::Pad::Pad7;
-    case 11:
-      return Device::Pad::Pad8;
-    case 12:
-      return Device::Pad::Pad1;
-    case 13:
-      return Device::Pad::Pad2;
-    case 14:
-      return Device::Pad::Pad3;
-    case 15:
-      return Device::Pad::Pad4;
-  }
-  return Device::Pad::Unknown;
-}
-//--------------------------------------------------------------------------------------------------
-
-uint8_t Euklid::padIndex(Device::Pad pad_)
-{
-  switch (pad_)
-  {
-    case Device::Pad::Pad13:
-      return 0;
-    case Device::Pad::Pad14:
-      return 1;
-    case Device::Pad::Pad15:
-      return 2;
-    case Device::Pad::Pad16:
-      return 3;
-    case Device::Pad::Pad9:
-      return 4;
-    case Device::Pad::Pad10:
-      return 5;
-    case Device::Pad::Pad11:
-      return 6;
-    case Device::Pad::Pad12:
-      return 7;
-    case Device::Pad::Pad5:
-      return 8;
-    case Device::Pad::Pad6:
-      return 9;
-    case Device::Pad::Pad7:
-      return 10;
-    case Device::Pad::Pad8:
-      return 11;
-    case Device::Pad::Pad1:
-      return 12;
-    case Device::Pad::Pad2:
-      return 13;
-    case Device::Pad::Pad3:
-      return 14;
-    case Device::Pad::Pad4:
-      return 15;
-    default:
-      return 0;
-  }
-  return 0;
 }
 
 //--------------------------------------------------------------------------------------------------

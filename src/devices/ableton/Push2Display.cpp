@@ -24,7 +24,7 @@
 
 namespace
 {
-const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
+const sl::cabl::Transfer k_frameHeader({0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -74,10 +74,7 @@ void Push2Display::init()
 bool Push2Display::sendDisplayData() const
 {
   bool result = true;
-  writeToDeviceHandle(
-    Transfer(
-      {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
-    0x01);
+  writeToDeviceHandle(k_frameHeader, 0x01);
 
   for (unsigned offset = 0; offset < m_display.bufferSize(); offset += 16384)
   {

@@ -28,8 +28,8 @@ class Push2 : public USBMidi
 public:
   Push2();
 
-  void setLed(Device::Button, const util::ColorRGB&) override;
-  void setLed(Device::Pad, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const util::ColorRGB&) override;
+  void setKeyLed(unsigned, const util::ColorRGB&) override;
 
   size_t numOfGraphicDisplays() const override
   {
@@ -75,7 +75,7 @@ private:
   void setLedImpl(Led, const util::ColorRGB&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
-  Led led(Device::Pad) const noexcept;
+  Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button) const noexcept;
   Device::Encoder deviceEncoder(Encoder) const noexcept;

@@ -184,16 +184,16 @@ MaschineMK1::MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed(Device::Button btn_, const util::ColorRGB& color_)
+void MaschineMK1::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLed(Device::Pad pad_, const util::ColorRGB& color_)
+void MaschineMK1::setKeyLed(unsigned index_, const util::ColorRGB& color_)
 {
-  setLedImpl(led(pad_), color_);
+  setLedImpl(led(index_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -441,35 +441,6 @@ void MaschineMK1::processPads(const Transfer& input_)
 
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
 
-    Device::Pad btn(Device::Pad::Unknown);
-
-#define M_PAD_CASE(value, pad) \
-  case value:                  \
-    btn = Device::Pad::pad;    \
-    break
-
-    switch (pad)
-    {
-      M_PAD_CASE(0, Pad13);
-      M_PAD_CASE(1, Pad14);
-      M_PAD_CASE(2, Pad15);
-      M_PAD_CASE(3, Pad16);
-      M_PAD_CASE(4, Pad9);
-      M_PAD_CASE(5, Pad10);
-      M_PAD_CASE(6, Pad11);
-      M_PAD_CASE(7, Pad12);
-      M_PAD_CASE(8, Pad5);
-      M_PAD_CASE(9, Pad6);
-      M_PAD_CASE(10, Pad7);
-      M_PAD_CASE(11, Pad8);
-      M_PAD_CASE(12, Pad1);
-      M_PAD_CASE(13, Pad2);
-      M_PAD_CASE(14, Pad3);
-      M_PAD_CASE(15, Pad4);
-    }
-
-#undef M_PAD_CASE
-
     if (m_padsData[pad] > kMASMK1_padThreshold)
     {
       m_padsStatus[pad] = true;
@@ -650,37 +621,35 @@ MaschineMK1::Led MaschineMK1::led(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineMK1::Led MaschineMK1::led(Device::Pad pad_) const noexcept
+MaschineMK1::Led MaschineMK1::led(unsigned index_) const noexcept
 {
-#define M_PAD_CASE(idPad)  \
-  case Device::Pad::idPad: \
-    return Led::idPad
-
-  switch (pad_)
+#define M_LED_CASE(val, idLed)     \
+  case val: \
+    return Led::idLed
+  switch(index_)
   {
-    M_PAD_CASE(Pad13);
-    M_PAD_CASE(Pad14);
-    M_PAD_CASE(Pad15);
-    M_PAD_CASE(Pad16);
-    M_PAD_CASE(Pad9);
-    M_PAD_CASE(Pad10);
-    M_PAD_CASE(Pad11);
-    M_PAD_CASE(Pad12);
-    M_PAD_CASE(Pad5);
-    M_PAD_CASE(Pad6);
-    M_PAD_CASE(Pad7);
-    M_PAD_CASE(Pad8);
-    M_PAD_CASE(Pad1);
-    M_PAD_CASE(Pad2);
-    M_PAD_CASE(Pad3);
-    M_PAD_CASE(Pad4);
+    M_LED_CASE(0,  Pad13);
+    M_LED_CASE(1,  Pad14);
+    M_LED_CASE(2,  Pad15);
+    M_LED_CASE(3,  Pad16);
+    M_LED_CASE(4,  Pad9);
+    M_LED_CASE(5,  Pad10);
+    M_LED_CASE(6,  Pad11);
+    M_LED_CASE(7,  Pad12);
+    M_LED_CASE(8,  Pad5);
+    M_LED_CASE(9,  Pad6);
+    M_LED_CASE(10, Pad7);
+    M_LED_CASE(11, Pad8);
+    M_LED_CASE(12, Pad1);
+    M_LED_CASE(13, Pad2);
+    M_LED_CASE(14, Pad3);
+    M_LED_CASE(15, Pad4);
     default:
     {
       return Led::Unknown;
     }
   }
-
-#undef M_PAD_CASE
+#undef M_LED_CASE
 }
 
 //--------------------------------------------------------------------------------------------------

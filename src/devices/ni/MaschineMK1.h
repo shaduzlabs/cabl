@@ -29,8 +29,8 @@ class MaschineMK1 : public Device
 public:
   MaschineMK1();
 
-  void setLed(Device::Button, const util::ColorRGB&) override;
-  void setLed(Device::Pad, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const util::ColorRGB&) override;
+  void setKeyLed(unsigned, const util::ColorRGB&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -86,7 +86,7 @@ private:
 
   void setLedImpl(Led, const util::ColorRGB&);
   Led led(Device::Button) const noexcept;
-  Led led(Device::Pad) const noexcept;
+  Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button btn_) const noexcept;
   Device::Encoder deviceEncoder(Encoder btn_) const noexcept;

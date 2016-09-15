@@ -94,9 +94,7 @@ private:
     uint8_t currentValue_,
     uint8_t minValue_,
     uint8_t maxValue_);
-  Device::Pad pad(uint8_t padIndex_);
-  uint8_t padIndex(Device::Pad pad_);
-
+  
   Sequence<uint16_t> m_sequences[3];
 
   std::future<void> m_clockFuture;

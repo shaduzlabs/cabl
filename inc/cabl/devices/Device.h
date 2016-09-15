@@ -225,36 +225,6 @@ public:
     Unknown,
   };
 
-  enum class Pad : uint8_t
-  {
-    Pad1,   Pad2,  Pad3,  Pad4,  Pad5,  Pad6,  Pad7,  Pad8,
-    Pad9,  Pad10, Pad11, Pad12, Pad13, Pad14, Pad15, Pad16,
-    Pad17, Pad18, Pad19, Pad20, Pad21, Pad22, Pad23, Pad24,
-    Pad25, Pad26, Pad27, Pad28, Pad29, Pad30, Pad31, Pad32,
-    Pad33, Pad34, Pad35, Pad36, Pad37, Pad38, Pad39, Pad40,
-    Pad41, Pad42, Pad43, Pad44, Pad45, Pad46, Pad47, Pad48,
-    Pad49, Pad50, Pad51, Pad52, Pad53, Pad54, Pad55, Pad56,
-    Pad57, Pad58, Pad59, Pad60, Pad61, Pad62, Pad63, Pad64,
-    Unknown,
-  };
-
-
-  enum class Key : uint8_t
-  {
-    Key1,   Key2,   Key3,   Key4,   Key5,   Key6,   Key7,   Key8,   Key9,   Key10,  Key11,  Key12,
-    Key13,  Key14,  Key15,  Key16,  Key17,  Key18,  Key19,  Key20,  Key21,  Key22,  Key23,  Key24,
-    Key25,  Key26,  Key27,  Key28,  Key29,  Key30,  Key31,  Key32,  Key33,  Key34,  Key35,  Key36,
-    Key37,  Key38,  Key39,  Key40,  Key41,  Key42,  Key43,  Key44,  Key45,  Key46,  Key47,  Key48,
-    Key49,  Key50,  Key51,  Key52,  Key53,  Key54,  Key55,  Key56,  Key57,  Key58,  Key59,  Key60,
-    Key61,  Key62,  Key63,  Key64,  Key65,  Key66,  Key67,  Key68,  Key69,  Key70,  Key71,  Key72,
-    Key73,  Key74,  Key75,  Key76,  Key77,  Key78,  Key79,  Key80,  Key81,  Key82,  Key83,  Key84,
-    Key85,  Key86,  Key87,  Key88,  Key89,  Key90,  Key91,  Key92,  Key93,  Key94,  Key95,  Key96,
-    Key97,  Key98,  Key99,  Key100, Key101, Key102, Key103, Key104, Key105, Key106, Key107, Key108,
-    Key109, Key110, Key111, Key112, Key113, Key114, Key115, Key116, Key117, Key118, Key119, Key120,
-    Key121, Key122, Key123, Key124, Key125, Key126, Key127, Key128,
-    Unknown,
-  };
-
   enum class Potentiometer : uint8_t
   {
     CenterDetented1, CenterDetented2, CenterDetented3, CenterDetented4,
@@ -274,15 +244,6 @@ public:
   using tCbKeyChanged = std::function<void(unsigned index_, double, bool shiftKey_)>;
   using tCbControlChanged
     = std::function<void(Potentiometer pad_, uint16_t val_, bool shiftKey_)>;
-
-  enum class Type
-  {
-    Unknown,
-    MaschineMk1,
-    MaschineMk2,
-    MaschineMikroMk1,
-    MaschineMikroMk2,
-  };
 
   Device() = default;
   virtual ~Device() = default;
@@ -309,11 +270,9 @@ public:
 
   virtual size_t numOfLedArrays() const = 0;
 
-  virtual void setLed(Button, const util::ColorRGB&) = 0;
+  virtual void setButtonLed(Button, const util::ColorRGB&);
 
-  virtual void setLed(Pad, const util::ColorRGB&);
-
-  virtual void setLed(Key, const util::ColorRGB&);
+  virtual void setKeyLed(unsigned, const util::ColorRGB&);
 
   virtual void sendMidiMsg(tRawData);
 

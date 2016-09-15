@@ -191,31 +191,21 @@ void PyClient::render()
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setLed(Device::Button btn_, const util::ColorRGB& color_)
+void PyClient::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   if (device())
   {
-    device()->setLed(btn_, color_);
+    device()->setButtonLed(btn_, color_);
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setLed(Device::Pad pad_, const util::ColorRGB& color_)
+void PyClient::setKeyLed(unsigned index_, const util::ColorRGB& color_)
 {
   if (device())
   {
-    device()->setLed(pad_, color_);
-  }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void PyClient::setLed(Device::Key key_, const util::ColorRGB& color_)
-{
-  if (device())
-  {
-    device()->setLed(key_, color_);
+    device()->setKeyLed(index_, color_);
   }
 }
 

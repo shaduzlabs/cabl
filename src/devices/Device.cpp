@@ -74,13 +74,13 @@ LedArray* Device::ledArray(size_t ledArrayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setLed(Pad, const util::ColorRGB&)
+void Device::setButtonLed(Button, const util::ColorRGB&)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setLed(Key, const util::ColorRGB&)
+void Device::setKeyLed(unsigned, const util::ColorRGB&)
 {
 }
 

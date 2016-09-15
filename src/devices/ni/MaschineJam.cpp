@@ -288,16 +288,16 @@ MaschineJam::MaschineJam()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineJam::setLed(Device::Button btn_, const util::ColorRGB& color_)
+void MaschineJam::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineJam::setLed(Device::Pad pad_, const util::ColorRGB& color_)
+void MaschineJam::setKeyLed(unsigned index_, const util::ColorRGB& color_)
 {
-  setLedImpl(led(pad_), color_);
+  setLedImpl(led(index_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -513,8 +513,7 @@ void MaschineJam::processButtons(const Transfer& input_)
 
 void MaschineJam::processStrips(const Transfer& input_)
 {
-  unsigned tsIndex = 0;
-  for (int i = 1; i < input_.size(); i += 6)
+  for (unsigned i = 1, tsIndex = 0; i < input_.size(); i += 6, tsIndex++)
   {
     // uint16_t timeMs = input_[i] | (input_[i + 1] << 8);
     uint16_t val = input_[i + 2] | (input_[i + 3] << 8);
@@ -526,7 +525,6 @@ void MaschineJam::processStrips(const Transfer& input_)
       m_touchstripsValues[i] = val;
       controlChanged(potentiometer, val / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
-    tsIndex++;
   }
 }
 
@@ -716,85 +714,15 @@ MaschineJam::Led MaschineJam::led(Device::Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-MaschineJam::Led MaschineJam::led(Device::Pad pad_) const noexcept
+MaschineJam::Led MaschineJam::led(unsigned index_) const noexcept
 {
-#define M_PAD_CASE(idPad)  \
-  case Device::Pad::idPad: \
-    return Led::idPad
-
-  switch (pad_)
+  unsigned index = static_cast<unsigned>(Led::Pad1) + index_;
+  if (index_ < 64)
   {
-    M_PAD_CASE(Pad1);
-    M_PAD_CASE(Pad2);
-    M_PAD_CASE(Pad3);
-    M_PAD_CASE(Pad4);
-    M_PAD_CASE(Pad5);
-    M_PAD_CASE(Pad6);
-    M_PAD_CASE(Pad7);
-    M_PAD_CASE(Pad8);
-    M_PAD_CASE(Pad9);
-    M_PAD_CASE(Pad10);
-    M_PAD_CASE(Pad11);
-    M_PAD_CASE(Pad12);
-    M_PAD_CASE(Pad13);
-    M_PAD_CASE(Pad14);
-    M_PAD_CASE(Pad15);
-    M_PAD_CASE(Pad16);
-    M_PAD_CASE(Pad17);
-    M_PAD_CASE(Pad18);
-    M_PAD_CASE(Pad19);
-    M_PAD_CASE(Pad20);
-    M_PAD_CASE(Pad21);
-    M_PAD_CASE(Pad22);
-    M_PAD_CASE(Pad23);
-    M_PAD_CASE(Pad24);
-    M_PAD_CASE(Pad25);
-    M_PAD_CASE(Pad26);
-    M_PAD_CASE(Pad27);
-    M_PAD_CASE(Pad28);
-    M_PAD_CASE(Pad29);
-    M_PAD_CASE(Pad30);
-    M_PAD_CASE(Pad31);
-    M_PAD_CASE(Pad32);
-    M_PAD_CASE(Pad33);
-    M_PAD_CASE(Pad34);
-    M_PAD_CASE(Pad35);
-    M_PAD_CASE(Pad36);
-    M_PAD_CASE(Pad37);
-    M_PAD_CASE(Pad38);
-    M_PAD_CASE(Pad39);
-    M_PAD_CASE(Pad40);
-    M_PAD_CASE(Pad41);
-    M_PAD_CASE(Pad42);
-    M_PAD_CASE(Pad43);
-    M_PAD_CASE(Pad44);
-    M_PAD_CASE(Pad45);
-    M_PAD_CASE(Pad46);
-    M_PAD_CASE(Pad47);
-    M_PAD_CASE(Pad48);
-    M_PAD_CASE(Pad49);
-    M_PAD_CASE(Pad50);
-    M_PAD_CASE(Pad51);
-    M_PAD_CASE(Pad52);
-    M_PAD_CASE(Pad53);
-    M_PAD_CASE(Pad54);
-    M_PAD_CASE(Pad55);
-    M_PAD_CASE(Pad56);
-    M_PAD_CASE(Pad57);
-    M_PAD_CASE(Pad58);
-    M_PAD_CASE(Pad59);
-    M_PAD_CASE(Pad60);
-    M_PAD_CASE(Pad61);
-    M_PAD_CASE(Pad62);
-    M_PAD_CASE(Pad63);
-    M_PAD_CASE(Pad64);
-    default:
-    {
-      return Led::Unknown;
-    }
+    return static_cast<Led>(index);
   }
 
-#undef M_PAD_CASE
+  return Led::Unknown;
 }
 
 //--------------------------------------------------------------------------------------------------
