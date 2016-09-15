@@ -485,9 +485,7 @@ void MaschineJam::processButtons(const Transfer& input_)
           {
             unsigned padIndex
               = static_cast<unsigned>(currentButton) - static_cast<unsigned>(Button::Pad1);
-            Device::Pad pad
-              = static_cast<Device::Pad>(static_cast<unsigned>(Device::Pad::Pad1) + padIndex);
-            padChanged(pad, buttonPressed ? 0 : 0xffff, shiftPressed);
+            keyChanged(padIndex, buttonPressed ? 1.0 : 0.0, shiftPressed);
           }
           else
           {
@@ -526,7 +524,7 @@ void MaschineJam::processStrips(const Transfer& input_)
     if (val != 0 && m_touchstripsValues[i] != val)
     {
       m_touchstripsValues[i] = val;
-      potentiometerChanged(potentiometer, val, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      controlChanged(potentiometer, val / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
     tsIndex++;
   }

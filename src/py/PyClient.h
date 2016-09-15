@@ -59,8 +59,8 @@ public:
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_) override;
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
-  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed) override;
-  void potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed) override;
+  void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
+  void controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed) override;
   
   void initDevice() override;
   void render() override;
@@ -81,9 +81,9 @@ public:
   {
     m_onKeyChanged = fn_;
   }
-  void onPotentiometerChanged(object fn_)
+  void onControlChanged(object fn_)
   {
-    m_onPotentiometerChanged = fn_;
+    m_onControlChanged = fn_;
   }
   void setLed(Device::Button, const util::ColorRGB&);
   void setLed(Device::Pad, const util::ColorRGB&);
@@ -119,7 +119,7 @@ private:
   object m_onEncoderChanged;
   object m_onPadChanged;
   object m_onKeyChanged;
-  object m_onPotentiometerChanged;
+  object m_onControlChanged;
 };
 
 //--------------------------------------------------------------------------------------------------

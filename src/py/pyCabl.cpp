@@ -159,7 +159,7 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("onPadChanged", &PyClient::onPadChanged, args("onPadChanged"))
     .def("onEncoderChanged", &PyClient::onEncoderChanged, args("onEncoderChanged"))
     .def("onKeyChanged", &PyClient::onKeyChanged, args("onKeyChanged"))
-    .def("onPotentiometerChanged", &PyClient::onPotentiometerChanged, args("onPotentiometerChanged"))
+    .def("onControlChanged", &PyClient::onControlChanged, args("onControlChanged"))
     .def(
       "graphicDisplay", &PyClient::graphicDisplay, return_value_policy<reference_existing_object>())
     .def("textDisplay", &PyClient::textDisplay, return_value_policy<reference_existing_object>())

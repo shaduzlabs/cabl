@@ -272,8 +272,8 @@ public:
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbPadChanged = std::function<void(Pad pad_, uint16_t val_, bool shiftKey_)>;
-  using tCbKeyChanged = std::function<void(Key pad_, uint16_t val_, bool shiftKey_)>;
-  using tCbPotentiometerChanged
+  using tCbKeyChanged = std::function<void(unsigned index_, double, bool shiftKey_)>;
+  using tCbControlChanged
     = std::function<void(Potentiometer pad_, uint16_t val_, bool shiftKey_)>;
 
   enum class Type
@@ -330,7 +330,7 @@ public:
 
   void setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_);
 
-  void setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_);
+  void setCallbackControlChanged(tCbControlChanged cbControlChanged_);
 
   bool hasDeviceHandle();
 
@@ -349,9 +349,9 @@ protected:
 
   void padChanged(Pad pad_, uint16_t value_, bool shiftPressed_);
 
-  void keyChanged(Key key_, uint16_t value_, bool shiftPressed_);
+  void keyChanged(unsigned index_, double value_, bool shiftPressed_);
 
-  void potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_);
+  void controlChanged(Potentiometer potentiometer_, double value_, bool shiftPressed_);
 
 private:
   bool onTick();
@@ -370,7 +370,7 @@ private:
   tCbEncoderChanged m_cbEncoderChanged;
   tCbPadChanged m_cbPadChanged;
   tCbKeyChanged m_cbKeyChanged;
-  tCbPotentiometerChanged m_cbPotentiometerChanged;
+  tCbControlChanged m_cbControlChanged;
 
   mutable std::mutex m_mtxDeviceHandle;
   tPtr<DeviceHandle> m_pDeviceHandle;

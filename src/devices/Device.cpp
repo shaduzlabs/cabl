@@ -134,9 +134,9 @@ void Device::setCallbackKeyChanged(tCbKeyChanged cbKeyChanged_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setCallbackPotentiometerChanged(tCbPotentiometerChanged cbPotentiometerChanged_)
+void Device::setCallbackControlChanged(tCbControlChanged cbControlChanged_)
 {
-  m_cbPotentiometerChanged = cbPotentiometerChanged_;
+  m_cbControlChanged = cbControlChanged_;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -217,21 +217,21 @@ void Device::padChanged(Pad pad_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::keyChanged(Key key_, uint16_t value_, bool shiftPressed_)
+void Device::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
   if (m_cbKeyChanged)
   {
-    m_cbKeyChanged(key_, value_, shiftPressed_);
+    m_cbKeyChanged(index_, value_, shiftPressed_);
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::potentiometerChanged(Potentiometer potentiometer_, uint16_t value_, bool shiftPressed_)
+void Device::controlChanged(Potentiometer potentiometer_, double value_, bool shiftPressed_)
 {
-  if (m_cbPotentiometerChanged)
+  if (m_cbControlChanged)
   {
-    m_cbPotentiometerChanged(potentiometer_, value_, shiftPressed_);
+    m_cbControlChanged(potentiometer_, value_, shiftPressed_);
   }
 }
 

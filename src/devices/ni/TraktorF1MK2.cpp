@@ -312,7 +312,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
     if (m_potentiometersValues[potIndex] != value)
     {
       m_potentiometersValues[potIndex] = value;
-      potentiometerChanged(potentiometer, value, shiftPressed);
+      controlChanged(potentiometer, value / 1024.0, shiftPressed);
     }
   }
 }

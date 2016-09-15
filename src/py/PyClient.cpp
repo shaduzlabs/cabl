@@ -134,7 +134,7 @@ void PyClient::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
+void PyClient::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
   GILLock gilLock;
 
@@ -142,7 +142,7 @@ void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
   {
     if (m_onKeyChanged)
     {
-      m_onKeyChanged(key_, value_, shiftPressed_);
+      m_onKeyChanged(index_, value_, shiftPressed_);
     }
   }
   catch (const error_already_set& e)
@@ -153,7 +153,7 @@ void PyClient::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed_)
+void PyClient::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
 {
   GILLock gilLock;
 
@@ -161,7 +161,7 @@ void PyClient::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_,
   {
     if (m_onKeyChanged)
     {
-      m_onPotentiometerChanged(pot_, value_, shiftPressed_);
+      m_onControlChanged(pot_, value_, shiftPressed_);
     }
   }
   catch (const error_already_set& e)

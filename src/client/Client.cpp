@@ -70,7 +70,7 @@ void Client::onInitDevice()
   m_pDevice->setCallbackEncoderChanged(std::bind(&Client::encoderChanged, this, _1, _2, _3));
   m_pDevice->setCallbackPadChanged(std::bind(&Client::padChanged, this, _1, _2, _3));
   m_pDevice->setCallbackKeyChanged(std::bind(&Client::keyChanged, this, _1, _2, _3));
-  m_pDevice->setCallbackPotentiometerChanged(std::bind(&Client::potentiometerChanged, this, _1, _2, _3));
+  m_pDevice->setCallbackControlChanged(std::bind(&Client::controlChanged, this, _1, _2, _3));
 
   initDevice();
 
@@ -131,18 +131,18 @@ void Client::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
+void Client::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
-  M_LOG("[Client] keyChanged " << static_cast<int>(key_) << " (" << value_ << ") "
+  M_LOG("[Client] keyChanged " << static_cast<int>(index_) << " (" << value_ << ") "
                                << (shiftPressed_ ? " SHIFT" : ""));
   m_update = true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed_)
+void Client::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
 {
-  M_LOG("[Client] potentiometerChanged " << static_cast<int>(pot_) << " (" << value_ << ") "
+  M_LOG("[Client] controlChanged " << static_cast<int>(pot_) << " (" << value_ << ") "
                                << (shiftPressed_ ? " SHIFT" : ""));
   m_update = true;
 }

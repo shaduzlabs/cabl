@@ -52,8 +52,8 @@ public:
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_) override;
   void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed) override;
-  void keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed) override;
-  void potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed) override;
+  void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
+  void controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed) override;
 
   void updateClock();
 

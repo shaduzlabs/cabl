@@ -236,22 +236,21 @@ void Euklid::padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::keyChanged(Device::Key key_, uint16_t value_, bool shiftPressed_)
+void Euklid::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 {
   static auto lastEvent = std::chrono::system_clock::now();
   auto now = std::chrono::system_clock::now();
   if (now - lastEvent > std::chrono::milliseconds(180))
   {
     lastEvent = now;
-    uint8_t padIndex = static_cast<uint8_t>(key_);
-    m_sequences[m_currentTrack].toggleStep(padIndex);
+    m_sequences[m_currentTrack].toggleStep(index_);
     requestDeviceUpdate();
   }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::potentiometerChanged(Device::Potentiometer pot_, uint16_t value_, bool shiftPressed_)
+void Euklid::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
 {
   double val = value_ / 1024.0;
   switch (pot_)

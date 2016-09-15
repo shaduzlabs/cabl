@@ -822,8 +822,8 @@ void KompleteKontrolBase::midiInCallback(
   KompleteKontrolBase* pSelf = static_cast<KompleteKontrolBase*>(userData_);
   if ((pMessage_->at(0) & 0xf0) == 0x90)
   {
-    pSelf->keyChanged(static_cast<Device::Key>(pMessage_->at(1) - pSelf->m_firstOctave),
-      pMessage_->at(2),
+    pSelf->keyChanged(pMessage_->at(1) - pSelf->m_firstOctave,
+      pMessage_->at(2) / 127.0,
       pSelf->isButtonPressed(Button::Shift));
   }
 }
