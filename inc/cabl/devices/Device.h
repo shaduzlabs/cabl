@@ -243,7 +243,7 @@ public:
   using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbKeyChanged = std::function<void(unsigned index_, double, bool shiftKey_)>;
   using tCbControlChanged
-    = std::function<void(Potentiometer pad_, uint16_t val_, bool shiftKey_)>;
+    = std::function<void(Potentiometer pot_, double val_, bool shiftKey_)>;
 
   Device() = default;
   virtual ~Device() = default;

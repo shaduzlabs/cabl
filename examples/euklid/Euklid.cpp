@@ -237,19 +237,18 @@ void Euklid::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 
 void Euklid::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
 {
-  double val = value_ / 1024.0;
   switch (pot_)
   {
     case Device::Potentiometer::Fader1:
     {
-      m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((val * 16)+0.5));
+      m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((value_ * 16)+0.5));
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case Device::Potentiometer::Fader2:
     {
-      m_pulses[m_currentTrack] = std::max<uint8_t>(0, ( m_lengths[m_currentTrack] * val ) + 0.5);
+      m_pulses[m_currentTrack] = std::max<uint8_t>(0, ( m_lengths[m_currentTrack] * value_ ) + 0.5);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
@@ -257,19 +256,19 @@ void Euklid::controlChanged(Device::Potentiometer pot_, double value_, bool shif
     case Device::Potentiometer::Fader3:
     {
     
-      m_rotates[m_currentTrack] = std::max<uint8_t>(0, (m_lengths[m_currentTrack] * val)+0.5);
+      m_rotates[m_currentTrack] = std::max<uint8_t>(0, (m_lengths[m_currentTrack] * value_)+0.5);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case Device::Potentiometer::Fader4:
     {
-      m_bpm = (val * 195) + 60;
+      m_bpm = (value_ * 195) + 60;
       updateClock();
       break;
     }
     case Device::Potentiometer::Fader5:
     {
-      m_shuffle = val * 100;
+      m_shuffle = value_ * 100;
       updateClock();
       break;
     }
@@ -345,7 +344,6 @@ void Euklid::updateGUI()
       device()->graphicDisplay(0)->setPixel(j, i, {static_cast<uint8_t>(j), 0, 0});
     }
   }
-  return;
   static util::ColorRGB s_colorWhite{0xff};
   static Alignment s_alignCenter = Alignment::Center;
 
