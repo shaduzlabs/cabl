@@ -145,7 +145,8 @@ void TextDisplayKompleteKontrol::putValue(float value_, uint8_t row_, Alignment 
 
 //--------------------------------------------------------------------------------------------------
 
-std::string TextDisplayKompleteKontrol::alignText(const std::string& string_, Alignment align_) const
+std::string TextDisplayKompleteKontrol::alignText(
+  const std::string& string_, Alignment align_) const
 {
   if (string_.length() >= width())
   {

@@ -59,8 +59,7 @@ util::ColorRGB GDisplayPush2::pixel(uint16_t x_, uint16_t y_) const
 
   return {static_cast<uint8_t>((((data()[index] >> 3) / 31.0) * 255) + 0.5),
     static_cast<uint8_t>(
-      ((((data()[index] & 0x07) << 3 | (data()[index + 1] & 0xE0) >> 5) / 63.0) * 255)
-      + 0.5),
+            ((((data()[index] & 0x07) << 3 | (data()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
     static_cast<uint8_t>((((data()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
 }
 

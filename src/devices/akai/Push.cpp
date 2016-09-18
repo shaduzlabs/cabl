@@ -14,8 +14,8 @@
 #include "cabl/comm/Driver.h"
 #include "cabl/comm/Transfer.h"
 #include "cabl/gfx/TextDisplay.h"
-#include "gfx/displays/NullCanvas.h"
 #include "cabl/util/Functions.h"
+#include "gfx/displays/NullCanvas.h"
 
 #include <cmath>
 

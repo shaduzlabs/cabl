@@ -5,8 +5,8 @@
         ##      ##
 ##########      ############################################################# shaduzlabs.com #####*/
 
-#include <catch.hpp>
 #include <cabl/gfx/DynamicCanvas.h>
+#include <catch.hpp>
 #include <gfx/displays/NullCanvas.h>
 
 //--------------------------------------------------------------------------------------------------

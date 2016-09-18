@@ -9,9 +9,9 @@
 
 #include "cabl/comm/Driver.h"
 #include "cabl/comm/Transfer.h"
-#include "devices/ni/KompleteKontrol.h"
 #include "cabl/gfx/TextDisplay.h"
 #include "cabl/util/Functions.h"
+#include "devices/ni/KompleteKontrol.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -608,7 +608,7 @@ KompleteKontrolBase::Led KompleteKontrolBase::led(Device::Button btn_) const noe
 
 KompleteKontrolBase::Led KompleteKontrolBase::led(unsigned index_) const noexcept
 {
-  unsigned index = static_cast<unsigned>(Led::Key1) + ( 3 * index_);
+  unsigned index = static_cast<unsigned>(Led::Key1) + (3 * index_);
   if (index_ < numKeys())
   {
     return static_cast<Led>(index);

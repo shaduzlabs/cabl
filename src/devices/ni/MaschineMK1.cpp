@@ -444,7 +444,8 @@ void MaschineMK1::processPads(const Transfer& input_)
     if (m_padsData[pad] > kMASMK1_padThreshold)
     {
       m_padsStatus[pad] = true;
-      keyChanged(pad, m_padsData[pad] / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      keyChanged(
+        pad, m_padsData[pad] / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
     else
     {
@@ -623,21 +624,21 @@ MaschineMK1::Led MaschineMK1::led(Device::Button btn_) const noexcept
 
 MaschineMK1::Led MaschineMK1::led(unsigned index_) const noexcept
 {
-#define M_LED_CASE(val, idLed)     \
-  case val: \
+#define M_LED_CASE(val, idLed) \
+  case val:                    \
     return Led::idLed
-  switch(index_)
+  switch (index_)
   {
-    M_LED_CASE(0,  Pad13);
-    M_LED_CASE(1,  Pad14);
-    M_LED_CASE(2,  Pad15);
-    M_LED_CASE(3,  Pad16);
-    M_LED_CASE(4,  Pad9);
-    M_LED_CASE(5,  Pad10);
-    M_LED_CASE(6,  Pad11);
-    M_LED_CASE(7,  Pad12);
-    M_LED_CASE(8,  Pad5);
-    M_LED_CASE(9,  Pad6);
+    M_LED_CASE(0, Pad13);
+    M_LED_CASE(1, Pad14);
+    M_LED_CASE(2, Pad15);
+    M_LED_CASE(3, Pad16);
+    M_LED_CASE(4, Pad9);
+    M_LED_CASE(5, Pad10);
+    M_LED_CASE(6, Pad11);
+    M_LED_CASE(7, Pad12);
+    M_LED_CASE(8, Pad5);
+    M_LED_CASE(9, Pad6);
     M_LED_CASE(10, Pad7);
     M_LED_CASE(11, Pad8);
     M_LED_CASE(12, Pad1);
