@@ -252,25 +252,6 @@ enum class Push2::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class Push2::Encoder : uint8_t
-{
-  Main = 14,
-  Main2 = 15,
-  Encoder1 = 71,
-  Encoder2 = 72,
-  Encoder3 = 73,
-  Encoder4 = 74,
-  Encoder5 = 75,
-  Encoder6 = 76,
-  Encoder7 = 77,
-  Encoder8 = 78,
-  Encoder9 = 79,
-
-  Unknown,
-};
-
-//--------------------------------------------------------------------------------------------------
-
 Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 {
   std::string portName;
@@ -623,36 +604,6 @@ Device::Button Push2::deviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-Device::Encoder Push2::deviceEncoder(Encoder enc_) const noexcept
-{
-#define M_ENC_CASE(idEnc) \
-  case Encoder::idEnc:    \
-    return Device::Encoder::idEnc
-
-  switch (enc_)
-  {
-    M_ENC_CASE(Encoder1);
-    M_ENC_CASE(Encoder2);
-    M_ENC_CASE(Encoder3);
-    M_ENC_CASE(Encoder4);
-    M_ENC_CASE(Encoder5);
-    M_ENC_CASE(Encoder6);
-    M_ENC_CASE(Encoder7);
-    M_ENC_CASE(Encoder8);
-    M_ENC_CASE(Encoder9);
-    M_ENC_CASE(Main);
-    M_ENC_CASE(Main2);
-    default:
-    {
-      return Device::Encoder::Unknown;
-    }
-  }
-
-#undef M_ENC_CASE
-}
-
-//--------------------------------------------------------------------------------------------------
-
 uint8_t Push2::getColorIndex(const util::ColorRGB& color_)
 {
   auto it = m_colorsCache.find(color_);
@@ -707,21 +658,35 @@ void Push2::onControlChange(ControlChange msg_)
   uint8_t cc = msg_.getControl();
   uint8_t value = msg_.getValue();
 
-  Device::Encoder changedEncoder = deviceEncoder(static_cast<Encoder>(cc));
-  if (changedEncoder != Device::Encoder::Unknown)
+  if (cc == static_cast<unsigned>(Device::Button::Shift))
   {
-    encoderChanged(changedEncoder, value < 64, m_shiftPressed);
+    m_shiftPressed = value > 0;
+    return;
   }
-  else
+  
+#define M_ENC_CASE(cc, index) \
+  case cc:    \
+    return encoderChanged(index, value < 64, m_shiftPressed)
+
+  switch (cc)
   {
-    Device::Button changedButton = deviceButton(static_cast<Button>(cc));
-    if (changedButton == Device::Button::Shift)
-    {
-      m_shiftPressed = false;
-      return;
-    }
-    buttonChanged(changedButton, value > 0, m_shiftPressed);
+    M_ENC_CASE(71,1);
+    M_ENC_CASE(72,2);
+    M_ENC_CASE(73,3);
+    M_ENC_CASE(74,4);
+    M_ENC_CASE(75,5);
+    M_ENC_CASE(76,6);
+    M_ENC_CASE(77,7);
+    M_ENC_CASE(78,8);
+    M_ENC_CASE(79,9);
+    M_ENC_CASE(14,0);
+    M_ENC_CASE(15,10);
   }
+  
+  Device::Button changedButton = deviceButton(static_cast<Button>(cc));
+  buttonChanged(changedButton, value > 0, m_shiftPressed);
+  
+#undef M_ENC_CASE
 }
 
 //--------------------------------------------------------------------------------------------------

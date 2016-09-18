@@ -67,6 +67,7 @@ private:
 
   std::thread m_cablThread;
   std::atomic<bool> m_running{false};
+  std::atomic<bool> m_clientRegistered{false};
 
   std::atomic<bool> m_scanDone{false};
   std::mutex m_mtxDevices;

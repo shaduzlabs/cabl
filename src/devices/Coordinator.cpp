@@ -45,6 +45,7 @@ Coordinator::tClientId Coordinator::registerClient(tCbDevicesListChanged cbDevic
   std::string clientId{"client-" + std::to_string(s_clientCount.fetch_add(1))};
   m_collCbDevicesListChanged[clientId] = cbDevicesListChanged_;
 
+  m_clientRegistered = true;
   return clientId;
 }
 
@@ -65,9 +66,12 @@ void Coordinator::run()
     return;
   }
 
-  scan();
-
   m_cablThread = std::thread([this]() {
+    while(!m_clientRegistered)
+    {
+      std::this_thread::yield();;
+    }
+    scan();
     while (m_running)
     {
       std::lock_guard<std::mutex> lock(m_mtxDevices);

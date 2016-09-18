@@ -494,13 +494,11 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
                             || ((m_encoderValues[0] == 0x0f) && (currentEncoderValue == 0x00)))
                           && (!((m_encoderValues[0] == 0x0) && (currentEncoderValue == 0x0f)));
     m_encoderValues[0] = currentEncoderValue;
-    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(0, valueIncreased, shiftPressed);
   }
 
   for (uint8_t encIndex = 0, i = kKK_buttonsDataSize + 1; encIndex < 8; i += 2, encIndex++)
   {
-    Device::Encoder encoder
-      = static_cast<Device::Encoder>(static_cast<uint8_t>(Device::Encoder::Encoder1) + encIndex);
     uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
     uint16_t hValue = input_.data()[i + 1];
     if (m_encoderValues[encIndex + 1] != value)
@@ -510,7 +508,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
         = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
           && (!((prevHValue == 0) && (hValue == 3)));
       m_encoderValues[encIndex + 1] = value;
-      encoderChanged(encoder, valueIncreased, shiftPressed);
+      encoderChanged(encIndex+1, valueIncreased, shiftPressed);
     }
   }
 

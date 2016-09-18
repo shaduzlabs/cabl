@@ -190,7 +190,7 @@ void Device::buttonChanged(Button button_, bool buttonState_, bool shiftPressed_
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
+void Device::encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   if (m_cbEncoderChanged)
   {
@@ -210,7 +210,7 @@ void Device::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::controlChanged(Potentiometer potentiometer_, double value_, bool shiftPressed_)
+void Device::controlChanged(unsigned potentiometer_, double value_, bool shiftPressed_)
 {
   if (m_cbControlChanged)
   {

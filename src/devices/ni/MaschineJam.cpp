@@ -87,22 +87,22 @@ enum class MaschineJam::Led : uint8_t{
   Mute,
   Select,
   LevelLeft1,
-  LevelRight1,
   LevelLeft2,
-
-  LevelRight2,
   LevelLeft3,
-  LevelRight3,
-  LevelLeft4,
-  LevelRight4,
-  LevelLeft5,
-  LevelRight5,
-  LevelLeft6,
 
-  LevelRight6,
+  LevelLeft4,
+  LevelLeft5,
+  LevelLeft6,
   LevelLeft7,
-  LevelRight7,
   LevelLeft8,
+  LevelRight1,
+  LevelRight2,
+  LevelRight3,
+
+  LevelRight4,
+  LevelRight5,
+  LevelRight6,
+  LevelRight7,
   LevelRight8,
 
   // 0x81
@@ -397,10 +397,10 @@ bool MaschineJam::sendLeds()
     }
     else if ((i == 8 || i == 9) && m_ledArraysLevel[i - 8].dirty())
     {
-      unsigned offset = static_cast<unsigned>(Led::LevelLeft1) + (i - 8);
+      unsigned offset = ( i == 8 ? static_cast<unsigned>(Led::LevelLeft1) : static_cast<unsigned>(Led::LevelRight1) );
       for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
       {
-        m_ledsButtons[offset + (2 * k)] = m_ledArraysLevel[i - 8].buffer()[k];
+        m_ledsButtons[offset + (k)] = MaschineJamHelper::fromLedColor(m_ledArraysLevel[i - 8].buffer()[k]).mono();
       }
       m_ledArraysLevel[i - 8].resetDirty();
       m_isDirtyButtonLeds = true;
@@ -504,7 +504,7 @@ void MaschineJam::processButtons(const Transfer& input_)
     bool valueIncreased = ((m_encoderValue < currentEncoderValue)
                             || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
                           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(0, valueIncreased, shiftPressed);
     m_encoderValue = currentEncoderValue;
   }
 }
@@ -518,12 +518,10 @@ void MaschineJam::processStrips(const Transfer& input_)
     // uint16_t timeMs = input_[i] | (input_[i + 1] << 8);
     uint16_t val = input_[i + 2] | (input_[i + 3] << 8);
 
-    Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
-      static_cast<uint8_t>(Device::Potentiometer::Fader1) + tsIndex);
     if (val != 0 && m_touchstripsValues[i] != val)
     {
       m_touchstripsValues[i] = val;
-      controlChanged(potentiometer, val / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+      controlChanged(tsIndex, val / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
   }
 }

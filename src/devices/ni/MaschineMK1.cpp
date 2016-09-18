@@ -160,23 +160,6 @@ enum class MaschineMK1::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-enum class MaschineMK1::Encoder : uint8_t
-{
-  Encoder8,
-  Encoder4,
-  Swing,
-  Encoder7,
-  Encoder3,
-  Tempo,
-  Encoder6,
-  Encoder2,
-  Volume,
-  Encoder5,
-  Encoder1,
-};
-
-//--------------------------------------------------------------------------------------------------
-
 MaschineMK1::MaschineMK1()
 {
   m_leds.resize(kMASMK1_ledsDataSize);
@@ -500,7 +483,6 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 {
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
-    Encoder currentEnc(static_cast<Encoder>(i));
     uint16_t currentEncValue = (input_.data()[2 + (2 * i)]) | (input_.data()[1 + (2 * i)] << 8);
 
     bool valueIncreased = true;
@@ -526,9 +508,29 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
     if (m_encodersInitialized)
     {
-      encoderChanged(deviceEncoder(currentEnc),
-        valueIncreased,
-        m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+#define M_ENCODER_CASE(val, index) \
+  case val:        \
+    encoderChanged(index, valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]); break
+  
+  switch (i)
+  {
+    M_ENCODER_CASE(0,8);
+    M_ENCODER_CASE(1,4);
+    M_ENCODER_CASE(2,10);
+    M_ENCODER_CASE(3,7);
+    M_ENCODER_CASE(4,3);
+    M_ENCODER_CASE(5,9);
+    M_ENCODER_CASE(6,6);
+    M_ENCODER_CASE(7,2);
+    M_ENCODER_CASE(8,0);
+    M_ENCODER_CASE(9,5);
+    M_ENCODER_CASE(10,1);
+
+    default:
+    {
+    }
+  }
+#undef M_ENCODER_CASE
     }
     m_encoderValues[i] = currentEncValue;
   }
@@ -712,36 +714,6 @@ Device::Button MaschineMK1::deviceButton(Button btn_) const noexcept
   }
 
 #undef M_LED_CASE
-}
-
-//--------------------------------------------------------------------------------------------------
-
-Device::Encoder MaschineMK1::deviceEncoder(Encoder btn_) const noexcept
-{
-#define M_ENCODER_CASE(idEncoder) \
-  case Encoder::idEncoder:        \
-    return Device::Encoder::idEncoder
-
-  switch (btn_)
-  {
-    M_ENCODER_CASE(Volume);
-    M_ENCODER_CASE(Tempo);
-    M_ENCODER_CASE(Swing);
-    M_ENCODER_CASE(Encoder1);
-    M_ENCODER_CASE(Encoder2);
-    M_ENCODER_CASE(Encoder3);
-    M_ENCODER_CASE(Encoder4);
-    M_ENCODER_CASE(Encoder5);
-    M_ENCODER_CASE(Encoder6);
-    M_ENCODER_CASE(Encoder7);
-    M_ENCODER_CASE(Encoder8);
-
-    default:
-    {
-      return Device::Encoder::Unknown;
-    }
-  }
-#undef M_ENCODER_CASE
 }
 
 //--------------------------------------------------------------------------------------------------

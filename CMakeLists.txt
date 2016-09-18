@@ -459,8 +459,6 @@ set(
 
 
 # All platforms ---------------------------------------------------------------------------------- #
-
-include_directories(inc src ${RTMIDI_INCLUDE_DIRS} ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   include_directories( /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/)
 endif()
@@ -472,6 +470,7 @@ set(
 )
 
 if(BUILD_SHARED_LIBS AND NOT COVERALLS)
+
   message(STATUS "BUILD_SHARED_LIBS is ON")
   add_library( cabl SHARED ${cabl_ALL} )
   set_target_properties(
@@ -482,6 +481,11 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
       OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
+
+  target_include_directories( cabl PUBLIC inc ${PROJECT_BINARY_DIR})
+  target_include_directories( cabl PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
+  target_include_directories( cabl PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+  target_include_directories( cabl PRIVATE src)
 
   if(LIBUSB_LOCAL_BUILD)
     target_link_libraries( cabl PUBLIC libusb)
@@ -513,6 +517,11 @@ if(BUILD_STATIC_LIBS)
       OUTPUT_NAME         "${LIBRARY_FILE_NAME}"
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
+
+  target_include_directories( cabl-static PUBLIC inc ${PROJECT_BINARY_DIR})
+  target_include_directories( cabl-static PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
+  target_include_directories( cabl-static PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+  target_include_directories( cabl-static PRIVATE src)
 
   if(LIBUSB_LOCAL_BUILD)
     target_link_libraries( cabl-static PUBLIC libusb)
@@ -547,6 +556,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
   if(NOT Boost_PYTHON_FOUND)
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
   else()
+
     add_library( pycabl SHARED ${cabl_ALL} ${cabl_python_SRCS})
     set_target_properties(
       pycabl
@@ -557,6 +567,11 @@ if(CABL_PYTHON AND NOT COVERALLS)
         SUFFIX              ".so"
         PREFIX              ""
     )
+
+    target_include_directories( pycabl PRIVATE inc ${PROJECT_BINARY_DIR})
+    target_include_directories( pycabl PRIVATE ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
+    target_include_directories( pycabl PRIVATE ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
+    target_include_directories( pycabl PRIVATE src)
 
     if(LIBUSB_LOCAL_BUILD)
       target_link_libraries( pycabl PUBLIC libusb)
@@ -716,6 +731,7 @@ if(CABL_EXAMPLES AND NOT COVERALLS)
 endif()
 
 # Clang-tidy and Clang-format -------------------------------------------------------------------- #
-
-include(clang-tools)
-clangTidyTarget(cabl-static)
+if(IS_CABL)
+  include(clang-tools)
+  clangTidyTarget(cabl-static)
+endif()

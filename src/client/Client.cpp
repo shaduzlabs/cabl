@@ -32,7 +32,6 @@ Client::Client(DiscoveryPolicy discoveryPolicy_)
   , m_discoveryPolicy(std::move(discoveryPolicy_))
 {
   M_LOG("[Client] Client");
-  devicesListChanged(Coordinator::instance().enumerate());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -40,6 +39,13 @@ Client::Client(DiscoveryPolicy discoveryPolicy_)
 Client::~Client()
 {
   Coordinator::instance().unregisterClient(m_clientId);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void Client::init()
+{
+  devicesListChanged(Coordinator::instance().enumerate());
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -111,7 +117,7 @@ void Client::buttonChanged(Device::Button button_, bool buttonState_, bool shift
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
+void Client::encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   M_LOG("[Client] encoderChanged " << static_cast<int>(encoder_) << (valueIncreased_ ? "++ " : "--")
                                    << ") "
@@ -130,7 +136,7 @@ void Client::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Client::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
+void Client::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 {
   M_LOG("[Client] controlChanged " << static_cast<int>(pot_) << " (" << value_ << ") "
                                << (shiftPressed_ ? " SHIFT" : ""));

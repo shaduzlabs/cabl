@@ -502,58 +502,6 @@ BOOST_PYTHON_MODULE(pycabl)
 
 //------------------------------------------------------------------------------------------------
 
-#define M_ENCODER_DEF(item) value(#item, Device::Encoder::item)
-  enum_<Device::Encoder>("Encoder")
-    .M_ENCODER_DEF(Main)
-    .M_ENCODER_DEF(Volume)
-    .M_ENCODER_DEF(Tempo)
-    .M_ENCODER_DEF(Main2)
-    .M_ENCODER_DEF(Swing)
-    .M_ENCODER_DEF(Encoder1)
-    .M_ENCODER_DEF(Encoder2)
-    .M_ENCODER_DEF(Encoder3)
-    .M_ENCODER_DEF(Encoder4)
-    .M_ENCODER_DEF(Encoder5)
-    .M_ENCODER_DEF(Encoder6)
-    .M_ENCODER_DEF(Encoder7)
-    .M_ENCODER_DEF(Encoder8)
-    .M_ENCODER_DEF(Encoder9)
-    .M_ENCODER_DEF(Unknown);
-#undef M_ENCODER_DEF
-
-//------------------------------------------------------------------------------------------------
-
-#define M_POT_DEF(item) value(#item, Device::Potentiometer::item)
-  enum_<Device::Potentiometer>("Potentiometer")
-    .M_POT_DEF(CenterDetented1)
-    .M_POT_DEF(CenterDetented2)
-    .M_POT_DEF(CenterDetented3)
-    .M_POT_DEF(CenterDetented4)
-    .M_POT_DEF(CenterDetented5)
-    .M_POT_DEF(CenterDetented6)
-    .M_POT_DEF(CenterDetented7)
-    .M_POT_DEF(CenterDetented8)
-    .M_POT_DEF(Fader1)
-    .M_POT_DEF(Fader2)
-    .M_POT_DEF(Fader3)
-    .M_POT_DEF(Fader4)
-    .M_POT_DEF(Fader5)
-    .M_POT_DEF(Fader6)
-    .M_POT_DEF(Fader7)
-    .M_POT_DEF(Fader8)
-    .M_POT_DEF(Fader9)
-    .M_POT_DEF(Fader10)
-    .M_POT_DEF(Fader11)
-    .M_POT_DEF(Fader12)
-    .M_POT_DEF(Fader13)
-    .M_POT_DEF(Fader14)
-    .M_POT_DEF(Fader15)
-    .M_POT_DEF(Fader16)
-    .M_POT_DEF(Unknown);
-#undef M_POT_DEF
-
-//------------------------------------------------------------------------------------------------
-
 #define M_CIRCLE_DEF(item) value(#item, Canvas::CircleType::item)
   enum_<Canvas::CircleType>("CircleType")
     .M_CIRCLE_DEF(Full)

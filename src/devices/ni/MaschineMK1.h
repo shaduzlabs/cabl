@@ -89,7 +89,6 @@ private:
   Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button btn_) const noexcept;
-  Device::Encoder deviceEncoder(Encoder btn_) const noexcept;
 
   void cbRead(Transfer);
 

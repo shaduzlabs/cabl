@@ -57,9 +57,9 @@ public:
 
   void disconnected() override;
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_) override;
-  void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_) override;
+  void encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
-  void controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed) override;
+  void controlChanged(unsigned pot_, double value_, bool shiftPressed) override;
   
   void initDevice() override;
   void render() override;

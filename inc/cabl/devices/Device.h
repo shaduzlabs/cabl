@@ -225,25 +225,15 @@ public:
     Unknown,
   };
 
-  enum class Potentiometer : uint8_t
-  {
-    CenterDetented1, CenterDetented2, CenterDetented3, CenterDetented4,
-    CenterDetented5, CenterDetented6, CenterDetented7, CenterDetented8,
-    Fader1,  Fader2,  Fader3,  Fader4,  Fader5,  Fader6,  Fader7,  Fader8,
-    Fader9,  Fader10, Fader11, Fader12, Fader13, Fader14, Fader15, Fader16,
-    Unknown,
-  };
-
   // clang-format on
 
   using tCbRender = std::function<void(void)>;
   using tCbDisconnect = std::function<void(void)>;
 
   using tCbButtonChanged = std::function<void(Button btn_, bool state_, bool shiftKey_)>;
-  using tCbEncoderChanged = std::function<void(Encoder enc_, bool valIncreased_, bool shiftKey_)>;
+  using tCbEncoderChanged = std::function<void(unsigned enc_, bool valIncreased_, bool shiftKey_)>;
   using tCbKeyChanged = std::function<void(unsigned index_, double, bool shiftKey_)>;
-  using tCbControlChanged
-    = std::function<void(Potentiometer pot_, double val_, bool shiftKey_)>;
+  using tCbControlChanged = std::function<void(unsigned pot_, double val_, bool shiftKey_)>;
 
   Device() = default;
   virtual ~Device() = default;
@@ -301,11 +291,11 @@ protected:
 
   void buttonChanged(Button button_, bool buttonState_, bool shiftPressed_);
 
-  void encoderChanged(Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
+  void encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_);
 
   void keyChanged(unsigned index_, double value_, bool shiftPressed_);
 
-  void controlChanged(Potentiometer potentiometer_, double value_, bool shiftPressed_);
+  void controlChanged(unsigned potentiometer_, double value_, bool shiftPressed_);
 
 private:
   bool onTick();

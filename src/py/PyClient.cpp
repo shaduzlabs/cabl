@@ -96,7 +96,7 @@ void PyClient::buttonChanged(Device::Button button_, bool buttonState_, bool shi
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
+void PyClient::encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   GILLock gilLock;
 
@@ -134,7 +134,7 @@ void PyClient::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
+void PyClient::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 {
   GILLock gilLock;
 

@@ -13,9 +13,6 @@
 
 #include <unmidify.hpp>
 
-#include <devices/ni/MaschineMK1.h>
-#include <devices/ni/MaschineMK2.h>
-#include <devices/ni/MaschineMikroMK2.h>
 #include <cabl/gfx/TextDisplay.h>
 
 namespace
@@ -168,12 +165,17 @@ void Euklid::buttonChanged(Device::Button button_, bool buttonState_, bool shift
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_)
+void Euklid::encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_)
 {
   uint8_t step = (shiftPressed_ ? 5 : 1);
   switch (encoder_)
   {
-    case Device::Encoder::Encoder1:
+    case 0:
+    {
+      setEncoder(valueIncreased_, shiftPressed_);
+      break;
+    }
+    case 1:
     {
       m_lengths[m_currentTrack]
         = encoderValue(valueIncreased_, step, m_lengths[m_currentTrack], 1, 16);
@@ -181,12 +183,7 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Encoder::Main:
-    {
-      setEncoder(valueIncreased_, shiftPressed_);
-      break;
-    }
-    case Device::Encoder::Encoder2:
+    case 2:
     {
       m_pulses[m_currentTrack] = encoderValue(
         valueIncreased_, step, m_pulses[m_currentTrack], 0, m_lengths[m_currentTrack]);
@@ -194,20 +191,20 @@ void Euklid::encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Encoder::Encoder3:
+    case 3:
     {
       m_rotates[m_currentTrack] = encoderValue(
         valueIncreased_, step, m_rotates[m_currentTrack], 0, m_lengths[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Encoder::Encoder4:
+    case 4:
     {
       m_bpm = encoderValue(valueIncreased_, step, m_bpm, 60, 255);
       updateClock();
       break;
     }
-    case Device::Encoder::Encoder5:
+    case 5:
     {
       m_shuffle = encoderValue(valueIncreased_, step, m_shuffle, 0, 100);
       updateClock();
@@ -235,38 +232,38 @@ void Euklid::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Euklid::controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed_)
+void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 {
   switch (pot_)
   {
-    case Device::Potentiometer::Fader1:
+    case 0:
     {
       m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((value_ * 16)+0.5));
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Potentiometer::Fader2:
+    case 1:
     {
       m_pulses[m_currentTrack] = std::max<uint8_t>(0, ( m_lengths[m_currentTrack] * value_ ) + 0.5);
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Potentiometer::Fader3:
+    case 2:
     {
     
       m_rotates[m_currentTrack] = std::max<uint8_t>(0, (m_lengths[m_currentTrack] * value_)+0.5);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
-    case Device::Potentiometer::Fader4:
+    case 3:
     {
       m_bpm = (value_ * 195) + 60;
       updateClock();
       break;
     }
-    case Device::Potentiometer::Fader5:
+    case 4:
     {
       m_shuffle = value_ * 100;
       updateClock();

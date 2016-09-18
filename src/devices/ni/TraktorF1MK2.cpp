@@ -295,20 +295,17 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
                             || ((m_encoderValue == 0xff) && (currentValue == 0x00)))
                           && (!((m_encoderValue == 0x0) && (currentValue == 0xff)));
     m_encoderValue = currentValue;
-    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(0, valueIncreased, shiftPressed);
   }
 
   // pots/faders
   for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize + 1; potIndex < 8; i += 2, potIndex++)
   {
-    Device::Potentiometer potentiometer = static_cast<Device::Potentiometer>(
-      static_cast<uint8_t>(Device::Potentiometer::CenterDetented1) + potIndex
-      + (potIndex > 3 ? 4 : 0));
     uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
     if (m_potentiometersValues[potIndex] != value)
     {
       m_potentiometersValues[potIndex] = value;
-      controlChanged(potentiometer, value / 1024.0, shiftPressed);
+      controlChanged(potIndex, value / 1024.0, shiftPressed);
     }
   }
 }

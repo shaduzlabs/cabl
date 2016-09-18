@@ -82,7 +82,7 @@ if(COVERALLS)
   set_target_properties ( ${PROJECT_NAME} PROPERTIES LINK_FLAGS " -Wall -fprofile-arcs -ftest-coverage")
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR} ${CABL_ROOT_DIR}/src)
 
 target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
 

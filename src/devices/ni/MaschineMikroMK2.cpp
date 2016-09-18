@@ -324,7 +324,7 @@ void MaschineMikroMK2::processButtons(const Transfer& input_)
     bool valueIncreased = ((m_encoderValue < currentEncoderValue)
                             || ((m_encoderValue == 0x0f) && (currentEncoderValue == 0x00)))
                           && (!((m_encoderValue == 0x0) && (currentEncoderValue == 0x0f)));
-    encoderChanged(Device::Encoder::Main, valueIncreased, shiftPressed);
+    encoderChanged(0, valueIncreased, shiftPressed);
     m_encoderValue = currentEncoderValue;
   }
 }

@@ -83,7 +83,6 @@ private:
   Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button) const noexcept;
-  Device::Encoder deviceEncoder(Encoder) const noexcept;
 
   uint8_t getColorIndex(const util::ColorRGB&);
 

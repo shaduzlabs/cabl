@@ -26,12 +26,14 @@ class Client
 public:
   Client(DiscoveryPolicy = {});
   ~Client();
+  
+  void init();
 
   virtual void disconnected();
   virtual void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_);
-  virtual void encoderChanged(Device::Encoder encoder_, bool valueIncreased_, bool shiftPressed_);
+  virtual void encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_);
   virtual void keyChanged(unsigned index_, double value_, bool shiftPressed);
-  virtual void controlChanged(Device::Potentiometer pot_, double value_, bool shiftPressed);
+  virtual void controlChanged(unsigned pot_, double value_, bool shiftPressed);
 
   virtual void initDevice()
   {
