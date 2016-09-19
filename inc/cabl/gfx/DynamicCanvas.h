@@ -7,8 +7,10 @@
 
 #pragma once
 
-#include "Canvas.h"
+#include <algorithm>
 #include <vector>
+
+#include "Canvas.h"
 
 namespace sl
 {
