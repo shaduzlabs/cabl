@@ -217,6 +217,7 @@ function (addHIDAPI)
         OUTPUT_NAME_DEBUG   "hidapi${DEBUG_SUFFIX}"
     )
     target_include_directories(hidapi PUBLIC ${HIDAPI_INCLUDE_DIRS})
+    target_include_directories(hidapi PRIVATE ${LIBUSB_INCLUDE_DIRS})
 
   endif()
 endfunction()
