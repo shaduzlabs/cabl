@@ -27,7 +27,7 @@ class Transfer final
 
 public:
   Transfer() = default;
-  explicit Transfer(uint16_t length_);
+  explicit Transfer(unsigned length_);
 
   Transfer(tRawData data_);
   Transfer(const tRawData& header_, const tRawData& data_);

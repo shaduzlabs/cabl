@@ -48,8 +48,8 @@ Euklid::Euklid()
   , m_screenPage(ScreenPage::Sequencer)
   , m_play(false)
   , m_currentTrack(0)
-  , m_bpm(120)
-  , m_shuffle(60)
+  , m_bpm(120.)
+  , m_shuffle(60.)
   , m_pMidiout(new RtMidiOut)
   , m_delayEven(125)
   , m_delayOdd(125)
@@ -245,7 +245,7 @@ void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
     }
     case 1:
     {
-      m_pulses[m_currentTrack] = std::max<uint8_t>(0, ( m_lengths[m_currentTrack] * value_ ) + 0.5);
+      m_pulses[m_currentTrack] = std::max<uint8_t>(0, static_cast<uint8_t>(( m_lengths[m_currentTrack] * value_ ) + 0.5));
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
@@ -253,7 +253,7 @@ void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
     case 2:
     {
     
-      m_rotates[m_currentTrack] = std::max<uint8_t>(0, (m_lengths[m_currentTrack] * value_)+0.5);
+      m_rotates[m_currentTrack] = std::max<uint8_t>(0, static_cast<uint8_t>((m_lengths[m_currentTrack] * value_)+0.5));
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
@@ -279,11 +279,11 @@ void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 
 void Euklid::updateClock()
 {
-  float quarterDuration = 60000.0f / m_bpm;
-  float delayQuarterNote = quarterDuration / 4.0f;
-  float shuffleDelay = delayQuarterNote * (m_shuffle / 300.0f);
-  m_delayEven = static_cast<uint16_t>(delayQuarterNote + shuffleDelay);
-  m_delayOdd = static_cast<uint16_t>(delayQuarterNote - shuffleDelay);
+	double quarterDuration = 60000.0f / m_bpm;
+  double delayQuarterNote = quarterDuration / 4.0f;
+  double shuffleDelay = delayQuarterNote * (m_shuffle / 300.0f);
+  m_delayEven = static_cast<unsigned>(delayQuarterNote + shuffleDelay);
+  m_delayOdd = static_cast<unsigned>(delayQuarterNote - shuffleDelay);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -296,7 +296,7 @@ void Euklid::play()
   while (m_play)
   {
     requestDeviceUpdate();
-    uint16_t delay = m_delayEven;
+    unsigned delay = m_delayEven;
     if (m_quarterNote % 2 > 0)
     {
       delay = m_delayOdd;
@@ -374,7 +374,7 @@ void Euklid::updateGUI()
   device()->textDisplay(3)->putText(static_cast<int>(m_rotates[m_currentTrack]), 2, s_alignCenter);
 
   device()->textDisplay(4)->putText("BPM", 1, s_alignCenter);
-  device()->textDisplay(4)->putValue(static_cast<float>(m_bpm) / 255.0, 0);
+  device()->textDisplay(4)->putValue(static_cast<double>(m_bpm) / 255.0, 0);
   device()->textDisplay(4)->putText(static_cast<int>(m_bpm), 2, s_alignCenter);
 
   device()->textDisplay(5)->putText("Shuffle", 1, s_alignCenter);
@@ -434,7 +434,7 @@ void Euklid::updatePads()
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
 
-    uint16_t pulses = m_sequences[t].getBits();
+    unsigned pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, j = m_rotates[t]; i < 16; i++, j++)
     {
       if (m_currentTrack == t)
@@ -589,7 +589,7 @@ void Euklid::drawSequencerPage()
   {
     uint8_t pos = (m_sequences[t].getPos()) % m_lengths[t];
 
-    uint16_t pulses = m_sequences[t].getBits();
+    unsigned pulses = m_sequences[t].getBits();
     for (uint8_t i = 0, k = m_rotates[t]; i < 16; i++, k++)
     {
       if (pulses & (1 << i))

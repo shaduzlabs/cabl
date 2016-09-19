@@ -57,7 +57,7 @@ public:
   bool tick() override;
 
 private:
-  enum class Led : uint16_t;
+  enum class Led : unsigned;
   enum class Button : uint8_t;
 
   static constexpr uint8_t kF1MK2_nButtons = 27;
@@ -87,7 +87,7 @@ private:
   std::array<uint8_t, kF1MK2_nLeds> m_leds;
 
   std::bitset<kF1MK2_nButtons> m_buttonStates;
-  uint16_t m_potentiometersValues[kF1MK2_nPotentiometers];
+  unsigned m_potentiometersValues[kF1MK2_nPotentiometers];
   uint8_t m_encoderValue;
 
   bool m_isDirtyLeds;

@@ -36,7 +36,7 @@ namespace devices
 //--------------------------------------------------------------------------------------------------
 
 // clang-format off
-enum class KompleteKontrolBase::Led : uint16_t
+enum class KompleteKontrolBase::Led : unsigned
 {
   Shift,
   Scale,
@@ -271,7 +271,8 @@ KompleteKontrolBase::KompleteKontrolBase()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+	  M_LOG("[KompleteKontrol] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiOut->isPortOpen())
@@ -293,7 +294,8 @@ KompleteKontrolBase::KompleteKontrolBase()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+	  M_LOG("[KompleteKontrol] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiIn->isPortOpen())
@@ -499,11 +501,11 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
 
   for (uint8_t encIndex = 0, i = kKK_buttonsDataSize + 1; encIndex < 8; i += 2, encIndex++)
   {
-    uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
-    uint16_t hValue = input_.data()[i + 1];
+    unsigned value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    unsigned hValue = input_.data()[i + 1];
     if (m_encoderValues[encIndex + 1] != value)
     {
-      uint16_t prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
+      unsigned prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
       bool valueIncreased
         = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
           && (!((prevHValue == 0) && (hValue == 3)));
@@ -519,8 +521,8 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
 
 void KompleteKontrolBase::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
-  static const uint8_t kFirstKeyIndex = static_cast<uint16_t>(Led::Key1);
-  uint16_t ledIndex = static_cast<uint16_t>(led_);
+  static const uint8_t kFirstKeyIndex = static_cast<unsigned>(Led::Key1);
+  unsigned ledIndex = static_cast<unsigned>(led_);
 
   if (Led::Unknown == led_)
   {

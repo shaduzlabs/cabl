@@ -57,10 +57,10 @@ private:
   void devicesListChanged(Coordinator::tCollDeviceDescriptor devices_);
 
   uint8_t encoderValue(bool valueIncreased_,
-    uint8_t step_,
-    uint8_t currentValue_,
-    uint8_t minValue_,
-    uint8_t maxValue_);
+    unsigned step_,
+	unsigned currentValue_,
+    unsigned minValue_,
+	unsigned maxValue_);
 
   std::string m_clientId;
   Coordinator::tDevicePtr m_pDevice;

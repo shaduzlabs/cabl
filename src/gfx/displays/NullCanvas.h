@@ -24,7 +24,7 @@ public:
     return false;
   }
 
-  bool dirtyChunk(uint8_t) const override
+  bool dirtyChunk(unsigned) const override
   {
     return false;
   }
@@ -33,7 +33,7 @@ public:
   {
   }
 
-  void setDirtyChunk(uint16_t) const override
+  void setDirtyChunk(unsigned) const override
   {
   }
 
@@ -53,78 +53,78 @@ public:
   {
   }
 
-  void line(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void line(unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
-  void lineVertical(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void lineVertical(unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
-  void lineHorizontal(uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void lineHorizontal(unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
   void triangle(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
-  void triangleFilled(uint16_t,
-    uint16_t,
-    uint16_t,
-    uint16_t,
-    uint16_t,
-    uint16_t,
+  void triangleFilled(unsigned,
+    unsigned,
+    unsigned,
+    unsigned,
+    unsigned,
+    unsigned,
     const util::ColorRGB&,
     const util::ColorRGB&) override
   {
   }
 
-  void rectangle(uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+  void rectangle(unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
   void rectangleFilled(
-    uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&) override
   {
   }
 
   void rectangleRounded(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
   {
   }
 
   void rectangleRoundedFilled(
-    uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&)
+    unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&)
     override
   {
   }
 
-  void circle(uint16_t, uint16_t, uint16_t, const util::ColorRGB&, CircleType) override
+  void circle(unsigned, unsigned, unsigned, const util::ColorRGB&, CircleType) override
   {
   }
 
   void circleFilled(
-    uint16_t, uint16_t, uint16_t, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
+    unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
   {
   }
 
   void putBitmap(
-    uint16_t, uint16_t, uint16_t, uint16_t, const uint8_t*, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, const uint8_t*, const util::ColorRGB&) override
   {
   }
 
-  void putCanvas(const Canvas&, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t) override
+  void putCanvas(const Canvas&, unsigned, unsigned, unsigned, unsigned, unsigned, unsigned) override
   {
   }
 
-  void putCharacter(uint16_t, uint16_t, char, const util::ColorRGB&, const std::string&) override
+  void putCharacter(unsigned, unsigned, char, const util::ColorRGB&, const std::string&) override
   {
   }
 
   void putText(
-    uint16_t, uint16_t, const char*, const util::ColorRGB&, const std::string&, uint8_t) override
+    unsigned, unsigned, const char*, const util::ColorRGB&, const std::string&, unsigned) override
   {
   }
 };

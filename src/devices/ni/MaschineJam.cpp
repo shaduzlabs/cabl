@@ -375,9 +375,9 @@ bool MaschineJam::sendLeds()
   if (m_ledMatrix.dirty())
   {
     unsigned pixel = 8;
-    for (int y = 0; y < m_ledMatrix.height(); y++)
+    for (unsigned y = 0; y < m_ledMatrix.height(); y++)
     {
-      for (int x = 0; x < m_ledMatrix.width(); x++)
+      for (unsigned x = 0; x < m_ledMatrix.width(); x++)
       {
         m_ledsPads[pixel++] = MaschineJamHelper::toLedColor(m_ledMatrix.pixel(x, y));
       }
@@ -515,8 +515,8 @@ void MaschineJam::processStrips(const Transfer& input_)
 {
   for (unsigned i = 1, tsIndex = 0; i < input_.size(); i += 6, tsIndex++)
   {
-    // uint16_t timeMs = input_[i] | (input_[i + 1] << 8);
-    uint16_t val = input_[i + 2] | (input_[i + 3] << 8);
+    // unsigned timeMs = input_[i] | (input_[i + 1] << 8);
+    unsigned val = input_[i + 2] | (input_[i + 3] << 8);
 
     if (val != 0 && m_touchstripsValues[i] != val)
     {

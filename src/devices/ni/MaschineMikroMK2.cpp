@@ -336,8 +336,8 @@ void MaschineMikroMK2::processPads(const Transfer& input_)
   //!\todo process pad data
   for (int i = 1; i <= kMikroMK2_padDataSize; i += 2)
   {
-    uint16_t l = input_[i];
-    uint16_t h = input_[i + 1];
+    unsigned l = input_[i];
+    unsigned h = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
 

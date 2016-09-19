@@ -56,7 +56,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  virtual void setPixel(uint16_t pos_, const util::ColorRGB& color_) = 0;
+  virtual void setPixel(unsigned pos_, const util::ColorRGB& color_) = 0;
 
   //! Get the pixel value as an RGB color
   /*!
@@ -64,7 +64,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual util::ColorRGB pixel(uint16_t pos_) const = 0;
+  virtual util::ColorRGB pixel(unsigned pos_) const = 0;
 
   virtual void setValue(double val_, util::ColorRGB color_, Alignment alignment_ = Alignment::Left) = 0;
   
@@ -81,7 +81,7 @@ public:
    */
 
   //! \return the length of the led array
-  virtual uint16_t length() const = 0;
+  virtual unsigned length() const = 0;
 
   //! Set the dirty flag to true
   virtual void setDirty() = 0;
@@ -145,14 +145,14 @@ public:
 
   void setValue(double val_, util::ColorRGB color_, Alignment alignment_) override
   {
-    float val = std::min(val_, 1.0);
+    double val = std::min(val_, 1.0);
     clear();
     switch(alignment_)
     {
       case Alignment::Left:
       {
         val = std::max(val_, 0.0);
-        unsigned nLedsOn = val * SIZE;
+        unsigned nLedsOn = static_cast<unsigned>(val * SIZE);
         for(unsigned i = 0; i < nLedsOn; i++)
         {
           setPixel(i,color_);
@@ -162,7 +162,7 @@ public:
       case Alignment::Center:
       {
         val = (std::max(val_, -1.0)) / 2.0;
-        unsigned nLedsOn = val * SIZE;
+		int nLedsOn = static_cast<int>(val * SIZE);
         if(val < 0)
         {
           for(int i = nLedsOn; i >= 0; i--)
@@ -183,7 +183,7 @@ public:
       case Alignment::Right:
       {
         val = std::max(val_, 0.0);
-        unsigned nLedsOn = val * SIZE;
+		int nLedsOn = static_cast<int>(val * SIZE);
         for(int i = SIZE; i >= nLedsOn; i--)
         {
           setPixel(i,color_);
@@ -201,7 +201,7 @@ public:
   }
   
   //! \return the length of the led array
-  uint16_t length() const override
+  unsigned length() const override
   {
     return L;
   }

@@ -94,7 +94,7 @@ private:
   std::bitset<kMikroMK2_nButtons> m_buttonStates;
   uint8_t m_encoderValue;
 
-  uint16_t m_padsData[kMikroMK2_nPads];
+  unsigned m_padsData[kMikroMK2_nPads];
   std::bitset<kMikroMK2_nPads> m_padsStatus;
 
   bool m_isDirtyLeds;

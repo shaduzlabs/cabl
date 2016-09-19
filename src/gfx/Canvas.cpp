@@ -52,7 +52,7 @@ void Canvas::fill(uint8_t value_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool setDirtyFlags_)
+void Canvas::setPixel(unsigned x_, unsigned y_, const util::ColorRGB& color_, bool setDirtyFlags_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -81,7 +81,7 @@ void Canvas::setPixel(uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bo
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB Canvas::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
@@ -95,12 +95,12 @@ util::ColorRGB Canvas::pixel(uint16_t x_, uint16_t y_) const
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::line(
-  uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_)
+  unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const util::ColorRGB& color_)
 {
-  int32_t e;
-  int32_t dx, dy;
-  int16_t s1, s2;
-  int16_t x, y;
+  int e;
+  int dx, dy;
+  int s1, s2;
+  int x, y;
   bool bSwapped = false;
 
   x = x0_;
@@ -146,7 +146,7 @@ void Canvas::line(
 
   e = ((int)dy << 1) - dx;
 
-  for (uint16_t j = 0; j <= dx; j++)
+  for (int j = 0; j <= dx; j++)
   {
     setPixel(x, y, color_);
 
@@ -177,7 +177,7 @@ void Canvas::line(
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::Canvas::lineVertical(
-  uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned l_, const util::ColorRGB& color_)
 {
   for (unsigned y = y_; y < y_ + l_; y++)
   {
@@ -187,9 +187,9 @@ void Canvas::Canvas::lineVertical(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::lineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const util::ColorRGB& color_)
+void Canvas::lineHorizontal(unsigned x_, unsigned y_, unsigned l_, const util::ColorRGB& color_)
 {
-  for (uint16_t x = x_; x < x_ + l_; x++)
+  for (unsigned x = x_; x < x_ + l_; x++)
   {
     setPixel(x, y_, color_);
   }
@@ -197,12 +197,12 @@ void Canvas::lineHorizontal(uint16_t x_, uint16_t y_, uint16_t l_, const util::C
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::triangle(uint16_t x0_,
-  uint16_t y0_,
-  uint16_t x1_,
-  uint16_t y1_,
-  uint16_t x2_,
-  uint16_t y2_,
+void Canvas::triangle(unsigned x0_,
+  unsigned y0_,
+  unsigned x1_,
+  unsigned y1_,
+  unsigned x2_,
+  unsigned y2_,
   const util::ColorRGB& color_)
 {
   line(x0_, y0_, x1_, y1_, color_);
@@ -212,18 +212,18 @@ void Canvas::triangle(uint16_t x0_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::triangleFilled(uint16_t x0_,
-  uint16_t y0_,
-  uint16_t x1_,
-  uint16_t y1_,
-  uint16_t x2_,
-  uint16_t y2_,
+void Canvas::triangleFilled(unsigned x0_,
+  unsigned y0_,
+  unsigned x1_,
+  unsigned y1_,
+  unsigned x2_,
+  unsigned y2_,
   const util::ColorRGB& color_,
   const util::ColorRGB& fillColor_)
 {
   // Original Author: Adafruit Industries (Adafruit GFX library)
 
-  int16_t a, b, y, last;
+  unsigned a, b, y, last;
 
   // Sort coordinates by y order (y2 >= y1 >= y0)
   if (y0_ > y1_)
@@ -329,17 +329,17 @@ void Canvas::triangleFilled(uint16_t x0_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::rectangle(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned w_, unsigned h_, const util::ColorRGB& color_)
 {
   rectangleFilled(x_, y_, w_, h_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::rectangleFilled(uint16_t x_,
-  uint16_t y_,
-  uint16_t w_,
-  uint16_t h_,
+void Canvas::rectangleFilled(unsigned x_,
+  unsigned y_,
+  unsigned w_,
+  unsigned h_,
   const util::ColorRGB& color_,
   const util::ColorRGB& fillColor_)
 {
@@ -365,16 +365,16 @@ void Canvas::rectangleFilled(uint16_t x_,
 
   if (w_ > h_)
   {
-    uint16_t lineWidth = w_ - 2;
-    for (uint16_t i = y_ + 1; i < y_ + h_ - 1; i++)
+    unsigned lineWidth = w_ - 2;
+    for (unsigned i = y_ + 1; i < y_ + h_ - 1; i++)
     {
       lineHorizontal(x_ + 1, i, lineWidth, fillColor_);
     }
   }
   else
   {
-    uint16_t lineHeight = h_ - 2;
-    for (uint16_t i = x_ + 1; i < x_ + w_ - 1; i++)
+    unsigned lineHeight = h_ - 2;
+    for (unsigned i = x_ + 1; i < x_ + w_ - 1; i++)
     {
       lineVertical(i, y_ + 1, lineHeight, fillColor_);
     }
@@ -384,18 +384,18 @@ void Canvas::rectangleFilled(uint16_t x_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::rectangleRounded(
-  uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const util::ColorRGB& color_)
 {
   rectangleRoundedFilled(x_, y_, w_, h_, r_, color_, {});
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::rectangleRoundedFilled(uint16_t x_,
-  uint16_t y_,
-  uint16_t w_,
-  uint16_t h_,
-  uint16_t r_,
+void Canvas::rectangleRoundedFilled(unsigned x_,
+  unsigned y_,
+  unsigned w_,
+  unsigned h_,
+  unsigned r_,
   const util::ColorRGB& color_,
   const util::ColorRGB& fillColor_)
 {
@@ -404,8 +404,8 @@ void Canvas::rectangleRoundedFilled(uint16_t x_,
     return;
   }
 
-  uint16_t smallestSide = (w_ >= h_) ? h_ : w_;
-  uint16_t rOffset = 2 * r_;
+  unsigned smallestSide = (w_ >= h_) ? h_ : w_;
+  unsigned rOffset = 2 * r_;
   if (rOffset > smallestSide)
   {
     r_ = smallestSide / 2;
@@ -441,16 +441,16 @@ void Canvas::rectangleRoundedFilled(uint16_t x_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::circle(
-  uint16_t x_, uint16_t y_, uint16_t r_, const util::ColorRGB& color_, CircleType type_)
+  unsigned x_, unsigned y_, unsigned r_, const util::ColorRGB& color_, CircleType type_)
 {
   circleFilled(x_, y_, r_, color_, {}, type_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::circleFilled(uint16_t x_,
-  uint16_t y_,
-  uint16_t r_,
+void Canvas::circleFilled(unsigned x_,
+  unsigned y_,
+  unsigned r_,
   const util::ColorRGB& color_,
   const util::ColorRGB& fillColor_,
   CircleType type_)
@@ -461,7 +461,7 @@ void Canvas::circleFilled(uint16_t x_,
   }
 
   int x, y, rX0, rX1, rY0, rY1;
-  rX0 = rY0 = -r_;
+  rX0 = rY0 = -1 * static_cast<int>(r_);
   rX1 = rY1 = r_;
 
   switch (type_)
@@ -505,9 +505,9 @@ void Canvas::circleFilled(uint16_t x_,
   {
     for (y = rY0; y <= rY1; y++)
     {
-      int32_t xysq = ((x * x) + (y * y));
-      int32_t rsq = r_ * r_;
-      if ((rsq - xysq < r_) && (xysq - rsq < r_))
+      int xysq = ((x * x) + (y * y));
+	  int rsq = r_ * r_;
+      if ((rsq - xysq < static_cast<int>(r_)) && (xysq - rsq < static_cast<int>(r_)))
       {
         setPixel((x + x_), (y + y_), color_);
       }
@@ -521,10 +521,10 @@ void Canvas::circleFilled(uint16_t x_,
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::putBitmap(uint16_t x_,
-  uint16_t y_,
-  uint16_t w_,
-  uint16_t h_,
+void Canvas::putBitmap(unsigned x_,
+  unsigned y_,
+  unsigned w_,
+  unsigned h_,
   const uint8_t* pBitmap_,
   const util::ColorRGB& color_)
 {
@@ -533,12 +533,12 @@ void Canvas::putBitmap(uint16_t x_,
     return;
   }
 
-  uint16_t drawableHeight = ((y_ + h_) > height()) ? (height() - y_) : h_;
-  uint16_t drawableWidth = ((x_ + w_) > width()) ? (width() - x_) : w_;
+  unsigned drawableHeight = ((y_ + h_) > height()) ? (height() - y_) : h_;
+  unsigned drawableWidth = ((x_ + w_) > width()) ? (width() - x_) : w_;
 
-  for (uint8_t j = 0; j < drawableHeight; j++)
+  for (unsigned j = 0; j < drawableHeight; j++)
   {
-    for (uint8_t i = 0; i < drawableWidth; i++)
+    for (unsigned i = 0; i < drawableWidth; i++)
     {
       if (pBitmap_[(i >> 3) + j * (w_ >> 3)] & (0x01 << (7 - (i & 7))))
       {
@@ -551,30 +551,30 @@ void Canvas::putBitmap(uint16_t x_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::putCanvas(const Canvas& c_,
-  uint16_t xDest_,
-  uint16_t yDest_,
-  uint16_t xSource_,
-  uint16_t ySource_,
-  uint16_t w_,
-  uint16_t h_)
+  unsigned xDest_,
+  unsigned yDest_,
+  unsigned xSource_,
+  unsigned ySource_,
+  unsigned w_,
+  unsigned h_)
 {
-  uint16_t cw = c_.width();
-  uint16_t ch = c_.height();
+  unsigned cw = c_.width();
+  unsigned ch = c_.height();
 
   if ((xDest_ >= width()) || (yDest_ >= height()) || (xSource_ >= cw) || (ySource_ >= ch))
   {
     return;
   }
 
-  uint16_t ww = (w_ <= cw && w_ > 0) ? w_ : cw;
-  uint16_t hh = (h_ <= ch && h_ > 0) ? h_ : ch;
+  unsigned ww = (w_ <= cw && w_ > 0) ? w_ : cw;
+  unsigned hh = (h_ <= ch && h_ > 0) ? h_ : ch;
 
-  uint16_t drawableHeight = ((yDest_ + hh) > height()) ? (height() - yDest_) : hh;
-  uint16_t drawableWidth = ((xDest_ + ww) > width()) ? (width() - xDest_) : ww;
+  unsigned drawableHeight = ((yDest_ + hh) > height()) ? (height() - yDest_) : hh;
+  unsigned drawableWidth = ((xDest_ + ww) > width()) ? (width() - xDest_) : ww;
 
-  for (uint16_t j = 0; j < drawableHeight; j++)
+  for (unsigned j = 0; j < drawableHeight; j++)
   {
-    for (uint16_t i = 0; i < drawableWidth; i++)
+    for (unsigned i = 0; i < drawableWidth; i++)
     {
       setPixel(xDest_ + i, yDest_ + j, c_.pixel(xSource_ + i, ySource_ + j));
     }
@@ -584,7 +584,7 @@ void Canvas::putCanvas(const Canvas& c_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::putCharacter(
-  uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_)
+  unsigned x_, unsigned y_, char c_, const util::ColorRGB& color_, const std::string& font_)
 {
   const Font* pFont = FontManager::instance().getFont(font_);
   uint8_t c = c_ - pFont->firstChar();
@@ -608,12 +608,12 @@ void Canvas::putCharacter(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::putText(uint16_t x_,
-  uint16_t y_,
+void Canvas::putText(unsigned x_,
+  unsigned y_,
   const char* pStr_,
   const util::ColorRGB& color_,
   const std::string& font_,
-  uint8_t spacing_)
+  unsigned spacing_)
 {
   const Font* pFont = FontManager::instance().getFont(font_);
   uint8_t charWidth = pFont->charSpacing() + spacing_;

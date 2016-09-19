@@ -18,7 +18,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 void LedMatrixMaschineJam::setPixel(
-  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -43,7 +43,7 @@ void LedMatrixMaschineJam::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB LedMatrixMaschineJam::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB LedMatrixMaschineJam::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

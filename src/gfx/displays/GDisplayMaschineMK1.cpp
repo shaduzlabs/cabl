@@ -42,7 +42,7 @@ void GDisplayMaschineMK1::black()
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayMaschineMK1::setPixel(
-  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -89,7 +89,7 @@ void GDisplayMaschineMK1::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayMaschineMK1::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayMaschineMK1::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

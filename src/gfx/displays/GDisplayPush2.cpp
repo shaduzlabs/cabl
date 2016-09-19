@@ -19,7 +19,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayPush2::setPixel(
-  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -35,7 +35,7 @@ void GDisplayPush2::setPixel(
   }
 
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
-  uint8_t green = ((newColor.green() / 255.0) * 63) + 0.5;
+  uint8_t green = static_cast<uint8_t>(((newColor.green() / 255.0) * 63) + 0.5);
   data()[byteIndex]
     = (static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
   data()[byteIndex + 1]
@@ -49,7 +49,7 @@ void GDisplayPush2::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayPush2::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayPush2::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

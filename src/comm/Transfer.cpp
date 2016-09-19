@@ -15,7 +15,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-Transfer::Transfer(uint16_t length_)
+Transfer::Transfer(unsigned length_)
 {
   m_data.resize(length_);
 }

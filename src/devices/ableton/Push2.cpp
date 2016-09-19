@@ -268,7 +268,8 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[Push2] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+      M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiOut->isPortOpen())
@@ -290,7 +291,8 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[Push2] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+      M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiIn->isPortOpen())
@@ -366,7 +368,7 @@ bool Push2::sendLeds()
 
 void Push2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
-  uint8_t ledIndex = static_cast<uint8_t>(led_);
+  unsigned ledIndex = static_cast<uint8_t>(led_);
 
   if (Led::Unknown == led_)
   {

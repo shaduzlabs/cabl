@@ -101,9 +101,9 @@ private:
   std::array<uint8_t, kMASMK2_buttonsDataSize> m_buttons;
 
   std::bitset<kMASMK2_nButtons> m_buttonStates;
-  uint16_t m_encoderValues[kMASMK2_nEncoders];
+  unsigned m_encoderValues[kMASMK2_nEncoders];
 
-  uint16_t m_padsData[kMASMK2_nPads];
+  unsigned m_padsData[kMASMK2_nPads];
   std::bitset<kMASMK2_nPads> m_padsStatus;
 
   bool m_isDirtyPadLeds;

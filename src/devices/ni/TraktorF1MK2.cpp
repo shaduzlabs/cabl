@@ -44,7 +44,7 @@ namespace devices
 */
 
 // clang-format off
-enum class TraktorF1MK2::Led : uint16_t
+enum class TraktorF1MK2::Led : unsigned
 {
   Display2_segDP,
   Display2_SegG,
@@ -301,7 +301,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
   // pots/faders
   for (uint8_t potIndex = 0, i = kF1MK2_buttonsDataSize + 1; potIndex < 8; i += 2, potIndex++)
   {
-    uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    unsigned value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
     if (m_potentiometersValues[potIndex] != value)
     {
       m_potentiometersValues[potIndex] = value;
@@ -314,7 +314,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
 
 void TraktorF1MK2::setLedImpl(Led led_, const util::ColorRGB& color_)
 {
-  uint16_t ledIndex = static_cast<uint16_t>(led_);
+  unsigned ledIndex = static_cast<unsigned>(led_);
 
   if (Led::Unknown == led_)
   {

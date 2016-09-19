@@ -41,7 +41,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putCharacter(uint8_t col_, uint8_t row_, char c_) override
+  void putCharacter(unsigned col_, unsigned row_, char c_) override
   {
     if (row_ < 1 || row_ >= this->height() || col_ >= this->width())
     {
@@ -54,7 +54,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(const std::string& string_, uint8_t row_, Alignment align_) override
+  void putText(const std::string& string_, unsigned row_, Alignment align_) override
   {
     if (row_ >= this->height())
     {
@@ -64,7 +64,7 @@ public:
 
     unsigned index = row_ * this->width();
     std::string strAligned = alignText(string_, align_);
-    for (size_t i = 0; i < std::min<size_t>(strAligned.length(), this->width()); i++)
+    for (unsigned i = 0; i < std::min<unsigned>(strAligned.length(), this->width()); i++)
     {
       const uint8_t& character = strAligned.at(i);
       this->data()[index++] = character;
@@ -73,14 +73,14 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(int value_, uint8_t row_, Alignment align_) override
+  void putText(int value_, unsigned row_, Alignment align_) override
   {
     putText(std::to_string(value_), row_, align_);
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(double value_, uint8_t row_, Alignment align_) override
+  void putText(double value_, unsigned row_, Alignment align_) override
   {
     double integral;
     double fractional = modf(value_, &integral);
@@ -96,7 +96,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putValue(float value_, uint8_t row_, Alignment align_) override
+  void putValue(float value_, unsigned row_, Alignment align_) override
   {
     if (row_ >= this->height())
     {
@@ -144,8 +144,8 @@ private:
       }
       case Alignment::Center:
       {
-        uint8_t nFills = this->width() - strValue.length();
-        uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
+        unsigned nFills = this->width() - strValue.length();
+		unsigned leftFills = static_cast<unsigned>(nFills / 2.0f);
         strValue.insert(0, leftFills, ' ');
         strValue.append(nFills - leftFills, ' ');
         break;

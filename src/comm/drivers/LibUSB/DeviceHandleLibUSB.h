@@ -12,7 +12,10 @@
 #include "comm/DeviceHandleImpl.h"
 #include "comm/DriverImpl.h"
 
+#pragma warning( push )
+#pragma warning( disable: 4200 )
 #include <libusb.h>
+#pragma warning( pop )
 
 
 namespace sl

@@ -95,7 +95,7 @@ private:
     uint8_t minValue_,
     uint8_t maxValue_);
   
-  Sequence<uint16_t> m_sequences[3];
+  Sequence<unsigned> m_sequences[3];
 
   std::future<void> m_clockFuture;
   EncoderState m_encoderState;
@@ -108,14 +108,14 @@ private:
   std::atomic<bool> m_play;
   uint8_t m_currentTrack;
 
-  uint8_t m_bpm;
-  uint8_t m_shuffle;
+  double m_bpm;
+  double m_shuffle;
 
   RtMidiOut* m_pMidiout;
 
   uint8_t m_quarterNote;
-  uint16_t m_delayEven;
-  uint16_t m_delayOdd;
+  unsigned m_delayEven;
+  unsigned m_delayOdd;
 };
 
 } // namespace sl

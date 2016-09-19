@@ -19,7 +19,7 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayMaschineMK2::setPixel(
-  uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
@@ -52,7 +52,7 @@ void GDisplayMaschineMK2::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayMaschineMK2::pixel(uint16_t x_, uint16_t y_) const
+util::ColorRGB GDisplayMaschineMK2::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

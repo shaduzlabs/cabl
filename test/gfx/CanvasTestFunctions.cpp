@@ -55,12 +55,12 @@ void lines(Canvas* c_)
   c_->lineHorizontal(0, (height / 8) * 7, 2500, k_colorGreen);
   c_->lineHorizontal(0, ((height / 8) * 7) + 1, 2500, k_colorGreen);
 
-  for (uint16_t i = 0; i < height / 2; i += 2)
+  for (unsigned i = 0; i < height / 2; i += 2)
   {
     c_->lineHorizontal(0, i, 2500, k_colorInvert);
   }
 
-  for (uint16_t i = width / 4; i < (width / 4) * 3; i += 2)
+  for (unsigned i = width / 4; i < (width / 4) * 3; i += 2)
   {
     c_->lineVertical(i, 0, 2500, k_colorInvert);
   }

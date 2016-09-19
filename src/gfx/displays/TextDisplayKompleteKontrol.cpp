@@ -19,7 +19,7 @@
 namespace
 {
 const uint8_t kLCDKK_numDotsPerRow = 7;
-const uint16_t kTextDisplayKK_FontData[] = {
+const unsigned kTextDisplayKK_FontData[] = {
 #include "gfx/fonts/data/FONT_16-seg.h"
 };
 } // namespace
@@ -31,7 +31,7 @@ namespace cabl
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::putCharacter(uint8_t col_, uint8_t row_, char c_)
+void TextDisplayKompleteKontrol::putCharacter(unsigned col_, unsigned row_, char c_)
 {
   if (row_ < 1 || row_ >= height() || col_ >= width())
   {
@@ -45,7 +45,7 @@ void TextDisplayKompleteKontrol::putCharacter(uint8_t col_, uint8_t row_, char c
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::putText(const std::string& string_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(const std::string& string_, unsigned row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -65,7 +65,7 @@ void TextDisplayKompleteKontrol::putText(const std::string& string_, uint8_t row
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::putText(int value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(int value_, unsigned row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -77,7 +77,7 @@ void TextDisplayKompleteKontrol::putText(int value_, uint8_t row_, Alignment ali
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::putText(double value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putText(double value_, unsigned row_, Alignment align_)
 {
   if (row_ == 0 || row_ >= height())
   {
@@ -88,8 +88,8 @@ void TextDisplayKompleteKontrol::putText(double value_, uint8_t row_, Alignment 
   double fractional = modf(value_, &integral);
   std::string strValue = std::to_string(static_cast<int>(integral));
   std::string strFractional = std::to_string(static_cast<int>(fractional * 1000));
-  uint8_t emptySpaces = width() - strValue.length() - strFractional.length();
-  uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
+  unsigned emptySpaces = width() - strValue.length() - strFractional.length();
+  unsigned leftFills = static_cast<unsigned>(emptySpaces / 2.0f);
   resetDots(row_);
   setDot(strValue.length() - 1 + leftFills, row_);
   strValue.append(std::string(3 - strFractional.length(), '0'));
@@ -100,7 +100,7 @@ void TextDisplayKompleteKontrol::putText(double value_, uint8_t row_, Alignment 
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::putValue(float value_, uint8_t row_, Alignment align_)
+void TextDisplayKompleteKontrol::putValue(float value_, unsigned row_, Alignment align_)
 {
   if (row_ >= height())
   {
@@ -163,7 +163,7 @@ std::string TextDisplayKompleteKontrol::alignText(
     }
     case Alignment::Center:
     {
-      uint8_t nFills = width() - strValue.length();
+      unsigned nFills = width() - strValue.length();
       uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
       strValue.insert(0, leftFills, ' ');
       strValue.append(nFills - leftFills, ' ');
@@ -181,7 +181,7 @@ std::string TextDisplayKompleteKontrol::alignText(
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visible_)
+void TextDisplayKompleteKontrol::setDot(unsigned nDot_, unsigned row_, bool visible_)
 {
   if (row_ == 0 || row_ >= height() || nDot_ > kLCDKK_numDotsPerRow)
   {
@@ -195,7 +195,7 @@ void TextDisplayKompleteKontrol::setDot(uint8_t nDot_, uint8_t row_, bool visibl
 
 //--------------------------------------------------------------------------------------------------
 
-void TextDisplayKompleteKontrol::resetDots(uint8_t row_)
+void TextDisplayKompleteKontrol::resetDots(unsigned row_)
 {
   if (row_ == 0 || row_ >= height())
   {

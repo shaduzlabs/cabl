@@ -102,7 +102,7 @@ private:
   LedMatrixMaschineJam m_ledMatrix;
   std::array<LedArrayMaschineJam<11>, kMASJ_nTouchStrips> m_ledArraysStrips{};
   std::array<LedArrayMaschineJam<8>, 2> m_ledArraysLevel{};
-  std::array<uint16_t, kMASJ_nTouchStrips> m_touchstripsValues{};
+  std::array<unsigned, kMASJ_nTouchStrips> m_touchstripsValues{};
 
   std::bitset<kMASJ_nButtons> m_buttonStates{};
   std::bitset<kMASJ_nPads> m_padsStatus{};

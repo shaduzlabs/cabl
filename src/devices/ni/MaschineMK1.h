@@ -100,9 +100,9 @@ private:
   tRawData m_buttons;
 
   std::bitset<kMASMK1_nButtons> m_buttonStates;
-  uint16_t m_encoderValues[kMASMK1_nEncoders];
+  unsigned m_encoderValues[kMASMK1_nEncoders];
 
-  uint16_t m_padsData[kMASMK1_nPads];
+  unsigned m_padsData[kMASMK1_nPads];
   std::bitset<kMASMK1_nPads> m_padsStatus;
 
   bool m_isDirtyLedGroup0{true};

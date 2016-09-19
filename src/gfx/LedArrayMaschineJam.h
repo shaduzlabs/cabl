@@ -23,7 +23,7 @@ class LedArrayMaschineJam : public LedArrayBase<L>
 {
 
 public:
-  void setPixel(uint16_t pos_, const util::ColorRGB& color_) override
+  void setPixel(unsigned pos_, const util::ColorRGB& color_) override
   {
     if (pos_ < this->length())
     {
@@ -32,7 +32,7 @@ public:
     }
   }
 
-  util::ColorRGB pixel(uint16_t pos_) const override
+  util::ColorRGB pixel(unsigned pos_) const override
   {
     if (pos_ < this->length())
     {

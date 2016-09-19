@@ -337,8 +337,8 @@ bool MaschineMK1::sendFrame(uint8_t displayIndex_)
   writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x75, 0x00, 0x3F}), kMASMK1_epDisplay);
   writeToDeviceHandle(Transfer({d, 0x00, 0x03, 0x15, 0x00, 0x54}), kMASMK1_epDisplay);
 
-  uint16_t offset = 0;
-  const uint16_t dataSize = 502;
+  unsigned offset = 0;
+  const unsigned dataSize = 502;
 
   if (!writeToDeviceHandle(
         Transfer({d, 0x01, 0xF7, 0x5C}, m_displays[displayIndex_].buffer() + offset, dataSize),
@@ -418,8 +418,8 @@ void MaschineMK1::processPads(const Transfer& input_)
 {
   for (int i = 1; i < kMASMK1_padDataSize - 1; i += 2)
   {
-    uint16_t h = input_[i];
-    uint16_t l = input_[i + 1];
+    unsigned h = input_[i];
+    unsigned l = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
 
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
@@ -483,7 +483,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 {
   for (uint8_t i = 0; i < kMASMK1_nEncoders; i++)
   {
-    uint16_t currentEncValue = (input_.data()[2 + (2 * i)]) | (input_.data()[1 + (2 * i)] << 8);
+    unsigned currentEncValue = (input_.data()[2 + (2 * i)]) | (input_.data()[1 + (2 * i)] << 8);
 
     bool valueIncreased = true;
 

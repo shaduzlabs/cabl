@@ -41,7 +41,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putCharacter(uint8_t col_, uint8_t row_, char c_) override
+  void putCharacter(unsigned col_, unsigned row_, char c_) override
   {
     uint8_t charNum = static_cast<uint8_t>(c_);
     if (row_ > 0 || col_ > this->width() || charNum < 45 || charNum > 90)
@@ -54,7 +54,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(const std::string& string_, uint8_t row_, Alignment align_) override
+  void putText(const std::string& string_, unsigned row_, Alignment align_) override
   {
     if (row_ > 0)
     {
@@ -76,21 +76,21 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(int value_, uint8_t row_, Alignment align_) override
+  void putText(int value_, unsigned row_, Alignment align_) override
   {
     putText(std::to_string(value_), row_, align_);
   }
 
   //--------------------------------------------------------------------------------------------------
 
-  void putText(double value_, uint8_t row_, Alignment align_) override
+  void putText(double value_, unsigned row_, Alignment align_) override
   {
     double integral;
     double fractional = modf(value_, &integral);
     std::string strValue = std::to_string(static_cast<int>(integral));
     std::string strFractional = std::to_string(static_cast<int>(fractional * 10));
-    uint8_t emptySpaces = this->width() - strValue.length() - strFractional.length();
-    uint8_t leftFills = static_cast<uint8_t>(emptySpaces / 2.0f);
+    unsigned emptySpaces = this->width() - strValue.length() - strFractional.length();
+	unsigned leftFills = static_cast<unsigned>(emptySpaces / 2.0f);
     resetDots(row_);
     setDot(strValue.length() - 1 + leftFills, row_);
     strValue.append(strFractional);
@@ -100,7 +100,7 @@ public:
 
   //--------------------------------------------------------------------------------------------------
 
-  void putValue(float value_, uint8_t row_, Alignment align_) override
+  void putValue(float value_, unsigned row_, Alignment align_) override
   {
     return;
   }
@@ -127,8 +127,8 @@ private:
       }
       case Alignment::Center:
       {
-        uint8_t nFills = this->width() - strValue.length();
-        uint8_t leftFills = static_cast<uint8_t>(nFills / 2.0f);
+        unsigned nFills = this->width() - strValue.length();
+		unsigned leftFills = static_cast<unsigned>(nFills / 2.0f);
         strValue.insert(0, leftFills, ' ');
         strValue.append(nFills - leftFills, ' ');
         break;
@@ -145,7 +145,7 @@ private:
 
   //--------------------------------------------------------------------------------------------------
 
-  void setDot(uint8_t nDot_, uint8_t row_, bool visible_ = true)
+  void setDot(unsigned nDot_, unsigned row_, bool visible_ = true)
   {
     if (row_ > 0 || nDot_ >= this->width())
     {
@@ -157,7 +157,7 @@ private:
 
   //--------------------------------------------------------------------------------------------------
 
-  void resetDots(uint8_t row_)
+  void resetDots(unsigned row_)
   {
     if (row_ > 0)
     {

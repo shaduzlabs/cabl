@@ -9,7 +9,7 @@
 #  Device Tester                                                                                   #
 # ------------------------------------------------------------------------------------------------ #
 
-project(DeviceTest)
+project(device-test)
 
 set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

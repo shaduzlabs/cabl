@@ -92,8 +92,8 @@ Driver::tCollDeviceDescriptor DriverMIDI::enumerate()
                       if (recv[0] == 0xF0 && recv[1] == 0x7E && recv[3] == 0x06 && recv[4] == 0x02)
                       {
                         received = true;
-                        uint16_t vendorId = recv[5];
-                        uint16_t productId = (recv[6] << 8) | recv[7];
+                        unsigned vendorId = recv[5];
+                        unsigned productId = (recv[6] << 8) | recv[7];
                         std::lock_guard<std::mutex> lock(mtxDevices);
                         collDevices.emplace_back(_midiIn.getPortName(iIn),
                           DeviceDescriptor::Type::MIDI,
@@ -119,14 +119,16 @@ Driver::tCollDeviceDescriptor DriverMIDI::enumerate()
           }
           catch (RtMidiError& error)
           {
-            M_LOG("[DriverMIDI] RtMidiError: " << error.getMessage());
+			std::string strError(error.getMessage());
+            M_LOG("[DriverMIDI] RtMidiError: " << strError);
           }
         }
       }
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[DriverMIDI] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+      M_LOG("[DriverMIDI] RtMidiError: " << strError);
     }
   }
   return collDevices;
@@ -144,7 +146,8 @@ tPtr<DeviceHandleImpl> DriverMIDI::connect(const DeviceDescriptor& device_)
   }
   catch (RtMidiError& error)
   {
-    M_LOG("[DriverMIDI] RtMidiError: " << error.getMessage());
+	std::string strError(error.getMessage());
+    M_LOG("[DriverMIDI] RtMidiError: " << strError);
     return nullptr;
   }
 }

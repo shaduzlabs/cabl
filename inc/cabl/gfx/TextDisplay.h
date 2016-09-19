@@ -64,7 +64,7 @@ public:
    \param row_             The row at which the char must be printed
    \param c_               The char to be printed
   */
-  virtual void putCharacter(uint8_t col_, uint8_t row_, char c_)
+  virtual void putCharacter(unsigned col_, unsigned row_, char c_)
   {
   }
 
@@ -73,7 +73,7 @@ public:
    \param string_          The string to be printed
    \param row_             The row at which the string must be printed
    */
-  virtual void putText(const std::string& string_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(const std::string& string_, unsigned row_, Alignment = Alignment::Left)
   {
   }
 
@@ -82,7 +82,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void putText(int value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(int value_, unsigned row_, Alignment = Alignment::Left)
   {
   }
 
@@ -91,7 +91,7 @@ public:
    \param value_           The number to be printed
    \param row_             The row at which the number must be printed
    */
-  virtual void putText(double value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putText(double value_, unsigned row_, Alignment = Alignment::Left)
   {
   }
 
@@ -100,7 +100,7 @@ public:
    \param value_           The value to be shown (0...1) by filling the available chars in a row
    \param row_             The row at which the value must be shown
    */
-  virtual void putValue(float value_, uint8_t row_, Alignment = Alignment::Left)
+  virtual void putValue(float value_, unsigned row_, Alignment = Alignment::Left)
   {
   }
 
@@ -126,7 +126,7 @@ public:
    \param row_    The display row to check
    \return true if the display row must be redrawn, false otherwise
    */
-  virtual bool dirtyRow(uint8_t row_) const = 0;
+  virtual bool dirtyRow(unsigned row_) const = 0;
 
   //! Reset the global dirty flag
   virtual void resetDirtyFlags() const = 0;
@@ -192,7 +192,7 @@ public:
     return m_dirtyFlags.any();
   }
 
-  bool dirtyRow(uint8_t row_) const override
+  bool dirtyRow(unsigned row_) const override
   {
     return m_dirtyFlags.test(row_);
   }

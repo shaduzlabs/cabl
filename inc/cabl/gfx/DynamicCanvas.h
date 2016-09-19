@@ -101,12 +101,12 @@ public:
      \param chunk_   The display chunk index
      \return         TRUE if the selected display chunk is dirty, FALSE otherwise
      */
-  bool dirtyChunk(uint8_t chunk_) const override
+  bool dirtyChunk(unsigned chunk_) const override
   {
     return m_chunkDirtyFlags[chunk_];
   }
 
-  void setDirtyChunk(uint16_t yStart_) const override
+  void setDirtyChunk(unsigned yStart_) const override
   {
     unsigned chunkHeight = m_height / m_nChunks;
     if (chunkHeight == 0 || m_nChunks == 0)

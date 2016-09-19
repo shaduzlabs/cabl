@@ -207,7 +207,8 @@ MaschineMK2::MaschineMK2()
     }
     catch (RtMidiError& error)
     {
-      M_LOG("[MaschineMK2] RtMidiError: " << error.getMessage());
+	  std::string strError(error.getMessage());
+	  M_LOG("[MaschineMK2] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiout->isPortOpen())
@@ -459,11 +460,11 @@ void MaschineMK2::processButtons(const Transfer& input_)
 
   for (uint8_t encIndex = 0, i = kMASMK2_buttonsDataSize + 1; encIndex < 8; i += 2, encIndex++)
   {
-    uint16_t value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
-    uint16_t hValue = input_.data()[i + 1];
+    unsigned value = (input_.data()[i]) | (input_.data()[i + 1] << 8);
+    unsigned hValue = input_.data()[i + 1];
     if (m_encoderValues[encIndex + 1] != value)
     {
-      uint16_t prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
+      unsigned prevHValue = (m_encoderValues[encIndex + 1] & 0xF00) >> 8;
       bool valueIncreased
         = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
           && (!((prevHValue == 0) && (hValue == 3)));
@@ -480,8 +481,8 @@ void MaschineMK2::processPads(const Transfer& input_)
   //!\todo process pad data
   for (int i = 1; i < kMASMK2_padDataSize; i += 2)
   {
-    uint16_t l = input_[i];
-    uint16_t h = input_[i + 1];
+    unsigned l = input_[i];
+    unsigned h = input_[i + 1];
     uint8_t pad = (h & 0xF0) >> 4;
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
 

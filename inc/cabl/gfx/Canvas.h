@@ -149,7 +149,7 @@ public:
    \param color_           The pixel color (RGB + Monochrome)
    */
   virtual void setPixel(
-    uint16_t x_, uint16_t y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true);
+    unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true);
 
   //! Get the pixel value as an RGB color
   /*!
@@ -157,7 +157,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual util::ColorRGB pixel(uint16_t x_, uint16_t y_) const;
+  virtual util::ColorRGB pixel(unsigned x_, unsigned y_) const;
 
   //! Draw a line
   /*!
@@ -168,7 +168,7 @@ public:
    \param color_           The line color (white, black, invert, random)
    */
   virtual void line(
-    uint16_t x0_, uint16_t y0_, uint16_t x1_, uint16_t y1_, const util::ColorRGB& color_);
+    unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const util::ColorRGB& color_);
 
   //! Draw a bitmap
   /*!
@@ -180,73 +180,73 @@ public:
    \param color_           The color of the pixels
    */
 
-  virtual void lineVertical(uint16_t x_, uint16_t y_, uint16_t h_, const util::ColorRGB& color_);
-  virtual void lineHorizontal(uint16_t x_, uint16_t y_, uint16_t w_, const util::ColorRGB& color_);
+  virtual void lineVertical(unsigned x_, unsigned y_, unsigned h_, const util::ColorRGB& color_);
+  virtual void lineHorizontal(unsigned x_, unsigned y_, unsigned w_, const util::ColorRGB& color_);
 
-  virtual void triangle(uint16_t x0_,
-    uint16_t y0_,
-    uint16_t x1_,
-    uint16_t y1_,
-    uint16_t x2_,
-    uint16_t y2_,
+  virtual void triangle(unsigned x0_,
+    unsigned y0_,
+    unsigned x1_,
+    unsigned y1_,
+    unsigned x2_,
+    unsigned y2_,
     const util::ColorRGB& color_);
-  virtual void triangleFilled(uint16_t x0_,
-    uint16_t y0_,
-    uint16_t x1_,
-    uint16_t y1_,
-    uint16_t x2_,
-    uint16_t y2_,
+  virtual void triangleFilled(unsigned x0_,
+    unsigned y0_,
+    unsigned x1_,
+    unsigned y1_,
+    unsigned x2_,
+    unsigned y2_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
   virtual void rectangle(
-    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, const util::ColorRGB& color_);
+    unsigned x_, unsigned y_, unsigned w_, unsigned h_, const util::ColorRGB& color_);
 
-  virtual void rectangleFilled(uint16_t x_,
-    uint16_t y_,
-    uint16_t w_,
-    uint16_t h_,
+  virtual void rectangleFilled(unsigned x_,
+    unsigned y_,
+    unsigned w_,
+    unsigned h_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
   virtual void rectangleRounded(
-    uint16_t x_, uint16_t y_, uint16_t w_, uint16_t h_, uint16_t r_, const util::ColorRGB& color_);
+    unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const util::ColorRGB& color_);
 
-  virtual void rectangleRoundedFilled(uint16_t x_,
-    uint16_t y_,
-    uint16_t w_,
-    uint16_t h_,
-    uint16_t r_,
+  virtual void rectangleRoundedFilled(unsigned x_,
+    unsigned y_,
+    unsigned w_,
+    unsigned h_,
+    unsigned r_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_);
 
-  virtual void circle(uint16_t rx_,
-    uint16_t ry_,
-    uint16_t r_,
+  virtual void circle(unsigned rx_,
+    unsigned ry_,
+    unsigned r_,
     const util::ColorRGB& color_,
     CircleType = CircleType::Full);
 
-  virtual void circleFilled(uint16_t x_,
-    uint16_t y_,
-    uint16_t r_,
+  virtual void circleFilled(unsigned x_,
+    unsigned y_,
+    unsigned r_,
     const util::ColorRGB& color_,
     const util::ColorRGB& fillColor_,
     CircleType = CircleType::Full);
 
-  virtual void putBitmap(uint16_t x_,
-    uint16_t y_,
-    uint16_t w_,
-    uint16_t h_,
+  virtual void putBitmap(unsigned x_,
+    unsigned y_,
+    unsigned w_,
+    unsigned h_,
     const uint8_t* pBitmap_,
     const util::ColorRGB& color_);
 
   virtual void putCanvas(const Canvas& c_,
-    uint16_t xDest_,
-    uint16_t yDest_,
-    uint16_t xSource_ = 0,
-    uint16_t ySource_ = 0,
-    uint16_t w_ = 0,
-    uint16_t h_ = 0);
+    unsigned xDest_,
+    unsigned yDest_,
+    unsigned xSource_ = 0,
+    unsigned ySource_ = 0,
+    unsigned w_ = 0,
+    unsigned h_ = 0);
 
   /** @} */ // End of group Primitives
 
@@ -267,7 +267,7 @@ public:
    \param color_         The color of the pixels
    */
   virtual void putCharacter(
-    uint16_t x_, uint16_t y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
+    unsigned x_, unsigned y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
 
   //! Print a string
   /*!
@@ -278,12 +278,12 @@ public:
    \param color_         The color of the pixels
    \param spacing_       Additional space between characters in pixels
    */
-  virtual void putText(uint16_t x_,
-    uint16_t y_,
+  virtual void putText(unsigned x_,
+    unsigned y_,
     const char* pStr_,
     const util::ColorRGB& color_,
     const std::string& font_ = "",
-    uint8_t spacing_ = 0);
+	unsigned spacing_ = 0);
 
   /**@}*/ // End of Text group
 
@@ -327,9 +327,9 @@ public:
 
   virtual bool dirty() const = 0;
 
-  virtual bool dirtyChunk(uint8_t chunk_) const = 0;
+  virtual bool dirtyChunk(unsigned chunk_) const = 0;
 
-  virtual void setDirtyChunk(uint16_t yStart_) const = 0;
+  virtual void setDirtyChunk(unsigned yStart_) const = 0;
 
   virtual void resetDirtyFlags() const = 0;
 
