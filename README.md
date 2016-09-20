@@ -16,6 +16,7 @@
 * Komplete Kontrol S49
 * Komplete Kontrol S61
 * Komplete Kontrol S88
+* Maschine Jam
 * Maschine Mk1
 * Maschine Mk2
 * Maschine Mikro Mk2
