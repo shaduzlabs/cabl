@@ -1,0 +1,10 @@
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
+
+#define CABL_VERSION_MAJOR @CABL_VERSION_MAJOR@
+#define CABL_VERSION_MINOR @CABL_VERSION_MINOR@
+#define CABL_VERSION_MICRO @CABL_VERSION_MICRO@

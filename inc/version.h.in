@@ -1,3 +1,0 @@
-// the configured options and settings for Tutorial
-#define KOMPLETIO_VERSION_MAJOR @kompletIO_VERSION_MAJOR@
-#define KOMPLETIO_VERSION_MINOR @kompletIO_VERSION_MINOR@

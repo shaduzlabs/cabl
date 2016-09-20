@@ -1,0 +1,9 @@
+name=cabl
+version=@CABL_VERSION_MAJOR@.@CABL_VERSION_MINOR@.@CABL_VERSION_MICRO@
+author=Vincenzo Pacella
+maintainer=Vincenzo Pacella <shaduz@shaduzlabs.com>
+sentence=An abstraction layer to communicate with some USB/MIDI controllers (Maschine, Komplete Kontrol S series, Push, etc.)
+paragraph=...
+category=Device Control
+url=http://www.shaduzlabs.com
+architectures=*

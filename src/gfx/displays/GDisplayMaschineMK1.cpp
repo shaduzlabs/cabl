@@ -1,152 +1,122 @@
-/*----------------------------------------------------------------------------------------------------------------------   
-
-                 %%%%%%%%%%%%%%%%%                
-                 %%%%%%%%%%%%%%%%%
-                 %%%           %%%
-                 %%%           %%%
-                 %%%           %%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% www.shaduzlabs.com %%%%%
-
-------------------------------------------------------------------------------------------------------------------------
-
-  Copyright (C) 2014 Vincenzo Pacella
-
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-  License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with this program.  
-  If not, see <http://www.gnu.org/licenses/>.
-
-----------------------------------------------------------------------------------------------------------------------*/
+/*
+        ##########    Copyright (C) 2015 Vincenzo Pacella
+        ##      ##    Distributed under MIT license, see file LICENSE
+        ##      ##    or <http://opensource.org/licenses/MIT>
+        ##      ##
+##########      ############################################################# shaduzlabs.com #####*/
 
 #include "gfx/displays/GDisplayMaschineMK1.h"
 
-#include "util/Functions_SL.h"
+#include "cabl/util/Functions.h"
 
-//----------------------------------------------------------------------------------------------------------------------
-
-namespace
-{
-  
-  const uint16_t kMASMK1_displayWidth         = 255;   // Width of the display in pixels
-  const uint16_t kMASMK1_displayHeight        = 64;    // Height of the display in pixels
-  const uint16_t kMASMK1_nOfDisplayDataChunks = 22;    // N. of display data chunks
-  
-}
-
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 namespace sl
 {
-  
+namespace cabl
+{
+
+//--------------------------------------------------------------------------------------------------
+
 GDisplayMaschineMK1::GDisplayMaschineMK1()
-  : GDisplay( kMASMK1_displayWidth, kMASMK1_displayHeight, kMASMK1_nOfDisplayDataChunks, tAllocation::ROW_2BYTES_3_PIXELS )
 {
+  black();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-void GDisplayMaschineMK1::setPixelImpl(uint16_t x_, uint16_t y_, tColor color_, bool bSetDirtyChunk_ )
+void GDisplayMaschineMK1::white()
 {
-  if ( x_ >= getWidth() || y_ >= getHeight() || color_ == tColor::NONE )
-    return;
-  
-  tColor oldColor = getPixelImpl( x_, y_ );
-  
-  if( color_ == tColor::RANDOM )
-    color_ = static_cast<tColor>( util::randomRange(0,2) );
-  
-  uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
+  fill(0x00);
+  setDirty();
+}
 
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
+//--------------------------------------------------------------------------------------------------
 
-  switch( color_ )
+void GDisplayMaschineMK1::black()
+{
+  fill(0xff);
+  setDirty();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+void GDisplayMaschineMK1::setPixel(
+  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+{
+  if (x_ >= width() || y_ >= height() || color_.transparent())
   {
-    case tColor::WHITE:
-      switch( blockIndex )
-      {
-        case 0:
-          getDataPtr()[ byteIndex ] |= 0xF8;
-          break;
-        case 1:
-          getDataPtr()[ byteIndex ] |= 0x07;
-          getDataPtr()[ byteIndex + 1 ] |= 0xC0;
-          break;
-        case 2:
-          getDataPtr()[ byteIndex + 1 ] |= 0x1F;
-          break;
-      }
-      break;
-
-    case tColor::BLACK:
-      switch( blockIndex )
-      {
-        case 0:
-          getDataPtr()[ byteIndex ] &= 0x07;
-          break;
-        case 1:
-          getDataPtr()[ byteIndex ] &= 0xF8;
-          getDataPtr()[ byteIndex + 1 ] &= 0x1F;
-          break;
-        case 2:
-          getDataPtr()[ byteIndex + 1 ] &= 0xC0;
-          break;
-      }
-      break;
-
-    case tColor::INVERT:
-      switch( blockIndex )
-      {
-        case 0:
-          getDataPtr()[ byteIndex ] ^= 0xF8;
-          break;
-        case 1:
-          getDataPtr()[ byteIndex ] ^= 0x07;
-          getDataPtr()[ byteIndex + 1 ] ^= 0xC0;
-          break;
-        case 2:
-          getDataPtr()[ byteIndex + 1 ] ^= 0x1F;
-          break;
-      }
-      break;
-
-    default:
-      break;
+    return;
   }
-  
-  m_isDirty = ( m_isDirty ? m_isDirty : oldColor != color_ );
-  if( bSetDirtyChunk_ && oldColor != color_ )
-    setDirtyChunks( y_ );
-}
 
-//----------------------------------------------------------------------------------------------------------------------
+  util::ColorRGB oldColor = pixel(x_, y_);
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
+  uint8_t pixelValue{0};
+  if (color_.blendMode() == BlendMode::Invert)
+  {
+    util::ColorRGB newColor = oldColor;
+    newColor.invert();
+    pixelValue = (static_cast<uint8_t>((newColor.mono() / 255.0) * 31 + 0.5f));
+  }
+  else
+  {
+    pixelValue = (static_cast<uint8_t>((color_.mono() / 255.0) * 31 + 0.5f));
+  }
 
-GDisplay::tColor GDisplayMaschineMK1::getPixelImpl( uint8_t x_, uint8_t y_ ) const
-{
-  if ( x_ >= getWidth() || y_ >= getHeight() )
-    return tColor::BLACK;
-  
-  uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
-  uint16_t byteIndex = ( getCanvasWidthInBytes() * y_ ) + ( ( x_ / 3 ) * 2 );
-  switch( blockIndex )
+  switch (x_ % 3)
   {
     case 0:
-      return ( getDataPtr()[ byteIndex ] & 0xF8 ) ? tColor::WHITE : tColor::BLACK;
+      data()[byteIndex] |= 0xF8;
+      data()[byteIndex] &= ~(pixelValue << 3);
+      break;
     case 1:
-      return ( getDataPtr()[ byteIndex ] & 0x07 ) ? tColor::WHITE : tColor::BLACK;
+      data()[byteIndex] |= 0x07;
+      data()[byteIndex + 1] |= 0xC0;
+      data()[byteIndex] &= ~(pixelValue >> 2);
+      data()[byteIndex + 1] &= ~(pixelValue << 6);
       break;
     case 2:
-      return ( getDataPtr()[ byteIndex + 1 ] & 0x1F ) ? tColor::WHITE : tColor::BLACK;
+      data()[byteIndex + 1] |= 0x1F;
+      data()[byteIndex + 1] &= ~(pixelValue);
+      break;
   }
-  
-  return tColor::BLACK;
- }
 
-//----------------------------------------------------------------------------------------------------------------------
+  if (bSetDirtyChunk_ && oldColor != color_)
+  {
+    setDirtyChunk(y_);
+  }
+}
 
-} // sl
+//--------------------------------------------------------------------------------------------------
+
+util::ColorRGB GDisplayMaschineMK1::pixel(unsigned x_, unsigned y_) const
+{
+  if (x_ >= width() || y_ >= height())
+  {
+    return {};
+  }
+
+  uint8_t blockIndex = x_ % 3; // 5 bits per pixel, 2 bytes pack 3 pixels
+  unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
+  uint8_t pixelValue{0};
+  switch (blockIndex)
+  {
+    case 0:
+      pixelValue = ~(static_cast<uint8_t>((((data()[byteIndex] & 0xF8) >> 3) / 31.0) * 255));
+      break;
+    case 1:
+      pixelValue = ~(static_cast<uint8_t>(
+        ((((data()[byteIndex] & 0x07) << 2) | (data()[byteIndex + 1] & 0xC0) >> 6) / 31.0) * 255));
+      break;
+    case 2:
+      pixelValue = ~(static_cast<uint8_t>(((data()[byteIndex + 1] & 0x1F) / 31.0) * 255));
+      break;
+  }
+
+  return {pixelValue};
+}
+
+//--------------------------------------------------------------------------------------------------
+
+} // namespace cabl
+} // namespace sl

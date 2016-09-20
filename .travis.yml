@@ -1,0 +1,308 @@
+language: cpp
+sudo: false
+matrix:
+  include:
+
+  # 1/ Linux GCC5 Coverage build
+  - os: linux
+    compiler: gcc
+    addons: &gcc5-addons
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-5
+        - gcc-5
+        - gfortran-5
+        - libudev-dev
+        - libjack-dev
+        - libasound2-dev
+        - libboost-python-dev
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5
+
+
+  # 2/ Linux GCC Builds
+  - os: linux
+    compiler: gcc
+    addons: &gcc-49-addons
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.9
+        - gcc-4.9
+        - gfortran-4.9
+        - libudev-dev
+        - libjack-dev
+        - libasound2-dev
+        - libboost-python-dev
+    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9'
+      BUILD_TYPE='Release'
+  - os: linux
+    compiler: gcc
+    addons: *gcc-49-addons
+    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9'
+      BUILD_TYPE='Debug'
+  - os: linux
+    compiler: gcc
+    addons: *gcc5-addons
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-linux-64"
+  - os: linux
+    compiler: gcc
+    addons: *gcc5-addons
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
+
+
+  # 3/ Linux Clang Builds
+  - os: linux
+    compiler: clang
+    addons: &clang-37-addons
+      apt:
+        sources:
+        - llvm-toolchain-precise-3.7
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-3.7
+        - gfortran
+        - libudev-dev
+        - libjack-dev
+        - libasound2-dev
+        - libboost-python-dev
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Release'
+  - os: linux
+    compiler: clang
+    addons: *clang-37-addons
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Debug'
+  - os: linux
+    compiler: clang
+    addons: &clang-38-addons
+      apt:
+        sources:
+        - llvm-toolchain-precise-3.8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-3.8
+        - gfortran
+        - libudev-dev
+        - libjack-dev
+        - libasound2-dev
+        - libboost-python-dev
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Release'
+  - os: linux
+    compiler: clang
+    addons: *clang-38-addons
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+      BUILD_TYPE='Debug'
+
+
+  # 4/ OSX Clang Builds
+  - os: osx
+    osx_image: xcode6.4
+    compiler: clang
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
+  - os: osx
+    osx_image: xcode6.4
+    compiler: clang
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
+  - os: osx
+    osx_image: xcode7
+    compiler: clang
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
+  - os: osx
+    osx_image: xcode7
+    compiler: clang
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
+
+
+  # 5/ OSX GCC Builds
+  - os: osx
+    osx_image: xcode6.4
+    compiler: gcc
+    env: BUILD_TYPE='Debug'
+  - os: osx
+    osx_image: xcode6.4
+    compiler: gcc
+    env: BUILD_TYPE='Release'
+  - os: osx
+    osx_image: xcode7
+    compiler: gcc
+    env: BUILD_TYPE='Debug'
+  - os: osx
+    osx_image: xcode7
+    compiler: gcc
+    env: BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-osx-64"
+
+
+install:
+  ############################################################################
+  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  ############################################################################
+- DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+- mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+    CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
+    mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+    export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    echo "The compiler is: ${CXX_COMPILER}"
+    echo "The CMake path is: ${DEPS_DIR}/cmake/bin"
+    CMAKE_EXECUTABLE=${DEPS_DIR}/cmake/bin/cmake
+  else
+    brew update
+    brew install cmake
+    CMAKE_EXECUTABLE=cmake
+  fi
+
+  ############################################################################
+  # Install a recent Doxygen
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+    DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.10.linux.bin.tar.gz"
+    mkdir doxygen && travis_retry wget --quiet -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen
+    export PATH=${DEPS_DIR}/doxygen/bin:${PATH}
+  else
+    brew install doxygen
+  fi
+
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    brew install gcc
+  fi
+
+
+  ############################################################################
+  # Install LibUSB
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+    wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O /tmp/libusb-1.0.tar.gz
+    cd /tmp
+    tar -zxvf libusb-1.0.tar.gz
+    cd libusb-1.0.20
+    ./autogen.sh && ./configure --prefix=`pwd`/_local_install
+    make
+    make install
+    export PKG_CONFIG_PATH="`pwd`/_local_install/lib/pkgconfig:$PKG_CONFIG_PATH"
+  else
+    brew install libusb
+  fi
+
+
+  ############################################################################
+  # Install HIDAPI
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    brew install hidapi
+  fi
+
+
+  ############################################################################
+  # Install RtMIDI
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    brew install rtmidi
+  fi
+
+  ############################################################################
+  # Install Boost.python
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    brew unlink boost
+    brew install boost --with-python
+    brew install boost-python
+  fi
+
+
+  ############################################################################
+  # Install libc++ and libc++abi (on Linux only; Xcode uses libc++ by default)
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "linux" && "${CXX_COMPILER}" == clang* ]]; then
+    if   [[ "${CXX_COMPILER}" == "clang++-3.5" ]]; then LLVM_VERSION="3.5.2"
+    elif [[ "${CXX_COMPILER}" == "clang++-3.6" ]]; then LLVM_VERSION="3.6.2";
+    elif [[ "${CXX_COMPILER}" == "clang++-3.7" ]]; then LLVM_VERSION="3.7.0";
+    elif [[ "${CXX_COMPILER}" == "clang++-3.8" ]]; then LLVM_VERSION="3.8.0";
+    else                                            LLVM_VERSION="trunk"; fi
+    if [[ "${LLVM_VERSION}" != "trunk" ]]; then
+      LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+      LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+      LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+      TAR_FLAGS="-xJ"
+    else
+      LLVM_URL="https://github.com/llvm-mirror/llvm/archive/master.tar.gz"
+      LIBCXX_URL="https://github.com/llvm-mirror/libcxx/archive/master.tar.gz"
+      LIBCXXABI_URL="https://github.com/llvm-mirror/libcxxabi/archive/master.tar.gz"
+      TAR_FLAGS="-xz"
+    fi
+    mkdir -p llvm llvm/build llvm/projects/libcxx llvm/projects/libcxxabi
+    travis_retry wget --quiet -O - ${LLVM_URL} | tar --strip-components=1 ${TAR_FLAGS} -C llvm
+    travis_retry wget --quiet -O - ${LIBCXX_URL} | tar --strip-components=1 ${TAR_FLAGS} -C llvm/projects/libcxx
+    travis_retry wget --quiet -O - ${LIBCXXABI_URL} | tar --strip-components=1 ${TAR_FLAGS} -C llvm/projects/libcxxabi
+    (cd llvm/build && cmake .. -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/llvm/install -DCMAKE_CXX_COMPILER=clang++)
+    (cd llvm/build/projects/libcxx && make install -j2)
+    (cd llvm/build/projects/libcxxabi && make install -j2)
+    export CXXFLAGS="-isystem ${DEPS_DIR}/llvm/install/include/c++/v1"
+    export LDFLAGS="-L ${DEPS_DIR}/llvm/install/lib -l c++ -l c++abi"
+    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DEPS_DIR}/llvm/install/lib"
+  fi
+
+before_script:
+- export CXX=${CXX_COMPILER}
+- export CC=${C_COMPILER}
+- export FC=${Fortran_COMPILER}
+- export PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH
+
+script:
+- cd ${TRAVIS_BUILD_DIR}
+- mkdir build
+- cd build
+- CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON
+- cd ..
+- cmake --build build --config $BUILD_TYPE
+- cmake --build build --config $BUILD_TYPE --target check
+
+after_success:
+- |
+  if [ -n "${CABL_DEPLOY_TARGET+set}" ]; then
+    echo "Deploying package $CABL_DEPLOY_TARGET"
+    mkdir build/$CABL_DEPLOY_TARGET
+    mkdir build/deploy
+    cp build/libcabl* build/$CABL_DEPLOY_TARGET
+    cp build/pycabl* build/$CABL_DEPLOY_TARGET
+    cp build/Release/pycabl* build/$CABL_DEPLOY_TARGET
+    cp build/Release/libcabl* build/$CABL_DEPLOY_TARGET
+    cp build/Release/cabl* build/$CABL_DEPLOY_TARGET
+    cp -r inc build/$CABL_DEPLOY_TARGET/include
+    rm build/$CABL_DEPLOY_TARGET/include/cabl-config.h.in
+    cp build/cabl-config.h build/$CABL_DEPLOY_TARGET/include/.
+    cd build
+    zip -r $CABL_DEPLOY_TARGET.zip $CABL_DEPLOY_TARGET
+    mv $CABL_DEPLOY_TARGET.zip deploy
+    cd ..
+  fi
+  if [[ "${COVERAGE_BUILD}" == "ON" ]]; then
+    cmake --build build --config $BUILD_TYPE --target coveralls
+  fi
+dd:
+  secure: aKv6alVASLaSfNVPKSplpaX1jTDGlI1foG3z3Hc2vbntkdX5yiLfKShz4QdYxD4FKXqIo1v6NP8LiHfwm1tmXJJKEkA2EncMqPl1L8OMFp03288i+0o9B2juLrFV6tig1c9uA80GuakX2royJ0vM74IHG+tf5sHbZbKD6ag+CaGyiSOci9Ps5j3TL0NbBdsmw1FWU1SR8ntvD8UmB7w/viSmIbZ9s1/AaoGcVn3Q+Nqn2VdzPZFWwHMNsRc15qvvSjZ0jsC/bNlshm5AsdqDaLE/3rrCki0q8OPyXJu3G0rNEqqB1iPKm/6arCzZu+150hXLzuuzg1FTvB+LSywFmbzaMPuClgpsGOraY3YNKVkx7e1jMkn+ou1oK+ogEl2kHShrbS/rUDMpQxxkLTpwEJ3W6DqvZQ04n7lIVfWKdPWhU0JDXHsipIN6oIkvl7X3wyif2Iol4zczaFSlpEa+HxmZRyU12K5dmqr7p7I54qAA4uF/xKZQvBhaz39Yr9s40TNUcsufXlJD6rzLoBxX03MW+ai6D1Q+SlN4qxym7PZn9HTuSNEMtwDG7xKdHLqrhJY/vBBN4SjWE8xFG0HSBhkhX9d/z/wHA32pHENJfEFG4agS+im/MQqXtxCAd1NiPQkZ/BZXoESNyJTTBkFpW81zJLoIGIKhwIQk4ek4Tb4=
+
+deploy:
+  provider: bintray
+  file: "./build/deploy-bintray.json"
+  user: shaduzlabs
+  on:
+    all_branches: true
+    condition: -n "${CABL_DEPLOY_TARGET+set}"
+  key:
+    secure: LeIydY2ok9l1YUdcWXhZK4H99oDfBtVyeBQgpokE47VN1ogwSi4eBjjnEqpon7uFw8meRUR4Po1gefl6g3mJn/UCdk9qWIQ07WLUx8bY/QFl8QMCdsh13DJ7c3NdHYcOKbQdju0s4ByIULJsd/jtzqKjZ8tuoEvtIV7GkMz7heLyZOOUMAs/mKvmaQCeYLNqXp9I7vIDSkC5OJESDhD+hYbFGbXsAIK7QNjgzRxpV5tclcAxrhjtgsQRRhE1eJelD2tlrR2EKpN+/Dnk9vpbSFuSWSkckjW9fTghr1nqgkGQwy0CQN4UF8zi8+DOfROpwj9Mjl8ZNgj6GkNrOhvs5tXulqToDBXP15r0czrusRUUZWiBOfmZcgYJYetdpA+MqSG8rbPpy3k5XFvTJshuE+ungTUOmXY3ZyZLuqxOlf0FvKrdGesv3EHKVs9t+mgtpizfb5RdO0YD11UITZVVpqqmtCZ1k4eIYryfLJq1rU7yLdKfZtvKsoJydjSzbkWULCg4TbT5wCsVq+0drf48LQxhwkLNbPvK7xjOLnTqZmZ/wBSug71VwKyFC8BzrF5UlQLiXdMN0b/j3A6pXcfYnHvZeRhFMcVJncgrYvDY44rZ1J7QFUJvqyWbrU6nNLCY3ZDNLyen8vSmIaV4FRadTlYWssrvnluwJ0bvLlPtHrM=

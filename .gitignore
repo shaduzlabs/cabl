@@ -1,7 +1,8 @@
 # Build products
 build/
-arduino/
+artifacts/
 ipch/
+.env/
 cmake_install.cmake
 Makefile
 
@@ -22,3 +23,6 @@ project.xcworkspace/
 
 # Temporary files
 *~
+
+# Documentation
+docs/
