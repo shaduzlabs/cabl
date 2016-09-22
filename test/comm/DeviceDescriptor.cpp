@@ -26,5 +26,5 @@ TEST_CASE("DeviceDescriptor: constructor", "[comm][DeviceDescriptor]")
 //--------------------------------------------------------------------------------------------------
 
 } // namespace test
-} // namespace util
+} // namespace cabl
 } // namespace sl

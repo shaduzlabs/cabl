@@ -21,9 +21,6 @@ namespace cabl
 
 using namespace midi;
 
-namespace devices
-{
-
 //--------------------------------------------------------------------------------------------------
 
 class USBMidi : public midi::Unmidify, public Device
@@ -71,6 +68,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

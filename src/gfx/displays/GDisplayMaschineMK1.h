@@ -36,7 +36,7 @@ public:
      \param bSetDirtyChunk_  If TRUE, the dirty flag for the pertaining chunk is set
      */
   void setPixel(
-    unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true) override;
+    unsigned x_, unsigned y_, const Color& color_, bool bSetDirtyChunk_ = true) override;
 
   //! Get the pixel value as an RGB color
   /*!
@@ -44,7 +44,7 @@ public:
      \param y_               The Y coordinate of the pixel
      \return                 The color of the selected pixel
      */
-  util::ColorRGB pixel(unsigned x_, unsigned y_) const override;
+  Color pixel(unsigned x_, unsigned y_) const override;
 };
 
 //--------------------------------------------------------------------------------------------------

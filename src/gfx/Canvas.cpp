@@ -52,15 +52,15 @@ void Canvas::fill(uint8_t value_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::setPixel(unsigned x_, unsigned y_, const util::ColorRGB& color_, bool setDirtyFlags_)
+void Canvas::setPixel(unsigned x_, unsigned y_, const Color& color_, bool setDirtyFlags_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
 
-  util::ColorRGB oldColor = pixel(x_, y_);
-  util::ColorRGB newColor = color_;
+  Color oldColor = pixel(x_, y_);
+  Color newColor = color_;
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (3 * x_);
 
   if (color_.blendMode() == BlendMode::Invert)
@@ -81,7 +81,7 @@ void Canvas::setPixel(unsigned x_, unsigned y_, const util::ColorRGB& color_, bo
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB Canvas::pixel(unsigned x_, unsigned y_) const
+Color Canvas::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {
@@ -95,7 +95,7 @@ util::ColorRGB Canvas::pixel(unsigned x_, unsigned y_) const
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::line(
-  unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const util::ColorRGB& color_)
+  unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const Color& color_)
 {
   int e;
   int dx, dy;
@@ -177,7 +177,7 @@ void Canvas::line(
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::Canvas::lineVertical(
-  unsigned x_, unsigned y_, unsigned l_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned l_, const Color& color_)
 {
   for (unsigned y = y_; y < y_ + l_; y++)
   {
@@ -187,7 +187,7 @@ void Canvas::Canvas::lineVertical(
 
 //--------------------------------------------------------------------------------------------------
 
-void Canvas::lineHorizontal(unsigned x_, unsigned y_, unsigned l_, const util::ColorRGB& color_)
+void Canvas::lineHorizontal(unsigned x_, unsigned y_, unsigned l_, const Color& color_)
 {
   for (unsigned x = x_; x < x_ + l_; x++)
   {
@@ -203,7 +203,7 @@ void Canvas::triangle(unsigned x0_,
   unsigned y1_,
   unsigned x2_,
   unsigned y2_,
-  const util::ColorRGB& color_)
+  const Color& color_)
 {
   line(x0_, y0_, x1_, y1_, color_);
   line(x1_, y1_, x2_, y2_, color_);
@@ -218,8 +218,8 @@ void Canvas::triangleFilled(unsigned x0_,
   unsigned y1_,
   unsigned x2_,
   unsigned y2_,
-  const util::ColorRGB& color_,
-  const util::ColorRGB& fillColor_)
+  const Color& color_,
+  const Color& fillColor_)
 {
   // Original Author: Adafruit Industries (Adafruit GFX library)
 
@@ -329,7 +329,7 @@ void Canvas::triangleFilled(unsigned x0_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::rectangle(
-  unsigned x_, unsigned y_, unsigned w_, unsigned h_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned w_, unsigned h_, const Color& color_)
 {
   rectangleFilled(x_, y_, w_, h_, color_, {});
 }
@@ -340,8 +340,8 @@ void Canvas::rectangleFilled(unsigned x_,
   unsigned y_,
   unsigned w_,
   unsigned h_,
-  const util::ColorRGB& color_,
-  const util::ColorRGB& fillColor_)
+  const Color& color_,
+  const Color& fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
   {
@@ -384,7 +384,7 @@ void Canvas::rectangleFilled(unsigned x_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::rectangleRounded(
-  unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const util::ColorRGB& color_)
+  unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const Color& color_)
 {
   rectangleRoundedFilled(x_, y_, w_, h_, r_, color_, {});
 }
@@ -396,8 +396,8 @@ void Canvas::rectangleRoundedFilled(unsigned x_,
   unsigned w_,
   unsigned h_,
   unsigned r_,
-  const util::ColorRGB& color_,
-  const util::ColorRGB& fillColor_)
+  const Color& color_,
+  const Color& fillColor_)
 {
   if (x_ > width() || y_ > height() || w_ == 0 || h_ == 0)
   {
@@ -441,7 +441,7 @@ void Canvas::rectangleRoundedFilled(unsigned x_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::circle(
-  unsigned x_, unsigned y_, unsigned r_, const util::ColorRGB& color_, CircleType type_)
+  unsigned x_, unsigned y_, unsigned r_, const Color& color_, CircleType type_)
 {
   circleFilled(x_, y_, r_, color_, {}, type_);
 }
@@ -451,8 +451,8 @@ void Canvas::circle(
 void Canvas::circleFilled(unsigned x_,
   unsigned y_,
   unsigned r_,
-  const util::ColorRGB& color_,
-  const util::ColorRGB& fillColor_,
+  const Color& color_,
+  const Color& fillColor_,
   CircleType type_)
 {
   if (r_ == 0)
@@ -526,7 +526,7 @@ void Canvas::putBitmap(unsigned x_,
   unsigned w_,
   unsigned h_,
   const uint8_t* pBitmap_,
-  const util::ColorRGB& color_)
+  const Color& color_)
 {
   if ((x_ >= width()) || (y_ >= height()))
   {
@@ -584,7 +584,7 @@ void Canvas::putCanvas(const Canvas& c_,
 //--------------------------------------------------------------------------------------------------
 
 void Canvas::putCharacter(
-  unsigned x_, unsigned y_, char c_, const util::ColorRGB& color_, const std::string& font_)
+  unsigned x_, unsigned y_, char c_, const Color& color_, const std::string& font_)
 {
   const Font* pFont = FontManager::instance().getFont(font_);
   uint8_t c = c_ - pFont->firstChar();
@@ -611,7 +611,7 @@ void Canvas::putCharacter(
 void Canvas::putText(unsigned x_,
   unsigned y_,
   const char* pStr_,
-  const util::ColorRGB& color_,
+  const Color& color_,
   const std::string& font_,
   unsigned spacing_)
 {

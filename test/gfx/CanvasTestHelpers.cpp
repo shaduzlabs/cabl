@@ -22,7 +22,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-bool matchColorForAllPixels(const Canvas* canvas_, const util::ColorRGB& color_)
+bool matchColorForAllPixels(const Canvas* canvas_, const Color& color_)
 {
   for (unsigned x = 0U; x < canvas_->width(); x++)
   {
@@ -71,7 +71,7 @@ bool pngWrite(const Canvas* c_, const std::string& fileName_)
     for (unsigned x = 0; x < c_->width(); x++)
     {
       unsigned index = 4 * ((y * c_->width()) + x);
-      util::ColorRGB color = c_->pixel(x, y);
+      Color color = c_->pixel(x, y);
       pixels[index++] = color.red();
       pixels[index++] = color.green();
       pixels[index++] = color.blue();

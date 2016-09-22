@@ -14,23 +14,23 @@
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 
-class ColorRGB
+class Color
 {
 public:
-  ColorRGB();
+  Color();
 
-  ColorRGB(BlendMode);
+  Color(BlendMode);
 
-  ColorRGB(uint8_t mono_);
+  Color(uint8_t mono_);
 
-  ColorRGB(uint8_t red_, uint8_t green_, uint8_t blue_);
+  Color(uint8_t red_, uint8_t green_, uint8_t blue_);
 
-  ColorRGB(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_);
+  Color(uint8_t red_, uint8_t green_, uint8_t blue_, uint8_t mono_);
 
-  double distance(const ColorRGB& other_) const;
+  double distance(const Color& other_) const;
 
   uint8_t red() const;
   uint8_t green() const;
@@ -50,18 +50,18 @@ public:
   void white();
   void invert();
 
-  bool operator==(const ColorRGB& other_) const;
-  bool operator!=(const ColorRGB& other_) const;
-  bool operator<(const ColorRGB& other_) const;
-  bool operator<=(const ColorRGB& other_) const;
-  bool operator>(const ColorRGB& other_) const;
-  bool operator>=(const ColorRGB& other_) const;
+  bool operator==(const Color& other_) const;
+  bool operator!=(const Color& other_) const;
+  bool operator<(const Color& other_) const;
+  bool operator<=(const Color& other_) const;
+  bool operator>(const Color& other_) const;
+  bool operator>=(const Color& other_) const;
 
   unsigned getValue() const;
 
 
 private:
-  friend std::ostream& operator<<(std::ostream& out_, const ColorRGB& c_);
+  friend std::ostream& operator<<(std::ostream& out_, const Color& c_);
 
   uint8_t m_red{0U};
   uint8_t m_green{0U};
@@ -70,5 +70,5 @@ private:
   BlendMode m_blendMode{BlendMode::Normal};
 };
 
-} // namespace util
+} // namespace cabl
 } // namespace sl

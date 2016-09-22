@@ -20,6 +20,8 @@
 
 namespace sl
 {
+namespace cabl
+{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -31,6 +33,8 @@ enum class Alignment
   Right,  //!< Align to the right
 };
 
+//--------------------------------------------------------------------------------------------------
+
 //! The blend mode
 enum class BlendMode
 {
@@ -38,9 +42,6 @@ enum class BlendMode
   Invert,      // Invert the current color
   Transparent, // Ignore the current color
 };
-
-namespace cabl
-{
 
 //--------------------------------------------------------------------------------------------------
 

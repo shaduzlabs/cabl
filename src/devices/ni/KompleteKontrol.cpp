@@ -30,8 +30,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -321,14 +319,14 @@ KompleteKontrolBase::~KompleteKontrolBase()
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void KompleteKontrolBase::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void KompleteKontrolBase::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -519,7 +517,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void KompleteKontrolBase::setLedImpl(Led led_, const util::ColorRGB& color_)
+void KompleteKontrolBase::setLedImpl(Led led_, const Color& color_)
 {
   static const uint8_t kFirstKeyIndex = static_cast<unsigned>(Led::Key1);
   unsigned ledIndex = static_cast<unsigned>(led_);
@@ -692,6 +690,5 @@ void KompleteKontrolBase::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

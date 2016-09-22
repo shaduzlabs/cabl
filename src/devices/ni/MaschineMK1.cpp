@@ -34,8 +34,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -167,14 +165,14 @@ MaschineMK1::MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void MaschineMK1::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void MaschineMK1::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -539,7 +537,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLedImpl(Led led_, const util::ColorRGB& color_)
+void MaschineMK1::setLedImpl(Led led_, const Color& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -753,6 +751,5 @@ bool MaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) con
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

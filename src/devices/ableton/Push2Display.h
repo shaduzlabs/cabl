@@ -17,8 +17,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -27,10 +25,10 @@ class Push2Display : public Device
 
 public:
 
-  void setButtonLed(Device::Button, const util::ColorRGB&) override
+  void setButtonLed(Device::Button, const Color&) override
   {
   }
-  void setKeyLed(unsigned, const util::ColorRGB&) override
+  void setKeyLed(unsigned, const Color&) override
   {
   }
 
@@ -73,6 +71,5 @@ M_REGISTER_DEVICE_CLASS(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

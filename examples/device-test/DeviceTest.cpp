@@ -19,10 +19,10 @@
 
 namespace
 {
-const sl::util::ColorRGB kColor_Black{0};
-const sl::util::ColorRGB kColor_Red{0xff, 0, 0, 0xff};
-const sl::util::ColorRGB kColor_Yellow{0xff, 0xff, 0, 0x55};
-const sl::util::ColorRGB kColor_Blue{0xff, 0, 0, 0x77};
+const sl::Color kColor_Black{0};
+const sl::Color kColor_Red{0xff, 0, 0, 0xff};
+const sl::Color kColor_Yellow{0xff, 0xff, 0, 0x55};
+const sl::Color kColor_Blue{0xff, 0, 0, 0x77};
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ namespace sl
 {
 
 using namespace midi;
-using namespace util;
+using namespace cabl;
 using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------

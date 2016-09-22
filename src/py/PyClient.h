@@ -24,7 +24,6 @@ namespace py
 //--------------------------------------------------------------------------------------------------
 
 using namespace boost::python;
-using namespace devices;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -80,8 +79,8 @@ public:
   {
     m_onControlChanged = fn_;
   }
-  void setButtonLed(Device::Button, const util::ColorRGB&);
-  void setKeyLed(unsigned, const util::ColorRGB&);
+  void setButtonLed(Device::Button, const Color&);
+  void setKeyLed(unsigned, const Color&);
 
   Canvas* graphicDisplay(size_t displayIndex_)
   {

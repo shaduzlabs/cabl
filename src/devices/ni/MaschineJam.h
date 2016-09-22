@@ -20,8 +20,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -31,8 +29,8 @@ class MaschineJam : public Device
 public:
   MaschineJam();
 
-  void setButtonLed(Device::Button, const util::ColorRGB&) override;
-  void setKeyLed(unsigned, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const Color&) override;
+  void setKeyLed(unsigned, const Color&) override;
 
   Canvas* ledMatrix(size_t ledMatrixIndex_) override;
   LedArray* ledArray(size_t ledArrayIndex_) override;
@@ -59,8 +57,8 @@ public:
 
   bool tick() override;
 
-  static uint8_t toLedColor(const util::ColorRGB& color_);
-  static util::ColorRGB fromLedColor(uint8_t color_);
+  static uint8_t toLedColor(const Color& color_);
+  static Color fromLedColor(uint8_t color_);
 
 private:
   enum class Led : uint8_t;
@@ -85,7 +83,7 @@ private:
   void processButtons(const Transfer&);
   void processStrips(const Transfer&);
 
-  void setLedImpl(Led, const util::ColorRGB&);
+  void setLedImpl(Led, const Color&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(unsigned) const noexcept;
@@ -119,6 +117,5 @@ M_REGISTER_DEVICE_CLASS(MaschineJam, "", DeviceDescriptor::Type::HID, 0x17CC, 0x
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

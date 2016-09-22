@@ -21,8 +21,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -30,7 +28,7 @@ class Coordinator
 {
 public:
   using tCollDeviceDescriptor = std::vector<DeviceDescriptor>;
-  using tDevicePtr = std::shared_ptr<devices::Device>;
+  using tDevicePtr = std::shared_ptr<Device>;
   using tCollDevices = std::map<DeviceDescriptor, tDevicePtr>;
 
   using tClientId = std::string;
@@ -84,6 +82,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

@@ -42,19 +42,19 @@ void GDisplayMaschineMK1::black()
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayMaschineMK1::setPixel(
-  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const Color& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
 
-  util::ColorRGB oldColor = pixel(x_, y_);
+  Color oldColor = pixel(x_, y_);
   unsigned byteIndex = (canvasWidthInBytes() * y_) + ((x_ / 3) * 2);
   uint8_t pixelValue{0};
   if (color_.blendMode() == BlendMode::Invert)
   {
-    util::ColorRGB newColor = oldColor;
+    Color newColor = oldColor;
     newColor.invert();
     pixelValue = (static_cast<uint8_t>((newColor.mono() / 255.0) * 31 + 0.5f));
   }
@@ -89,7 +89,7 @@ void GDisplayMaschineMK1::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayMaschineMK1::pixel(unsigned x_, unsigned y_) const
+Color GDisplayMaschineMK1::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

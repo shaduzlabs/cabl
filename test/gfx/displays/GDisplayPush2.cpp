@@ -42,7 +42,7 @@ TEST_CASE("GDisplayPush2: constructor", "[gfx][displays][GDisplayPush2]")
   CHECK(display.height() == 160);
   CHECK(display.numberOfChunks() == 1);
 
-  CHECK(display.pixel(2000, 2000) == util::ColorRGB());
+  CHECK(display.pixel(2000, 2000) == Color());
 
   display.setPixel(0, 0, {0, 248, 0});
   auto color = display.pixel(0, 0);

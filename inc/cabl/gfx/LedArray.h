@@ -56,7 +56,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \param color_           The pixel color (RGB + Monochrome)
    */
-  virtual void setPixel(unsigned pos_, const util::ColorRGB& color_) = 0;
+  virtual void setPixel(unsigned pos_, const Color& color_) = 0;
 
   //! Get the pixel value as an RGB color
   /*!
@@ -64,9 +64,9 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual util::ColorRGB pixel(unsigned pos_) const = 0;
+  virtual Color pixel(unsigned pos_) const = 0;
 
-  virtual void setValue(double val_, util::ColorRGB color_, Alignment alignment_ = Alignment::Left) = 0;
+  virtual void setValue(double val_, Color color_, Alignment alignment_ = Alignment::Left) = 0;
   
   virtual void clear() = 0;
   
@@ -143,7 +143,7 @@ public:
    * @{
    */
 
-  void setValue(double val_, util::ColorRGB color_, Alignment alignment_) override
+  void setValue(double val_, Color color_, Alignment alignment_) override
   {
     double val = std::min(val_, 1.0);
     clear();

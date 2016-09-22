@@ -21,8 +21,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -74,13 +72,13 @@ LedArray* Device::ledArray(size_t ledArrayIndex_)
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setButtonLed(Button, const util::ColorRGB&)
+void Device::setButtonLed(Button, const Color&)
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Device::setKeyLed(unsigned, const util::ColorRGB&)
+void Device::setKeyLed(unsigned, const Color&)
 {
 }
 
@@ -267,6 +265,5 @@ void Device::render()
 
 //--------------------------------------------------------------------------------------------------
 
-} // devices
 } // cabl
 } // sl

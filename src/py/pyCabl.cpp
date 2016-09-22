@@ -15,8 +15,6 @@ namespace cabl
 namespace py
 {
 
-using namespace devices;
-
 //--------------------------------------------------------------------------------------------------
 /*
 static object drawingContext_load(DrawingContext& self) {
@@ -177,27 +175,27 @@ BOOST_PYTHON_MODULE(pycabl)
 
   //------------------------------------------------------------------------------------------------
 
-  class_<util::ColorRGB>("ColorRGB", init<uint8_t, uint8_t, uint8_t>())
+  class_<Color>("Color", init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
     .def(self_ns::str(self_ns::self))
-    .def("distance", &util::ColorRGB::distance)
-    .def("getValue", &util::ColorRGB::getValue)
-    .def("red", &util::ColorRGB::red)
-    .def("green", &util::ColorRGB::green)
-    .def("blue", &util::ColorRGB::blue)
-    .def("mono", &util::ColorRGB::mono)
-    .def("active", &util::ColorRGB::active)
-    .def("blendMode", &util::ColorRGB::blendMode)
-    .def("transparent", &util::ColorRGB::transparent)
-    .def("setRed", &util::ColorRGB::setRed)
-    .def("setGreen", &util::ColorRGB::setGreen)
-    .def("setBlue", &util::ColorRGB::setBlue)
-    .def("setMono", &util::ColorRGB::setMono)
-    .def("setBlendMode", &util::ColorRGB::setBlendMode)
-    .def("black", &util::ColorRGB::black)
-    .def("white", &util::ColorRGB::white)
-    .def("invert", &util::ColorRGB::invert);
+    .def("distance", &Color::distance)
+    .def("getValue", &Color::getValue)
+    .def("red", &Color::red)
+    .def("green", &Color::green)
+    .def("blue", &Color::blue)
+    .def("mono", &Color::mono)
+    .def("active", &Color::active)
+    .def("blendMode", &Color::blendMode)
+    .def("transparent", &Color::transparent)
+    .def("setRed", &Color::setRed)
+    .def("setGreen", &Color::setGreen)
+    .def("setBlue", &Color::setBlue)
+    .def("setMono", &Color::setMono)
+    .def("setBlendMode", &Color::setBlendMode)
+    .def("black", &Color::black)
+    .def("white", &Color::white)
+    .def("invert", &Color::invert);
 
   //------------------------------------------------------------------------------------------------
 
@@ -207,11 +205,11 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("pixel",
       &Canvas::pixel,
       args("pos"),
-      "Returns the pixel value of the specified pixel as a ColorRGB object")
+      "Returns the pixel value of the specified pixel as a Color object")
     .def("setPixel",
       &Canvas::setPixel,
       args("x", "y", "color"),
-      "Sets the value of the pixel at x,y as a ColorRGB object")
+      "Sets the value of the pixel at x,y as a Color object")
     .def("black", &Canvas::black, "Fills the display with black")
     .def("white", &Canvas::white, "Fills the display with white")
     .def("invert", &Canvas::invert, "Inverts the content of the display")
@@ -312,11 +310,11 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("pixel",
       &LedArray::pixel,
       args("pos"),
-      "Returns the value of the specified pixel as a ColorRGB object")
+      "Returns the value of the specified pixel as a Color object")
     .def("setPixel",
       &LedArray::setPixel,
       args("pos", "color"),
-      "Sets the value of the specified pixel as a ColorRGB object");
+      "Sets the value of the specified pixel as a Color object");
 
 //------------------------------------------------------------------------------------------------
 

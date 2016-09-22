@@ -19,15 +19,15 @@ namespace cabl
 //--------------------------------------------------------------------------------------------------
 
 void GDisplayPush2::setPixel(
-  unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_)
+  unsigned x_, unsigned y_, const Color& color_, bool bSetDirtyChunk_)
 {
   if (x_ >= width() || y_ >= height() || color_.transparent())
   {
     return;
   }
 
-  util::ColorRGB oldColor = pixel(x_, y_);
-  util::ColorRGB newColor = color_;
+  Color oldColor = pixel(x_, y_);
+  Color newColor = color_;
   if (color_.blendMode() == BlendMode::Invert)
   {
     newColor = oldColor;
@@ -49,7 +49,7 @@ void GDisplayPush2::setPixel(
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB GDisplayPush2::pixel(unsigned x_, unsigned y_) const
+Color GDisplayPush2::pixel(unsigned x_, unsigned y_) const
 {
   if (x_ >= width() || y_ >= height())
   {

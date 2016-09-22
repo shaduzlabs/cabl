@@ -16,7 +16,7 @@ See: http://stackoverflow.com/questions/19415845/a-better-log-macro-using-templa
 */
 
 #include <iostream>
-#define M_LOG(msg) (sl::util::Log(__TIME__, sl::util::LogData<sl::util::None>() << msg))
+#define M_LOG(msg) (sl::cabl::Log(__TIME__, sl::cabl::LogData<sl::cabl::None>() << msg))
 
 // Workaround GCC 4.7.2 not recognizing noinline attribute
 #ifndef NOINLINE_ATTRIBUTE
@@ -29,7 +29,7 @@ See: http://stackoverflow.com/questions/19415845/a-better-log-macro-using-templa
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ inline void output(std::ostream& /*unused*/, None /*unused*/)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace util
+} // namespace cabl
 } // namespace sl
 
 #endif

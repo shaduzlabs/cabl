@@ -37,8 +37,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -288,14 +286,14 @@ MaschineJam::MaschineJam()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineJam::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void MaschineJam::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineJam::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void MaschineJam::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -528,7 +526,7 @@ void MaschineJam::processStrips(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineJam::setLedImpl(Led led_, const util::ColorRGB& color_)
+void MaschineJam::setLedImpl(Led led_, const Color& color_)
 {
   unsigned ledIndex = static_cast<uint8_t>(led_);
   if (Led::Unknown == led_)
@@ -878,6 +876,5 @@ bool MaschineJam::isButtonPressed(const Transfer& transfer_, Button button_) con
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

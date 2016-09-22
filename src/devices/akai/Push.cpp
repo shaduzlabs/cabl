@@ -31,7 +31,7 @@ const uint8_t kPush_epOut = 0x01;
 const uint8_t kPush_manufacturerId = 0x47; // Akai manufacturer Id
 
 // clang-format off
-const std::vector<sl::util::ColorRGB> kPush_colors{
+const std::vector<sl::cabl::Color> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -70,8 +70,6 @@ const std::vector<sl::util::ColorRGB> kPush_colors{
 namespace sl
 {
 namespace cabl
-{
-namespace devices
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -256,14 +254,14 @@ Push::Push() : m_isDirtyLeds(false)
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void Push::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void Push::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -394,7 +392,7 @@ bool Push::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-void Push::setLedImpl(Led led_, const util::ColorRGB& color_)
+void Push::setLedImpl(Led led_, const Color& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -632,7 +630,7 @@ Device::Button Push::deviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-uint8_t Push::getColorIndex(const util::ColorRGB& color_)
+uint8_t Push::getColorIndex(const Color& color_)
 {
   auto it = m_colorsCache.find(color_);
   if (it != m_colorsCache.end())
@@ -775,6 +773,5 @@ void Push::processNote(uint8_t note_, uint8_t velocity_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

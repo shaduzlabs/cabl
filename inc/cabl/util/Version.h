@@ -11,7 +11,7 @@
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 
 class Version
@@ -68,5 +68,5 @@ private:
   unsigned m_vMicro{0U};
 };
 
-} // namespace util
+} // namespace cabl
 } // namespace sl

@@ -32,7 +32,7 @@ const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
 const uint8_t kPush_epOut = 0x01;
 
 // clang-format off
-const std::vector<sl::util::ColorRGB> kPush_colors{
+const std::vector<sl::cabl::Color> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -71,8 +71,6 @@ const std::vector<sl::util::ColorRGB> kPush_colors{
 namespace sl
 {
 namespace cabl
-{
-namespace devices
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -307,14 +305,14 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void Push2::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void Push2::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -366,7 +364,7 @@ bool Push2::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLedImpl(Led led_, const util::ColorRGB& color_)
+void Push2::setLedImpl(Led led_, const Color& color_)
 {
   unsigned ledIndex = static_cast<uint8_t>(led_);
 
@@ -606,7 +604,7 @@ Device::Button Push2::deviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-uint8_t Push2::getColorIndex(const util::ColorRGB& color_)
+uint8_t Push2::getColorIndex(const Color& color_)
 {
   auto it = m_colorsCache.find(color_);
   if (it != m_colorsCache.end())
@@ -761,6 +759,5 @@ void Push2::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl
