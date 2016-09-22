@@ -269,8 +269,8 @@ KompleteKontrolBase::KompleteKontrolBase()
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
-	  M_LOG("[KompleteKontrol] RtMidiError: " << strError);
+      std::string strError(error.getMessage());
+      M_LOG("[KompleteKontrol] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiOut->isPortOpen())
@@ -292,8 +292,8 @@ KompleteKontrolBase::KompleteKontrolBase()
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
-	  M_LOG("[KompleteKontrol] RtMidiError: " << strError);
+      std::string strError(error.getMessage());
+      M_LOG("[KompleteKontrol] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiIn->isPortOpen())
@@ -508,7 +508,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
         = ((m_encoderValues[encIndex + 1] < value) || ((prevHValue == 3) && (hValue == 0)))
           && (!((prevHValue == 0) && (hValue == 3)));
       m_encoderValues[encIndex + 1] = value;
-      encoderChanged(encIndex+1, valueIncreased, shiftPressed);
+      encoderChanged(encIndex + 1, valueIncreased, shiftPressed);
     }
   }
 

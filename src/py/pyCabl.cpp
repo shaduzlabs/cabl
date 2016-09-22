@@ -130,11 +130,13 @@ BOOST_PYTHON_MODULE(pycabl)
 
   //------------------------------------------------------------------------------------------------
 
-  class_<DiscoveryPolicy>("DiscoveryPolicy",
-    init<std::string,
-                            DeviceDescriptor::tVendorId,
-                            DeviceDescriptor::tProductId,
-                            DeviceDescriptor::Type>())
+  class_<DiscoveryPolicy>("DiscoveryPolicy", init<std::string>())
+    .def(init<std::string, DeviceDescriptor::tVendorId>())
+    .def(init<std::string, DeviceDescriptor::tVendorId, DeviceDescriptor::tProductId>())
+    .def(init<std::string,
+      DeviceDescriptor::tVendorId,
+      DeviceDescriptor::tProductId,
+      DeviceDescriptor::Type>())
     .def("name", &DiscoveryPolicy::name)
     .def("type", &DiscoveryPolicy::type)
     .def("vendorId", &DiscoveryPolicy::vendorId)
@@ -143,6 +145,7 @@ BOOST_PYTHON_MODULE(pycabl)
   //------------------------------------------------------------------------------------------------
 
   class_<PyClient, boost::noncopyable>("Client", init<object, object, object>())
+    .def(init<object, object, object, DiscoveryPolicy>())
     .def("enumerateDevices", &enumerateDevices)
     .staticmethod("enumerateDevices")
     .def("onInit", &Client::initDevice)
@@ -156,15 +159,16 @@ BOOST_PYTHON_MODULE(pycabl)
       "graphicDisplay", &PyClient::graphicDisplay, return_value_policy<reference_existing_object>())
     .def("textDisplay", &PyClient::textDisplay, return_value_policy<reference_existing_object>())
     .def("ledArray", &PyClient::ledArray, return_value_policy<reference_existing_object>())
-    .def("ledMatrix", &PyClient::ledMatrix, return_value_policy<reference_existing_object>());
+    .def("ledMatrix", &PyClient::ledMatrix, return_value_policy<reference_existing_object>())
+    .def("updateDevice", &PyClient::updateDevice);
 
   //------------------------------------------------------------------------------------------------
 
   class_<DeviceDescriptor>("DeviceDescriptor",
     init<std::string,
-                             DeviceDescriptor::Type,
-                             DeviceDescriptor::tVendorId,
-                             DeviceDescriptor::tProductId>())
+      DeviceDescriptor::Type,
+      DeviceDescriptor::tVendorId,
+      DeviceDescriptor::tProductId>())
     .def(self_ns::str(self_ns::self))
     .def("name", &DeviceDescriptor::name, return_value_policy<copy_const_reference>())
     .def("type", &DeviceDescriptor::type)
@@ -175,7 +179,8 @@ BOOST_PYTHON_MODULE(pycabl)
 
   //------------------------------------------------------------------------------------------------
 
-  class_<Color>("Color", init<uint8_t, uint8_t, uint8_t>())
+  class_<Color>("Color")
+    .def(init<uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t>())
     .def(init<uint8_t, uint8_t, uint8_t, uint8_t>())
     .def(self_ns::str(self_ns::self))
@@ -314,7 +319,11 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("setPixel",
       &LedArray::setPixel,
       args("pos", "color"),
-      "Sets the value of the specified pixel as a Color object");
+      "Sets the value of the specified pixel as a Color object")
+    .def("setValue",
+      &LedArray::setValue,
+      args("val", "color", "alignment"),
+      "Displays the value using the specified color and alignment");
 
 //------------------------------------------------------------------------------------------------
 

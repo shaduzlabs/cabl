@@ -361,6 +361,7 @@ void MaschineJam::init()
   std::fill(std::begin(m_ledsStrips), std::end(m_ledsStrips), 0);
   std::fill(std::begin(m_ledsPads), std::end(m_ledsPads), 0);
 
+  m_ledMatrix.resetDirtyFlags();
   m_isDirtyButtonLeds = true;
   m_isDirtyStripLeds = true;
   m_isDirtyPadLeds = true;
@@ -395,10 +396,12 @@ bool MaschineJam::sendLeds()
     }
     else if ((i == 8 || i == 9) && m_ledArraysLevel[i - 8].dirty())
     {
-      unsigned offset = ( i == 8 ? static_cast<unsigned>(Led::LevelLeft1) : static_cast<unsigned>(Led::LevelRight1) );
+      unsigned offset = (i == 8 ? static_cast<unsigned>(Led::LevelLeft1)
+                                : static_cast<unsigned>(Led::LevelRight1));
       for (unsigned k = 0; k < m_ledArraysLevel[i - 8].length(); k++)
       {
-        m_ledsButtons[offset + (k)] = MaschineJamHelper::fromLedColor(m_ledArraysLevel[i - 8].buffer()[k]).mono();
+        m_ledsButtons[offset + (k)]
+          = MaschineJamHelper::fromLedColor(m_ledArraysLevel[i - 8].buffer()[k]).mono();
       }
       m_ledArraysLevel[i - 8].resetDirty();
       m_isDirtyButtonLeds = true;
@@ -516,9 +519,9 @@ void MaschineJam::processStrips(const Transfer& input_)
     // unsigned timeMs = input_[i] | (input_[i + 1] << 8);
     unsigned val = input_[i + 2] | (input_[i + 3] << 8);
 
-    if (val != 0 && m_touchstripsValues[i] != val)
+    if (val != 0 && m_touchstripsValues[tsIndex] != val)
     {
-      m_touchstripsValues[i] = val;
+      m_touchstripsValues[tsIndex] = val;
       controlChanged(tsIndex, val / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
   }

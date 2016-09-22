@@ -205,8 +205,8 @@ MaschineMK2::MaschineMK2()
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
-	  M_LOG("[MaschineMK2] RtMidiError: " << strError);
+      std::string strError(error.getMessage());
+      M_LOG("[MaschineMK2] RtMidiError: " << strError);
     }
   }
   if (!m_pMidiout->isPortOpen())

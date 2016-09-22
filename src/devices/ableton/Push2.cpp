@@ -266,7 +266,7 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
+      std::string strError(error.getMessage());
       M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
@@ -289,7 +289,7 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
+      std::string strError(error.getMessage());
       M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
@@ -663,29 +663,29 @@ void Push2::onControlChange(ControlChange msg_)
     m_shiftPressed = value > 0;
     return;
   }
-  
+
 #define M_ENC_CASE(cc, index) \
-  case cc:    \
+  case cc:                    \
     return encoderChanged(index, value < 64, m_shiftPressed)
 
   switch (cc)
   {
-    M_ENC_CASE(71,1);
-    M_ENC_CASE(72,2);
-    M_ENC_CASE(73,3);
-    M_ENC_CASE(74,4);
-    M_ENC_CASE(75,5);
-    M_ENC_CASE(76,6);
-    M_ENC_CASE(77,7);
-    M_ENC_CASE(78,8);
-    M_ENC_CASE(79,9);
-    M_ENC_CASE(14,0);
-    M_ENC_CASE(15,10);
+    M_ENC_CASE(71, 1);
+    M_ENC_CASE(72, 2);
+    M_ENC_CASE(73, 3);
+    M_ENC_CASE(74, 4);
+    M_ENC_CASE(75, 5);
+    M_ENC_CASE(76, 6);
+    M_ENC_CASE(77, 7);
+    M_ENC_CASE(78, 8);
+    M_ENC_CASE(79, 9);
+    M_ENC_CASE(14, 0);
+    M_ENC_CASE(15, 10);
   }
-  
+
   Device::Button changedButton = deviceButton(static_cast<Button>(cc));
   buttonChanged(changedButton, value > 0, m_shiftPressed);
-  
+
 #undef M_ENC_CASE
 }
 

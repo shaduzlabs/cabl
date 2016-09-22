@@ -506,28 +506,29 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
     if (m_encodersInitialized)
     {
-#define M_ENCODER_CASE(val, index) \
-  case val:        \
-    encoderChanged(index, valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]); break
-  
-  switch (i)
-  {
-    M_ENCODER_CASE(0,8);
-    M_ENCODER_CASE(1,4);
-    M_ENCODER_CASE(2,10);
-    M_ENCODER_CASE(3,7);
-    M_ENCODER_CASE(4,3);
-    M_ENCODER_CASE(5,9);
-    M_ENCODER_CASE(6,6);
-    M_ENCODER_CASE(7,2);
-    M_ENCODER_CASE(8,0);
-    M_ENCODER_CASE(9,5);
-    M_ENCODER_CASE(10,1);
+#define M_ENCODER_CASE(val, index)                                                              \
+  case val:                                                                                     \
+    encoderChanged(index, valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]); \
+    break
 
-    default:
-    {
-    }
-  }
+      switch (i)
+      {
+        M_ENCODER_CASE(0, 8);
+        M_ENCODER_CASE(1, 4);
+        M_ENCODER_CASE(2, 10);
+        M_ENCODER_CASE(3, 7);
+        M_ENCODER_CASE(4, 3);
+        M_ENCODER_CASE(5, 9);
+        M_ENCODER_CASE(6, 6);
+        M_ENCODER_CASE(7, 2);
+        M_ENCODER_CASE(8, 0);
+        M_ENCODER_CASE(9, 5);
+        M_ENCODER_CASE(10, 1);
+
+        default:
+        {
+        }
+      }
 #undef M_ENCODER_CASE
     }
     m_encoderValues[i] = currentEncValue;

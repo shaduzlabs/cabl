@@ -152,7 +152,7 @@ public:
       case Alignment::Left:
       {
         val = std::max(val_, 0.0);
-        unsigned nLedsOn = static_cast<unsigned>(val * SIZE);
+        unsigned nLedsOn = static_cast<unsigned>((val * SIZE) + 0.5);
         for(unsigned i = 0; i < nLedsOn; i++)
         {
           setPixel(i,color_);
@@ -162,7 +162,7 @@ public:
       case Alignment::Center:
       {
         val = (std::max(val_, -1.0)) / 2.0;
-		int nLedsOn = static_cast<int>(val * SIZE);
+		int nLedsOn = static_cast<int>((val * SIZE) + 0.5);
         if(val < 0)
         {
           for(int i = nLedsOn; i >= 0; i--)
@@ -183,7 +183,7 @@ public:
       case Alignment::Right:
       {
         val = std::max(val_, 0.0);
-		int nLedsOn = static_cast<int>(val * SIZE);
+		int nLedsOn = static_cast<int>((val * SIZE) + 0.5);
         for(int i = SIZE; i >= nLedsOn; i--)
         {
           setPixel(i,color_);
