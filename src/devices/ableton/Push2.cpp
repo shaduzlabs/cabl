@@ -32,7 +32,7 @@ const std::string kPush2_midiPortName = "Ableton Push 2 Live Port";
 const uint8_t kPush_epOut = 0x01;
 
 // clang-format off
-const std::vector<sl::util::ColorRGB> kPush_colors{
+const std::vector<sl::cabl::Color> kPush_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -71,8 +71,6 @@ const std::vector<sl::util::ColorRGB> kPush_colors{
 namespace sl
 {
 namespace cabl
-{
-namespace devices
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -268,7 +266,7 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
+      std::string strError(error.getMessage());
       M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
@@ -291,7 +289,7 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
     }
     catch (RtMidiError& error)
     {
-	  std::string strError(error.getMessage());
+      std::string strError(error.getMessage());
       M_LOG("[Push2] RtMidiError: " << strError);
     }
   }
@@ -307,14 +305,14 @@ Push2::Push2() : m_pMidiOut(new RtMidiOut), m_pMidiIn(new RtMidiIn)
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void Push2::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void Push2::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -366,7 +364,7 @@ bool Push2::sendLeds()
 
 //--------------------------------------------------------------------------------------------------
 
-void Push2::setLedImpl(Led led_, const util::ColorRGB& color_)
+void Push2::setLedImpl(Led led_, const Color& color_)
 {
   unsigned ledIndex = static_cast<uint8_t>(led_);
 
@@ -606,7 +604,7 @@ Device::Button Push2::deviceButton(Button btn_) const noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-uint8_t Push2::getColorIndex(const util::ColorRGB& color_)
+uint8_t Push2::getColorIndex(const Color& color_)
 {
   auto it = m_colorsCache.find(color_);
   if (it != m_colorsCache.end())
@@ -665,29 +663,29 @@ void Push2::onControlChange(ControlChange msg_)
     m_shiftPressed = value > 0;
     return;
   }
-  
+
 #define M_ENC_CASE(cc, index) \
-  case cc:    \
+  case cc:                    \
     return encoderChanged(index, value < 64, m_shiftPressed)
 
   switch (cc)
   {
-    M_ENC_CASE(71,1);
-    M_ENC_CASE(72,2);
-    M_ENC_CASE(73,3);
-    M_ENC_CASE(74,4);
-    M_ENC_CASE(75,5);
-    M_ENC_CASE(76,6);
-    M_ENC_CASE(77,7);
-    M_ENC_CASE(78,8);
-    M_ENC_CASE(79,9);
-    M_ENC_CASE(14,0);
-    M_ENC_CASE(15,10);
+    M_ENC_CASE(71, 1);
+    M_ENC_CASE(72, 2);
+    M_ENC_CASE(73, 3);
+    M_ENC_CASE(74, 4);
+    M_ENC_CASE(75, 5);
+    M_ENC_CASE(76, 6);
+    M_ENC_CASE(77, 7);
+    M_ENC_CASE(78, 8);
+    M_ENC_CASE(79, 9);
+    M_ENC_CASE(14, 0);
+    M_ENC_CASE(15, 10);
   }
-  
+
   Device::Button changedButton = deviceButton(static_cast<Button>(cc));
   buttonChanged(changedButton, value > 0, m_shiftPressed);
-  
+
 #undef M_ENC_CASE
 }
 
@@ -761,6 +759,5 @@ void Push2::midiInCallback(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

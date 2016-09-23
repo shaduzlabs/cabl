@@ -11,7 +11,7 @@
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 
 uint32_t randomRange(uint32_t min_, uint32_t max_);
@@ -36,5 +36,5 @@ T max(T x, T y, T z)
   return (max > z) ? max : z;
 }
 
-} // namespace util
+} // namespace cabl
 } // namespace sl

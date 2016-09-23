@@ -11,7 +11,7 @@
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 
 //--------------------------------------------------------------------------------------------------
@@ -131,5 +131,5 @@ bool Version::operator<(const Version& other_) const
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace util
+} // namespace cabl
 } // namespace sl

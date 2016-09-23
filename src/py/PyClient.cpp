@@ -58,6 +58,18 @@ using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------
 
+PyClient::PyClient(
+  object fnInitDevice_, object fnRender_, object fnDisconnected_, DiscoveryPolicy discoveryPolicy_)
+  : Client(discoveryPolicy_)
+  , m_onInitDevice(fnInitDevice_)
+  , m_onRender(fnRender_)
+  , m_onDisconnected(fnDisconnected_)
+{
+  PyEval_InitThreads();
+}
+
+//--------------------------------------------------------------------------------------------------
+
 void PyClient::disconnected()
 {
   GILLock gilLock;
@@ -175,7 +187,6 @@ void PyClient::initDevice()
 void PyClient::render()
 {
   GILLock gilLock;
-
   try
   {
     if (m_onRender)
@@ -191,7 +202,7 @@ void PyClient::render()
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void PyClient::setButtonLed(Device::Button btn_, const Color& color_)
 {
   if (device())
   {
@@ -201,7 +212,7 @@ void PyClient::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-void PyClient::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void PyClient::setKeyLed(unsigned index_, const Color& color_)
 {
   if (device())
   {

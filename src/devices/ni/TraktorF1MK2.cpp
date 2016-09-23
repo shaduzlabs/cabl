@@ -25,8 +25,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -147,14 +145,14 @@ TraktorF1MK2::TraktorF1MK2() : m_isDirtyLeds(true)
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void TraktorF1MK2::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void TraktorF1MK2::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -312,7 +310,7 @@ void TraktorF1MK2::processButtons(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void TraktorF1MK2::setLedImpl(Led led_, const util::ColorRGB& color_)
+void TraktorF1MK2::setLedImpl(Led led_, const Color& color_)
 {
   unsigned ledIndex = static_cast<unsigned>(led_);
 
@@ -506,6 +504,5 @@ bool TraktorF1MK2::isButtonPressed(const Transfer& transfer_, Button button_) co
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

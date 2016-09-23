@@ -22,16 +22,16 @@ class LedArrayDummy : public LedArrayBase<0>
 {
 
 public:
-  void setPixel(unsigned pos_, const util::ColorRGB& color_) override
+  void setPixel(unsigned pos_, const Color& color_) override
   {
   }
 
-  util::ColorRGB pixel(unsigned pos_) const override
+  Color pixel(unsigned pos_) const override
   {
     return {};
   }
   
-   void setValue(double val_, util::ColorRGB color_, Alignment alignment_) override
+   void setValue(double val_, Color color_, Alignment alignment_) override
    {
    }
   

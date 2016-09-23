@@ -21,7 +21,7 @@
 #include "cabl/comm/DeviceHandle.h"
 #include "cabl/devices/DeviceRegistrar.h"
 
-#include "cabl/util/ColorRGB.h"
+#include "cabl/util/Color.h"
 
 namespace sl
 {
@@ -31,9 +31,6 @@ namespace cabl
 class Canvas;
 class TextDisplay;
 class LedArray;
-
-namespace devices
-{
 
 class Device
 {
@@ -260,9 +257,9 @@ public:
 
   virtual size_t numOfLedArrays() const = 0;
 
-  virtual void setButtonLed(Button, const util::ColorRGB&);
+  virtual void setButtonLed(Button, const Color&);
 
-  virtual void setKeyLed(unsigned, const util::ColorRGB&);
+  virtual void setKeyLed(unsigned, const Color&);
 
   virtual void sendMidiMsg(tRawData);
 
@@ -323,6 +320,5 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

@@ -18,8 +18,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -29,8 +27,8 @@ class MaschineMK1 : public Device
 public:
   MaschineMK1();
 
-  void setButtonLed(Device::Button, const util::ColorRGB&) override;
-  void setKeyLed(unsigned, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const Color&) override;
+  void setKeyLed(unsigned, const Color&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -84,7 +82,7 @@ private:
   void processButtons(const Transfer&);
   void processEncoders(const Transfer&);
 
-  void setLedImpl(Led, const util::ColorRGB&);
+  void setLedImpl(Led, const Color&);
   Led led(Device::Button) const noexcept;
   Led led(unsigned) const noexcept;
 
@@ -117,6 +115,5 @@ M_REGISTER_DEVICE_CLASS(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

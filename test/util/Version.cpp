@@ -11,7 +11,7 @@
 
 namespace sl
 {
-namespace util
+namespace cabl
 {
 namespace test
 {
@@ -143,5 +143,5 @@ TEST_CASE("Version: version comparison", "[util][Version]")
 //--------------------------------------------------------------------------------------------------
 
 } // namespace test
-} // namespace util
+} // namespace cabl
 } // namespace sl

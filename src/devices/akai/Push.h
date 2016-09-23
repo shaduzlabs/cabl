@@ -18,8 +18,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -29,8 +27,8 @@ class Push : public USBMidi
 public:
   Push();
 
-  void setButtonLed(Device::Button, const util::ColorRGB&) override;
-  void setKeyLed(unsigned, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const Color&) override;
+  void setKeyLed(unsigned, const Color&) override;
 
   void sendMidiMsg(tRawData) override;
 
@@ -77,14 +75,14 @@ private:
   bool sendDisplayData();
   bool sendLeds();
 
-  void setLedImpl(Led, const util::ColorRGB&);
+  void setLedImpl(Led, const Color&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(unsigned) const noexcept;
 
   Device::Button deviceButton(Button) const noexcept;
 
-  uint8_t getColorIndex(const util::ColorRGB&);
+  uint8_t getColorIndex(const Color&);
 
   void onNoteOff(NoteOff msg) override;
   void onNoteOn(NoteOn msg) override;
@@ -111,7 +109,7 @@ private:
 
   bool m_isDirtyLeds;
 
-  std::map<util::ColorRGB, uint8_t> m_colorsCache;
+  std::map<Color, uint8_t> m_colorsCache;
 };
 
 //--------------------------------------------------------------------------------------------------
@@ -121,6 +119,5 @@ M_REGISTER_DEVICE_CLASS(
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

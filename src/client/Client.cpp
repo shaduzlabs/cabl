@@ -139,7 +139,7 @@ void Client::keyChanged(unsigned index_, double value_, bool shiftPressed_)
 void Client::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 {
   M_LOG("[Client] controlChanged " << static_cast<int>(pot_) << " (" << value_ << ") "
-                               << (shiftPressed_ ? " SHIFT" : ""));
+                                   << (shiftPressed_ ? " SHIFT" : ""));
   m_update = true;
 }
 

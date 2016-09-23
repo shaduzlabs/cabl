@@ -10,7 +10,7 @@
 #include <limits>
 #include <map>
 
-#include "cabl/util/ColorRGB.h"
+#include "cabl/util/Color.h"
 
 //--------------------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ namespace
 
 // clang-format off
 
-const std::vector<sl::util::ColorRGB> kJam_colors{
+const std::vector<sl::cabl::Color> kJam_colors{
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
 //| R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |   | R  | G  | B  |
 //+----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+   +----+----+----+
@@ -46,14 +46,12 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
-uint8_t MaschineJamHelper::toLedColor(const sl::util::ColorRGB& color_)
+uint8_t MaschineJamHelper::toLedColor(const Color& color_)
 {
-  std::map<util::ColorRGB, uint8_t> s_colorsCache;
+  std::map<Color, uint8_t> s_colorsCache;
 
   auto it = s_colorsCache.find(color_);
   if (it != s_colorsCache.end())
@@ -83,7 +81,7 @@ uint8_t MaschineJamHelper::toLedColor(const sl::util::ColorRGB& color_)
 
 //--------------------------------------------------------------------------------------------------
 
-util::ColorRGB MaschineJamHelper::fromLedColor(uint8_t color_)
+Color MaschineJamHelper::fromLedColor(uint8_t color_)
 {
   if (color_ < 69)
   {
@@ -94,6 +92,5 @@ util::ColorRGB MaschineJamHelper::fromLedColor(uint8_t color_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

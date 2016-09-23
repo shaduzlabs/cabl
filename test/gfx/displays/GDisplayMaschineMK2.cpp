@@ -41,7 +41,7 @@ TEST_CASE("GDisplayMaschineMK2: constructor", "[gfx][displays][GDisplayMaschineM
   CHECK(display.height() == 64);
   CHECK(display.numberOfChunks() == 8);
 
-  CHECK(display.pixel(2000, 2000) == util::ColorRGB());
+  CHECK(display.pixel(2000, 2000) == Color());
 }
 
 //--------------------------------------------------------------------------------------------------

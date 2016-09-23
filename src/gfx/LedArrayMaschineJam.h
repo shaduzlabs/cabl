@@ -23,20 +23,20 @@ class LedArrayMaschineJam : public LedArrayBase<L>
 {
 
 public:
-  void setPixel(unsigned pos_, const util::ColorRGB& color_) override
+  void setPixel(unsigned pos_, const Color& color_) override
   {
     if (pos_ < this->length())
     {
-      this->data()[pos_] = devices::MaschineJamHelper::toLedColor(color_);
+      this->data()[pos_] = MaschineJamHelper::toLedColor(color_);
       this->setDirty();
     }
   }
 
-  util::ColorRGB pixel(unsigned pos_) const override
+  Color pixel(unsigned pos_) const override
   {
     if (pos_ < this->length())
     {
-      return devices::MaschineJamHelper::fromLedColor(this->data()[pos_]);
+      return MaschineJamHelper::fromLedColor(this->data()[pos_]);
     }
     return {};
   }

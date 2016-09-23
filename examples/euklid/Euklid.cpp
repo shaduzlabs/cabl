@@ -22,14 +22,14 @@ const uint8_t kEuklidDefaultPulses = 4;
 const uint8_t kEuklidDefaultOffset = 0;
 const uint8_t kEuklidNumTracks = 3;
 
-const sl::util::ColorRGB kEuklidColor_Track[3] = {{60, 0, 0, 80}, {0, 60, 0, 80}, {0, 0, 60, 80}};
-const sl::util::ColorRGB kEuklidColor_Track_CurrentStep[3]
+const sl::Color kEuklidColor_Track[3] = {{60, 0, 0, 80}, {0, 60, 0, 80}, {0, 0, 60, 80}};
+const sl::Color kEuklidColor_Track_CurrentStep[3]
   = {{127, 0, 0, 127}, {0, 127, 0, 127}, {0, 0, 127, 127}};
 
-const sl::util::ColorRGB kEuklidColor_Black(0, 0, 0, 0);
+const sl::Color kEuklidColor_Black(0, 0, 0, 0);
 
-const sl::util::ColorRGB kEuklidColor_Step_Empty(35, 35, 35, 20);
-const sl::util::ColorRGB kEuklidColor_Step_Empty_Current(127, 127, 127, 50);
+const sl::Color kEuklidColor_Step_Empty(35, 35, 35, 20);
+const sl::Color kEuklidColor_Step_Empty_Current(127, 127, 127, 50);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -38,7 +38,6 @@ namespace sl
 {
 
 using namespace midi;
-using namespace util;
 using namespace std::placeholders;
 
 //--------------------------------------------------------------------------------------------------
@@ -341,7 +340,7 @@ void Euklid::updateGUI()
       device()->graphicDisplay(0)->setPixel(j, i, {static_cast<uint8_t>(j), 0, 0});
     }
   }
-  static util::ColorRGB s_colorWhite{0xff};
+  static Color s_colorWhite{0xff};
   static Alignment s_alignCenter = Alignment::Center;
 
   std::string strTrackName = "TRACK " + std::to_string(m_currentTrack + 1);

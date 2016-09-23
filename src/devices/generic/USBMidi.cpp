@@ -16,8 +16,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 // USBMidi specs: http://www.usb.org/developers/docs/devclass_docs/midi10.pdf
 
@@ -86,6 +84,5 @@ bool USBMidi::sendSysex(const midi::SysEx& sysexMessage_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

@@ -7,25 +7,22 @@
 
 #pragma once
 
-#include "cabl/util/ColorRGB.h"
+#include "cabl/util/Color.h"
 
 namespace sl
 {
 namespace cabl
-{
-namespace devices
 {
 
 //--------------------------------------------------------------------------------------------------
 
 struct MaschineJamHelper
 {
-  static uint8_t toLedColor(const util::ColorRGB& color_);
-  static util::ColorRGB fromLedColor(uint8_t color_);
+  static uint8_t toLedColor(const Color& color_);
+  static Color fromLedColor(uint8_t color_);
 };
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

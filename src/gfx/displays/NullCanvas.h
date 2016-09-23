@@ -53,20 +53,20 @@ public:
   {
   }
 
-  void line(unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
+  void line(unsigned, unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
-  void lineVertical(unsigned, unsigned, unsigned, const util::ColorRGB&) override
+  void lineVertical(unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
-  void lineHorizontal(unsigned, unsigned, unsigned, const util::ColorRGB&) override
+  void lineHorizontal(unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
   void triangle(
-    unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
@@ -76,42 +76,42 @@ public:
     unsigned,
     unsigned,
     unsigned,
-    const util::ColorRGB&,
-    const util::ColorRGB&) override
+    const Color&,
+    const Color&) override
   {
   }
 
-  void rectangle(unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
+  void rectangle(unsigned, unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
   void rectangleFilled(
-    unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, const Color&, const Color&) override
   {
   }
 
   void rectangleRounded(
-    unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, unsigned, const Color&) override
   {
   }
 
   void rectangleRoundedFilled(
-    unsigned, unsigned, unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&)
+    unsigned, unsigned, unsigned, unsigned, unsigned, const Color&, const Color&)
     override
   {
   }
 
-  void circle(unsigned, unsigned, unsigned, const util::ColorRGB&, CircleType) override
+  void circle(unsigned, unsigned, unsigned, const Color&, CircleType) override
   {
   }
 
   void circleFilled(
-    unsigned, unsigned, unsigned, const util::ColorRGB&, const util::ColorRGB&, CircleType) override
+    unsigned, unsigned, unsigned, const Color&, const Color&, CircleType) override
   {
   }
 
   void putBitmap(
-    unsigned, unsigned, unsigned, unsigned, const uint8_t*, const util::ColorRGB&) override
+    unsigned, unsigned, unsigned, unsigned, const uint8_t*, const Color&) override
   {
   }
 
@@ -119,12 +119,12 @@ public:
   {
   }
 
-  void putCharacter(unsigned, unsigned, char, const util::ColorRGB&, const std::string&) override
+  void putCharacter(unsigned, unsigned, char, const Color&, const std::string&) override
   {
   }
 
   void putText(
-    unsigned, unsigned, const char*, const util::ColorRGB&, const std::string&, unsigned) override
+    unsigned, unsigned, const char*, const Color&, const std::string&, unsigned) override
   {
   }
 };

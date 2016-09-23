@@ -48,13 +48,6 @@ public:
    * @{
    */
 
-  //! Constructor
-  /*!
-     \param width_  Display width in pixels
-     \param height_ Display height in pixels
-     \param numDisplayChunks_ Number of data chunks (Default value is 8)
-     */
-
   //! Destructor
   virtual ~LedMatrix() = default;
 

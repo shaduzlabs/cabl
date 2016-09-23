@@ -26,5 +26,5 @@ TEST_CASE("DiscoveryPolicy: constructor", "[devices][DiscoveryPolicy]")
 //--------------------------------------------------------------------------------------------------
 
 } // namespace test
-} // namespace util
+} // namespace cabl
 } // namespace sl

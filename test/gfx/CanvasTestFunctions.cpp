@@ -24,13 +24,13 @@ namespace test
 {
 namespace
 {
-const util::ColorRGB k_colorTransparent{};
-const util::ColorRGB k_colorBlack{0x00};
-const util::ColorRGB k_colorBlue{0x00, 0x00, 0xff, 0xcc};
-const util::ColorRGB k_colorRed{0xff, 0x00, 0x00, 0x7f};
-const util::ColorRGB k_colorGreen{0x00, 0xff, 0x00, 0x33};
-const util::ColorRGB k_colorWhite{0xff};
-const util::ColorRGB k_colorInvert{BlendMode::Invert};
+const Color k_colorTransparent{};
+const Color k_colorBlack{0x00};
+const Color k_colorBlue{0x00, 0x00, 0xff, 0xcc};
+const Color k_colorRed{0xff, 0x00, 0x00, 0x7f};
+const Color k_colorGreen{0x00, 0xff, 0x00, 0x33};
+const Color k_colorWhite{0xff};
+const Color k_colorInvert{BlendMode::Invert};
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -14,8 +14,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -58,6 +56,5 @@ void DeviceFactory::registerClass(const DeviceDescriptor& deviceDescriptor_, tFn
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

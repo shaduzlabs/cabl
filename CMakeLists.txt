@@ -51,7 +51,7 @@ string(TIMESTAMP CABL_BUILD_DATE "%Y-%m-%d")
 
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
-set (CABL_VERSION_MICRO 4)
+set (CABL_VERSION_MICRO 5)
 set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
 
 if($ENV{APPVEYOR})
@@ -218,7 +218,7 @@ set(
 
 set(
   inc_util_INCLUDES
-    inc/cabl/util/ColorRGB.h
+    inc/cabl/util/Color.h
     inc/cabl/util/Functions.h
     inc/cabl/util/Log.h
     inc/cabl/util/Macros.h
@@ -410,7 +410,7 @@ set(
 
 set(
   src_util_SRCS
-    src/util/ColorRGB.cpp
+    src/util/Color.cpp
     src/util/Functions.cpp
     src/util/Version.cpp
 )

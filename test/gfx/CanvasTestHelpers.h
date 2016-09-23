@@ -24,7 +24,7 @@ namespace test
 
 //--------------------------------------------------------------------------------------------------
 
-bool matchColorForAllPixels(const Canvas* /*canvas_*/, const util::ColorRGB& /*color_*/);
+bool matchColorForAllPixels(const Canvas* /*canvas_*/, const Color& /*color_*/);
 
 bool compare(const Canvas* /*c1_*/, const Canvas* /*c2_*/);
 

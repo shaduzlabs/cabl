@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <string>
 
-#include "cabl/util/ColorRGB.h"
+#include "cabl/util/Color.h"
 #include "cabl/util/Types.h"
 
 #include "cabl/gfx/FontManager.h"
@@ -149,7 +149,7 @@ public:
    \param color_           The pixel color (RGB + Monochrome)
    */
   virtual void setPixel(
-    unsigned x_, unsigned y_, const util::ColorRGB& color_, bool bSetDirtyChunk_ = true);
+    unsigned x_, unsigned y_, const Color& color_, bool bSetDirtyChunk_ = true);
 
   //! Get the pixel value as an RGB color
   /*!
@@ -157,7 +157,7 @@ public:
    \param y_               The Y coordinate of the pixel
    \return                 The color of the selected pixel
    */
-  virtual util::ColorRGB pixel(unsigned x_, unsigned y_) const;
+  virtual Color pixel(unsigned x_, unsigned y_) const;
 
   //! Draw a line
   /*!
@@ -168,7 +168,7 @@ public:
    \param color_           The line color (white, black, invert, random)
    */
   virtual void line(
-    unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const util::ColorRGB& color_);
+    unsigned x0_, unsigned y0_, unsigned x1_, unsigned y1_, const Color& color_);
 
   //! Draw a bitmap
   /*!
@@ -180,8 +180,8 @@ public:
    \param color_           The color of the pixels
    */
 
-  virtual void lineVertical(unsigned x_, unsigned y_, unsigned h_, const util::ColorRGB& color_);
-  virtual void lineHorizontal(unsigned x_, unsigned y_, unsigned w_, const util::ColorRGB& color_);
+  virtual void lineVertical(unsigned x_, unsigned y_, unsigned h_, const Color& color_);
+  virtual void lineHorizontal(unsigned x_, unsigned y_, unsigned w_, const Color& color_);
 
   virtual void triangle(unsigned x0_,
     unsigned y0_,
@@ -189,48 +189,48 @@ public:
     unsigned y1_,
     unsigned x2_,
     unsigned y2_,
-    const util::ColorRGB& color_);
+    const Color& color_);
   virtual void triangleFilled(unsigned x0_,
     unsigned y0_,
     unsigned x1_,
     unsigned y1_,
     unsigned x2_,
     unsigned y2_,
-    const util::ColorRGB& color_,
-    const util::ColorRGB& fillColor_);
+    const Color& color_,
+    const Color& fillColor_);
 
   virtual void rectangle(
-    unsigned x_, unsigned y_, unsigned w_, unsigned h_, const util::ColorRGB& color_);
+    unsigned x_, unsigned y_, unsigned w_, unsigned h_, const Color& color_);
 
   virtual void rectangleFilled(unsigned x_,
     unsigned y_,
     unsigned w_,
     unsigned h_,
-    const util::ColorRGB& color_,
-    const util::ColorRGB& fillColor_);
+    const Color& color_,
+    const Color& fillColor_);
 
   virtual void rectangleRounded(
-    unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const util::ColorRGB& color_);
+    unsigned x_, unsigned y_, unsigned w_, unsigned h_, unsigned r_, const Color& color_);
 
   virtual void rectangleRoundedFilled(unsigned x_,
     unsigned y_,
     unsigned w_,
     unsigned h_,
     unsigned r_,
-    const util::ColorRGB& color_,
-    const util::ColorRGB& fillColor_);
+    const Color& color_,
+    const Color& fillColor_);
 
   virtual void circle(unsigned rx_,
     unsigned ry_,
     unsigned r_,
-    const util::ColorRGB& color_,
+    const Color& color_,
     CircleType = CircleType::Full);
 
   virtual void circleFilled(unsigned x_,
     unsigned y_,
     unsigned r_,
-    const util::ColorRGB& color_,
-    const util::ColorRGB& fillColor_,
+    const Color& color_,
+    const Color& fillColor_,
     CircleType = CircleType::Full);
 
   virtual void putBitmap(unsigned x_,
@@ -238,7 +238,7 @@ public:
     unsigned w_,
     unsigned h_,
     const uint8_t* pBitmap_,
-    const util::ColorRGB& color_);
+    const Color& color_);
 
   virtual void putCanvas(const Canvas& c_,
     unsigned xDest_,
@@ -267,7 +267,7 @@ public:
    \param color_         The color of the pixels
    */
   virtual void putCharacter(
-    unsigned x_, unsigned y_, char c_, const util::ColorRGB& color_, const std::string& font_ = "");
+    unsigned x_, unsigned y_, char c_, const Color& color_, const std::string& font_ = "");
 
   //! Print a string
   /*!
@@ -281,7 +281,7 @@ public:
   virtual void putText(unsigned x_,
     unsigned y_,
     const char* pStr_,
-    const util::ColorRGB& color_,
+    const Color& color_,
     const std::string& font_ = "",
 	unsigned spacing_ = 0);
 

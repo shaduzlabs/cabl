@@ -34,8 +34,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -167,14 +165,14 @@ MaschineMK1::MaschineMK1()
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setButtonLed(Device::Button btn_, const util::ColorRGB& color_)
+void MaschineMK1::setButtonLed(Device::Button btn_, const Color& color_)
 {
   setLedImpl(led(btn_), color_);
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setKeyLed(unsigned index_, const util::ColorRGB& color_)
+void MaschineMK1::setKeyLed(unsigned index_, const Color& color_)
 {
   setLedImpl(led(index_), color_);
 }
@@ -508,28 +506,29 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
     if (m_encodersInitialized)
     {
-#define M_ENCODER_CASE(val, index) \
-  case val:        \
-    encoderChanged(index, valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]); break
-  
-  switch (i)
-  {
-    M_ENCODER_CASE(0,8);
-    M_ENCODER_CASE(1,4);
-    M_ENCODER_CASE(2,10);
-    M_ENCODER_CASE(3,7);
-    M_ENCODER_CASE(4,3);
-    M_ENCODER_CASE(5,9);
-    M_ENCODER_CASE(6,6);
-    M_ENCODER_CASE(7,2);
-    M_ENCODER_CASE(8,0);
-    M_ENCODER_CASE(9,5);
-    M_ENCODER_CASE(10,1);
+#define M_ENCODER_CASE(val, index)                                                              \
+  case val:                                                                                     \
+    encoderChanged(index, valueIncreased, m_buttonStates[static_cast<uint8_t>(Button::Shift)]); \
+    break
 
-    default:
-    {
-    }
-  }
+      switch (i)
+      {
+        M_ENCODER_CASE(0, 8);
+        M_ENCODER_CASE(1, 4);
+        M_ENCODER_CASE(2, 10);
+        M_ENCODER_CASE(3, 7);
+        M_ENCODER_CASE(4, 3);
+        M_ENCODER_CASE(5, 9);
+        M_ENCODER_CASE(6, 6);
+        M_ENCODER_CASE(7, 2);
+        M_ENCODER_CASE(8, 0);
+        M_ENCODER_CASE(9, 5);
+        M_ENCODER_CASE(10, 1);
+
+        default:
+        {
+        }
+      }
 #undef M_ENCODER_CASE
     }
     m_encoderValues[i] = currentEncValue;
@@ -539,7 +538,7 @@ void MaschineMK1::processEncoders(const Transfer& input_)
 
 //--------------------------------------------------------------------------------------------------
 
-void MaschineMK1::setLedImpl(Led led_, const util::ColorRGB& color_)
+void MaschineMK1::setLedImpl(Led led_, const Color& color_)
 {
   uint8_t ledIndex = static_cast<uint8_t>(led_);
 
@@ -753,6 +752,5 @@ bool MaschineMK1::isButtonPressed(const Transfer& transfer_, Button button_) con
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

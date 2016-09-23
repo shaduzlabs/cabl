@@ -18,8 +18,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -29,8 +27,8 @@ class TraktorF1MK2 : public Device
 public:
   TraktorF1MK2();
 
-  void setButtonLed(Device::Button, const util::ColorRGB&) override;
-  void setKeyLed(unsigned, const util::ColorRGB&) override;
+  void setButtonLed(Device::Button, const Color&) override;
+  void setKeyLed(unsigned, const Color&) override;
 
   TextDisplay* textDisplay(size_t displayIndex_) override;
 
@@ -71,7 +69,7 @@ private:
 
   void processButtons(const Transfer&);
 
-  void setLedImpl(Led, const util::ColorRGB&);
+  void setLedImpl(Led, const Color&);
   bool isRGBLed(Led) const noexcept;
   Led led(Device::Button) const noexcept;
   Led led(unsigned) const noexcept;
@@ -99,6 +97,5 @@ M_REGISTER_DEVICE_CLASS(TraktorF1MK2, "", DeviceDescriptor::Type::HID, 0x17CC, 0
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl

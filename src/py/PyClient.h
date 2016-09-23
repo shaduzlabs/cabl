@@ -24,7 +24,6 @@ namespace py
 //--------------------------------------------------------------------------------------------------
 
 using namespace boost::python;
-using namespace devices;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -50,17 +49,17 @@ private:
 class PyClient : public Client
 {
 public:
-  PyClient(object fnInitDevice_, object fnRender_, object fnDisconnected_)
-    : m_onInitDevice(fnInitDevice_), m_onRender(fnRender_), m_onDisconnected(fnDisconnected_)
-  {
-  }
+  PyClient(object fnInitDevice_,
+    object fnRender_,
+    object fnDisconnected_,
+    DiscoveryPolicy discoveryPolicy_ = {});
 
   void disconnected() override;
   void buttonChanged(Device::Button button_, bool buttonState_, bool shiftPressed_) override;
   void encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_) override;
   void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
   void controlChanged(unsigned pot_, double value_, bool shiftPressed) override;
-  
+
   void initDevice() override;
   void render() override;
 
@@ -80,8 +79,8 @@ public:
   {
     m_onControlChanged = fn_;
   }
-  void setButtonLed(Device::Button, const util::ColorRGB&);
-  void setKeyLed(unsigned, const util::ColorRGB&);
+  void setButtonLed(Device::Button, const Color&);
+  void setKeyLed(unsigned, const Color&);
 
   Canvas* graphicDisplay(size_t displayIndex_)
   {
@@ -98,6 +97,11 @@ public:
   LedArray* ledArray(size_t ledArrayIndex_)
   {
     return device()->ledArray(ledArrayIndex_);
+  }
+
+  void updateDevice()
+  {
+    requestDeviceUpdate();
   }
 
   void writeToDisplay()

@@ -19,8 +19,6 @@ namespace sl
 {
 namespace cabl
 {
-namespace devices
-{
 
 //--------------------------------------------------------------------------------------------------
 
@@ -280,6 +278,5 @@ Coordinator::tDriverPtr Coordinator::driver(Driver::Type tDriver_)
 
 //--------------------------------------------------------------------------------------------------
 
-} // namespace devices
 } // namespace cabl
 } // namespace sl
