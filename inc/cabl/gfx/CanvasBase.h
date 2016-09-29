@@ -153,14 +153,16 @@ private:
     return m_chunkDirtyFlags[chunk_];
   }
 
-  template<typename = typename std::enable_if< (NCHUNKS == 0)>>
-  void setDirtyChunkImpl(unsigned yStart_) const
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if<N == 0>::type
+  setDirtyChunkImpl(unsigned yStart_) const
   {
     return;
   }
   
-  template<typename = typename std::enable_if< (NCHUNKS > 0)>>
-  void setDirtyChunkImpl(unsigned yStart_) const
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if< (N > 0)>::type
+  setDirtyChunkImpl(unsigned yStart_) const
   {
     unsigned constexpr chunkHeight = H / NCHUNKS;
     if (chunkHeight == 0 || NCHUNKS == 0)
