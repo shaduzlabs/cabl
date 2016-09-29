@@ -117,7 +117,7 @@ For example, if you want to build both the shared and the static library, you'll
 ```
 cmake -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..
 ```
-On Windows LibUSB, HIDAPI and RtMIDI are downloaded from the respective repositories and built locally in the build subfolder, so you don't need to have them installed on the system. If for some reason you want the same behavior on Linux or OS, you can override CABL_FORCE_BUILD_DEPENDENCIES (default is OFF) and set it to ON.
+On Windows LibUSB, HIDAPI and RtMIDI are downloaded from the respective repositories and built locally in the build subfolder, so you don't need to have them installed on the system. If for some reason you want the same behavior on Linux or OSX, you can override CABL_FORCE_BUILD_DEPENDENCIES (default is OFF) and set it to ON.
 ```
 cmake -DCABL_FORCE_BUILD_DEPENDENCIES=ON ..
 ```
