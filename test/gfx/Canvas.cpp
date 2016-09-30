@@ -47,7 +47,7 @@ TEST_CASE("Canvas: constructor", "[gfx][Canvas]")
   c.resetDirtyFlags();
   CHECK_FALSE(c.dirtyChunk(0));
   c.setDirtyChunk(0);
-  CHECK_FALSE(c.dirtyChunk(0));
+  CHECK(c.dirtyChunk(0));
 
   CHECK(c.pixel(2000, 2000) == Color());
 
