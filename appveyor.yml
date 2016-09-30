@@ -20,7 +20,7 @@ build_script:
 
     pushd build-%PLATFORM%
 
-    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..) else (cmake -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..)
+    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DCABL_TEST_JUNIT=ON -CABL_TEST_ALL=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..) else (cmake -DCABL_TEST_JUNIT=ON -CABL_TEST_ALL=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..)
 
     cd ..
 
@@ -74,13 +74,22 @@ deploy:
 - provider: Environment
   name: cabl-win-64
   on:
-    branch: develop
+    branch: release
     CONFIGURATION: Release
     PLATFORM: x64
 
 - provider: Environment
   name: cabl-win-32
   on:
-    branch: develop
+    branch: release
     CONFIGURATION: Release
     PLATFORM: Win32
+
+on_failure:
+- ps: >-
+    $testReportPath = "c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml"
+
+    if([System.IO.File]::Exists($testReportPath)){
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $testReportPath))
+    }

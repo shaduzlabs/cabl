@@ -3,7 +3,7 @@
         "name": "@CABL_DEPLOY_TARGET@",
         "repo": "cabl",
         "subject": "shaduzlabs",
-        "desc": "I was pushed completely automatically :)",
+        "desc": "Controller ABstraction Layer",
         "website_url": "www.shaduzlabs.com",
         "issue_tracker_url": "https://github.com/shaduzlabs/cabl/issues",
         "vcs_url": "https://github.com/shaduzlabs/cabl.git",
@@ -26,5 +26,5 @@
         [
         {"includePattern": "build/deploy/(.*)([.]zip)", "uploadPattern": "$1_@CABL_VERSION_STRING@$2"}
         ],
-    "publish": false
+    "publish": true
 }
