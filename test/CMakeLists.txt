@@ -95,7 +95,7 @@ else()
   set(CATCH_CMDARGS "${CATCH_CMDARGS} -r compact")
 endif()
 
-if(WINDOWS)
+if(WIN32)
   separate_arguments(CATCH_CMDARGS_LIST WINDOWS_COMMAND "${CATCH_CMDARGS}"")
 else()
   separate_arguments(CATCH_CMDARGS_LIST UNIX_COMMAND "${CATCH_CMDARGS}"")
@@ -103,4 +103,4 @@ endif()
 
 add_test( NAME ${PROJECT_NAME} WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND ${PROJECT_NAME} ${CATCH_CMDARGS_LIST})
 
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_BUILD_TYPE} DEPENDS ${PROJECT_NAME})
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C -VV ${CMAKE_BUILD_TYPE} DEPENDS ${PROJECT_NAME})
