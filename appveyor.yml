@@ -56,14 +56,6 @@ before_test:
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION% --target check
 
-after_test:
-- ps: >-
-    # upload results to AppVeyor
-
-    $wc = New-Object 'System.Net.WebClient'
-
-    $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml))
-
 artifacts:
 - path: artifacts-Release/cabl-win-32_*.zip
   name: cabl (32bit)
@@ -85,7 +77,7 @@ deploy:
     CONFIGURATION: Release
     PLATFORM: Win32
 
-on_failure:
+on_finish:
 - ps: >-
     $testReportPath = "c:\SLBuild\cabl\build-$($env:PLATFORM)\test\$($env:CONFIGURATION)\test-report.junit.xml"
 
