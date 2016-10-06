@@ -89,14 +89,14 @@ deploy:
 - provider: Environment
   name: cabl-win-64
   on:
-    branch: release
+    branch: master
     CONFIGURATION: Release
     PLATFORM: x64
 
 - provider: Environment
   name: cabl-win-32
   on:
-    branch: release
+    branch: master
     CONFIGURATION: Release
     PLATFORM: Win32
 
