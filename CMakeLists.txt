@@ -150,6 +150,7 @@ addUnmidify()
 if(${CABL_PYTHON})
   find_package(Boost COMPONENTS python)
   if(Boost_PYTHON_FOUND)
+  SET(BOOST_PYTHON_STATIC_LIB         ON)
     find_package(PythonLibs REQUIRED)
   else()
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
@@ -560,6 +561,11 @@ if(CABL_PYTHON AND NOT COVERALLS)
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
   else()
 
+  set( CABL_PYTHON_MODULE_EXTENSION ".so")
+  if(WIN32)
+    set( CABL_PYTHON_MODULE_EXTENSION ".pyd")
+  endif()
+
     add_library( pycabl SHARED ${cabl_ALL} ${cabl_python_SRCS})
     set_target_properties(
       pycabl
@@ -567,7 +573,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
         VERSION             "${CABL_VERSION_STRING}"
         SOVERSION           "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}"
         OUTPUT_NAME         "py${LIBRARY_FILE_NAME}"
-        SUFFIX              ".so"
+        SUFFIX              "${CABL_PYTHON_MODULE_EXTENSION}"
         PREFIX              ""
     )
 
@@ -653,7 +659,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   if(CABL_PYTHON)
     target_link_libraries( pycabl PUBLIC setupapi.lib)
-  endif(BUILD_STATIC_LIBS)
+  endif(CABL_PYTHON)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
