@@ -37,13 +37,16 @@ endif()
 
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 
-option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
-option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
-option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
-option(CABL_PYTHON    "Build python binding" ${IS_CABL})
+option(CABL_TEST          "Build cabl tests"     ${IS_CABL})
+option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
+option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
+option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(COVERALLS          "Turn on coveralls support" OFF)
+option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
+
+option(CABL_TEST_ALL      "Generate test ouput for successful tests as well" OFF)
+option(CABL_TEST_JUNIT    "Generate a JUNIT xml test report" OFF)
 
 # Version ---------------------------------------------------------------------------------------- #
 
