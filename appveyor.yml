@@ -8,16 +8,10 @@ platform:
 clone_folder: c:\SLBuild\cabl
 init:
 - cmd: choco install doxygen.install
-- cmd: >-
-    echo %cd%
-
-    cd c:\SLBuild\
-
-    nuget install boost_python-vc140 -Version 1.62.0
-
+- cmd: nuget install boost_python-vc140 -Version 1.62.0
 environment:
-  BOOST_INCLUDEDIR: C:\SLBuild\boost.1.62.0.0\lib\native\include
-  BOOST_PYTHON_ROOT: C:\SLBuild\boost_python-vc140.1.62.0.0\lib\native
+  BOOST_INCLUDEDIR: C:\SLBuild\cabl\boost.1.62.0.0\lib\native\include
+  BOOST_PYTHON_ROOT: C:\SLBuild\cabl\boost_python-vc140.1.62.0.0\lib\native
   PYTHON_VERSION: 27
   TEST_JUNIT: ON
   TEST_ALL: ON
@@ -30,7 +24,7 @@ build_script:
     echo Building %CONFIGURATION% - %PLATFORM%
 
     c:
-      
+
     cd c:\SLBuild\cabl
 
     mkdir build-%PLATFORM%
