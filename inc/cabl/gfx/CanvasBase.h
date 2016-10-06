@@ -160,6 +160,9 @@ private:
     return;
   }
 
+#pragma warning( push )
+#pragma warning( disable: 4723 )
+
   template<unsigned N = NCHUNKS>
   typename std::enable_if< (N > 0)>::type
   setDirtyChunkImpl(unsigned yStart_) const
@@ -171,13 +174,12 @@ private:
     }
     if (yStart_ < H)
     {
-#pragma warning( push )
-#pragma warning( disable: 4723 )
       unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), NCHUNKS - 1);
-#pragma warning( pop )
       m_chunkDirtyFlags[chunk] = true;
     }
   }
+
+#pragma warning( pop )
 
   std::array<uint8_t, SIZE> m_data{};               //!< The raw Canvas data
   mutable std::bitset<NCHUNKS> m_chunkDirtyFlags{}; //!< Chunk-specific dirty flags
