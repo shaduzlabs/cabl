@@ -96,7 +96,7 @@ public:
      \param chunk_   The display chunk index
      \return         TRUE if the selected display chunk is dirty, FALSE otherwise
      */
-  
+
   bool dirtyChunk(unsigned chunk_) const override
   {
     return dirtyChunkImpl(chunk_);
@@ -141,7 +141,7 @@ private:
   {
     return false;
   }
-  
+
   template<unsigned N = NCHUNKS>
   typename std::enable_if< (N > 0), bool>::type
   dirtyChunkImpl(unsigned chunk_) const
@@ -159,7 +159,7 @@ private:
   {
     return;
   }
-  
+
   template<unsigned N = NCHUNKS>
   typename std::enable_if< (N > 0)>::type
   setDirtyChunkImpl(unsigned yStart_) const
@@ -171,12 +171,14 @@ private:
     }
     if (yStart_ < H)
     {
+#pragma warning( push )
+#pragma warning( disable: 4723 )
       unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), NCHUNKS - 1);
+#pragma warning( pop )
       m_chunkDirtyFlags[chunk] = true;
     }
-
   }
-  
+
   std::array<uint8_t, SIZE> m_data{};               //!< The raw Canvas data
   mutable std::bitset<NCHUNKS> m_chunkDirtyFlags{}; //!< Chunk-specific dirty flags
 };
