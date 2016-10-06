@@ -8,6 +8,13 @@ platform:
 clone_folder: c:\SLBuild\cabl
 init:
 - cmd: choco install doxygen.install
+environment:
+  BOOST_ROOT: C:\Libraries\boost_1_60_0
+  PYTHON_VERSION: 27
+  TEST_JUNIT: ON
+  TEST_ALL: ON
+  STATIC_LIBS: ON
+  SHARED_LIBS: ON
 build_script:
 - cmd: >-
     echo Running cmake...
@@ -20,7 +27,13 @@ build_script:
 
     pushd build-%PLATFORM%
 
-    if %PLATFORM% == x64 (cmake -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT=C:\Libraries\boost_1_60_0 -DBOOST_LIBRARYDIR=C:\Libraries\boost_1_60_0\lib64-msvc-14.0 -DBoost_USE_STATIC_LIBS="ON" -DPYTHON_LIBRARY=c:\Python27-x64\libs\libpython.a -DPYTHON_INCLUDE_DIR=c:\Python27-x64\include -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCABL_TEST_JUNIT=ON -DCABL_TEST_ALL=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..) else (cmake -DBOOST_ROOT=C:\Libraries\boost_1_60_0 -DBOOST_LIBRARYDIR=C:\Libraries\boost_1_60_0\lib32-msvc-14.0 -DBoost_USE_STATIC_LIBS="ON" -DPYTHON_LIBRARY=c:\Python27\libs\libpython.a -DPYTHON_INCLUDE_DIR=c:\Python27\include -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCABL_TEST_JUNIT=ON -DCABL_TEST_ALL=ON -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..)
+    if %PLATFORM% == x64 (set BOOST_LIBRARYDIR=%BOOST_ROOT%\lib64-msvc-14.0) else (set BOOST_LIBRARYDIR=%BOOST_ROOT%\lib32-msvc-14.0)
+
+    if %PLATFORM% == x64 (set GENERATOR="Visual Studio 14 2015 Win64") else (set GENERATOR="Visual Studio 14 2015")
+
+    if %PLATFORM% == x64 (set PYTHON_ROOT=c:\Python%PYTHON_VERSION%-x64) else (c:\Python%PYTHON_VERSION%)
+
+    cmake -G %GENERATOR% -DBOOST_ROOT=%BOOST_ROOT% -DBOOST_LIBRARYDIR=%BOOST_LIBRARYDIR% -DBoost_USE_STATIC_LIBS=ON -DPYTHON_LIBRARY=%PYTHON_ROOT%\libs\libpython%PYTHON_VERSION%.a -DPYTHON_INCLUDE_DIR=%PYTHON_ROOT%\include -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCABL_TEST_JUNIT=%TEST_JUNIT% -DCABL_TEST_ALL=%TEST_ALL% -DBUILD_STATIC_LIBS=%STATIC_LIBS% -DBUILD_SHARED_LIBS=%SHARED_LIBS% ..)
 
     cd ..
 
