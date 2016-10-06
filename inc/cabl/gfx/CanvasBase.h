@@ -11,6 +11,8 @@
 #include <array>
 #include <bitset>
 
+//--------------------------------------------------------------------------------------------------
+
 namespace sl
 {
 namespace cabl
@@ -94,27 +96,15 @@ public:
      \param chunk_   The display chunk index
      \return         TRUE if the selected display chunk is dirty, FALSE otherwise
      */
+
   bool dirtyChunk(unsigned chunk_) const override
   {
-    if (chunk_ >= NCHUNKS || NCHUNKS == 0)
-    {
-      return false;
-    }
-    return m_chunkDirtyFlags[chunk_];
+    return dirtyChunkImpl(chunk_);
   }
 
   void setDirtyChunk(unsigned yStart_) const override
   {
-    unsigned constexpr chunkHeight = H / NCHUNKS;
-    if (chunkHeight == 0 || NCHUNKS == 0)
-    {
-      return;
-    }
-    if (yStart_ < H)
-    {
-      unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), NCHUNKS - 1);
-      m_chunkDirtyFlags[chunk] = true;
-    }
+    setDirtyChunkImpl(yStart_);
   }
 
   //! Reset the global dirty flag and the chunk-specific dirty flags
@@ -144,6 +134,52 @@ protected:
 
 private:
   friend class py::CanvasHelper;
+
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if<N == 0, bool>::type
+  dirtyChunkImpl(unsigned chunk_) const
+  {
+    return false;
+  }
+
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if< (N > 0), bool>::type
+  dirtyChunkImpl(unsigned chunk_) const
+  {
+    if (chunk_ >= NCHUNKS)
+    {
+      return false;
+    }
+    return m_chunkDirtyFlags[chunk_];
+  }
+
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if<N == 0>::type
+  setDirtyChunkImpl(unsigned yStart_) const
+  {
+    return;
+  }
+
+#pragma warning( push )
+#pragma warning( disable: 4723 )
+
+  template<unsigned N = NCHUNKS>
+  typename std::enable_if< (N > 0)>::type
+  setDirtyChunkImpl(unsigned yStart_) const
+  {
+    unsigned constexpr chunkHeight = H / NCHUNKS;
+    if (chunkHeight == 0 || NCHUNKS == 0)
+    {
+      return;
+    }
+    if (yStart_ < H)
+    {
+      unsigned chunk = std::min(static_cast<unsigned>(yStart_ / chunkHeight), NCHUNKS - 1);
+      m_chunkDirtyFlags[chunk] = true;
+    }
+  }
+
+#pragma warning( pop )
 
   std::array<uint8_t, SIZE> m_data{};               //!< The raw Canvas data
   mutable std::bitset<NCHUNKS> m_chunkDirtyFlags{}; //!< Chunk-specific dirty flags

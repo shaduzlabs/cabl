@@ -42,6 +42,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+message (STATUS "Checking for LibUSB...")
 
 if (LIBUSB_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
   # in cache already
@@ -89,9 +90,7 @@ else (LIBUSB_LIBRARIES AND LIBUSB_INCLUDE_DIRS)
 	  message(STATUS " - Libraries: ${LIBUSB_LIBRARIES}")
     endif (NOT LIBUSB_FIND_QUIETLY)
   else (LIBUSB_FOUND)
-    if (LIBUSB_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find libusb")
-    endif (LIBUSB_FIND_REQUIRED)
+    message(FATAL_ERROR "Could not find libusb")
   endif (LIBUSB_FOUND)
 
   # show the LIBUSB_INCLUDE_DIRS and LIBUSB_LIBRARIES variables only in the advanced view

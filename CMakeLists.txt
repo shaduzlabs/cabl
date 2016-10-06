@@ -648,6 +648,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries( cabl-static PUBLIC setupapi.lib)
   endif(BUILD_STATIC_LIBS)
 
+  if(CABL_PYTHON)
+    target_link_libraries( pycabl PUBLIC setupapi.lib)
+  endif(BUILD_STATIC_LIBS)
+
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 

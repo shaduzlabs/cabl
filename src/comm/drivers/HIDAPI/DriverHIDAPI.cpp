@@ -6,6 +6,9 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "DriverHIDAPI.h"
+
+#include <tuple>
+
 #include "DeviceHandleHIDAPI.h"
 
 //--------------------------------------------------------------------------------------------------
@@ -20,6 +23,7 @@ namespace cabl
 DriverHIDAPI::DriverHIDAPI()
 {
   int res = hid_init();
+  std::ignore = res;
   M_LOG("[HIDAPI] initialization (" << res << ")");
 }
 
@@ -28,6 +32,7 @@ DriverHIDAPI::DriverHIDAPI()
 DriverHIDAPI::~DriverHIDAPI()
 {
   int res = hid_exit();
+  std::ignore = res;
   M_LOG("[HIDAPI] exit (" << res << ")");
 }
 

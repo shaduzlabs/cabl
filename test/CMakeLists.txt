@@ -85,7 +85,22 @@ endif()
 target_include_directories(${PROJECT_NAME} PRIVATE ${CATCH_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR} ${CABL_ROOT_DIR}/src)
 
 target_link_libraries(${PROJECT_NAME} cabl-static lodepng)
+set(CATCH_CMDARGS "")
+if(CABL_TEST_ALL)
+  set(CATCH_CMDARGS "${CATCH_CMDARGS} -s")
+endif()
+if(CABL_TEST_JUNIT)
+  set(CATCH_CMDARGS "${CATCH_CMDARGS} -r junit -o test-report.junit.xml")
+else()
+  set(CATCH_CMDARGS "${CATCH_CMDARGS} -r compact")
+endif()
 
-add_test( NAME ${PROJECT_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${PROJECT_NAME} -s -r junit -o test-report.junit.xml )
+if(WIN32)
+  separate_arguments(CATCH_CMDARGS_LIST WINDOWS_COMMAND "${CATCH_CMDARGS}")
+else()
+  separate_arguments(CATCH_CMDARGS_LIST UNIX_COMMAND "${CATCH_CMDARGS}")
+endif()
+
+add_test( NAME ${PROJECT_NAME} WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND ${PROJECT_NAME} ${CATCH_CMDARGS_LIST})
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C ${CMAKE_BUILD_TYPE} DEPENDS ${PROJECT_NAME})

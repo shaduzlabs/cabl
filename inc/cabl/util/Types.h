@@ -49,7 +49,6 @@ template <typename T>
 using tPtr = std::unique_ptr<T>;
 
 using tRawData = std::vector<uint8_t>;
-using tCollFlags = std::vector<bool>;
 
 //--------------------------------------------------------------------------------------------------
 

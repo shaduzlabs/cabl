@@ -43,8 +43,18 @@ TEST_CASE("Canvas: constructor", "[gfx][Canvas]")
   CanvasBase<16, 5> c;
   CHECK(c.width() == 16);
   CHECK(c.height() == 5);
+  CHECK(c.dirtyChunk(0));
+  c.resetDirtyFlags();
+  CHECK_FALSE(c.dirtyChunk(0));
+  c.setDirtyChunk(0);
+  CHECK(c.dirtyChunk(0));
 
   CHECK(c.pixel(2000, 2000) == Color());
+
+  CanvasBase<16, 5, 80, 0> c2;
+  CHECK_FALSE(c2.dirtyChunk(0));
+  c2.setDirtyChunk(0);
+  CHECK_FALSE(c2.dirtyChunk(0));
 }
 
 //--------------------------------------------------------------------------------------------------

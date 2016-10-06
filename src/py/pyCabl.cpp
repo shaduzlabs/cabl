@@ -8,6 +8,35 @@
 #include "cabl/cabl.h"
 #include "py/PyClient.h"
 
+//--------------------------------------------------------------------------------------------------
+
+// http://stackoverflow.com/questions/38261530/unresolved-external-symbols-since-visual-studio-2015-update-3-boost-python-link
+namespace boost
+{
+template <>
+sl::cabl::Canvas const volatile* get_pointer<class sl::cabl::Canvas const volatile>(
+  class sl::cabl::Canvas const volatile* c)
+{
+  return c;
+}
+
+template <>
+sl::cabl::TextDisplay const volatile* get_pointer<class sl::cabl::TextDisplay const volatile>(
+  class sl::cabl::TextDisplay const volatile* c)
+{
+  return c;
+}
+
+template <>
+sl::cabl::LedArray const volatile* get_pointer<class sl::cabl::LedArray const volatile>(
+  class sl::cabl::LedArray const volatile* c)
+{
+  return c;
+}
+}
+
+//--------------------------------------------------------------------------------------------------
+
 namespace sl
 {
 namespace cabl
@@ -238,27 +267,32 @@ BOOST_PYTHON_MODULE(pycabl)
     .def("triangleFilled",
       &Canvas::triangleFilled,
       args("x0", "y0", "x1", "y1", "x2", "y2", "color", "fillColor"),
-      "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified colors for "
+      "Draws a triangle with the vertices in x0,y0 x1,y1 and x2,y2 using the specified colors "
+      "for "
       "the border and the fill")
     .def("rectangle",
       &Canvas::rectangle,
       args("x", "y", "w", "h", "color"),
-      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
+      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the "
+      "specified "
       "color")
     .def("rectangleFilled",
       &Canvas::rectangleFilled,
       args("x", "y", "w", "h", "color", "fillColor"),
-      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the specified "
+      "Draws a rectangle with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) using the "
+      "specified "
       "colors for the border and the fill")
     .def("rectangleRounded",
       &Canvas::rectangleRounded,
       args("x", "y", "w", "h", "r", "color"),
-      "Draws a rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) x,(y+h) "
+      "Draws a rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) "
+      "x,(y+h) "
       "using the specified color")
     .def("rectangleRoundedFilled",
       &Canvas::rectangleRoundedFilled,
       args("x", "y", "w", "h", "r", "color"),
-      "Draws a filled rectangle with rounded corners with the vertices in x,y (x+w),y (x+w),(y+h) "
+      "Draws a filled rectangle with rounded corners with the vertices in x,y (x+w),y "
+      "(x+w),(y+h) "
       "x,(y+h) using the specified colors for the border and the fill")
     .def("circle",
       &Canvas::circle,
