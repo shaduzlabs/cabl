@@ -37,16 +37,13 @@ endif()
 
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 
-option(CABL_TEST          "Build cabl tests"     ${IS_CABL})
-option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
-option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
-option(CABL_PYTHON        "Build python binding" ${IS_CABL})
+option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
+option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
+option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
+option(CABL_PYTHON    "Build python binding" ${IS_CABL})
 
-option(COVERALLS          "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
-
-option(CABL_TEST_ALL      "Generate test ouput for successful tests as well" OFF)
-option(CABL_TEST_JUNIT    "Generate a JUNIT xml test report" OFF)
+option(COVERALLS "Turn on coveralls support" OFF)
+option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
 
 # Version ---------------------------------------------------------------------------------------- #
 
@@ -54,7 +51,7 @@ string(TIMESTAMP CABL_BUILD_DATE "%Y-%m-%d")
 
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
-set (CABL_VERSION_MICRO 6)
+set (CABL_VERSION_MICRO 5)
 set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
 
 if($ENV{APPVEYOR})
@@ -151,7 +148,6 @@ if(${CABL_PYTHON})
   find_package(Boost COMPONENTS python)
   if(Boost_PYTHON_FOUND)
     find_package(PythonLibs REQUIRED)
-    message(STATUS "PythonLibs found: ${PYTHON_LIBRARIES}")
   else()
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
     set(CABL_PYTHON OFF)
@@ -650,6 +646,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   if(BUILD_STATIC_LIBS)
     target_link_libraries( cabl-static PUBLIC setupapi.lib)
+  endif(BUILD_STATIC_LIBS)
+
+  if(CABL_PYTHON)
+    target_link_libraries( pycabl PUBLIC setupapi.lib)
   endif(BUILD_STATIC_LIBS)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
