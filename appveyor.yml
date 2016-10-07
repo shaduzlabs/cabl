@@ -57,6 +57,10 @@ build_script:
 
     cd build-%PLATFORM%\%CONFIGURATION%\
 
+    del hidapi*.*;libusb*.*;rtmidi*.*
+
+    if %CONFIGURATION% == Debug (copy %BOOST_LIBRARYDIR%\boost_python-vc140-mt-gd-*.dll ) else (copy %BOOST_LIBRARYDIR%\boost_python-vc140-mt-1*.dll )
+
     7z a -tzip cabl-win.zip -r *
 
     move /y *.zip ..\..\artifacts-%CONFIGURATION%

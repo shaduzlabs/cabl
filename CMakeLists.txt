@@ -37,13 +37,16 @@ endif()
 
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 
-option(CABL_TEST      "Build cabl tests"     ${IS_CABL})
-option(CABL_EXAMPLES  "Build cabl examples"  ${IS_CABL})
-option(CABL_DOCS      "Build cabl docs"      ${IS_CABL})
-option(CABL_PYTHON    "Build python binding" ${IS_CABL})
+option(CABL_TEST          "Build cabl tests"     ${IS_CABL})
+option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
+option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
+option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(COVERALLS          "Turn on coveralls support" OFF)
+option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
+
+option(CABL_TEST_ALL      "Generate test ouput for successful tests as well" OFF)
+option(CABL_TEST_JUNIT    "Generate a JUNIT xml test report" OFF)
 
 # Version ---------------------------------------------------------------------------------------- #
 
@@ -51,7 +54,7 @@ string(TIMESTAMP CABL_BUILD_DATE "%Y-%m-%d")
 
 set (CABL_VERSION_MAJOR 0)
 set (CABL_VERSION_MINOR 9)
-set (CABL_VERSION_MICRO 5)
+set (CABL_VERSION_MICRO 7)
 set (CABL_VERSION_STRING "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}.${CABL_VERSION_MICRO}")
 
 if($ENV{APPVEYOR})
@@ -147,6 +150,7 @@ addUnmidify()
 if(${CABL_PYTHON})
   find_package(Boost COMPONENTS python)
   if(Boost_PYTHON_FOUND)
+  SET(BOOST_PYTHON_STATIC_LIB         ON)
     find_package(PythonLibs REQUIRED)
   else()
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
@@ -557,6 +561,11 @@ if(CABL_PYTHON AND NOT COVERALLS)
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
   else()
 
+  set( CABL_PYTHON_MODULE_EXTENSION ".so")
+  if(WIN32)
+    set( CABL_PYTHON_MODULE_EXTENSION ".pyd")
+  endif()
+
     add_library( pycabl SHARED ${cabl_ALL} ${cabl_python_SRCS})
     set_target_properties(
       pycabl
@@ -564,7 +573,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
         VERSION             "${CABL_VERSION_STRING}"
         SOVERSION           "${CABL_VERSION_MAJOR}.${CABL_VERSION_MINOR}"
         OUTPUT_NAME         "py${LIBRARY_FILE_NAME}"
-        SUFFIX              ".so"
+        SUFFIX              "${CABL_PYTHON_MODULE_EXTENSION}"
         PREFIX              ""
     )
 
@@ -650,7 +659,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
   if(CABL_PYTHON)
     target_link_libraries( pycabl PUBLIC setupapi.lib)
-  endif(BUILD_STATIC_LIBS)
+  endif(CABL_PYTHON)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
