@@ -22,7 +22,15 @@
 * Maschine Mikro Mk2
 * Traktor Kontrol F1 Mk2
 
-## Getting started ##
+## Binaries ##
+* [ ![Download](https://api.bintray.com/packages/shaduzlabs/cabl/cabl-osx-64/images/download.svg) ](https://bintray.com/shaduzlabs/cabl/cabl-osx-64/_latestVersion) OSX 64 bit
+* [ ![Download](https://api.bintray.com/packages/shaduzlabs/cabl/cabl-linux-64/images/download.svg) ](https://bintray.com/shaduzlabs/cabl/cabl-linux-64/_latestVersion) Linux x86 64 bit
+* [ ![Download](https://api.bintray.com/packages/shaduzlabs/cabl/cabl-win-32/images/download.svg) ](https://bintray.com/shaduzlabs/cabl/cabl-win-32/_latestVersion) Windows 32 bit
+* [ ![Download](https://api.bintray.com/packages/shaduzlabs/cabl/cabl-win-64/images/download.svg) ](https://bintray.com/shaduzlabs/cabl/cabl-win-32/_latestVersion) Windows 64 bit
+
+
+
+## Building from the source ##
 
 ### OSX ###
 Make sure the following packages/applications are installed:
@@ -43,7 +51,7 @@ And if you want to build the documentation, you'll need to install Doxygen:
 ```
 brew install doxygen
 ```
-Clone this repository locally and create a **build** subfolder:
+Clone this repository locally and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
 cd cabl && mkdir build && cd build
@@ -73,7 +81,7 @@ And if you want to build the documentation, you'll need to install Doxygen:
 ```
 sudo apt-get install doxygen
 ```
-Clone this repository locally and create a **build** subfolder:
+Clone this repository locally and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
 cd cabl && mkdir build && cd build
@@ -93,7 +101,7 @@ Make sure the following packages/applications are installed:
 
 If you want to build the documentation, you'll need to install Doxygen.
 
-Clone this repository locally and create a **build** subfolder:
+Clone this repository locally and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
 cd cabl
@@ -108,6 +116,33 @@ If all worked fine, you shoould end up with several VS project files and a solut
 
 Please have a look at the CMake appendix for more CMake options.
 
+#### Python bindings on Windows ####
+To build the Python bindings on Windows, you'll need:
+* Python 2.7.12
+* Boost Python 1.62
+
+If you don't have them installed, the easiest solution is to use [Chocolatey](https://chocolatey.org/). After installing Chocolatey, you can install nuget with
+```
+choco install nuget.commandline
+```
+Then, from the directory you want to install boost_python to, run
+```
+nuget install boost_python-vc140 -Version 1.62.0
+```
+Download and install Python ([32bit](https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi) or [64bit](https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi)), then set the following variables:
+```
+set PYTHON_ROOT=C:\Python27
+set MY_LIBS_ROOT=C:\MyBuildDir
+```
+The first one points to the Python installation directory, the second points to the directory where you installed boost_python.
+
+Now follow the Windows build steps above, except the cmake command, which will have to be:
+```
+cmake -DPYTHON_LIBRARY=%PYTHON_ROOT%\libs\python27.lib -DBOOST_LIBRARYDIR=%MY_LIBS_ROOT%\boost_python-vc140.1.62.0.0\lib\native\address-model-32\lib -DBOOST_INCLUDEDIR=%MY_LIBS_ROOT%\boost.1.62.0.0\lib\native\incl
+ude -DPYTHON_INCLUDE_DIR=%PYTHON_ROOT%\include ..
+```
+
+
 ## Appendix ##
 ### CMake options ###
 By default, CMake is configured to build only the static version of the library. You can override this setting using:
@@ -117,7 +152,7 @@ For example, if you want to build both the shared and the static library, you'll
 ```
 cmake -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ..
 ```
-On Windows LibUSB, HIDAPI and RtMIDI are downloaded from the respective repositories and built locally in the build subfolder, so you don't need to have them installed on the system. If for some reason you want the same behavior on Linux or OSX, you can override CABL_FORCE_BUILD_DEPENDENCIES (default is OFF) and set it to ON.
+On Windows LibUSB, HIDAPI and RtMIDI are downloaded from the respective repositories and built locally in the build subdirectory, so you don't need to have them installed on the system. If for some reason you want the same behavior on Linux or OSX, you can override CABL_FORCE_BUILD_DEPENDENCIES (default is OFF) and set it to ON.
 ```
 cmake -DCABL_FORCE_BUILD_DEPENDENCIES=ON ..
 ```
