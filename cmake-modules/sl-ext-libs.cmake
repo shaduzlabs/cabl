@@ -50,21 +50,6 @@ endfunction()
 
 
 # ------------------------------------------------------------------------------------------------ #
-#  Catch                                                                                           #
-# ------------------------------------------------------------------------------------------------ #
-function (addCatch)
-  if(DEFINED CATCH_INCLUDE_DIRS)
-    message(STATUS "Catch is already available")
-  else()
-    checkout_external_project(catch https://github.com/philsquared/Catch.git v1.5.6)
-    set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include PARENT_SCOPE)
-    set(CATCH_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/catch/src/catch/include)
-    message(STATUS "Catch path: ${CATCH_INCLUDE_DIRS}")
-  endif()
-endfunction()
-
-
-# ------------------------------------------------------------------------------------------------ #
 #  MPL                                                                                             #
 # ------------------------------------------------------------------------------------------------ #
 function (addMPL)
@@ -75,21 +60,6 @@ function (addMPL)
     set(MPL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl PARENT_SCOPE)
     set(MPL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/mpl/src/mpl/mpl)
     message(STATUS "MPL path: ${MPL_INCLUDE_DIRS}")
-  endif()
-endfunction()
-
-
-# ------------------------------------------------------------------------------------------------ #
-#  unmidify                                                                                        #
-# ------------------------------------------------------------------------------------------------ #
-function (addUnmidify)
-  if(DEFINED UNMIDIFY_INCLUDE_DIRS)
-    message(STATUS "Unmidify is already available")
-  else()
-    checkout_external_project(unmidify https://github.com/shaduzlabs/unmidify.git master)
-    set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include PARENT_SCOPE)
-    set(UNMIDIFY_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/unmidify/src/unmidify/include)
-    message(STATUS "Unmidify path: ${UNMIDIFY_INCLUDE_DIRS}")
   endif()
 endfunction()
 

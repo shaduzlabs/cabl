@@ -1,0 +1,6 @@
+[submodule "modules/catch"]
+	path = modules/catch
+	url = https://github.com/philsquared/catch.git
+[submodule "modules/unmidify"]
+	path = modules/unmidify
+	url = https://github.com/shaduzlabs/unmidify.git

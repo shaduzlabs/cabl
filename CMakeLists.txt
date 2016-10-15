@@ -11,6 +11,7 @@ project (cabl)
 
 set(CABL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(CABL_BUILD_DIR ${CMAKE_BINARY_DIR})
+set(CABL_MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/modules)
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   set(IS_CABL ON)
@@ -146,7 +147,8 @@ else()
   find_package(RtMidi REQUIRED)
 endif()
 
-addUnmidify()
+set(UNMIDIFY_INCLUDE_DIRS ${CABL_MODULES_DIR}/unmidify/include )
+set(CATCH_INCLUDE_DIRS ${CABL_MODULES_DIR}/catch/include )
 
 # If Boost.python is not available, just display a warning and skip the python wrapper target
 if(${CABL_PYTHON})
@@ -685,7 +687,6 @@ endif()
 # Unit tests ------------------------------------------------------------------------------------- #
 
 if(${CABL_TEST})
-  addCatch()
   enable_testing(true)
   add_subdirectory(test)
 endif()
