@@ -12,6 +12,12 @@ project (cabl)
 set(CABL_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(CABL_BUILD_DIR ${CMAKE_BINARY_DIR})
 
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+  set(IS_CABL ON)
+else()
+  set(IS_CABL OFF)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CABL_ROOT_DIR}/cmake-modules")
 include(sl-main)
 
@@ -28,12 +34,6 @@ set(DEBUG_SUFFIX          "_d")
 
 option(BUILD_SHARED_LIBS "build as shared library" OFF)
 option(BUILD_STATIC_LIBS "build as static library" ON)
-
-if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  set(IS_CABL ON)
-else()
-  set(IS_CABL OFF)
-endif()
 
 option(CABL_FORCE_BUILD_DEPENDENCIES   "Force download and build dependencies" OFF)
 

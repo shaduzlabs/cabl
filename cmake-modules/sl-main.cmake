@@ -7,4 +7,6 @@
 
 include(sl-compiler)
 include(sl-ext-libs)
-include(colors)
+if(IS_CABL)
+  include(colors)
+endif()
