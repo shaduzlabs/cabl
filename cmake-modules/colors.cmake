@@ -18,7 +18,6 @@ if(NOT WIN32)
   set(BoldMagenta "${Esc}[1;35m")
   set(BoldCyan    "${Esc}[1;36m")
   set(BoldWhite   "${Esc}[1;37m")
-endif()
 
 function(message)
   list(GET ARGV 0 MessageType)
@@ -38,3 +37,5 @@ function(message)
     _message("${ARGV}")
   endif()
 endfunction()
+
+endif()
