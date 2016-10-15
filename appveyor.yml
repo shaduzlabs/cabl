@@ -15,6 +15,8 @@ init:
 
     cd cabl
 
+    git submodule update --init --recursive
+
 environment:
   BOOST_INCLUDEDIR: C:\SLBuild\boost.1.62.0.0\lib\native\include
   BOOST_PYTHON_ROOT: C:\SLBuild\boost_python-vc140.1.62.0.0\lib\native

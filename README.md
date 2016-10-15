@@ -51,10 +51,12 @@ And if you want to build the documentation, you'll need to install Doxygen:
 ```
 brew install doxygen
 ```
-Clone this repository locally and create a **build** subdirectory:
+Clone this repository locally, initialize the submodules and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
-cd cabl && mkdir build && cd build
+cd cabl
+git submodule update --init --recursive
+mkdir build && cd build
 ```
 Now launch CMake, build and (eventually) install:
 ```
@@ -81,10 +83,12 @@ And if you want to build the documentation, you'll need to install Doxygen:
 ```
 sudo apt-get install doxygen
 ```
-Clone this repository locally and create a **build** subdirectory:
+Clone this repository locally, initialize the submodules and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
-cd cabl && mkdir build && cd build
+cd cabl
+git submodule update --init --recursive
+mkdir build && cd build
 ```
 Now launch CMake, build and (eventually) install:
 ```
@@ -105,6 +109,7 @@ Clone this repository locally and create a **build** subdirectory:
 ```
 git clone https://github.com/shaduzlabs/cabl.git
 cd cabl
+git submodule update --init --recursive
 mkdir build
 cd build
 ```
