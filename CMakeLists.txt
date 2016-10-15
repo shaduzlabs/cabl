@@ -99,7 +99,7 @@ if($ENV{APPVEYOR})
 elseif($ENV{TRAVIS})
   set(CABL_DEPLOY_TARGET $ENV{CABL_DEPLOY_TARGET})
   if(CABL_DEPLOY_TARGET)
-    message(STATUS "Package ${CABL_DEPLOY_TARGET} will be deployed")
+    message("Package ${CABL_DEPLOY_TARGET} will be deployed")
     configure_file (
       "${CABL_ROOT_DIR}/support/travis/deploy-bintray.json.in"
       "${PROJECT_BINARY_DIR}/deploy-bintray.json"
@@ -114,19 +114,21 @@ endif()
 
 set(CABL_BUILD_DESCRIPTION "cabl v. ${CABL_VERSION_STRING} - ${CABL_BUILD_TYPE} built on ${CABL_BUILD_HOST}")
 
-MESSAGE( STATUS "                                   ")
-MESSAGE( STATUS "                            __       ___       ")
-MESSAGE( STATUS "                           /\\ \\     /\\_ \\      ")
-MESSAGE( STATUS "               ___     __  \\ \\ \\____\\//\\ \\     ")
-MESSAGE( STATUS "              /'___\\ /'__`\\ \\ \\ '__`\\ \\ \\ \\    ")
-MESSAGE( STATUS "             /\\ \\__//\\ \\L\\.\\_\\ \\ \\L\\ \\ \\_\\ \\_  ")
-MESSAGE( STATUS "             \\ \\____\\ \\__/.\\_\\\\ \\_,__/ /\\____\\ ")
-MESSAGE( STATUS "              \\/____/\\/__/\\/_/ \\/___/  \\/____/ ")
-MESSAGE( STATUS "               Controller ABstraction Library                      ")
+if(${IS_CABL})
+  MESSAGE( "${White}")
+  MESSAGE( "${White}                            __       ___       ")
+  MESSAGE( "${White}                           /\\ \\     /\\_ \\      ")
+  MESSAGE( "${White}               ___     __  \\ \\ \\____\\//\\ \\     ")
+  MESSAGE( "${White}              /'___\\ /'__`\\ \\ \\ '__`\\ \\ \\ \\    ")
+  MESSAGE( "${White}             /\\ \\__//\\ \\L\\.\\_\\ \\ \\L\\ \\ \\_\\ \\_  ")
+  MESSAGE( "${White}             \\ \\____\\ \\__/.\\_\\\\ \\_,__/ /\\____\\ ")
+  MESSAGE( "${White}              \\/____/\\/__/\\/_/ \\/___/  \\/____/ ")
+  MESSAGE( "${BoldYellow}               Controller ABstraction Library${ColourReset}")
 
-MESSAGE( STATUS "                                  v. ${CABL_VERSION_STRING}")
-MESSAGE( STATUS "                                               ")
-message( STATUS "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION} ")
+  MESSAGE( "                                  v. ${CABL_VERSION_STRING}")
+  MESSAGE( "                                               ")
+endif()
+message( "[${CABL_BUILD_DATE}] ${CABL_BUILD_DESCRIPTION} ")
 
 # Dependencies ----------------------------------------------------------------------------------- #
 
@@ -475,7 +477,7 @@ set(
 
 if(BUILD_SHARED_LIBS AND NOT COVERALLS)
 
-  message(STATUS "BUILD_SHARED_LIBS is ON")
+  message("BUILD_SHARED_LIBS is ON")
   add_library( cabl SHARED ${cabl_ALL} )
   set_target_properties(
     cabl
@@ -512,7 +514,7 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
 endif()
 
 if(BUILD_STATIC_LIBS)
-  message(STATUS "BUILD_STATIC_LIBS is ON")
+  message("BUILD_STATIC_LIBS is ON")
   add_library( cabl-static STATIC ${cabl_ALL} )
   set_target_properties(
     cabl-static
@@ -691,7 +693,7 @@ endif()
 # Coveralls -------------------------------------------------------------------------------------- #
 
 if(COVERALLS)
-  message(STATUS "Coverage build enabled")
+  message("Coverage build enabled")
   addCoverallsCMake()
   list(APPEND CMAKE_MODULE_PATH "${COVERALLS_CMAKE_PATH}")
   include(Coveralls)
