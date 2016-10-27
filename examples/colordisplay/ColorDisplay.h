@@ -10,39 +10,28 @@
 #include <future>
 #include <stdint.h>
 
-#include <cabl.h>
-#include <lodepng.h>
+#include "DisplayClient.h"
 
 namespace sl
 {
 
 using namespace cabl;
 
-class ColorDisplay
+class ColorDisplay : public Client
 {
 public:
-  ColorDisplay(const std::string& pngFile_);
-  void run();
-
-  void initHardware();
-  void tick();
-  void discoverAndConnect();
-
-  void padChanged(Device::Pad pad_, uint16_t value_, bool shiftPressed);
-  void tryLoadFile();
-
+  ColorDisplay();
+  void initDevice() override;
+  void render() override;
+  /*
+    void buttonChanged(Device::Button button_, bool buttonState_, bool shiftState_) override;
+    void encoderChanged(unsigned encoder_, bool valueIncreased_, bool shiftPressed_) override;
+    void keyChanged(unsigned index_, double value_, bool shiftPressed) override;
+    void controlChanged(unsigned pot_, double value_, bool shiftPressed) override;
+    */
+  
 private:
-  void updateDisplay();
-
-  Client m_client;
-
-  std::atomic<bool> m_update;
-  std::string m_pngFolder;
-
-  std::vector<unsigned char> m_pngImage;
-  unsigned m_pngWidth;
-  unsigned m_pngHeight;
-  unsigned m_nFile{1};
+  DisplayClient m_displayClient;
 };
 
 } // namespace sl

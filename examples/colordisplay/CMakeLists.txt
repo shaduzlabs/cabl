@@ -11,8 +11,6 @@
 
 project(colordisplay)
 
-addlodepng()
-
 set(VERSION_RESOURCES "")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   generateProductVersion(
@@ -31,6 +29,8 @@ SET(
     main.cpp
     ColorDisplay.h
     ColorDisplay.cpp
+    DisplayClient.h
+    DisplayClient.cpp
     ${VERSION_RESOURCES}
 )
 

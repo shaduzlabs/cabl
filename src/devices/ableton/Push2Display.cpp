@@ -26,6 +26,7 @@ namespace
 {
 const sl::cabl::Transfer k_frameHeader(
   {0xEF, 0xCD, 0xAB, 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
+const unsigned k_singleTransferSize = 16384;
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -52,10 +53,8 @@ Canvas* Push2Display::graphicDisplay(size_t displayIndex_)
 
 bool Push2Display::tick()
 {
-  if (m_display.dirty())
-  {
-    return sendDisplayData();
-  }
+  return sendDisplayData();
+
 
   return true;
 }
@@ -75,10 +74,17 @@ bool Push2Display::sendDisplayData() const
   bool result = true;
   writeToDeviceHandle(k_frameHeader, 0x01);
 
-  for (unsigned offset = 0; offset < m_display.bufferSize(); offset += 16384)
+  for (unsigned offset = 0; offset < m_display.bufferSize(); offset += k_singleTransferSize)
   {
-    if (!writeToDeviceHandle(
-          Transfer({m_display.data() + offset, m_display.data() + offset + 16384}), 0x01))
+    auto displayData = Transfer({m_display.data() + offset, m_display.data() + offset + k_singleTransferSize});
+  /*  for(unsigned i = 0; i < displayData.size(); i+=4)
+    {
+      displayData[i] ^= 0xf3;
+      displayData[i+1] ^= 0xe7;
+      displayData[i+2] ^= 0xff;
+      displayData[i+3] ^= 0xe7;
+    }*/
+    if (!writeToDeviceHandle(displayData, 0x01))
     {
       return false;
     }

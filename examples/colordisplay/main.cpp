@@ -6,7 +6,7 @@
 ##########      ############################################################# shaduzlabs.com #####*/
 
 #include "ColorDisplay.h"
-#include <cabl.h>
+#include <cabl/cabl.h>
 
 
 using namespace sl;
@@ -16,21 +16,15 @@ using namespace sl::cabl;
 
 int main(int argc, const char* argv[])
 {
-  std::string pngFilesPath(".");
-  if (argc == 2)
+  ColorDisplay cd;
+
+  std::cout << "Type 'q' and hit ENTER to quit." << std::endl;
+
+  while (std::cin.get() != 'q')
   {
-    pngFilesPath = std::string(argv[1]);
-  }
-  else if (argc > 2)
-  {
-    std::cout << "Usage: " << argv[0] << " "
-              << "[png files path]" << std::endl;
-    return -1;
+    std::this_thread::yield();
   }
 
-  ColorDisplay cd(pngFilesPath);
-
-  cd.run();
 
   return 0;
 }

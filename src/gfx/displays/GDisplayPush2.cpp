@@ -36,10 +36,12 @@ void GDisplayPush2::setPixel(
 
   unsigned byteIndex = (canvasWidthInBytes() * y_) + (x_ * 2);
   uint8_t green = static_cast<uint8_t>(((newColor.green() / 255.0) * 63) + 0.5);
-  data()[byteIndex]
-    = (static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
+  
   data()[byteIndex + 1]
-    = ((green << 5) & 0xE0) | static_cast<uint8_t>(((newColor.blue() / 255.0) * 31) + 0.5);
+    = (static_cast<uint8_t>(((newColor.blue() / 255.0) * 31) + 0.5) << 3) | ((green >> 3) & 0x07);
+    
+  data()[byteIndex ]
+    = ((green << 5) & 0xE0) | static_cast<uint8_t>(((newColor.red() / 255.0) * 31) + 0.5);
 
   if (bSetDirtyChunk_ && oldColor != newColor)
   {
@@ -57,10 +59,10 @@ Color GDisplayPush2::pixel(unsigned x_, unsigned y_) const
   }
   unsigned index = (canvasWidthInBytes() * y_) + (x_ * 2);
 
-  return {static_cast<uint8_t>((((data()[index] >> 3) / 31.0) * 255) + 0.5),
+  return {static_cast<uint8_t>((((data()[index ] & 0x1F) / 31.0) * 255) + 0.5),
     static_cast<uint8_t>(
             ((((data()[index] & 0x07) << 3 | (data()[index + 1] & 0xE0) >> 5) / 63.0) * 255) + 0.5),
-    static_cast<uint8_t>((((data()[index + 1] & 0x1F) / 31.0) * 255) + 0.5)};
+    static_cast<uint8_t>((((data()[index + 1] >> 3) / 31.0) * 255) + 0.5)};
 }
 
 //--------------------------------------------------------------------------------------------------

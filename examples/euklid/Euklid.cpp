@@ -237,22 +237,24 @@ void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
   {
     case 0:
     {
-      m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((value_ * 16)+0.5));
+      m_lengths[m_currentTrack] = std::max<uint8_t>(1, static_cast<uint8_t>((value_ * 16) + 0.5));
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case 1:
     {
-      m_pulses[m_currentTrack] = std::max<uint8_t>(0, static_cast<uint8_t>(( m_lengths[m_currentTrack] * value_ ) + 0.5));
+      m_pulses[m_currentTrack]
+        = std::max<uint8_t>(0, static_cast<uint8_t>((m_lengths[m_currentTrack] * value_) + 0.5));
       m_sequences[m_currentTrack].calculate(m_lengths[m_currentTrack], m_pulses[m_currentTrack]);
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
     case 2:
     {
-    
-      m_rotates[m_currentTrack] = std::max<uint8_t>(0, static_cast<uint8_t>((m_lengths[m_currentTrack] * value_)+0.5));
+
+      m_rotates[m_currentTrack]
+        = std::max<uint8_t>(0, static_cast<uint8_t>((m_lengths[m_currentTrack] * value_) + 0.5));
       m_sequences[m_currentTrack].rotate(m_rotates[m_currentTrack]);
       break;
     }
@@ -278,7 +280,7 @@ void Euklid::controlChanged(unsigned pot_, double value_, bool shiftPressed_)
 
 void Euklid::updateClock()
 {
-	double quarterDuration = 60000.0f / m_bpm;
+  double quarterDuration = 60000.0f / m_bpm;
   double delayQuarterNote = quarterDuration / 4.0f;
   double shuffleDelay = delayQuarterNote * (m_shuffle / 300.0f);
   m_delayEven = static_cast<unsigned>(delayQuarterNote + shuffleDelay);
@@ -474,9 +476,17 @@ void Euklid::updatePads()
 
 void Euklid::updateTouchStrips()
 {
-  device()->ledArray(0)->setValue(m_lengths[m_currentTrack] / 16.0, kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
-  device()->ledArray(1)->setValue(m_pulses[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]), kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
-  device()->ledArray(2)->setValue(m_rotates[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]), kEuklidColor_Track_CurrentStep[m_currentTrack], Alignment::Left);
+  device()->ledArray(0)->setValue(m_lengths[m_currentTrack] / 16.0,
+    kEuklidColor_Track_CurrentStep[m_currentTrack],
+    Alignment::Left);
+  device()->ledArray(1)->setValue(
+    m_pulses[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]),
+    kEuklidColor_Track_CurrentStep[m_currentTrack],
+    Alignment::Left);
+  device()->ledArray(2)->setValue(
+    m_rotates[m_currentTrack] / static_cast<float>(m_lengths[m_currentTrack]),
+    kEuklidColor_Track_CurrentStep[m_currentTrack],
+    Alignment::Left);
   device()->ledArray(3)->setValue((m_bpm - 60) / 195.0, {0xff}, Alignment::Left);
   device()->ledArray(4)->setValue(m_shuffle / 100.0, {0xff}, Alignment::Left);
 }
