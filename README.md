@@ -19,6 +19,7 @@
 * Maschine Jam
 * Maschine Mk1
 * Maschine Mk2
+* Maschine Mikro Mk1
 * Maschine Mikro Mk2
 * Traktor Kontrol F1 Mk2
 
