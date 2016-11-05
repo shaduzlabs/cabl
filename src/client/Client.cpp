@@ -14,6 +14,7 @@
 #include "devices/ni/MaschineJam.h"
 #include "devices/ni/MaschineMK1.h"
 #include "devices/ni/MaschineMK2.h"
+#include "devices/ni/MaschineMikroMK1.h"
 #include "devices/ni/MaschineMikroMK2.h"
 #include "devices/ni/TraktorF1MK2.h"
 

@@ -88,7 +88,7 @@ enum class MaschineMK2::Led : uint8_t{
   Pad9,  Pad9R  = Pad9,  Pad9G,  Pad9B,
   Pad10, Pad10R = Pad10, Pad10G, Pad10B,
   Pad11, Pad11R = Pad11, Pad11G, Pad11B,
-  Pad12, Pad12R = Pad12, Pad12G, Pad12H,
+  Pad12, Pad12R = Pad12, Pad12G, Pad12B,
   Pad5,  Pad5R  = Pad5,  Pad5G,  Pad5B,
   Pad6,  Pad6R  = Pad6,  Pad6G,  Pad6B,
   Pad7,  Pad7R  = Pad7,  Pad7G,  Pad7B,

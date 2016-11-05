@@ -367,6 +367,8 @@ set(
     src/devices/ni/MaschineMK1.cpp
     src/devices/ni/MaschineMK2.h
     src/devices/ni/MaschineMK2.cpp
+    src/devices/ni/MaschineMikroMK1.h
+    src/devices/ni/MaschineMikroMK1.cpp
     src/devices/ni/MaschineMikroMK2.h
     src/devices/ni/MaschineMikroMK2.cpp
     src/devices/ni/TraktorF1MK2.h
