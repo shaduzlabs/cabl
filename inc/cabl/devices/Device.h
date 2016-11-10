@@ -202,26 +202,6 @@ public:
 
     Unknown,
   };
-
-  enum class Encoder : uint8_t
-  {
-    Main,
-    Volume = Main,
-    Tempo,
-    Main2 = Tempo,
-    Swing,
-    Encoder1,
-    Encoder2,
-    Encoder3,
-    Encoder4,
-    Encoder5,
-    Encoder6,
-    Encoder7,
-    Encoder8,
-    Encoder9,
-    Unknown,
-  };
-
   // clang-format on
 
   using tCbRender = std::function<void(void)>;
