@@ -149,6 +149,7 @@ endif()
 
 set(UNMIDIFY_INCLUDE_DIRS ${CABL_MODULES_DIR}/unmidify/include )
 set(CATCH_INCLUDE_DIRS ${CABL_MODULES_DIR}/catch/include )
+set(CEREAL_INCLUDE_DIRS ${CABL_MODULES_DIR}/cereal/include )
 
 # If Boost.python is not available, just display a warning and skip the python wrapper target
 if(${CABL_PYTHON})
@@ -492,7 +493,7 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
 
-  target_include_directories( cabl PUBLIC inc ${PROJECT_BINARY_DIR})
+  target_include_directories( cabl PUBLIC inc ${PROJECT_BINARY_DIR} ${CEREAL_INCLUDE_DIRS})
   target_include_directories( cabl PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
   target_include_directories( cabl PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl PRIVATE src)
@@ -528,7 +529,7 @@ if(BUILD_STATIC_LIBS)
       OUTPUT_NAME_DEBUG   "${LIBRARY_FILE_NAME}${DEBUG_SUFFIX}"
   )
 
-  target_include_directories( cabl-static PUBLIC inc ${PROJECT_BINARY_DIR})
+  target_include_directories( cabl-static PUBLIC inc ${PROJECT_BINARY_DIR} ${CEREAL_INCLUDE_DIRS})
   target_include_directories( cabl-static PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
   target_include_directories( cabl-static PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl-static PRIVATE src)
@@ -583,7 +584,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
         PREFIX              ""
     )
 
-    target_include_directories( pycabl PRIVATE inc ${PROJECT_BINARY_DIR})
+    target_include_directories( pycabl PRIVATE inc ${PROJECT_BINARY_DIR} ${CEREAL_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE src)

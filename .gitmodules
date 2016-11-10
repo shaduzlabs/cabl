@@ -4,3 +4,6 @@
 [submodule "modules/unmidify"]
 	path = modules/unmidify
 	url = https://github.com/shaduzlabs/unmidify.git
+[submodule "modules/cereal"]
+	path = modules/cereal
+	url = https://github.com/USCiLab/cereal.git
