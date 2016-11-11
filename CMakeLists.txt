@@ -43,7 +43,7 @@ option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
-option(CABL_USE_NETWORK   "Use features that require a network" ON)
+option(CABL_USE_NETWORK   "Use features that require a network" OFF)
 
 option(COVERALLS          "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
@@ -506,7 +506,7 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
   target_include_directories( cabl PRIVATE src)
 
   if(CABL_USE_NETWORK)
-#    target_link_libraries( cabl PUBLIC nanomsg)
+    target_link_libraries( cabl PUBLIC nanomsg)
     target_compile_definitions(cabl PRIVATE CABL_USE_NETWORK=1)
   endif()
 
@@ -547,8 +547,8 @@ if(BUILD_STATIC_LIBS)
   target_include_directories( cabl-static PRIVATE src)
 
   if(CABL_USE_NETWORK)
-#    target_link_libraries( cabl PUBLIC nanomsg)
-    target_compile_definitions(cabl PRIVATE CABL_USE_NETWORK=1)
+    target_link_libraries( cabl-static PUBLIC nanomsg)
+    target_compile_definitions(cabl-static PRIVATE CABL_USE_NETWORK=1)
   endif()
 
   if(LIBUSB_LOCAL_BUILD)
@@ -607,8 +607,8 @@ if(CABL_PYTHON AND NOT COVERALLS)
     target_include_directories( pycabl PRIVATE src)
 
     if(CABL_USE_NETWORK)
-#      target_link_libraries( cabl PUBLIC nanomsg)
-      target_compile_definitions(cabl PRIVATE CABL_USE_NETWORK=1)
+      target_link_libraries( pycabl PUBLIC nanomsg)
+      target_compile_definitions(pycabl PRIVATE CABL_USE_NETWORK=1)
     endif()
 
     if(LIBUSB_LOCAL_BUILD)
