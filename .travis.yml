@@ -214,6 +214,20 @@ install:
   fi
 
   ############################################################################
+  # Install nanomsg
+  ############################################################################
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+    cd /tmp
+    mkdir nanomsg
+    cd nanomsg
+    cmake -DNN_STATIC_LIB=OFF -DNN_ENABLE_DOC=OFF -DNN_TESTS=OFF -DNN_TOOLS=OFF -DNN_ENABLE_NANOCAT=OFF -DCMAKE_INSTALL_PREFIX:PATH=/tmp/nanomsg ${TRAVIS_BUILD_DIR}/modules/nanomsg
+    cmake --build /tmp/nanomsg --target install
+  else
+    brew install nanomsg
+  fi
+
+  ############################################################################
   # Install Boost.python
   ############################################################################
 - |
