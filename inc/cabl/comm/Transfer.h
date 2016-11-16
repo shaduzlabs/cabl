@@ -67,13 +67,13 @@ public:
 private:
 #ifdef CABL_USE_NETWORK
   friend class cereal::access;
-#endif
 
   template <class Archive>
   void serialize(Archive& archive)
   {
     archive(m_data);
   }
+#endif
 
   tRawData m_data;
 };

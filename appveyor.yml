@@ -16,6 +16,7 @@ init:
     cd cabl
 
 environment:
+  CABL_ROOT: c:\SLBuild\cabl
   BOOST_INCLUDEDIR: C:\SLBuild\boost.1.62.0.0\lib\native\include
   BOOST_PYTHON_ROOT: C:\SLBuild\boost_python-vc140.1.62.0.0\lib\native
   PYTHON_VERSION: 27
@@ -35,7 +36,7 @@ build_script:
 
     c:
 
-    cd c:\SLBuild\cabl
+    cd %CABL_ROOT%
 
     mkdir build-%PLATFORM%
 
@@ -51,13 +52,27 @@ build_script:
 
     set PYTHON_DEP=-DPYTHON_LIBRARY=%PYTHON_ROOT%\libs\python%PYTHON_VERSION%.lib -DPYTHON_INCLUDE_DIR=%PYTHON_ROOT%\include
 
-    set ALL_DEP=%BOOST_DEP% %PYTHON_DEP%
+    mkdir nanomsg
+
+    cd nanomsg
+
+    set NN_BUILD_OPT=-DNN_STATIC_LIB=ON -DNN_ENABLE_DOC=OFF -DNN_TESTS=OFF -DNN_TOOLS=OFF -DNN_ENABLE_NANOCAT=OFF
+
+    cmake -G %GENERATOR% %NN_BUILD_OPT% -DCMAKE_INSTALL_PREFIX:PATH=%CABL_ROOT%\build-%PLATFORM%\nanomsg %CABL_ROOT%\modules\nanomsg
+
+    cd ..
+
+    cmake --build %CABL_ROOT%\build-%PLATFORM%\nanomsg --target install --config %CONFIGURATION%
+
+    set NANOMSG_DEP=-DNANOMSG_ROOT=%CABL_ROOT%\build-%PLATFORM%\nanomsg
+
+    set ALL_DEP=%BOOST_DEP% %PYTHON_DEP% %NANOMSG_DEP%
 
     set CABL_OPTIONS=-DCABL_TEST_JUNIT=%TEST_JUNIT% -DCABL_TEST_ALL=%TEST_ALL%
 
     set BUILD_OPTIONS=-DBUILD_STATIC_LIBS=%STATIC_LIBS% -DBUILD_SHARED_LIBS=%SHARED_LIBS%
 
-    cmake -G %GENERATOR% %ALL_DEP% %CABL_OPTIONS% -DCMAKE_BUILD_TYPE=%CONFIGURATION% %BUILD_OPTIONS% ..
+    cmake -G %GENERATOR% -DCMAKE_BUILD_TYPE=%CONFIGURATION% %ALL_DEP% %CABL_OPTIONS% %BUILD_OPTIONS% ..
 
     cd ..
 
@@ -83,7 +98,7 @@ build_script:
 
 after_build:
 - cmd: >-
-    cd c:\SLBuild\cabl\artifacts-%CONFIGURATION%
+    cd %CABL_ROOT%\artifacts-%CONFIGURATION%
 
     if %PLATFORM% == x64 (echo Preparing to deploy cabl-win-64_%APPVEYOR_BUILD_VERSION%.zip) else (echo Preparing to deploy cabl-win-32_%APPVEYOR_BUILD_VERSION%.zip)
 
@@ -93,7 +108,7 @@ after_build:
 
 before_test:
 - cmd: >-
-    cd c:\SLBuild\cabl\
+    cd %CABL_ROOT%\
 
     cmake --build build-%PLATFORM% --config %CONFIGURATION% --target check
 
