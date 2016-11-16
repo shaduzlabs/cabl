@@ -43,6 +43,7 @@ option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
+option(CABL_PNG_SUPPORT   "PNG File support (displays)" OFF)
 option(CABL_USE_NETWORK   "Use features that require a network" OFF)
 
 option(COVERALLS          "Turn on coveralls support" OFF)
@@ -147,6 +148,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR ${CABL_FORCE_BUILD_DEPENDENCIES})
 else()
   find_package(HIDAPI REQUIRED)
   find_package(RtMidi REQUIRED)
+endif()
+
+if(CABL_PNG_SUPPORT)
+  add_definitions(-DCABL_PNG_SUPPORT=1)
+  find_package(PNG REQUIRED)
 endif()
 
 set(UNMIDIFY_INCLUDE_DIRS ${CABL_MODULES_DIR}/unmidify/include )
@@ -505,6 +511,10 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
   target_include_directories( cabl PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl PRIVATE src)
 
+  if(CABL_PNG_SUPPORT)
+    target_include_directories( cabl PUBLIC PNG::PNG)
+  endif()
+
   if(CABL_USE_NETWORK)
     target_link_libraries( cabl PUBLIC nanomsg)
     target_compile_definitions(cabl PRIVATE CABL_USE_NETWORK=1)
@@ -545,6 +555,10 @@ if(BUILD_STATIC_LIBS)
   target_include_directories( cabl-static PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
   target_include_directories( cabl-static PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl-static PRIVATE src)
+
+  if(CABL_PNG_SUPPORT)
+    target_include_directories( cabl-static PUBLIC PNG::PNG)
+  endif()
 
   if(CABL_USE_NETWORK)
     target_link_libraries( cabl-static PUBLIC nanomsg)
@@ -605,6 +619,10 @@ if(CABL_PYTHON AND NOT COVERALLS)
     target_include_directories( pycabl PRIVATE ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE src)
+
+    if(CABL_PNG_SUPPORT)
+      target_include_directories( pycabl PUBLIC PNG::PNG)
+    endif()
 
     if(CABL_USE_NETWORK)
       target_link_libraries( pycabl PUBLIC nanomsg)
