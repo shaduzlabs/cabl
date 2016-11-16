@@ -43,9 +43,6 @@ option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
-option(CABL_PNG_SUPPORT   "PNG File support (displays)" OFF)
-option(CABL_USE_NETWORK   "Use features that require a network" OFF)
-
 option(COVERALLS          "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
 
@@ -150,19 +147,9 @@ else()
   find_package(RtMidi REQUIRED)
 endif()
 
-if(CABL_PNG_SUPPORT)
-  add_definitions(-DCABL_PNG_SUPPORT=1)
-  find_package(PNG REQUIRED)
-endif()
-
 set(UNMIDIFY_INCLUDE_DIRS ${CABL_MODULES_DIR}/unmidify/include )
 set(CATCH_INCLUDE_DIRS ${CABL_MODULES_DIR}/catch/include )
 set(CEREAL_INCLUDE_DIRS ${CABL_MODULES_DIR}/cereal/include )
-
-if(CABL_USE_NETWORK)
-  add_subdirectory( ${CABL_MODULES_DIR}/nanomsg)
-  set(CPPNANOMSG_INCLUDE_DIRS ${CABL_MODULES_DIR}/cppnanomsg )
-endif()
 
 # If Boost.python is not available, just display a warning and skip the python wrapper target
 if(${CABL_PYTHON})
@@ -511,15 +498,6 @@ if(BUILD_SHARED_LIBS AND NOT COVERALLS)
   target_include_directories( cabl PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl PRIVATE src)
 
-  if(CABL_PNG_SUPPORT)
-    target_include_directories( cabl PUBLIC PNG::PNG)
-  endif()
-
-  if(CABL_USE_NETWORK)
-    target_link_libraries( cabl PUBLIC nanomsg)
-    target_compile_definitions(cabl PRIVATE CABL_USE_NETWORK=1)
-  endif()
-
   if(LIBUSB_LOCAL_BUILD)
     target_link_libraries( cabl PUBLIC libusb)
   else()
@@ -555,15 +533,6 @@ if(BUILD_STATIC_LIBS)
   target_include_directories( cabl-static PUBLIC ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
   target_include_directories( cabl-static PUBLIC ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
   target_include_directories( cabl-static PRIVATE src)
-
-  if(CABL_PNG_SUPPORT)
-    target_include_directories( cabl-static PUBLIC PNG::PNG)
-  endif()
-
-  if(CABL_USE_NETWORK)
-    target_link_libraries( cabl-static PUBLIC nanomsg)
-    target_compile_definitions(cabl-static PRIVATE CABL_USE_NETWORK=1)
-  endif()
 
   if(LIBUSB_LOCAL_BUILD)
     target_link_libraries( cabl-static PUBLIC libusb)
@@ -619,15 +588,6 @@ if(CABL_PYTHON AND NOT COVERALLS)
     target_include_directories( pycabl PRIVATE ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS})
     target_include_directories( pycabl PRIVATE src)
-
-    if(CABL_PNG_SUPPORT)
-      target_include_directories( pycabl PUBLIC PNG::PNG)
-    endif()
-
-    if(CABL_USE_NETWORK)
-      target_link_libraries( pycabl PUBLIC nanomsg)
-      target_compile_definitions(pycabl PRIVATE CABL_USE_NETWORK=1)
-    endif()
 
     if(LIBUSB_LOCAL_BUILD)
       target_link_libraries( pycabl PUBLIC libusb)

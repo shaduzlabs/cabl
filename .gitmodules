@@ -7,6 +7,3 @@
 [submodule "modules/cereal"]
 	path = modules/cereal
 	url = https://github.com/USCiLab/cereal.git
-[submodule "modules/cppnanomsg"]
-	path = modules/cppnanomsg
-	url = https://github.com/nanomsg/cppnanomsg.git
