@@ -11,17 +11,21 @@ init:
 - cmd: >-
     cd c:\SLBuild\
 
-    nuget install libpng
-
     nuget install boost_python-vc140 -Version 1.62.0
+
+    nuget install zlib -Version 1.2.8.8
+
+    nuget install libpng -Version 1.6.26.1
 
     cd cabl
 
 environment:
-  LIBPNG_ROOT: C:\SLBuild\boost_python-vc140.1.62.0.0\lib\native
   BOOST_INCLUDEDIR: C:\SLBuild\boost.1.62.0.0\lib\native\include
   BOOST_PYTHON_ROOT: C:\SLBuild\boost_python-vc140.1.62.0.0\lib\native
   PYTHON_VERSION: 27
+  ZLIB_ROOT:  C:\SLBuild\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8
+  ZLIB_LIBRARY_ROOT:  %ZLIB_ROOT%\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn
+  LIBPNG_ROOT: C:\SLBuild\libpng.1.6.26.1\build\native
   TEST_JUNIT: ON
   TEST_ALL: ON
   STATIC_LIBS: ON
@@ -44,15 +48,27 @@ build_script:
 
     pushd build-%PLATFORM%
 
-    if %PLATFORM% == x64 (set LIBPNG_LIBRARYDIR=%LIBPNG_ROOT%\build\native\lib\x64\v140\dynamic\%CONFIGURATION%\) else (set LIBPNG_LIBRARYDIR=%LIBPNG_ROOT%\build\native\lib\Win32\v140\dynamic\%CONFIGURATION%\)
+    if %PLATFORM% == x64 (set GENERATOR="Visual Studio 14 2015 Win64") else (set GENERATOR="Visual Studio 14 2015")
 
     if %PLATFORM% == x64 (set BOOST_LIBRARYDIR=%BOOST_PYTHON_ROOT%\address-model-64\lib) else (set BOOST_LIBRARYDIR=%BOOST_PYTHON_ROOT%\address-model-32\lib)
 
-    if %PLATFORM% == x64 (set GENERATOR="Visual Studio 14 2015 Win64") else (set GENERATOR="Visual Studio 14 2015")
-
     if %PLATFORM% == x64 (set PYTHON_ROOT=c:\Python%PYTHON_VERSION%-x64) else (set PYTHON_ROOT=c:\Python%PYTHON_VERSION%)
 
-    cmake -G %GENERATOR% -DPNG_INCLUDE_DIRS=%LIBPNG_ROOT%\include -DPNG_LIBRARIES=%LIBPNG_LIBRARYDIR% -DBOOST_INCLUDEDIR=%BOOST_INCLUDEDIR% -DBOOST_LIBRARYDIR=%BOOST_LIBRARYDIR% -DPYTHON_LIBRARY=%PYTHON_ROOT%\libs\python%PYTHON_VERSION%.lib -DPYTHON_INCLUDE_DIR=%PYTHON_ROOT%\include -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCABL_TEST_JUNIT=%TEST_JUNIT% -DCABL_TEST_ALL=%TEST_ALL% -DBUILD_STATIC_LIBS=%STATIC_LIBS% -DBUILD_SHARED_LIBS=%SHARED_LIBS% ..
+    set LIBPNG_LIBRARYDIR=%LIBPNG_ROOT%\build\native\lib\%PLATFORM%\v140\dynamic\%CONFIGURATION%\
+
+    set ZLIB_LIBRARYDIR=%ZLIB_LIBRARY_ROOT%\%PLATFORM%\%CONFIGURATION%\
+
+    set BOOST_DEP=-DBOOST_INCLUDEDIR=%BOOST_INCLUDEDIR% -DBOOST_LIBRARYDIR=%BOOST_LIBRARYDIR%
+
+    set PYTHON_DEP=-DPYTHON_LIBRARY=%PYTHON_ROOT%\libs\python%PYTHON_VERSION%.lib -DPYTHON_INCLUDE_DIR=%PYTHON_ROOT%\include
+
+    set LIBPNG_DEP=-DPNG_INCLUDE_DIRS=%LIBPNG_ROOT%\include -DPNG_LIBRARIES=%LIBPNG_LIBRARYDIR%
+
+    set ZLIB_DEP=-DZLIB_INCLUDE_DIRS=%LIBPNG_ROOT%\build\native\include -DZLIB_LIBRARIES=%ZLIB_LIBRARYDIR%
+
+    set CABL_OPTIONS=-DCABL_TEST_JUNIT=%TEST_JUNIT% -DCABL_TEST_ALL=%TEST_ALL%
+
+    cmake -G %GENERATOR% %LIBPNG_DEP% %ZLIB_DEP% %BOOST_DEP% %PYTHON_DEP% %CABL_OPTIONS% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_STATIC_LIBS=%STATIC_LIBS% -DBUILD_SHARED_LIBS=%SHARED_LIBS% ..
 
     cd ..
 
