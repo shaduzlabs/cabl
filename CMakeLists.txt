@@ -19,7 +19,7 @@ else()
   set(IS_CABL OFF)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CABL_ROOT_DIR}/cmake-modules")
+list(APPEND CMAKE_MODULE_PATH "${CABL_ROOT_DIR}/cmake")
 include(sl-main)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -43,7 +43,7 @@ option(CABL_EXAMPLES      "Build cabl examples"  ${IS_CABL})
 option(CABL_DOCS          "Build cabl docs"      ${IS_CABL})
 option(CABL_PYTHON        "Build python binding" ${IS_CABL})
 
-option(CABL_USE_NETWORK   "Use features that require a network" ON)
+option(CABL_USE_NETWORK   "Use features that require a network" OFF)
 
 option(COVERALLS          "Turn on coveralls support" OFF)
 option(COVERALLS_UPLOAD   "Upload the generated coveralls json" ON)
