@@ -23,7 +23,7 @@ function (checkout_external_project target repository tag)
       include(ExternalProject)
       ExternalProject_add(
         ${target}
-        PREFIX ${CMAKE_BINARY_DIR}/${target}
+        PREFIX ${PROJECT_BINARY_DIR}/${target}
         GIT_REPOSITORY ${repository}
         GIT_TAG ${tag}
         CONFIGURE_COMMAND echo \"\"
