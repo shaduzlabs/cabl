@@ -11,7 +11,8 @@ include(ExternalProject)
 # see:
 # http://stackoverflow.com/questions/17446981/cmake-externalproject-add-and-findpackage/23570741
 function (checkout_external_project target repository tag)
-    set(trigger_build_dir ${CMAKE_BINARY_DIR}/${target})
+    message(STATUS "Checking out external repository: ${target}")
+    set(trigger_build_dir ${PROJECT_BINARY_DIR}/${target})
 
     #mktemp dir in build tree
     file(MAKE_DIRECTORY ${trigger_build_dir} ${trigger_build_dir}/build)
@@ -23,7 +24,7 @@ function (checkout_external_project target repository tag)
       include(ExternalProject)
       ExternalProject_add(
         ${target}
-        PREFIX ${CMAKE_BINARY_DIR}/${target}
+        PREFIX ${PROJECT_BINARY_DIR}/${target}
         GIT_REPOSITORY ${repository}
         GIT_TAG ${tag}
         CONFIGURE_COMMAND echo \"\"
