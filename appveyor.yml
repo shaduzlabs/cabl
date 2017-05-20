@@ -24,6 +24,7 @@ environment:
   TEST_ALL: ON
   STATIC_LIBS: ON
   SHARED_LIBS: ON
+  CABL_FORCE_BUILD_DEPENDENCIES: ON
 
 install:
   - git submodule update --init --recursive
