@@ -18,7 +18,7 @@ matrix:
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' COVERAGE_BUILD='ON' GCOV=gcov-5 CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
 
 
   # 2/ Linux GCC Builds
@@ -36,21 +36,21 @@ matrix:
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9'
+    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Release'
   - os: linux
     compiler: gcc
     addons: *gcc-49-addons
-    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9'
+    env: CXX_COMPILER='g++-4.9' C_COMPILER='gcc-4.9' Fortran_COMPILER='gfortran-4.9' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Debug'
   - os: linux
     compiler: gcc
     addons: *gcc5-addons
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-linux-64"
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-linux-64" CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
   - os: linux
     compiler: gcc
     addons: *gcc5-addons
-    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug'
+    env: CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5' BUILD_TYPE='Debug' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
 
 
   # 3/ Linux Clang Builds
@@ -68,12 +68,12 @@ matrix:
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Release'
   - os: linux
     compiler: clang
     addons: *clang-37-addons
-    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran'
+    env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Debug'
   - os: linux
     compiler: clang
@@ -89,12 +89,12 @@ matrix:
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
-    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Release'
   - os: linux
     compiler: clang
     addons: *clang-38-addons
-    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+    env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Debug'
 
 
@@ -102,38 +102,38 @@ matrix:
   - os: osx
     osx_image: xcode6.4
     compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
   - os: osx
     osx_image: xcode6.4
     compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
   - os: osx
     osx_image: xcode7
     compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug'
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
   - os: osx
     osx_image: xcode7
     compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release'
+    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
 
 
   # 5/ OSX GCC Builds
   - os: osx
     osx_image: xcode6.4
     compiler: gcc
-    env: BUILD_TYPE='Debug'
+    env: BUILD_TYPE='Debug' CABL_FORCE_BUILD_DEPENDENCIES=1
   - os: osx
     osx_image: xcode6.4
     compiler: gcc
-    env: BUILD_TYPE='Release'
+    env: BUILD_TYPE='Release' CABL_FORCE_BUILD_DEPENDENCIES=1
   - os: osx
     osx_image: xcode7
     compiler: gcc
-    env: BUILD_TYPE='Debug'
+    env: BUILD_TYPE='Debug' CABL_FORCE_BUILD_DEPENDENCIES=1
   - os: osx
     osx_image: xcode7
     compiler: gcc
-    env: BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-osx-64"
+    env: BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-osx-64" CMAKE_OPTIONS="-DCABL_FORCE_BUILD_DEPENDENCIES=ON"
 
 
 install:
@@ -278,7 +278,7 @@ script:
 - cd ${TRAVIS_BUILD_DIR}
 - mkdir build
 - cd build
-- CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON -DNANOMSG_ROOT=/tmp/nanomsg
+- CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON ${CMAKE_OPTIONS} -DNANOMSG_ROOT=/tmp/nanomsg
 - cd ..
 - cmake --build build --config $BUILD_TYPE
 - cmake --build build --config $BUILD_TYPE --target check
