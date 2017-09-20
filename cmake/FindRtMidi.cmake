@@ -24,7 +24,7 @@ if(RTMIDI_LIBRARIES)
 
 if(APPLE)
   set(RTMIDI_LINKER_FLAGS "-framework CoreFoundation" "-framework IOKit" "-framework CoreAudio")
-  set(RTMIDI_LINKER_FLAGS ${RTMIDI_LINKER_FLAGS} "-framework CoreMidi" objc ${RTMIDI_LIBRARIES})
+  set(RTMIDI_LINKER_FLAGS ${RTMIDI_LINKER_FLAGS} "-framework CoreMIDI" objc ${RTMIDI_LIBRARIES})
 endif()
 
   set(RTMIDI_FOUND true)

@@ -28,7 +28,7 @@ function (addRtMidi)
     add_library( rtmidi STATIC ${lib_rtmidi_LIBRARY})
     if(APPLE)
       target_link_libraries(rtmidi PUBLIC "-framework CoreFoundation" "-framework IOKit")
-      target_link_libraries(rtmidi PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)
+      target_link_libraries(rtmidi PUBLIC "-framework CoreAudio" "-framework CoreMIDI" objc)
     endif()
 
     set_target_properties(

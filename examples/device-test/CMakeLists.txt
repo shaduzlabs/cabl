@@ -48,5 +48,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE cabl-static)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreFoundation" "-framework IOKit")
-  target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreAudio" "-framework CoreMidi" objc)
+  target_link_libraries(${PROJECT_NAME} PUBLIC "-framework CoreAudio" "-framework CoreMIDI" objc)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
