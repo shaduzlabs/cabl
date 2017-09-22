@@ -413,6 +413,8 @@ bool MaschineMK2::read()
 void MaschineMK2::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
+  m_buttonStates[static_cast<unsigned>(Button::Shift)] = shiftPressed;
+
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 
@@ -422,11 +424,7 @@ void MaschineMK2::processButtons(const Transfer& input_)
     {
       uint8_t btn = (i * 8) + k;
       Button currentButton(static_cast<Button>(btn));
-      if (currentButton > Button::Mute)
-      {
-        continue;
-      }
-      if (currentButton == Button::Shift)
+      if (currentButton == Button::Shift || currentButton > Button::Mute)
       {
         continue;
       }

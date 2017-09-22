@@ -461,6 +461,8 @@ bool MaschineJam::read()
 void MaschineJam::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
+  m_buttonStates[static_cast<unsigned>(Button::Shift)] = shiftPressed;
+
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
 

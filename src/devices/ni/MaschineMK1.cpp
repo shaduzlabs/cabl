@@ -444,6 +444,8 @@ void MaschineMK1::processPads(const Transfer& input_)
 void MaschineMK1::processButtons(const Transfer& input_)
 {
   bool shiftPressed(isButtonPressed(input_, Button::Shift));
+  m_buttonStates[static_cast<unsigned>(Button::Shift)] = shiftPressed;
+
   Device::Button changedButton(Device::Button::Unknown);
   bool buttonPressed(false);
   if ((input_.data()[6] & 0x40) == 0)
