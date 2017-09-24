@@ -68,6 +68,8 @@ matrix:
         - libjack-dev
         - libasound2-dev
         - libboost-python-dev
+        - libc++-dev
+        - libc++abi-dev
     env: CXX_COMPILER='clang++-3.7' C_COMPILER='clang-3.7' Fortran_COMPILER='gfortran' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
       BUILD_TYPE='Release'
   - os: linux
