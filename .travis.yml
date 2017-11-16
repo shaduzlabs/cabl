@@ -217,15 +217,12 @@ install:
   # Install nanomsg
   ############################################################################
 - |
-  if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-    cd /tmp
-    mkdir nanomsg
-    cd nanomsg
-    cmake -DNN_STATIC_LIB=OFF -DNN_ENABLE_DOC=OFF -DNN_TESTS=OFF -DNN_TOOLS=OFF -DNN_ENABLE_NANOCAT=OFF -DCMAKE_INSTALL_PREFIX:PATH=/tmp/nanomsg ${TRAVIS_BUILD_DIR}/modules/nanomsg
-    cmake --build /tmp/nanomsg --target install
-  else
-    brew install nanomsg
-  fi
+  cd /tmp
+  mkdir nanomsg
+  cd nanomsg
+  cmake -DNN_STATIC_LIB=OFF -DNN_ENABLE_DOC=OFF -DNN_TESTS=OFF -DNN_TOOLS=OFF -DNN_ENABLE_NANOCAT=OFF -DCMAKE_INSTALL_PREFIX:PATH=/tmp/nanomsg ${TRAVIS_BUILD_DIR}/modules/nanomsg
+  cmake --build /tmp/nanomsg --target install
+  export PKG_CONFIG_PATH="/tmp/nanomsg/lib/pkgconfig:$PKG_CONFIG_PATH"
 
   ############################################################################
   # Install Boost.python
@@ -281,7 +278,7 @@ script:
 - cd ${TRAVIS_BUILD_DIR}
 - mkdir build
 - cd build
-- CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON
+- CXX=${CXX_COMPILER} CC=${C_COMPILER} FC=${Fortran_COMPILER} $CMAKE_EXECUTABLE .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=ON -DCABL_FORCE_BUILD_DEPENDENCIES=ON -DNANOMSG_ROOT=/tmp/nanomsg
 - cd ..
 - cmake --build build --config $BUILD_TYPE
 - cmake --build build --config $BUILD_TYPE --target check
