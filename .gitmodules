@@ -10,3 +10,6 @@
 [submodule "modules/nanomsg"]
 	path = modules/nanomsg
 	url = https://github.com/nanomsg/nanomsg.git
+[submodule "modules/nanomsgxx"]
+	path = modules/nanomsgxx
+	url = https://github.com/achille-roussel/nanomsgxx.git
