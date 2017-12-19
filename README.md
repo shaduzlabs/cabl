@@ -48,6 +48,8 @@ If you want to build the python wrapper, you'll need to install Boost.python:
 brew install boost --with-python
 brew install boost-python
 ```
+**IMPORTANT**: the python wrapper has only been tested with python 2.7.x
+
 And if you want to build the documentation, you'll need to install Doxygen:
 ```
 brew install doxygen
@@ -80,6 +82,8 @@ If you want to build the python wrapper, you'll need to install Boost.python:
 ```
 sudo apt-get install libboost-python-dev
 ```
+**IMPORTANT**: the python wrapper has only been tested with python 2.7.x
+
 And if you want to build the documentation, you'll need to install Doxygen:
 ```
 sudo apt-get install doxygen
