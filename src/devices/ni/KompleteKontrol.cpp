@@ -400,7 +400,7 @@ bool KompleteKontrolBase::sendDisplayData()
     {
       if (m_displays[i].dirty())
       {
-        //       std::copy_n(m_displays[i].displayData(row * 16), 16, &displayData[i * 16]);
+        std::copy_n(&m_displays[i].displayData()[row * 16], 16, &displayData[i * 16]);
       }
     }
     if (!writeToDeviceHandle(
