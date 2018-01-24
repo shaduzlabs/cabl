@@ -104,8 +104,8 @@ DriverLibUSB::DriverLibUSB() : m_usbThreadRunning(true)
 #endif
 
   libusb_hotplug_register_callback(m_pContext,
-    static_cast<libusb_hotplug_event>(LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED
-                                      | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
+    static_cast<libusb_hotplug_event>(
+      LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT),
     static_cast<libusb_hotplug_flag>(0),
     LIBUSB_HOTPLUG_MATCH_ANY,
     LIBUSB_HOTPLUG_MATCH_ANY,
@@ -232,6 +232,12 @@ tPtr<DeviceHandleImpl> DriverLibUSB::connect(const DeviceDescriptor& device_)
   libusb_free_device_list(devices, 1);
 
   libusb_set_configuration(pCurrentDevice, 1);
+
+  if (LIBUSB_ERROR_NOT_SUPPORTED == libusb_set_auto_detach_kernel_driver(pCurrentDevice, 1))
+  {
+    M_LOG("[LibUSB] note: automatic kernel driver detaching is not supported on this platform");
+  }
+
   libusb_claim_interface(pCurrentDevice, 0);
 
   libusb_set_interface_alt_setting(pCurrentDevice, 0, 1);
