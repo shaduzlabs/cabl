@@ -26,7 +26,16 @@ class KompleteKontrolBase : public Device
 {
 
 public:
-  KompleteKontrolBase();
+
+  enum NUM_KEYS
+  {
+    KEYS_25 = 25,
+    KEYS_49 = 49,
+    KEYS_61 = 61,
+    KEYS_88 = 88
+  };
+
+  KompleteKontrolBase(NUM_KEYS numKeys);
   ~KompleteKontrolBase() override;
 
   void setButtonLed(Device::Button, const Color&) override;
@@ -35,6 +44,11 @@ public:
   void sendMidiMsg(tRawData) override;
 
   TextDisplay* textDisplay(size_t displayIndex_) override;
+
+  unsigned numKeys() const
+  {
+    return m_numKeys;
+  }
 
   size_t numOfGraphicDisplays() const override
   {
@@ -54,6 +68,21 @@ public:
   size_t numOfLedArrays() const override
   {
     return 0;
+  }
+
+  size_t currentOctave() const override
+  {
+    return m_firstOctave;
+  }
+
+  unsigned ledDataSize() const
+  {
+    return m_ledsKeysSize;
+  }
+
+  uint8_t* ledsKeysData()
+  {
+    return &m_ledsKeys[0];
   }
 
   bool tick() override;
@@ -83,17 +112,16 @@ private:
   bool isButtonPressed(Button button) const noexcept;
   bool isButtonPressed(const Transfer&, Button button_) const noexcept;
 
-  virtual unsigned numKeys() const = 0;
-  virtual unsigned ledDataSize() const = 0;
-  virtual uint8_t* ledsKeysData() = 0;
-
   static void midiInCallback(double timeStamp, std::vector<unsigned char>* message, void* userData);
 
   NullCanvas m_displayDummy;
   tRawData m_leds;
   tRawData m_buttons;
   std::bitset<kKK_nButtons> m_buttonStates;
+  unsigned m_numKeys;
   unsigned m_encoderValues[kKK_nEncoders];
+  unsigned m_ledsKeysSize;
+  uint8_t* m_ledsKeys;
 
   bool m_isDirtyLeds;
   bool m_isDirtyKeyLeds;
@@ -110,36 +138,29 @@ private:
 
 //--------------------------------------------------------------------------------------------------
 
-template <uint8_t NKEYS>
-class KompleteKontrol final : public KompleteKontrolBase
+class KompleteKontrolS25 final : public KompleteKontrolBase
 {
 public:
-  static constexpr unsigned kKK_keysLedDataSize = NKEYS * 3U;
-
-  unsigned numKeys() const override
-  {
-    return NKEYS;
-  }
-  unsigned ledDataSize() const override
-  {
-    return kKK_keysLedDataSize;
-  }
-
-private:
-  uint8_t* ledsKeysData() override
-  {
-    return &m_ledsKeys[0];
-  }
-
-  uint8_t m_ledsKeys[kKK_keysLedDataSize];
+  KompleteKontrolS25() : KompleteKontrolBase(KEYS_25) {}
 };
 
-//--------------------------------------------------------------------------------------------------
+class KompleteKontrolS49 final : public KompleteKontrolBase
+{
+public:
+  KompleteKontrolS49() : KompleteKontrolBase(KEYS_49) {}
+};
 
-using KompleteKontrolS25 = KompleteKontrol<25>;
-using KompleteKontrolS49 = KompleteKontrol<49>;
-using KompleteKontrolS61 = KompleteKontrol<61>;
-using KompleteKontrolS88 = KompleteKontrol<88>;
+class KompleteKontrolS61 final : public KompleteKontrolBase
+{
+public:
+  KompleteKontrolS61() : KompleteKontrolBase(KEYS_61) {}
+};
+
+class KompleteKontrolS88 final : public KompleteKontrolBase
+{
+public:
+  KompleteKontrolS88() : KompleteKontrolBase(KEYS_88) {}
+};
 
 //--------------------------------------------------------------------------------------------------
 
