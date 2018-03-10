@@ -99,41 +99,11 @@ matrix:
 
   # 4/ OSX Clang Builds
   - os: osx
-    osx_image: xcode6.4
     compiler: clang
     env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
   - os: osx
-    osx_image: xcode6.4
     compiler: clang
     env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
-  - os: osx
-    osx_image: xcode7
-    compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Debug' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
-  - os: osx
-    osx_image: xcode7
-    compiler: clang
-    env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' BUILD_TYPE='Release' CMAKE_OPTIONS="-DCABL_BUILD_RTMIDI=ON -DCABL_BUILD_HIDAPI=ON"
-
-
-  # 5/ OSX GCC Builds
-  - os: osx
-    osx_image: xcode6.4
-    compiler: gcc
-    env: BUILD_TYPE='Debug' CABL_FORCE_BUILD_DEPENDENCIES=1
-  - os: osx
-    osx_image: xcode6.4
-    compiler: gcc
-    env: BUILD_TYPE='Release' CABL_FORCE_BUILD_DEPENDENCIES=1
-  - os: osx
-    osx_image: xcode7
-    compiler: gcc
-    env: BUILD_TYPE='Debug' CABL_FORCE_BUILD_DEPENDENCIES=1
-  - os: osx
-    osx_image: xcode7
-    compiler: gcc
-    env: BUILD_TYPE='Release' CABL_DEPLOY_TARGET="cabl-osx-64" CMAKE_OPTIONS="-DCABL_FORCE_BUILD_DEPENDENCIES=ON"
-
 
 install:
   ############################################################################
