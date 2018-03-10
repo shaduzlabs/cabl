@@ -141,21 +141,16 @@ install:
     brew install doxygen
   fi
 
-- |
-  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-    brew install gcc
-  fi
-
 
   ############################################################################
   # Install LibUSB
   ############################################################################
 - |
   if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-    wget https://github.com/libusb/libusb/archive/v1.0.20.tar.gz -O /tmp/libusb-1.0.tar.gz
+    wget https://github.com/libusb/libusb/archive/v1.0.22-rc3.tar.gz -O /tmp/libusb-1.0.tar.gz
     cd /tmp
     tar -zxvf libusb-1.0.tar.gz
-    cd libusb-1.0.20
+    cd libusb-1.0.22-rc3
     ./autogen.sh && ./configure --prefix=`pwd`/_local_install
     make
     make install
