@@ -167,9 +167,9 @@ endif()
 
 # If Boost.python is not available, just display a warning and skip the python wrapper target
 if(${CABL_PYTHON})
-  find_package(Boost COMPONENTS python)
-  if(Boost_PYTHON_FOUND)
-    SET(BOOST_PYTHON_STATIC_LIB         ON)
+  find_package(Boost COMPONENTS python python27)
+
+  if( Boost_PYTHON_FOUND OR Boost_PYTHON27_LIBRARY_DEBUG )
     find_package(PythonLibs 2.7 REQUIRED)
   else()
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
@@ -590,14 +590,14 @@ if(CABL_PYTHON AND NOT COVERALLS)
 
   source_group("py"              FILES ${cabl_python_SRCS})
 
-  if(NOT Boost_PYTHON_FOUND)
+  if(NOT Boost_PYTHON27_LIBRARY_RELEASE AND NOT Boost_PYTHON_FOUND)
     message(WARNING "Boost.python has not been found, the python wrapper will not be created.")
   else()
 
-  set( CABL_PYTHON_MODULE_EXTENSION ".so")
-  if(WIN32)
-    set( CABL_PYTHON_MODULE_EXTENSION ".pyd")
-  endif()
+    set( CABL_PYTHON_MODULE_EXTENSION ".so")
+    if(WIN32)
+      set( CABL_PYTHON_MODULE_EXTENSION ".pyd")
+    endif()
 
     add_library( pycabl SHARED ${cabl_ALL} ${cabl_python_SRCS})
     set_target_properties(
@@ -614,6 +614,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
     target_include_directories( pycabl PRIVATE ${LIBUSB_INCLUDE_DIRS} ${HIDAPI_INCLUDE_DIRS} )
     target_include_directories( pycabl PRIVATE ${RTMIDI_INCLUDE_DIRS} ${UNMIDIFY_INCLUDE_DIRS} )
     target_include_directories( pycabl PRIVATE src )
+    target_compile_definitions( pycabl PRIVATE BOOST_PYTHON_STATIC_LIB )
 
     if(CABL_USE_NETWORK)
       target_link_libraries( pycabl PUBLIC ${NANOMSG_LIBRARIES} )
@@ -639,7 +640,7 @@ if(CABL_PYTHON AND NOT COVERALLS)
       target_link_libraries( pycabl PUBLIC ${RTMIDI_LIBRARIES})
     endif()
 
-    target_link_libraries( pycabl PUBLIC ${Boost_PYTHON_LIBRARY} ${PYTHON_LIBRARIES})
+    target_link_libraries( pycabl PUBLIC ${Boost_PYTHON_LIBRARY} ${Boost_PYTHON27_LIBRARY_RELEASE} ${PYTHON_LIBRARIES})
     target_include_directories(pycabl PUBLIC ${PYTHON_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
   endif()
 endif()
