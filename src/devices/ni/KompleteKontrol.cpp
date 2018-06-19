@@ -22,23 +22,6 @@ const uint8_t kKK_ledsDataSize = 25;
 
 const uint8_t kKK_epOut = 0x02;
 const uint8_t kKK_epInput = 0x84;
-
-size_t getInitialOctave(const sl::cabl::KompleteKontrolBase::NUM_KEYS numKeys)
-{
-  using namespace sl::cabl;
-
-  switch (numKeys)
-  {
-    case KompleteKontrolBase::KEYS_25:
-      return 48;
-    case KompleteKontrolBase::KEYS_49:
-    case KompleteKontrolBase::KEYS_61:
-      return 36;
-    default:
-      return 21;
-  }
-}
-
 } // namespace
 
 //--------------------------------------------------------------------------------------------------
@@ -260,13 +243,10 @@ enum class KompleteKontrolBase::Button : uint8_t
 
 //--------------------------------------------------------------------------------------------------
 
-KompleteKontrolBase::KompleteKontrolBase(const NUM_KEYS numKeys)
-  : m_numKeys(static_cast<unsigned>(numKeys))
-  , m_ledsKeysSize(m_numKeys * 3U)
-  , m_ledsKeys(new uint8_t[m_ledsKeysSize])
-  , m_isDirtyLeds(true)
+KompleteKontrolBase::KompleteKontrolBase()
+  : m_isDirtyLeds(true)
   , m_isDirtyKeyLeds(true)
-  , m_firstOctave(getInitialOctave(numKeys))
+  , m_hasValidOctave(false)
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   , m_pMidiOut(new RtMidiOut)
   , m_pMidiIn(new RtMidiIn)
@@ -332,7 +312,6 @@ KompleteKontrolBase::KompleteKontrolBase(const NUM_KEYS numKeys)
 
 KompleteKontrolBase::~KompleteKontrolBase()
 {
-  delete[] m_ledsKeys;
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   m_pMidiOut->closePort();
   m_pMidiIn->closePort();
@@ -537,6 +516,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
   }
 
   m_firstOctave = input_.data()[37];
+  m_hasValidOctave = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -710,6 +690,38 @@ void KompleteKontrolBase::midiInCallback(
       pMessage_->at(2) / 127.0,
       pSelf->isButtonPressed(Button::Shift));
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS25::defaultOctave() const
+{
+  return 48;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS49::defaultOctave() const
+{
+  return 36;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS61::defaultOctave() const
+{
+  return 36;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS88::defaultOctave() const
+{
+  return 21;
 }
 
 //--------------------------------------------------------------------------------------------------
