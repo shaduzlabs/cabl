@@ -11,7 +11,6 @@
 
 #include "cabl/comm/Transfer.h"
 #include "cabl/devices/Device.h"
-#include "cabl/devices/DeviceFactory.h"
 #include "gfx/displays/GDisplayMaschineMK1.h"
 
 namespace sl

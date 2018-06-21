@@ -80,5 +80,22 @@ void Transfer::setData(const uint8_t* data_, size_t length_)
 
 //--------------------------------------------------------------------------------------------------
 
+std::string Transfer::toString() const
+{
+  static const char * HEX_DIGIT = "0123456789ABCDEF";
+
+  std::string result;
+
+  for ( uint8_t byte : m_data )
+  {
+    result += HEX_DIGIT[ (byte>>4) & 0xF ];
+    result += HEX_DIGIT[ byte & 0xF ];
+    result += '|';
+  }
+
+  return result;
+}
+
+
 } // namespace cabl
 } // namespace sl
