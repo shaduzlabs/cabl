@@ -60,7 +60,7 @@ enum class MaschineMK1::Led : uint8_t
   Select,
   Duplicate,
   Navigate,
-  Keyboard,
+  PadMode,
   Pattern,
   Scene,
   Shift,
@@ -113,7 +113,7 @@ enum class MaschineMK1::Button : uint8_t
   Select,
   Duplicate,
   Navigate,
-  Keyboard,
+  PadMode,
   Pattern,
   Scene,
 
@@ -406,7 +406,11 @@ bool MaschineMK1::read()
     M_LOG("[MaschineMK1] read: ERROR");
     return false;
   }
-  processPads(input);
+
+  if (input[0] != 2) // Strange but I had to add this filter to avoid strange pad updates when turning encoders.
+  {
+    processPads(input);
+  }
   return true;
 }
 
@@ -417,7 +421,7 @@ void MaschineMK1::processPads(const Transfer& input_)
   for (int i = 1; i < kMASMK1_padDataSize - 1; i += 2)
   {
     unsigned h = input_[i];
-    unsigned l = input_[i + 1];
+    unsigned l = input_[i - 1];
     uint8_t pad = (h & 0xF0) >> 4;
 
     m_padsData[pad] = (((h & 0x0F) << 8) | l);
@@ -426,7 +430,7 @@ void MaschineMK1::processPads(const Transfer& input_)
     {
       m_padsStatus[pad] = true;
       keyChanged(
-        pad, m_padsData[pad] / 1024.0, m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
+        pad, m_padsData[pad] / 4096.0 , m_buttonStates[static_cast<uint8_t>(Button::Shift)]);
     }
     else
     {
@@ -577,7 +581,7 @@ MaschineMK1::Led MaschineMK1::led(Device::Button btn_) const noexcept
     M_LED_CASE(Select);
     M_LED_CASE(Duplicate);
     M_LED_CASE(Navigate);
-    M_LED_CASE(Keyboard);
+    M_LED_CASE(PadMode);
     M_LED_CASE(Pattern);
     M_LED_CASE(Scene);
     M_LED_CASE(Shift);
@@ -671,7 +675,7 @@ Device::Button MaschineMK1::deviceButton(Button btn_) const noexcept
     M_BTN_CASE(Select);
     M_BTN_CASE(Duplicate);
     M_BTN_CASE(Navigate);
-    M_BTN_CASE(Keyboard);
+    M_BTN_CASE(PadMode);
     M_BTN_CASE(Pattern);
     M_BTN_CASE(Scene);
     M_BTN_CASE(Rec);

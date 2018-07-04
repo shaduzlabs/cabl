@@ -1,8 +1,10 @@
 
 message (STATUS "Checking for RtMidi...")
 find_path(RTMIDI_INCLUDE_DIRS RtMidi.h
-  /usr/local/include
-  /usr/include
+  PATHS
+    /usr/local/include
+    /usr/include
+    /usr/include/rtmidi
   HINTS /tmp/rtmidi-2.1.0 # for travis-ci linux build
 )
 

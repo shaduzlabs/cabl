@@ -64,6 +64,8 @@ public:
     return m_data.size();
   }
 
+  std::string toString() const;
+
 private:
 #ifdef CABL_USE_NETWORK
   friend class cereal::access;
