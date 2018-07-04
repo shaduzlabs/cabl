@@ -237,6 +237,8 @@ public:
 
   virtual size_t numOfLedArrays() const = 0;
 
+  virtual size_t currentOctave() const { return 0; }
+
   virtual void setButtonLed(Button, const Color&);
 
   virtual void setKeyLed(unsigned, const Color&);

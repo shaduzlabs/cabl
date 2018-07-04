@@ -56,6 +56,16 @@ public:
     return 0;
   }
 
+  size_t currentOctave() const override
+  {
+    return m_hasValidOctave ? m_firstOctave : defaultOctave();
+  }
+
+  virtual size_t defaultOctave() const
+  {
+    assert(false);
+  }
+
   bool tick() override;
 
 private:
@@ -99,6 +109,7 @@ private:
   bool m_isDirtyKeyLeds;
 
   uint8_t m_firstOctave;
+  bool m_hasValidOctave;
 
   TextDisplayKompleteKontrol m_displays[kKK_nDisplays];
 
@@ -124,6 +135,8 @@ public:
   {
     return kKK_keysLedDataSize;
   }
+
+  size_t defaultOctave() const override;
 
 private:
   uint8_t* ledsKeysData() override

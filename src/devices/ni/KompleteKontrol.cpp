@@ -246,6 +246,7 @@ enum class KompleteKontrolBase::Button : uint8_t
 KompleteKontrolBase::KompleteKontrolBase()
   : m_isDirtyLeds(true)
   , m_isDirtyKeyLeds(true)
+  , m_hasValidOctave(false)
 #if defined(_WIN32) || defined(__APPLE__) || defined(__linux)
   , m_pMidiOut(new RtMidiOut)
   , m_pMidiIn(new RtMidiIn)
@@ -515,6 +516,7 @@ void KompleteKontrolBase::processButtons(const Transfer& input_)
   }
 
   m_firstOctave = input_.data()[37];
+  m_hasValidOctave = true;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -688,6 +690,38 @@ void KompleteKontrolBase::midiInCallback(
       pMessage_->at(2) / 127.0,
       pSelf->isButtonPressed(Button::Shift));
   }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS25::defaultOctave() const
+{
+  return 48;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS49::defaultOctave() const
+{
+  return 36;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS61::defaultOctave() const
+{
+  return 36;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <>
+size_t KompleteKontrolS88::defaultOctave() const
+{
+  return 21;
 }
 
 //--------------------------------------------------------------------------------------------------
