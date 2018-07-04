@@ -181,10 +181,7 @@ void MaschineMK1::setKeyLed(unsigned index_, const Color& color_)
 
 void MaschineMK1::sendMidiMsg(tRawData midiMsg_)
 {
-  uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
-  uint8_t lengthL = midiMsg_.size() & 0xFF;
-  writeToDeviceHandle(
-    Transfer({0x07, lengthH, lengthL}, midiMsg_.data(), midiMsg_.size()), kMASMK1_epOut);
+  m_MidiOutQueue.push_back(midiMsg_);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -226,14 +223,17 @@ bool MaschineMK1::tick()
   {
     success = sendLeds();
   }
+  else if (state == 3)
+  {
+    success = writeMidiMsg();
+  }
 
   if (!success)
   {
-    std::string strStepName(state == 0 ? "sendFrame" : (state == 1 ? "read" : "sendLeds"));
-    M_LOG("[MaschineMK1] tick: error in step #" << state << " (" << strStepName << ")");
+    M_LOG("[MaschineMK1] tick: error in step #" << state);
   }
 
-  if (++state >= 3)
+  if (++state > 3)
   {
     state = 0;
   }
@@ -410,6 +410,28 @@ bool MaschineMK1::read()
   if (input[0] != 2) // Strange but I had to add this filter to avoid strange pad updates when turning encoders.
   {
     processPads(input);
+  }
+  return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+bool MaschineMK1::writeMidiMsg()
+{
+  while(!m_MidiOutQueue.empty())
+  {
+    tRawData midiMsg_ = m_MidiOutQueue.front();
+    m_MidiOutQueue.pop_front();
+
+    uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
+    uint8_t lengthL = midiMsg_.size() & 0xFF;
+    Transfer transfer({0x07, lengthH, lengthL}, midiMsg_.data(), midiMsg_.size());
+
+    if (!writeToDeviceHandle(transfer, kMASMK1_epOut))
+    {
+      M_LOG("[MaschineMK1] sendLeds: error writing midi message");
+      return false;
+    }
   }
   return true;
 }

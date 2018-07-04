@@ -8,6 +8,7 @@
 #pragma once
 
 #include <bitset>
+#include <deque>
 
 #include "cabl/comm/Transfer.h"
 #include "cabl/devices/Device.h"
@@ -76,6 +77,7 @@ private:
   bool sendFrame(uint8_t displayIndex_);
   bool sendLeds();
   bool read();
+  bool writeMidiMsg();
 
   void processPads(const Transfer&);
   void processButtons(const Transfer&);
@@ -105,6 +107,9 @@ private:
   bool m_isDirtyLedGroup0{true};
   bool m_isDirtyLedGroup1{true};
   bool m_encodersInitialized{false};
+
+  std::deque<tRawData> m_MidiOutQueue;
+
 };
 
 //--------------------------------------------------------------------------------------------------
