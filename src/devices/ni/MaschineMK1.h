@@ -82,6 +82,7 @@ private:
   void processPads(const Transfer&);
   void processButtons(const Transfer&);
   void processEncoders(const Transfer&);
+  void processMidiIn(const Transfer&);
 
   void setLedImpl(Led, const Color&);
   Led led(Device::Button) const noexcept;
@@ -109,7 +110,9 @@ private:
   bool m_encodersInitialized{false};
 
   std::deque<tRawData> m_MidiOutQueue;
+  std::deque<uint8_t> m_MidiInBuffer;
 
+  std::unique_ptr<RtMidiOut> m_pVirtualMidiIn;
 };
 
 //--------------------------------------------------------------------------------------------------

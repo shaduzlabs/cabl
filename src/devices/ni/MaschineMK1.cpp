@@ -8,6 +8,8 @@
 #include "devices/ni/MaschineMK1.h"
 
 #include <thread>
+#include <memory>
+#include <RtMidi.h>
 
 #include "cabl/comm/Driver.h"
 #include "cabl/comm/Transfer.h"
@@ -161,6 +163,19 @@ enum class MaschineMK1::Button : uint8_t
 MaschineMK1::MaschineMK1()
 {
   m_leds.resize(kMASMK1_ledsDataSize);
+
+  try
+  {
+    m_pVirtualMidiIn.reset(new RtMidiOut(RtMidi::UNSPECIFIED,"Maschine MK1"));
+    m_pVirtualMidiIn->openVirtualPort("Received MIDI IN");
+  }
+  catch (std::exception const & e)
+  {
+    M_LOG("[MaschineMK1] Could not init virtual MIDI IN port: " << e.what());
+    m_pVirtualMidiIn.reset();
+  }
+
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -464,6 +479,64 @@ void MaschineMK1::processPads(const Transfer& input_)
     }
   }
 }
+//
+//--------------------------------------------------------------------------------------------------
+
+bool popCompleteMidiMsg( std::deque<uint8_t> & midi_buffer, tRawData & out_msg )
+{
+  while ( !midi_buffer.empty()
+      && ( midi_buffer[0]&0x80 == 0  // Skipping until first command bit.
+        || midi_buffer[0]&0xF0 == 0xF0 ) ) // Skipping non music commands.
+  {
+    midi_buffer.pop_front();
+  }
+
+  if (midi_buffer.empty())
+  {
+    return false;
+  }
+
+  uint8_t msg_type = midi_buffer[0];
+
+  uint8_t expected_size = 3;
+  if ( msg_type & 0xC0   // MidiMessage::Type::ProgramChange
+    || msg_type & 0xD0 ) // MidiMessage::Type::ChannelPressure
+  {
+    expected_size = 2;
+  }
+
+  if (midi_buffer.size() < expected_size)
+  {
+     //Should wait for next chunk of message.
+     return false;
+  }
+
+  out_msg.clear();
+  for ( size_t i=0 ; i<expected_size ; ++i )
+  {
+    out_msg.push_back( midi_buffer.front() );
+    midi_buffer.pop_front();
+  }
+
+  return true;
+}
+
+void MaschineMK1::processMidiIn(const Transfer& input_)
+{
+  for (size_t i=3; i<input_.size(); ++i)
+  {
+    m_MidiInBuffer.push_back( input_[i] );
+  }
+
+  tRawData msg;
+  while ( popCompleteMidiMsg(m_MidiInBuffer, msg) )
+  {
+    if (m_pVirtualMidiIn)
+    {
+      m_pVirtualMidiIn->sendMessage( &msg );
+    }
+  }
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -757,8 +830,7 @@ void MaschineMK1::cbRead(Transfer input_)
   }
   else if (input_[0] == 0x06)
   {
-    M_LOG("[MaschineMK1] read: received MIDI message");
-    //!\todo Add MIDI in parsing
+    processMidiIn(input_);
   }
 }
 
