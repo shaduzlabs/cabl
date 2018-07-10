@@ -175,6 +175,17 @@ MaschineMK1::MaschineMK1()
     m_pVirtualMidiIn.reset();
   }
 
+  try
+  {
+    m_pVirtualMidiOut.reset(new RtMidiIn(RtMidi::UNSPECIFIED,"Maschine MK1"));
+    m_pVirtualMidiOut->ignoreTypes(false,false,false); // sends everything.
+    m_pVirtualMidiOut->openVirtualPort("send MIDI OUT");
+  }
+  catch (std::exception const & e)
+  {
+    M_LOG("[MaschineMK1] Could not init virtual MIDI OUT port: " << e.what());
+    m_pVirtualMidiOut.reset();
+  }
 
 }
 
@@ -431,13 +442,30 @@ bool MaschineMK1::read()
 
 //--------------------------------------------------------------------------------------------------
 
+bool MaschineMK1::getNextMidiOutMsg(tRawData & midiMsg_)
+{
+    if (!m_MidiOutQueue.empty())
+    {
+      midiMsg_ = std::move(m_MidiOutQueue.front());
+      m_MidiOutQueue.pop_front();
+      return true;
+    }
+
+    if (m_pVirtualMidiOut)
+    {
+      m_pVirtualMidiOut->getMessage(&midiMsg_);
+      return !midiMsg_.empty();
+    }
+
+    return false;
+}
+
 bool MaschineMK1::writeMidiMsg()
 {
-  while(!m_MidiOutQueue.empty())
-  {
-    tRawData midiMsg_ = m_MidiOutQueue.front();
-    m_MidiOutQueue.pop_front();
+  static tRawData midiMsg_;
 
+  while (getNextMidiOutMsg(midiMsg_))
+  {
     uint8_t lengthH = (midiMsg_.size() >> 8) & 0xFF;
     uint8_t lengthL = midiMsg_.size() & 0xFF;
     Transfer transfer({0x07, lengthH, lengthL}, midiMsg_.data(), midiMsg_.size());

@@ -77,6 +77,8 @@ private:
   bool sendFrame(uint8_t displayIndex_);
   bool sendLeds();
   bool read();
+
+  bool getNextMidiOutMsg(tRawData & midiMsg_);
   bool writeMidiMsg();
 
   void processPads(const Transfer&);
@@ -113,6 +115,7 @@ private:
   std::deque<uint8_t> m_MidiInBuffer;
 
   std::unique_ptr<RtMidiOut> m_pVirtualMidiIn;
+  std::unique_ptr<RtMidiIn> m_pVirtualMidiOut;
 };
 
 //--------------------------------------------------------------------------------------------------
